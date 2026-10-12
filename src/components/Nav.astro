@@ -219,31 +219,41 @@ const current = Astro.url.pathname;
     cursor: text; /* clicking here types; it does not toggle the menu */
   }
 
-  /* The mark grows from zero width so the text slides right with it. */
+  /* The mark grows from zero width so the text slides right with it, while
+     the glyph itself enters from the bottom in the same stepped frames as
+     the first word of the H1 (invisible, 2 steps down, 1 step, rest). */
   .nav__ai {
+    --icon-step: 2px; /* the H1 step at display size */
     display: inline-flex;
     flex: 0 0 auto;
     width: 0;
     color: #78f6fb;
     margin-right: calc(-1 * var(--space-2x)); /* cancel the flex gap while out */
-    transform: scale(0.4) rotate(-45deg);
-    opacity: 0;
     transition:
       width 360ms cubic-bezier(0.2, 0.7, 0.2, 1),
-      margin-right 360ms cubic-bezier(0.2, 0.7, 0.2, 1),
-      transform 360ms cubic-bezier(0.2, 0.7, 0.2, 1),
-      opacity 240ms ease;
+      margin-right 360ms cubic-bezier(0.2, 0.7, 0.2, 1);
   }
 
   .nav__ai svg {
     flex: 0 0 auto;
+    opacity: 0;
   }
 
   .nav__ai.is-in {
     width: 16px;
     margin-right: 0;
-    transform: none;
-    opacity: 1;
+  }
+
+  .nav__ai.is-in svg {
+    animation: nav-ai-in calc(var(--reveal-frame) * 4) step-end forwards;
+  }
+
+  @keyframes nav-ai-in {
+    0%   { opacity: 0; transform: translateY(calc(2 * var(--icon-step))); }
+    25%  { opacity: 1; transform: translateY(calc(2 * var(--icon-step))); }
+    50%  { opacity: 1; transform: translateY(calc(1 * var(--icon-step))); }
+    75%  { opacity: 1; transform: translateY(0); }
+    100% { opacity: 1; transform: translateY(0); }
   }
 
   .nav__prompt {
@@ -499,6 +509,10 @@ const current = Astro.url.pathname;
   @media (prefers-reduced-motion: reduce) {
     .nav__cursor {
       animation: none;
+    }
+    .nav__ai.is-in svg {
+      animation: none;
+      opacity: 1;
     }
   }
 </style>
