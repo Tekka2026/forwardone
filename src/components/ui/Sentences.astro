@@ -9,8 +9,8 @@
  *   frame 1  visible, 2 steps down
  *   frame 2  visible, 1 step down
  *   frame 3  visible, at rest
- * The last word instead rises smoothly from 7 steps down over the same
- * span as 8 frames.
+ * The last word appears the same way (invisible for one frame, then fully
+ * visible) but rises smoothly from 7 steps down over the span of 8 frames.
  * Frame length and step size are tokens: --reveal-frame, --reveal-step.
  */
 interface Props {
@@ -62,11 +62,13 @@ let index = 0;
     animation-delay: calc(var(--i) * var(--reveal-stagger));
   }
 
-  /* The last word rises smoothly over the same 9-frame span. */
+  /* The last word: same one-frame appearance as the other words (invisible,
+     then fully visible), but its rise is smooth over the 9-frame span. */
   .rw--last {
-    animation-name: rw-in-last;
-    animation-duration: calc(var(--reveal-frame) * 9);
-    animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+    animation:
+      rw-show calc(var(--reveal-frame) * 9) step-end forwards,
+      rw-rise calc(var(--reveal-frame) * 9) cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+    animation-delay: calc(var(--i) * var(--reveal-stagger));
   }
 
   /* 4 frames: 0 invisible, then -2, -1, 0 */
@@ -78,10 +80,17 @@ let index = 0;
     100% { opacity: 1; transform: translateY(0); }
   }
 
-  /* Smooth: fades in while rising from 7 steps down to rest */
-  @keyframes rw-in-last {
-    0%   { opacity: 0; transform: translateY(calc(7 * var(--reveal-step))); }
-    100% { opacity: 1; transform: translateY(0); }
+  /* Frame 0 invisible, visible from frame 1 (no fade) */
+  @keyframes rw-show {
+    0%      { opacity: 0; }
+    11.111% { opacity: 1; }
+    100%    { opacity: 1; }
+  }
+
+  /* Smooth rise from 7 steps down to rest */
+  @keyframes rw-rise {
+    0%   { transform: translateY(calc(7 * var(--reveal-step))); }
+    100% { transform: translateY(0); }
   }
 
   @media (prefers-reduced-motion: reduce) {
