@@ -1,0 +1,508 @@
+---
+/**
+ * Floating navigation bar at the bottom of the viewport.
+ * Closed: a bar with the section labels and utility links.
+ * Open: a panel grows upward out of the bar; the page behind is pushed back
+ * (scaled, darkened, inert). One panel for all sections; the clicked section
+ * is marked current and, on mobile, its accordion is opened.
+ */
+import { primaryNav, utilityNav } from '@content/nav';
+import { href, isActive } from '@lib/href';
+import Button from '@components/ui/Button.astro';
+
+const current = Astro.url.pathname;
+---
+
+<div class="nav" data-nav>
+  <div class="nav__scrim" data-nav-scrim hidden></div>
+
+  <nav class="nav__root" aria-label="Primary">
+    <div class="nav__panel" id="nav-panel" data-nav-panel hidden>
+      <div class="nav__columns">
+        {
+          primaryNav.map((section, i) => {
+            const listId = `nav-list-${i}`;
+            return (
+              <div class="nav__col" data-nav-col={i}>
+                <div class="nav__col-head">
+                  <a
+                    class="nav__col-title"
+                    href={href(section.href)}
+                    aria-current={isActive(current, section.href) ? 'true' : undefined}
+                  >
+                    {section.label}
+                  </a>
+                  <button
+                    class="nav__acc"
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls={listId}
+                    aria-label={`Show ${section.label} pages`}
+                    data-nav-acc
+                  >
+                    <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+                      <path d="M2.5 5l4.5 4.5L11.5 5" fill="none" stroke="currentColor" stroke-width="1.5" />
+                    </svg>
+                  </button>
+                </div>
+                <ul class="nav__list" id={listId}>
+                  {section.children.map((child) => (
+                    <li>
+                      <a
+                        class="nav__link"
+                        href={href(child.href)}
+                        target={child.external ? '_blank' : undefined}
+                        rel={child.external ? 'noopener noreferrer' : undefined}
+                        aria-current={!child.external && current === href(child.href) ? 'page' : undefined}
+                      >
+                        {child.label}
+                        {child.external && <span aria-hidden="true"> &#8599;</span>}
+                        {child.external && <span class="visually-hidden">(opens in a new tab)</span>}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })
+        }
+      </div>
+
+      <div class="nav__panel-utility">
+        <a class="nav__utility-link" href={utilityNav.lpLogin.href} target="_blank" rel="noopener noreferrer">
+          {utilityNav.lpLogin.label}
+          <span aria-hidden="true"> &#8599;</span>
+          <span class="visually-hidden">(opens in a new tab)</span>
+        </a>
+        <Button href={utilityNav.pitch.href} variant="ghost">{utilityNav.pitch.label}</Button>
+      </div>
+    </div>
+
+    <div class="nav__bar">
+      <ul class="nav__items">
+        {
+          primaryNav.map((section, i) => (
+            <li>
+              <button
+                class="nav__item"
+                type="button"
+                aria-expanded="false"
+                aria-controls="nav-panel"
+                aria-current={isActive(current, section.href) ? 'true' : undefined}
+                data-nav-open={i}
+              >
+                {section.label}
+              </button>
+            </li>
+          ))
+        }
+      </ul>
+
+      <button
+        class="nav__menu"
+        type="button"
+        aria-expanded="false"
+        aria-controls="nav-panel"
+        data-nav-menu
+      >
+        <span data-label-closed>Menu</span>
+        <span data-label-open hidden>Close</span>
+      </button>
+
+      <div class="nav__bar-utility">
+        <a class="nav__utility-link" href={utilityNav.lpLogin.href} target="_blank" rel="noopener noreferrer">
+          {utilityNav.lpLogin.label}
+          <span aria-hidden="true"> &#8599;</span>
+          <span class="visually-hidden">(opens in a new tab)</span>
+        </a>
+        <Button href={utilityNav.pitch.href} variant="ghost">{utilityNav.pitch.label}</Button>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<style>
+  /* No transform here: the scrim is a fixed child and must span the viewport. */
+  .nav {
+    position: fixed;
+    bottom: var(--gap);
+    left: 0;
+    right: 0;
+    z-index: 60;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+    color: var(--nav-fg);
+  }
+
+  .nav__scrim {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: transparent;
+    pointer-events: auto;
+  }
+
+  .nav__root {
+    position: relative;
+    width: min(var(--col-10), calc(100vw - 2 * var(--page-margin)));
+    pointer-events: auto;
+  }
+
+  /* ---- Bar (closed state) ---- */
+  .nav__bar {
+    display: flex;
+    align-items: center;
+    gap: var(--gap);
+    min-height: var(--nav-height);
+    padding: 0 var(--gap-half) 0 var(--gap);
+    background: var(--nav-bg);
+    transition: background-color 200ms ease;
+  }
+
+  .nav[data-open] .nav__bar {
+    background: var(--nav-bg-open);
+  }
+
+  .nav__items {
+    display: flex;
+    align-items: center;
+    gap: var(--gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .nav__item {
+    margin: 0;
+    padding: var(--space-2x) 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font-family: var(--font-sans);
+    font-size: var(--fs-small);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0;
+    cursor: pointer;
+    white-space: nowrap;
+    opacity: 0.85;
+  }
+
+  .nav__item:hover,
+  .nav__item[aria-expanded='true'],
+  .nav__item[aria-current='true'] {
+    opacity: 1;
+  }
+
+  .nav__item[aria-current='true'] {
+    text-decoration: underline;
+    text-underline-offset: 6px;
+  }
+
+  .nav__menu {
+    display: none;
+    margin: 0;
+    padding: var(--space-2x) 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font-family: var(--font-sans);
+    font-size: var(--fs-small);
+    font-weight: 500;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .nav__bar-utility,
+  .nav__panel-utility {
+    display: flex;
+    align-items: center;
+    gap: var(--gap);
+  }
+
+  .nav__bar-utility {
+    margin-left: auto;
+  }
+
+  .nav__utility-link {
+    font-size: var(--fs-small);
+    font-weight: 500;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    opacity: 0.85;
+  }
+
+  .nav__utility-link:hover {
+    opacity: 1;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  /* Buttons on the dark bar */
+  .nav :global(.btn) {
+    min-height: var(--form-height-small);
+    border-color: var(--nav-fg);
+    background: transparent;
+    color: var(--nav-fg);
+  }
+  .nav :global(.btn:hover),
+  .nav :global(.btn:focus-visible) {
+    background: var(--nav-fg);
+    color: var(--nav-bg-open);
+  }
+  .nav :global(:focus-visible) {
+    outline-color: var(--nav-fg);
+  }
+
+  /* ---- Panel (open state) ---- */
+  .nav__panel {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    max-height: calc(100vh - var(--nav-height) - 3 * var(--gap));
+    max-height: calc(100dvh - var(--nav-height) - 3 * var(--gap));
+    overflow-y: auto;
+    padding: var(--gap);
+    background: var(--nav-bg-open);
+    transform: translateY(var(--space-4x));
+    opacity: 0;
+    transition: transform 240ms ease, opacity 200ms ease;
+  }
+
+  .nav[data-open] .nav__panel {
+    transform: none;
+    opacity: 1;
+  }
+
+  .nav__columns {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--gap);
+  }
+
+  .nav__col-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-half);
+  }
+
+  .nav__col-title {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    line-height: var(--lh-mono);
+    letter-spacing: var(--ls-label);
+    font-weight: 500;
+    text-transform: uppercase;
+    text-decoration: none;
+    opacity: 0.7;
+  }
+
+  .nav__col-title:hover,
+  .nav__col.is-current .nav__col-title {
+    opacity: 1;
+  }
+
+  .nav__acc {
+    display: none;
+    margin: 0;
+    padding: var(--space-2x);
+    border: 0;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .nav__acc[aria-expanded='true'] svg {
+    transform: rotate(180deg);
+  }
+
+  .nav__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2x);
+    margin: var(--gap-half) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .nav__link {
+    display: inline-block;
+    font-size: var(--fs-small);
+    line-height: var(--lh-small);
+    text-decoration: none;
+  }
+
+  .nav__link:hover,
+  .nav__link[aria-current='page'] {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .nav__panel-utility {
+    display: none;
+    margin-top: var(--gap);
+    padding-top: var(--gap);
+    border-top: var(--hairline-w) solid var(--nav-hairline);
+  }
+
+  /* ---- 880px: Menu button, accordion columns, utility in the panel ---- */
+  @media (max-width: 880px) {
+    .nav__items,
+    .nav__bar-utility .nav__utility-link {
+      display: none;
+    }
+
+    .nav__menu {
+      display: inline-block;
+    }
+
+    .nav__bar {
+      padding-left: var(--gap);
+    }
+
+    .nav__columns {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+
+    .nav__col {
+      border-top: var(--hairline-w) solid var(--nav-hairline);
+    }
+
+    .nav__col:first-child {
+      border-top: 0;
+    }
+
+    .nav__col-head {
+      padding: var(--gap-half) 0;
+    }
+
+    .nav__col-title {
+      font-family: var(--font-sans);
+      font-size: var(--fs-card-title);
+      letter-spacing: var(--ls-card-title);
+      line-height: var(--lh-card-title);
+      text-transform: none;
+      opacity: 1;
+    }
+
+    .nav__acc {
+      display: inline-flex;
+    }
+
+    .nav__list {
+      display: none;
+      margin: 0;
+      padding: 0 0 var(--gap-half);
+    }
+
+    .nav__col.is-open .nav__list {
+      display: flex;
+    }
+
+    .nav__link {
+      font-size: var(--fs-body);
+      padding: var(--space) 0;
+    }
+
+    .nav__panel-utility {
+      display: flex;
+    }
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-nav]');
+  const page = document.querySelector<HTMLElement>('[data-page]');
+
+  if (root && page) {
+    const panel = root.querySelector<HTMLElement>('[data-nav-panel]')!;
+    const scrim = root.querySelector<HTMLElement>('[data-nav-scrim]')!;
+    const openers = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-nav-open]'));
+    const menu = root.querySelector<HTMLButtonElement>('[data-nav-menu]')!;
+    const labelClosed = menu.querySelector<HTMLElement>('[data-label-closed]')!;
+    const labelOpen = menu.querySelector<HTMLElement>('[data-label-open]')!;
+    const cols = Array.from(root.querySelectorAll<HTMLElement>('[data-nav-col]'));
+    const accs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-nav-acc]'));
+    const mobile = window.matchMedia('(max-width: 880px)');
+    let lastTrigger: HTMLElement | null = null;
+    let isOpen = false;
+
+    function setAccordion(col: HTMLElement, open: boolean) {
+      col.classList.toggle('is-open', open);
+      const btn = col.querySelector<HTMLButtonElement>('[data-nav-acc]');
+      if (btn) btn.setAttribute('aria-expanded', String(open));
+    }
+
+    function open(index: number | null, trigger: HTMLElement) {
+      lastTrigger = trigger;
+      isOpen = true;
+      panel.hidden = false;
+      scrim.hidden = false;
+      // Next frame so the transition runs from the hidden state.
+      requestAnimationFrame(() => root.setAttribute('data-open', ''));
+      page.classList.add('is-pushed');
+      page.setAttribute('inert', '');
+      document.documentElement.style.overflow = 'hidden';
+      for (const b of openers) b.setAttribute('aria-expanded', String(b === trigger));
+      menu.setAttribute('aria-expanded', String(menu === trigger));
+      labelClosed.hidden = menu === trigger;
+      labelOpen.hidden = menu !== trigger;
+      cols.forEach((col, i) => {
+        col.classList.toggle('is-current', i === index);
+        setAccordion(col, mobile.matches && i === index);
+      });
+      const target = index === null ? cols[0] : cols[index];
+      const first = target.querySelector<HTMLElement>(mobile.matches && index === null ? '[data-nav-acc]' : 'a');
+      first?.focus();
+    }
+
+    function close() {
+      if (!isOpen) return;
+      isOpen = false;
+      root.removeAttribute('data-open');
+      panel.hidden = true;
+      scrim.hidden = true;
+      page.classList.remove('is-pushed');
+      page.removeAttribute('inert');
+      document.documentElement.style.overflow = '';
+      for (const b of openers) b.setAttribute('aria-expanded', 'false');
+      menu.setAttribute('aria-expanded', 'false');
+      labelClosed.hidden = false;
+      labelOpen.hidden = true;
+      lastTrigger?.focus();
+    }
+
+    openers.forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        if (isOpen && btn.getAttribute('aria-expanded') === 'true') close();
+        else open(i, btn);
+      });
+    });
+
+    menu.addEventListener('click', () => {
+      if (isOpen) close();
+      else open(null, menu);
+    });
+
+    for (const acc of accs) {
+      acc.addEventListener('click', () => {
+        const col = acc.closest<HTMLElement>('[data-nav-col]')!;
+        const willOpen = !col.classList.contains('is-open');
+        for (const c of cols) setAccordion(c, c === col && willOpen);
+      });
+    }
+
+    scrim.addEventListener('click', close);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isOpen) close();
+    });
+
+    mobile.addEventListener('change', close);
+  }
+</script>

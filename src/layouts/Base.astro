@@ -1,6 +1,7 @@
 ---
 import '../../css/global.css';
 import Header from '@components/Header.astro';
+import Nav from '@components/Nav.astro';
 import Footer from '@components/Footer.astro';
 import { site } from '@content/nav';
 import { href } from '@lib/href';
@@ -48,11 +49,14 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   </head>
   <body>
     <a class="skip-link" href="#main">{site.skipLinkLabel}</a>
-    <Header />
-    <main id="main" tabindex="-1">
-      <slot />
-    </main>
-    <Footer />
+    <div class="page" data-page>
+      <Header />
+      <main id="main" tabindex="-1">
+        <slot />
+      </main>
+      <Footer />
+    </div>
+    <Nav />
   </body>
 </html>
 
@@ -77,6 +81,18 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   }
   main:focus {
     outline: none;
+  }
+
+  /* Page wrapper: reserves room for the floating nav bar and is pushed back
+     (scaled, darkened, inert) while the nav panel is open. */
+  .page {
+    padding-bottom: calc(var(--nav-height) + 2 * var(--gap));
+    transform-origin: 50% 100%;
+    transition: transform 320ms ease, filter 320ms ease;
+  }
+  .page.is-pushed {
+    transform: scale(0.96);
+    filter: brightness(0.45);
   }
 
   /* Visible marker for content that still has to be supplied. */

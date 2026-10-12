@@ -174,7 +174,7 @@ form-control heights. Applied everywhere; no off-scale values.
 | `--form-height-small` | 32 | form-small-height |
 | `--form-height`     | 40  | form-height |
 | `--form-height-large` | 48 | form-large-height |
-| `--header-height`   | 64  | — |
+| `--nav-height`      | 48  | form-large-height (the floating nav bar) |
 
 Fixed uses:
 
@@ -211,13 +211,29 @@ CLAUDE.md action A0005).
 6. **One `.h-display` per page.** Every section opens with an `.eyebrow`.
 7. **Full-bleed is opt-in** per element via `.bleed`, never a default.
 
-## 8. Colour (placeholders)
+## 8. Navigation
+
+The primary navigation is a bar that floats at the bottom of the viewport
+(`src/components/Nav.astro`), not a top header. The logo sits alone in a plain
+strip at the top of the page (`src/components/Header.astro`).
+
+- Closed: `--nav-bg` (#26175A), height `--nav-height`, centred, `--gap` above
+  the viewport bottom. Desktop shows the five section labels plus LP Login and
+  Pitch us; below 880px it shows Menu and Pitch us.
+- Open: the panel expands upward from the bar in `--nav-bg-open` (#110338)
+  with the section columns (accordions on mobile) and the utility links. The
+  page behind is pushed back: scaled down, darkened and made inert. Escape,
+  the scrim or the Close button closes it and returns focus.
+- The page wrapper reserves `--nav-height` + 2 × `--gap` at the bottom so the
+  footer is never hidden behind the bar.
+
+## 9. Colour (placeholders)
 
 `--bg`, `--fg`, `--muted`, `--hairline`, `--accent`, `--accent-fg`. These exist so
 the layout can be seen; they are not a palette. Brand them later without
 touching anything above.
 
-## 9. What is in `css/global.css`
+## 10. What is in `css/global.css`
 
 | Section | Contents |
 |---------|----------|
@@ -234,13 +250,13 @@ touching anything above.
 Add new components in their own files that **consume** these tokens. Do not
 redefine any token or class from this file elsewhere.
 
-## 10. Where things live (Astro)
+## 11. Where things live (Astro)
 
 | What | Path |
 |---|---|
 | Global stylesheet | `css/global.css`, imported once in `src/layouts/Base.astro` |
 | Page shell, skip link, font loading | `src/layouts/Base.astro` |
-| Header, nav, footer | `src/components/Header.astro`, `src/components/Footer.astro` |
+| Top strip (logo), floating nav, footer | `src/components/Header.astro`, `src/components/Nav.astro`, `src/components/Footer.astro` |
 | Shared UI | `src/components/ui/` (Button, Logo, Footnote, Placeholder) |
 | Homepage sections | `src/components/home/`, composed in `src/pages/index.astro` |
 | Copy and numbers | `src/content/home.ts`, `src/content/nav.ts`, `src/content/pages.ts` |
