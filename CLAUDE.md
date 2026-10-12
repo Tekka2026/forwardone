@@ -45,5 +45,5 @@
 |-------|--------|--------|
 | A0001 | cancelled | Disable GitHub Pages. Withdrawn: the live site is wanted, so Pages stays on. |
 | A0002 | done   | Live site updates via the default branch. Decided 2026-10-12: see "Publishing" above. |
-| A0003 | open   | Switch the Pages source to GitHub Actions: repo Settings → Pages → Build and deployment → Source: "GitHub Actions". Until then the site is not deployed, because the default branch now holds Astro source, not static HTML. |
+| A0003 | done   | Pages source is GitHub Actions. The first workflow deploy succeeded on 2026-10-12 without a settings change. |
 | A0004 | open   | Supply the values in `PLACEHOLDERS.md` (benchmark source, disclaimer, case-study metrics, logos, LP login URL, article categories and dates, newsletter endpoint). |
