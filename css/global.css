@@ -1,0 +1,523 @@
+/* ==========================================================================
+   global.css — layout foundation (source of truth: DESIGN.md)
+
+   Grid, type scale and spacing are FIXED. Fonts and colours are placeholders
+   to be branded later. Components snap to these tokens; ad-hoc values are bugs.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Tokens
+   -------------------------------------------------------------------------- */
+:root {
+  /* Canvas & container */
+  --canvas: 1984px;                 /* whole site caps here, centred */
+  --max: 1600px;                    /* content container (.wrap)     */
+  --pad: clamp(20px, 4vw, 56px);    /* the only horizontal padding   */
+
+  /* Grid: 12 × 104px, 32px gutter → 12×104 + 11×32 = 1600 */
+  --cols: 12;
+  --col: 104px;
+  --gutter: 32px;
+
+  /* Column widths: n×104 + (n−1)×32. Pick from this table, never invent. */
+  --col-1: 104px;
+  --col-2: 240px;
+  --col-3: 376px;
+  --col-4: 512px;
+  --col-5: 648px;
+  --col-6: 784px;
+  --col-7: 920px;
+  --col-8: 1056px;
+  --col-9: 1192px;
+  --col-10: 1328px;
+  --col-11: 1464px;
+  --col-12: 1600px;
+
+  /* Breakpoints (reference only — media queries cannot read custom
+     properties; the same numbers are hard-coded in section 8 below).
+     --bp-cards-2: 980px   cards drop to 2 columns
+     --bp-nav:     880px   navigation collapses; multi-column grids stack
+     --bp-rows:    760px   wide list rows stack
+     --bp-cards-1: 640px   cards drop to 1 column */
+
+  /* Vertical rhythm */
+  --section-pad: clamp(80px, 12vh, 160px);
+  --hairline-w: 1px;
+
+  /* Spacing scale (4px base) — UI / panel internals only */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-8: 48px;
+  --space-10: 64px;
+
+  /* Type: families (PLACEHOLDERS — swap later, sizes stay) */
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
+    "Liberation Mono", monospace;
+
+  /* Type: sizes */
+  --fs-display: clamp(44px, 7vw, 100px);
+  --fs-section: clamp(30px, 4.2vw, 56px);
+  --fs-feature: clamp(34px, 5vw, 72px);
+  --fs-card-title: 19px;
+  --fs-lede: clamp(18px, 1.6vw, 21px);
+  --fs-body: 17px;
+  --fs-body-feature: clamp(17px, 1.4vw, 19px);
+  --fs-small: 15px;
+  --fs-small-tight: 14.5px;
+  --fs-eyebrow: 12px;
+  --fs-label: 12px;
+  --fs-code: 13.5px;
+
+  /* Type: line heights */
+  --lh-display: 1.04;
+  --lh-section: 1.06;
+  --lh-feature: 1.04;
+  --lh-card-title: 1.3;
+  --lh-lede: 1.5;
+  --lh-body: 1.55;
+  --lh-small: 1.55;
+  --lh-mono: 1.4;
+  --lh-code: 1.7;
+
+  /* Type: tracking */
+  --ls-display: -0.04em;
+  --ls-section: -0.03em;
+  --ls-feature: -0.03em;
+  --ls-card-title: -0.01em;
+  --ls-eyebrow: 0.14em;
+  --ls-label: 0.16em;
+
+  /* Measure (max text widths, in columns) */
+  --measure-heading: var(--col-8);  /* H2 / H3            */
+  --measure-lede: var(--col-6);     /* lede               */
+  --measure-body: var(--col-5);     /* body default       */
+  --measure-body-max: var(--col-6); /* body never exceeds */
+
+  /* Colours (PLACEHOLDERS — brand later) */
+  --bg: #ffffff;
+  --fg: #111111;
+  --muted: #666666;
+  --hairline: rgba(0, 0, 0, 0.14);
+  --accent: #111111;
+  --accent-fg: #ffffff;
+
+  /* Hard rule: nothing is rounded */
+  --radius: 0;
+}
+
+/* --------------------------------------------------------------------------
+   2. Reset / base
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  border-radius: 0;               /* sharp corners are the point */
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overflow-x: clip;               /* .bleed (100vw) must not add a horizontal scrollbar */
+}
+
+body {
+  margin: 0;
+  max-width: var(--canvas);        /* site caps at the canvas, centred */
+  margin-inline: auto;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6, p, ul, ol, figure, blockquote, pre {
+  margin: 0;
+}
+
+img, svg, video, canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+}
+
+button, input, select, textarea {
+  font: inherit;
+  color: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+
+/* Headings: sentence case, never all-caps (UPPERCASE is reserved for mono
+   eyebrow/label). Default heading element styles map to the scale so that
+   semantic markup without classes still lands on-grid. */
+h1 { font-size: var(--fs-display); line-height: var(--lh-display); letter-spacing: var(--ls-display); font-weight: 500; }
+h2 { font-size: var(--fs-section); line-height: var(--lh-section); letter-spacing: var(--ls-section); font-weight: 500; max-width: var(--measure-heading); }
+h3 { font-size: var(--fs-card-title); line-height: var(--lh-card-title); letter-spacing: var(--ls-card-title); font-weight: 600; }
+
+code, kbd, samp, pre {
+  font-family: var(--font-mono);
+  font-size: var(--fs-code);
+  line-height: var(--lh-code);
+  letter-spacing: 0;
+}
+
+/* --------------------------------------------------------------------------
+   3. Container & grid
+   -------------------------------------------------------------------------- */
+
+/* .wrap — the content container. Content box is exactly --max (1600px) so
+   the 12-column grid fits edge to edge; padding sits outside it. */
+.wrap {
+  box-sizing: content-box;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--pad);
+}
+
+/* .grid — 12 columns, 32px gutter. Children span with .col-N. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: var(--gutter);
+}
+
+.col-1  { grid-column: span 1; }
+.col-2  { grid-column: span 2; }
+.col-3  { grid-column: span 3; }
+.col-4  { grid-column: span 4; }
+.col-5  { grid-column: span 5; }
+.col-6  { grid-column: span 6; }
+.col-7  { grid-column: span 7; }
+.col-8  { grid-column: span 8; }
+.col-9  { grid-column: span 9; }
+.col-10 { grid-column: span 10; }
+.col-11 { grid-column: span 11; }
+.col-12 { grid-column: 1 / -1; }
+
+/* Start lines, for offsetting (e.g. .col-6.start-4) */
+.start-1  { grid-column-start: 1; }
+.start-2  { grid-column-start: 2; }
+.start-3  { grid-column-start: 3; }
+.start-4  { grid-column-start: 4; }
+.start-5  { grid-column-start: 5; }
+.start-6  { grid-column-start: 6; }
+.start-7  { grid-column-start: 7; }
+.start-8  { grid-column-start: 8; }
+.start-9  { grid-column-start: 9; }
+.start-10 { grid-column-start: 10; }
+.start-11 { grid-column-start: 11; }
+.start-12 { grid-column-start: 12; }
+
+/* .w-N — fixed column widths for blocks outside a .grid (text, components).
+   max-width so they shrink on narrow viewports; never set arbitrary widths. */
+.w-1  { max-width: var(--col-1); }
+.w-2  { max-width: var(--col-2); }
+.w-3  { max-width: var(--col-3); }
+.w-4  { max-width: var(--col-4); }
+.w-5  { max-width: var(--col-5); }
+.w-6  { max-width: var(--col-6); }
+.w-7  { max-width: var(--col-7); }
+.w-8  { max-width: var(--col-8); }
+.w-9  { max-width: var(--col-9); }
+.w-10 { max-width: var(--col-10); }
+.w-11 { max-width: var(--col-11); }
+.w-12 { max-width: var(--col-12); }
+
+/* .bleed — full-bleed (100vw) is an explicit per-element exception, never a
+   default. Content inside still aligns to column 1: nest a .wrap inside. */
+.bleed {
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+}
+
+/* --------------------------------------------------------------------------
+   4. Vertical rhythm
+   -------------------------------------------------------------------------- */
+.section {
+  padding-block: var(--section-pad);
+  border-top: var(--hairline-w) solid var(--hairline);  /* separation = hairline, not whitespace */
+}
+
+.section--flush {
+  border-top: 0;                   /* e.g. the first section under the header */
+}
+
+/* Feature sections: body copy steps up to the fluid feature size */
+.section--feature {
+  --fs-body: var(--fs-body-feature);
+  font-size: var(--fs-body);
+}
+
+/* --------------------------------------------------------------------------
+   5. Type classes
+   -------------------------------------------------------------------------- */
+.h-display {
+  font-family: var(--font-sans);
+  font-size: var(--fs-display);
+  line-height: var(--lh-display);
+  letter-spacing: var(--ls-display);
+  font-weight: 500;
+  text-transform: none;
+}
+
+.h-section {
+  font-family: var(--font-sans);
+  font-size: var(--fs-section);
+  line-height: var(--lh-section);
+  letter-spacing: var(--ls-section);
+  font-weight: 500;
+  max-width: var(--measure-heading);
+  text-transform: none;
+}
+
+.h-feature {
+  font-family: var(--font-sans);
+  font-size: var(--fs-feature);
+  line-height: var(--lh-feature);
+  letter-spacing: var(--ls-feature);
+  font-weight: 500;
+  max-width: var(--measure-heading);
+  text-transform: none;
+}
+
+.card-title {
+  font-family: var(--font-sans);
+  font-size: var(--fs-card-title);
+  line-height: var(--lh-card-title);
+  letter-spacing: var(--ls-card-title);
+  font-weight: 600;
+  text-transform: none;
+}
+
+.lede {
+  font-family: var(--font-sans);
+  font-size: var(--fs-lede);
+  line-height: var(--lh-lede);
+  letter-spacing: 0;
+  font-weight: 400;
+  max-width: var(--measure-lede);
+}
+
+.body {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  letter-spacing: 0;
+  font-weight: 400;
+  max-width: var(--measure-body);
+}
+
+/* Body copy may run to 6 columns, never more */
+.body--wide {
+  max-width: var(--measure-body-max);
+}
+
+.small {
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  line-height: var(--lh-small);
+  letter-spacing: 0;
+}
+
+.small--tight {
+  font-size: var(--fs-small-tight);
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  line-height: var(--lh-mono);
+  letter-spacing: var(--ls-eyebrow);
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  line-height: var(--lh-mono);
+  letter-spacing: var(--ls-label);
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.code {
+  font-family: var(--font-mono);
+  font-size: var(--fs-code);
+  line-height: var(--lh-code);
+  letter-spacing: 0;
+  font-weight: 400;
+  text-transform: none;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+/* --------------------------------------------------------------------------
+   6. Button — links and buttons share ONE component and render identically
+   -------------------------------------------------------------------------- */
+.btn {
+  /* reset both <a> and <button> to the same baseline */
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  box-sizing: border-box;
+  margin: 0;
+  padding: var(--space-3) var(--space-5);
+  min-height: 48px;               /* 12 + 24(line) + 12 */
+  border: 1px solid var(--fg);
+  background: var(--accent);
+  color: var(--accent-fg);
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  line-height: 1.6;               /* 15 × 1.6 = 24px box */
+  letter-spacing: 0;
+  font-weight: 500;
+  text-decoration: none;
+  text-align: center;
+  text-transform: none;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 0;
+  transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+
+.btn:hover,
+.btn:focus-visible {
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--fg);
+}
+
+.btn--ghost:hover,
+.btn--ghost:focus-visible {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+/* --------------------------------------------------------------------------
+   7. Panels, cards, list rows (spacing-scale consumers)
+   -------------------------------------------------------------------------- */
+.panel {
+  padding: var(--space-5);         /* panel inner padding: space-5 */
+  border: var(--hairline-w) solid var(--hairline);
+}
+
+.cell {
+  padding: var(--space-3);         /* cell padding: space-3 */
+}
+
+.group + .group {
+  margin-top: var(--space-6);      /* between titled groups: space-6 */
+}
+
+/* Card grid: --cards-cols columns by default, 2 at ≤980, 1 at ≤640 */
+.cards {
+  --cards-cols: 3;
+  display: grid;
+  grid-template-columns: repeat(var(--cards-cols), minmax(0, 1fr));
+  gap: var(--gutter);
+}
+
+/* Wide list row: label column + content column, stacks at ≤760 */
+.row {
+  display: grid;
+  grid-template-columns: var(--col-3) minmax(0, 1fr);
+  column-gap: var(--gutter);
+  padding-block: var(--space-5);
+  border-top: var(--hairline-w) solid var(--hairline);
+}
+
+/* --------------------------------------------------------------------------
+   8. Breakpoints (numbers mirror the token comment in :root)
+   -------------------------------------------------------------------------- */
+
+/* 980px: cards drop to 2 columns */
+@media (max-width: 980px) {
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* 880px: navigation collapses; multi-column grids stack */
+@media (max-width: 880px) {
+  .grid { grid-template-columns: minmax(0, 1fr); }
+  .grid > [class*="col-"] { grid-column: 1 / -1; }
+  .grid > [class*="start-"] { grid-column-start: auto; }
+  .nav-desktop { display: none !important; }
+  .nav-mobile { display: block; }
+}
+
+@media (min-width: 880.02px) {
+  .nav-mobile { display: none !important; }
+}
+
+/* 760px: wide list rows stack */
+@media (max-width: 760px) {
+  .row { grid-template-columns: minmax(0, 1fr); row-gap: var(--space-3); }
+}
+
+/* 640px: cards drop to 1 column */
+@media (max-width: 640px) {
+  .cards { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* --------------------------------------------------------------------------
+   9. Utilities
+   -------------------------------------------------------------------------- */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
