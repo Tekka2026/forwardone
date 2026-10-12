@@ -12,8 +12,8 @@
 export type Cta = { label: string; href: string };
 
 export const hero = {
-  eyebrow: 'FORWARD.one',
-  title: 'Serious about performance.',
+  eyebrow: 'Serious about performance',
+  title: 'We back the few who build for the many.',
   sub: {
     text: 'Early-stage venture capital for Europe’s industrial technology. Funds I and II rank in the top 5% of European VC.',
     footnote: 1,
