@@ -247,7 +247,8 @@ button sit in a plain strip at the top of the page
   logo. The
   page behind is pushed back 3% (scale 0.97) from the centre of the visible
   viewport, covered by an 80% white layer and made inert. Opening is fluid
-  and snappy (420ms, ease-out); closing is quicker (180ms, ease-in). Escape,
+  and snappy (420ms, ease-out); closing is quicker (180ms, ease-in). The
+  panel moves only; it never fades. Escape,
   the scrim or the Close button closes it and returns focus.
 - The page wrapper reserves `--nav-height` + 2 × `--gap` at the bottom so the
   footer is never hidden behind the bar.

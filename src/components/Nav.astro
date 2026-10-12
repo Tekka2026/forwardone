@@ -404,20 +404,15 @@ const current = Astro.url.pathname;
     background: var(--nav-bg-open);
     transform-origin: 50% 100%;
     transform: translateY(var(--space-2x)) scaleY(0.96);
-    opacity: 0;
+    /* no opacity animation: motion only */
     /* closing: quick snap down */
-    transition:
-      transform var(--nav-close-ms) var(--nav-close-ease),
-      opacity var(--nav-close-ms) var(--nav-close-ease);
+    transition: transform var(--nav-close-ms) var(--nav-close-ease);
   }
 
   .nav[data-open] .nav__panel {
     transform: none;
-    opacity: 1;
     /* opening: fluid overshoot-free spring */
-    transition:
-      transform var(--nav-open-ms) var(--nav-open-ease),
-      opacity calc(var(--nav-open-ms) * 0.6) ease-out;
+    transition: transform var(--nav-open-ms) var(--nav-open-ease);
   }
 
   .nav__columns {
