@@ -86,6 +86,10 @@
   --lh-mono: 1.4;
   --lh-code: 1.7;
 
+  /* Type: heading weights (one step below the original 500/600) */
+  --fw-heading: 400;     /* Display, Section, Feature */
+  --fw-card-title: 500;  /* Card title */
+
   /* Type: tracking */
   --ls-display: -0.04em;
   --ls-section: -0.03em;
@@ -173,9 +177,9 @@ button, input, select, textarea {
 /* Headings: sentence case, never all-caps (UPPERCASE is reserved for mono
    eyebrow/label). Default heading element styles map to the scale so that
    semantic markup without classes still lands on-grid. */
-h1 { font-size: var(--fs-display); line-height: var(--lh-display); letter-spacing: var(--ls-display); font-weight: 500; }
-h2 { font-size: var(--fs-section); line-height: var(--lh-section); letter-spacing: var(--ls-section); font-weight: 500; max-width: var(--measure-heading); }
-h3 { font-size: var(--fs-card-title); line-height: var(--lh-card-title); letter-spacing: var(--ls-card-title); font-weight: 600; }
+h1 { font-size: var(--fs-display); line-height: var(--lh-display); letter-spacing: var(--ls-display); font-weight: var(--fw-heading); }
+h2 { font-size: var(--fs-section); line-height: var(--lh-section); letter-spacing: var(--ls-section); font-weight: var(--fw-heading); max-width: var(--measure-heading); }
+h3 { font-size: var(--fs-card-title); line-height: var(--lh-card-title); letter-spacing: var(--ls-card-title); font-weight: var(--fw-card-title); }
 
 code, kbd, samp, pre {
   font-family: var(--font-mono);
@@ -281,7 +285,7 @@ code, kbd, samp, pre {
   font-size: var(--fs-display);
   line-height: var(--lh-display);
   letter-spacing: var(--ls-display);
-  font-weight: 500;
+  font-weight: var(--fw-heading);
   text-transform: none;
 }
 
@@ -290,7 +294,7 @@ code, kbd, samp, pre {
   font-size: var(--fs-section);
   line-height: var(--lh-section);
   letter-spacing: var(--ls-section);
-  font-weight: 500;
+  font-weight: var(--fw-heading);
   max-width: var(--measure-heading);
   text-transform: none;
 }
@@ -300,7 +304,7 @@ code, kbd, samp, pre {
   font-size: var(--fs-feature);
   line-height: var(--lh-feature);
   letter-spacing: var(--ls-feature);
-  font-weight: 500;
+  font-weight: var(--fw-heading);
   max-width: var(--measure-heading);
   text-transform: none;
 }
@@ -310,7 +314,7 @@ code, kbd, samp, pre {
   font-size: var(--fs-card-title);
   line-height: var(--lh-card-title);
   letter-spacing: var(--ls-card-title);
-  font-weight: 600;
+  font-weight: var(--fw-card-title);
   text-transform: none;
 }
 

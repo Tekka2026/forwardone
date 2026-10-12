@@ -107,10 +107,10 @@ placeholder. **Sizes, line heights and tracking stay** whatever the family.
 
 | Role        | Class         | Size                                   | Line | Tracking | Weight | Notes |
 |-------------|---------------|----------------------------------------|------|----------|--------|-------|
-| Display/H1  | `.h-display`  | `clamp(44px, 7vw, 100px)`              | 1.04 | −0.04em  | 500    | **One per page.** |
-| Section/H2  | `.h-section`  | `clamp(30px, 4.2vw, 56px)`             | 1.06 | −0.03em  | 500    | max-width 1056px (8 cols). |
-| Feature/H3  | `.h-feature`  | `clamp(34px, 5vw, 72px)`               | 1.04 | −0.03em  | 500    | max-width 1056px (8 cols). |
-| Card title  | `.card-title` | 19px                                   | 1.3  | −0.01em  | 600    | |
+| Display/H1  | `.h-display`  | `clamp(44px, 7vw, 100px)`              | 1.04 | −0.04em  | 400    | **One per page.** |
+| Section/H2  | `.h-section`  | `clamp(30px, 4.2vw, 56px)`             | 1.06 | −0.03em  | 400    | max-width 1056px (8 cols). |
+| Feature/H3  | `.h-feature`  | `clamp(34px, 5vw, 72px)`               | 1.04 | −0.03em  | 400    | max-width 1056px (8 cols). |
+| Card title  | `.card-title` | 19px                                   | 1.3  | −0.01em  | 500    | |
 | Lede        | `.lede`       | `clamp(18px, 1.6vw, 21px)`             | 1.5  | 0        | 400    | max-width 784px (6 cols). |
 | Body        | `.body`       | 17px; `clamp(17px, 1.4vw, 19px)` inside `.section--feature` | 1.55 | 0 | 400 | max-width 648px (5 cols); `.body--wide` allows 784px, never more. |
 | Small       | `.small`      | 15px (`.small--tight` = 14.5px)        | 1.55 | 0        | 400    | Card body, list items. |
@@ -130,8 +130,10 @@ Rules:
 - Negative tracking belongs to large display text only. At 11–18px tracking
   stays at or near 0.
 - Body text never exceeds 6 columns (784px).
-- Every size, line height and tracking value exists as a token (`--fs-*`,
-  `--lh-*`, `--ls-*`). New components reference tokens, never literal sizes.
+- Every size, line height, tracking and heading weight value exists as a token
+  (`--fs-*`, `--lh-*`, `--ls-*`, `--fw-heading`, `--fw-card-title`). New
+  components reference tokens, never literal values. Heading weights were
+  lowered one step on 2026-10-12 (500→400, card title 600→500).
 
 ## 6. Spacing scale (4px base) — UI / panel internals
 
