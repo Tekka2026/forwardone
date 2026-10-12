@@ -232,12 +232,13 @@ button sit in a plain strip at the top of the page
 - Closed: `--nav-bg` (#26175A), height `--nav-height`, 12 columns wide
   (`--col-12`), centred, `--gap` above the viewport bottom. Left: a greeting
   typed with a typewriter effect and a blinking `_` cursor; its first six
-  characters carry a circular #78F6FB-to-white gradient (copy in
+  characters carry a circular #78F6FB-to-white gradient centred on the first
+  letter (copy in
   `src/content/nav.ts`, `navGreeting`: first line, 4 s hold, erase, second
   line stays). While the panel is open an AI mark animates in before the
-  greeting. Clicking the greeting
-  turns it into a text field (no backend yet). Right: a hamburger button. The
-  rest of the bar is the click target; the hamburger is the keyboard control.
+  greeting. The whole bar opens the
+  panel; clicking the greeting also turns it into a text field (no backend
+  yet). Right: a hamburger button, the keyboard control.
 - Open: the panel expands upward from the bar in `--nav-bg-open` (#110338)
   with the section columns (accordions on mobile) and the utility links
   (LP Login lives here; Pitch us is a button in the top strip beside the

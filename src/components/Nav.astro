@@ -4,9 +4,10 @@
  *
  * - Hidden on load; slides in from the bottom on the visitor's first scroll
  *   (or at once when the page cannot scroll, or on the first Tab press).
- * - Closed: a greeting typed with a typewriter effect on the left (click it
- *   to type a question) and a hamburger button on the right. An AI mark
- *   appears before the greeting only while the panel is open.
+ * - Closed: a greeting typed with a typewriter effect on the left and a
+ *   hamburger button on the right. The whole bar opens the panel; clicking
+ *   the greeting also turns it into a text field. An AI mark appears before
+ *   the greeting only while the panel is open.
  * - Open: a panel grows upward out of the bar with the section columns
  *   (accordions on mobile) and the utility links; the page behind is pushed
  *   back, covered by a white layer and made inert.
@@ -264,7 +265,7 @@ const current = Astro.url.pathname;
 
   /* First six characters: #78F6FB to white, circular gradient */
   .nav__typed-head {
-    background: radial-gradient(circle at 50% 50%, #78f6fb 0%, #ffffff 100%);
+    background: radial-gradient(circle at 0% 50%, #78f6fb 0%, #ffffff 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -635,9 +636,18 @@ const current = Astro.url.pathname;
       prompt.hidden = false;
       if (!current) setTyped(second);
     }
-    // Clicks inside the prompt must not toggle the menu.
-    greeting.addEventListener('click', (e) => e.stopPropagation());
-    prompt.addEventListener('click', startTyping);
+    // The whole bar opens the menu; the prompt also drops you into the field.
+    // The bar handler runs after this one (bubbling), so open there, type here.
+    prompt.addEventListener('click', () => {
+      if (!isOpen) {
+        // Let the bar's click handler open the panel first, then type.
+        setTimeout(startTyping, 0);
+      } else {
+        startTyping();
+      }
+    });
+    // Clicks inside the text field itself must not close the open panel.
+    input.addEventListener('click', (e) => e.stopPropagation());
     input.addEventListener('blur', stopTyping);
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
@@ -681,7 +691,7 @@ const current = Astro.url.pathname;
       iconClosed.toggleAttribute('hidden', true);
       iconOpen.toggleAttribute('hidden', false);
       for (const c of cols) setAccordion(c, false);
-      if (keyboard) {
+      if (keyboard && input.hidden) {
         const firstTarget = panel.querySelector<HTMLElement>(mobile.matches ? '[data-nav-acc]' : 'a');
         firstTarget?.focus();
       }
@@ -697,6 +707,11 @@ const current = Astro.url.pathname;
       page.removeAttribute('inert');
       document.documentElement.style.overflow = '';
       hideAi();
+      if (!input.hidden && !input.value.trim()) {
+        input.hidden = true;
+        prompt.hidden = false;
+        if (!current) setTyped(second);
+      }
       menu.setAttribute('aria-expanded', 'false');
       menu.setAttribute('aria-label', 'Menu');
       iconClosed.toggleAttribute('hidden', false);
@@ -708,7 +723,11 @@ const current = Astro.url.pathname;
     // The whole bar toggles the menu. Keyboard activation of the hamburger
     // fires a click that bubbles here, so one handler covers both.
     const bar = root.querySelector<HTMLElement>('[data-nav-bar]')!;
-    bar.addEventListener('click', () => (isOpen ? close() : open()));
+    bar.addEventListener('click', (e) => {
+      const onPrompt = (e.target as HTMLElement).closest('[data-nav-prompt]');
+      if (isOpen && onPrompt) return; // typing, not closing
+      isOpen ? close() : open();
+    });
 
     for (const acc of accs) {
       acc.addEventListener('click', () => {
