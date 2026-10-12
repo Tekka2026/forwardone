@@ -101,16 +101,17 @@ All queries are `max-width`, desktop-first.
 
 ## 5. Type scale (marketing pages)
 
-Two families. `--font-sans` is **Clash Display** (weights 400/500/600, loaded
-from Fontshare in `src/layouts/Base.astro`). `--font-mono` is still a
+Two families. `--font-sans` is **Clash Display** (variable font, weight axis 200–700,
+plus static 400/500/600 as fallback, loaded from Fontshare in
+`src/layouts/Base.astro`). `--font-mono` is still a
 placeholder. **Sizes, line heights and tracking stay** whatever the family.
 
 | Role        | Class         | Size                                   | Line | Tracking | Weight | Notes |
 |-------------|---------------|----------------------------------------|------|----------|--------|-------|
-| Display/H1  | `.h-display`  | `clamp(44px, 7vw, 100px)`              | 1.04 | −0.04em  | 400    | **One per page.** |
-| Section/H2  | `.h-section`  | `clamp(30px, 4.2vw, 56px)`             | 1.06 | −0.03em  | 400    | max-width 1056px (8 cols). |
-| Feature/H3  | `.h-feature`  | `clamp(34px, 5vw, 72px)`               | 1.04 | −0.03em  | 400    | max-width 1056px (8 cols). |
-| Card title  | `.card-title` | 19px                                   | 1.3  | −0.01em  | 500    | |
+| Display/H1  | `.h-display`  | `clamp(44px, 7vw, 100px)`              | 1.04 | −0.04em  | 450    | **One per page.** |
+| Section/H2  | `.h-section`  | `clamp(30px, 4.2vw, 56px)`             | 1.06 | −0.03em  | 450    | max-width 1056px (8 cols). |
+| Feature/H3  | `.h-feature`  | `clamp(34px, 5vw, 72px)`               | 1.04 | −0.03em  | 450    | max-width 1056px (8 cols). |
+| Card title  | `.card-title` | 19px                                   | 1.3  | −0.01em  | 550    | |
 | Lede        | `.lede`       | `clamp(18px, 1.6vw, 21px)`             | 1.5  | 0        | 400    | max-width 784px (6 cols). |
 | Body        | `.body`       | 17px; `clamp(17px, 1.4vw, 19px)` inside `.section--feature` | 1.55 | 0 | 400 | max-width 648px (5 cols); `.body--wide` allows 784px, never more. |
 | Small       | `.small`      | 15px (`.small--tight` = 14.5px)        | 1.55 | 0        | 400    | Card body, list items. |
@@ -132,8 +133,9 @@ Rules:
 - Body text never exceeds 6 columns (784px).
 - Every size, line height, tracking and heading weight value exists as a token
   (`--fs-*`, `--lh-*`, `--ls-*`, `--fw-heading`, `--fw-card-title`). New
-  components reference tokens, never literal values. Heading weights were
-  lowered one step on 2026-10-12 (500→400, card title 600→500).
+  components reference tokens, never literal values. Heading weights are
+  450 / 550 (set 2026-10-12), which requires the Clash Display variable font
+  loaded in `src/layouts/Base.astro`; without it they snap to 500 / 600.
 
 ## 6. Spacing scale (4px base) — UI / panel internals
 

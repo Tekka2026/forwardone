@@ -86,9 +86,10 @@
   --lh-mono: 1.4;
   --lh-code: 1.7;
 
-  /* Type: heading weights (one step below the original 500/600) */
-  --fw-heading: 400;     /* Display, Section, Feature */
-  --fw-card-title: 500;  /* Card title */
+  /* Type: heading weights. Intermediate values need the variable font,
+     loaded in src/layouts/Base.astro; static fallback snaps to 500/600. */
+  --fw-heading: 450;     /* Display, Section, Feature */
+  --fw-card-title: 550;  /* Card title */
 
   /* Type: tracking */
   --ls-display: -0.04em;
