@@ -3,12 +3,13 @@ import { caseStudies } from '@content/home';
 import { href, isPlaceholder } from '@lib/href';
 import Button from '@components/ui/Button.astro';
 import Placeholder from '@components/ui/Placeholder.astro';
+import Sentences from '@components/ui/Sentences.astro';
 ---
 
 <section class="section">
   <div class="wrap">
     <p class="eyebrow">{caseStudies.eyebrow}</p>
-    <h2 class="h-section section-title">{caseStudies.title}</h2>
+    <h2 class="h-section section-title"><Sentences text={caseStudies.title} /></h2>
     <ul class="cards case-grid">
       {
         caseStudies.items.map((c) => (
@@ -40,7 +41,7 @@ import Placeholder from '@components/ui/Placeholder.astro';
     margin-top: var(--gap-half);
   }
   .case-grid {
-    margin: var(--space-16x) 0 0;
+    margin: var(--space-4x) 0 0;   /* heading → content: 16px */
     padding: 0;
     list-style: none;
   }

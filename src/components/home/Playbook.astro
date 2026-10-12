@@ -1,6 +1,7 @@
 ---
 import { playbook } from '@content/home';
 import Button from '@components/ui/Button.astro';
+import Sentences from '@components/ui/Sentences.astro';
 ---
 
 <section class="section section--feature">
@@ -8,7 +9,7 @@ import Button from '@components/ui/Button.astro';
     <p class="eyebrow">{playbook.eyebrow}</p>
     <div class="grid playbook">
       <div class="col-7">
-        <h2 class="h-feature">{playbook.title}</h2>
+        <h2 class="h-feature"><Sentences text={playbook.title} /></h2>
         <p class="body body--wide playbook__body">{playbook.body}</p>
         <div class="section-cta">
           <Button href={playbook.cta.href}>{playbook.cta.label}</Button>
@@ -44,7 +45,7 @@ import Button from '@components/ui/Button.astro';
     gap: var(--space-4x);
     padding: var(--space-4x) 0;
     border-top: var(--hairline-w) solid var(--hairline);
-    font-family: var(--font-display);
+    font-family: var(--font-sans);
     font-size: var(--fs-card-title);
     font-weight: 500;
     letter-spacing: var(--ls-card-title);

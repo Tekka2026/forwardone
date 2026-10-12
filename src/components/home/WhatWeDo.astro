@@ -1,12 +1,13 @@
 ---
 import { whatWeDo } from '@content/home';
 import { href } from '@lib/href';
+import Sentences from '@components/ui/Sentences.astro';
 ---
 
 <section class="section">
   <div class="wrap">
     <p class="eyebrow">{whatWeDo.eyebrow}</p>
-    <h2 class="h-section section-title">{whatWeDo.title}</h2>
+    <h2 class="h-section section-title"><Sentences text={whatWeDo.title} /></h2>
     <div class="grid blocks">
       {
         whatWeDo.blocks.map((b) => (

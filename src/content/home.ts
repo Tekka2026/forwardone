@@ -42,7 +42,7 @@ export const whatWeDo = {
     },
     {
       title: 'Follow on deliberately.',
-      body: 'Most of the fund is held back for companies that prove commercial traction — up to €30M each.',
+      body: 'Most of the fund is held back for companies that prove commercial traction, up to €30M each.',
     },
     {
       title: 'Industrial tech only.',
@@ -180,10 +180,10 @@ export const footnotes = [
 ];
 
 export const disclaimer =
-  '[PLACEHOLDER: past performance disclaimer — to be supplied by compliance]';
+  '[PLACEHOLDER: past performance disclaimer, to be supplied by compliance]';
 
 export const meta = {
-  title: 'FORWARD.one — Serious about performance.',
+  title: 'FORWARD.one | Serious about performance.',
   description:
     'Early-stage venture capital for Europe’s industrial technology. Funds I and II rank in the top 5% of European VC.',
 };

@@ -1,11 +1,12 @@
 ---
 import { closing } from '@content/home';
 import Button from '@components/ui/Button.astro';
+import Sentences from '@components/ui/Sentences.astro';
 ---
 
 <section class="section closing">
   <div class="wrap">
-    <h2 class="h-feature closing__title">{closing.title}</h2>
+    <h2 class="h-feature closing__title"><Sentences text={closing.title} /></h2>
     <div class="closing__actions">
       <Button href={closing.primary.href}>{closing.primary.label}</Button>
       <Button href={closing.secondary.href} variant="ghost">{closing.secondary.label}</Button>

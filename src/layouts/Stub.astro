@@ -5,6 +5,7 @@
  */
 import Base from '@layouts/Base.astro';
 import { site } from '@content/nav';
+import Sentences from '@components/ui/Sentences.astro';
 
 interface Props {
   section: string;
@@ -15,11 +16,11 @@ interface Props {
 const { section, title, intro, todos } = Astro.props;
 ---
 
-<Base title={`${title} — ${site.name}`} description={intro}>
+<Base title={`${title} | ${site.name}`} description={intro}>
   <section class="section section--flush">
     <div class="wrap">
       <p class="eyebrow">{section}</p>
-      <h1 class="h-section stub__title">{title}</h1>
+      <h1 class="h-section stub__title"><Sentences text={title} /></h1>
       <p class="lede stub__intro">{intro}</p>
     </div>
   </section>

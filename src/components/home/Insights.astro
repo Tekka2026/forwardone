@@ -3,6 +3,7 @@ import { insights } from '@content/home';
 import { href, isPlaceholder } from '@lib/href';
 import Button from '@components/ui/Button.astro';
 import Placeholder from '@components/ui/Placeholder.astro';
+import Sentences from '@components/ui/Sentences.astro';
 
 const { newsletter } = insights;
 ---
@@ -10,7 +11,7 @@ const { newsletter } = insights;
 <section class="section">
   <div class="wrap">
     <p class="eyebrow">{insights.eyebrow}</p>
-    <h2 class="h-section section-title">{insights.title}</h2>
+    <h2 class="h-section section-title"><Sentences text={insights.title} /></h2>
 
     <ul class="cards articles">
       {
@@ -39,7 +40,7 @@ const { newsletter } = insights;
     <div class="newsletter">
       <div class="grid">
         <div class="col-6">
-          <h3 class="h-section newsletter__title">{newsletter.title}</h3>
+          <h3 class="h-section newsletter__title"><Sentences text={newsletter.title} /></h3>
         </div>
         <form
           class="col-5 start-8 newsletter__form"
@@ -75,7 +76,7 @@ const { newsletter } = insights;
     margin-top: var(--gap-half);
   }
   .articles {
-    margin: var(--space-16x) 0 0;
+    margin: var(--space-4x) 0 0;   /* heading → content: 16px */
     padding: 0;
     list-style: none;
   }

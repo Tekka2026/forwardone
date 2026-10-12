@@ -1,0 +1,19 @@
+---
+/**
+ * Renders heading text with a line break after every sentence, so
+ * "One strategy. Executed without exception." becomes two lines.
+ * Used for Display (H1) and Section (H2) headings.
+ */
+interface Props {
+  text: string;
+}
+const { text } = Astro.props;
+const parts = text.split(/(?<=[.?!])\s+/).filter(Boolean);
+---
+
+{parts.map((part, i) => (
+  <>
+    {i > 0 && <br />}
+    {part}
+  </>
+))}

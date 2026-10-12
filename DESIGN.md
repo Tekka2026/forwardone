@@ -105,11 +105,11 @@ All queries are `max-width`, desktop-first.
 Three families, all loaded in `src/layouts/Base.astro`:
 
 - `--font-display`: **Clash Display** (Fontshare; variable font, weight axis
-  200–700, plus static 400/500/600 as fallback). Used for Display, Section and
-  Feature headings, card titles, stat values, the Playbook list and the
-  wordmark.
-- `--font-sans`: **Inter** (Google Fonts, 400/500/600). Body copy is always
-  Inter: lede, body, small, buttons, navigation, forms, footer.
+  200–700, plus static 400/500/600 as fallback). Used for Display (H1),
+  Section (H2) and Feature headings, stat values and the wordmark only.
+- `--font-sans`: **Inter** (Google Fonts, variable 400–600). H3 and below
+  (card titles, the Playbook list) and all body and UI text: lede, body,
+  small, buttons, navigation, forms, footer.
 - `--font-mono`: still a placeholder. Eyebrow, label, code.
 
 **Sizes, line heights and tracking stay** whatever the family.
@@ -136,6 +136,10 @@ Rules:
 
 - Headings are **sentence case, never all-caps**. UPPERCASE is reserved for the
   mono `.eyebrow` and `.label` styles.
+- Display and Section headings break onto a new line after every sentence:
+  render them through `src/components/ui/Sentences.astro`.
+- No em dashes anywhere in copy. Use a comma, colon or full stop. Page titles
+  join with a vertical bar.
 - Negative tracking belongs to large display text only. At 11–18px tracking
   stays at or near 0.
 - Body text never exceeds 6 columns (784px).
