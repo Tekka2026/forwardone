@@ -227,7 +227,8 @@ strip at the top of the page (`src/components/Header.astro`).
   (`--col-12`), centred, `--gap` above the viewport bottom. Left: a greeting
   typed with a typewriter effect and a blinking `_` cursor (copy in
   `src/content/nav.ts`, `navGreeting`: first line, 4 s hold, erase, second
-  line stays). Right: a hamburger button. Nothing else in the bar.
+  line stays). Right: a hamburger button. Nothing else in the bar. The whole
+  bar is the click target; the hamburger is the keyboard control.
 - Open: the panel expands upward from the bar in `--nav-bg-open` (#110338)
   with the section columns (accordions on mobile) and the utility links
   (LP Login and Pitch us live here on every width). The

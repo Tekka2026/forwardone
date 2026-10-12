@@ -82,7 +82,7 @@ const current = Astro.url.pathname;
       </div>
     </div>
 
-    <div class="nav__bar">
+    <div class="nav__bar" data-nav-bar>
       <p
         class="nav__greeting"
         aria-hidden="true"
@@ -166,6 +166,8 @@ const current = Astro.url.pathname;
     padding: 0 var(--gap-half) 0 var(--gap);
     background: var(--nav-bg);
     transition: background-color 200ms ease;
+    cursor: pointer; /* the whole bar toggles the menu */
+    user-select: none;
   }
 
   .nav[data-open] .nav__bar {
@@ -517,7 +519,10 @@ const current = Astro.url.pathname;
       menu.focus();
     }
 
-    menu.addEventListener('click', () => (isOpen ? close() : open()));
+    // The whole bar toggles the menu. Keyboard activation of the hamburger
+    // fires a click that bubbles here, so one handler covers both.
+    const bar = root.querySelector<HTMLElement>('[data-nav-bar]')!;
+    bar.addEventListener('click', () => (isOpen ? close() : open()));
 
     for (const acc of accs) {
       acc.addEventListener('click', () => {
