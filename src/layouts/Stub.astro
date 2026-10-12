@@ -1,0 +1,69 @@
+---
+/**
+ * Layout for routes whose content is still to be written.
+ * Heading, one-line intro and clearly marked TODO blocks.
+ */
+import Base from '@layouts/Base.astro';
+import { site } from '@content/nav';
+
+interface Props {
+  section: string;
+  title: string;
+  intro: string;
+  todos: string[];
+}
+const { section, title, intro, todos } = Astro.props;
+---
+
+<Base title={`${title} — ${site.name}`} description={intro}>
+  <section class="section section--flush">
+    <div class="wrap">
+      <p class="eyebrow">{section}</p>
+      <h1 class="h-section stub__title">{title}</h1>
+      <p class="lede stub__intro">{intro}</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">TODO</p>
+      <ul class="stub__todos">
+        {
+          todos.map((t) => (
+            <li class="stub__todo">
+              <span class="label">TODO</span>
+              <span class="body">{t}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .stub__title {
+    margin-top: var(--space-5);
+  }
+  .stub__intro {
+    margin-top: var(--space-6);
+  }
+  .stub__todos {
+    margin: var(--space-6) 0 0;
+    padding: 0;
+    list-style: none;
+    max-width: var(--col-8);
+  }
+  .stub__todo {
+    display: flex;
+    gap: var(--space-4);
+    align-items: baseline;
+    padding: var(--space-4) var(--space-5);
+    border: 1px dashed var(--muted);
+  }
+  .stub__todo + .stub__todo {
+    margin-top: var(--space-3);
+  }
+  .stub__todo .label {
+    color: var(--muted);
+  }
+</style>

@@ -54,9 +54,10 @@
   --space-8: 48px;
   --space-10: 64px;
 
-  /* Type: families (PLACEHOLDERS — swap later, sizes stay) */
-  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
-    Arial, sans-serif;
+  /* Type: families. Clash Display (Fontshare) is the brand display/UI sans,
+     loaded in src/layouts/Base.astro. Mono is still a placeholder. */
+  --font-sans: "Clash Display", system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
     "Liberation Mono", monospace;
 
@@ -155,6 +156,12 @@ a {
   color: inherit;
 }
 
+/* Visible focus everywhere, keyboard only */
+:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
+}
+
 button, input, select, textarea {
   font: inherit;
   color: inherit;
@@ -198,20 +205,21 @@ code, kbd, samp, pre {
   row-gap: var(--gutter);
 }
 
-.col-1  { grid-column: span 1; }
-.col-2  { grid-column: span 2; }
-.col-3  { grid-column: span 3; }
-.col-4  { grid-column: span 4; }
-.col-5  { grid-column: span 5; }
-.col-6  { grid-column: span 6; }
-.col-7  { grid-column: span 7; }
-.col-8  { grid-column: span 8; }
-.col-9  { grid-column: span 9; }
-.col-10 { grid-column: span 10; }
-.col-11 { grid-column: span 11; }
+.col-1  { grid-column: auto / span 1; }
+.col-2  { grid-column: auto / span 2; }
+.col-3  { grid-column: auto / span 3; }
+.col-4  { grid-column: auto / span 4; }
+.col-5  { grid-column: auto / span 5; }
+.col-6  { grid-column: auto / span 6; }
+.col-7  { grid-column: auto / span 7; }
+.col-8  { grid-column: auto / span 8; }
+.col-9  { grid-column: auto / span 9; }
+.col-10 { grid-column: auto / span 10; }
+.col-11 { grid-column: auto / span 11; }
 .col-12 { grid-column: 1 / -1; }
 
-/* Start lines, for offsetting (e.g. .col-6.start-4) */
+/* Start lines, for offsetting (e.g. .col-6.start-4). Works because .col-N
+   sets `auto / span N`, leaving the start line free to override. */
 .start-1  { grid-column-start: 1; }
 .start-2  { grid-column-start: 2; }
 .start-3  { grid-column-start: 3; }

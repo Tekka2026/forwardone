@@ -1,0 +1,54 @@
+---
+/**
+ * 404 page. GitHub Pages serves this for every unknown path, which makes it
+ * the only place the dynamic legacy redirects (/news/:slug,
+ * /portfolio-companies/:slug) can be applied. The mapping is client-side;
+ * a host with server redirects should use src/content/redirects.mjs directly.
+ */
+import Base from '@layouts/Base.astro';
+import { site } from '@content/nav';
+import { href } from '@lib/href';
+import { staticRedirects, prefixRedirects } from '@content/redirects.mjs';
+
+const base = import.meta.env.BASE_URL.replace(/\/+$/, '');
+---
+
+<Base title={`Page not found — ${site.name}`} description="The page you requested does not exist.">
+  <section class="section section--flush">
+    <div class="wrap">
+      <p class="eyebrow">404</p>
+      <h1 class="h-section nf__title">Page not found.</h1>
+      <p class="lede nf__intro">The address may have changed. Start from the homepage.</p>
+      <p class="nf__link"><a class="btn" href={href('/')}>Go to the homepage</a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf__title { margin-top: var(--space-5); }
+  .nf__intro { margin-top: var(--space-6); }
+  .nf__link { margin-top: var(--space-8); }
+</style>
+
+<script is:inline define:vars={{ base, staticRedirects, prefixRedirects }}>
+  (function () {
+    var path = window.location.pathname;
+    if (base && path.indexOf(base) === 0) path = path.slice(base.length);
+    path = path.replace(/\/+$/, '') || '/';
+
+    var target = null;
+    if (staticRedirects[path]) {
+      target = staticRedirects[path];
+    } else {
+      for (var from in prefixRedirects) {
+        if (path.indexOf(from) === 0 && path.length > from.length) {
+          target = prefixRedirects[from] + path.slice(from.length);
+          break;
+        }
+      }
+    }
+    if (target) {
+      window.location.replace(base + target + '/' + window.location.search + window.location.hash);
+    }
+  })();
+</script>

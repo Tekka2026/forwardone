@@ -1,0 +1,69 @@
+---
+import { playbook } from '@content/home';
+import Button from '@components/ui/Button.astro';
+---
+
+<section class="section section--feature">
+  <div class="wrap">
+    <p class="eyebrow">{playbook.eyebrow}</p>
+    <div class="grid playbook">
+      <div class="col-7">
+        <h2 class="h-feature">{playbook.title}</h2>
+        <p class="body body--wide playbook__body">{playbook.body}</p>
+        <div class="section-cta">
+          <Button href={playbook.cta.href}>{playbook.cta.label}</Button>
+        </div>
+      </div>
+      <ol class="col-4 start-9 playbook__list">
+        {playbook.list.map((item) => <li class="playbook__item">{item}</li>)}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .playbook {
+    margin-top: var(--space-5);
+    align-items: start;
+  }
+  .playbook__body {
+    margin-top: var(--space-6);
+  }
+  .section-cta {
+    margin-top: var(--space-8);
+  }
+  .playbook__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+  }
+  .playbook__item {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-4);
+    padding: var(--space-4) 0;
+    border-top: var(--hairline-w) solid var(--hairline);
+    font-size: var(--fs-card-title);
+    font-weight: 500;
+    letter-spacing: var(--ls-card-title);
+    line-height: var(--lh-card-title);
+  }
+  .playbook__item::before {
+    counter-increment: step;
+    content: '0' counter(step);
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--ls-label);
+    color: var(--muted);
+  }
+  .playbook__item:last-child {
+    border-bottom: var(--hairline-w) solid var(--hairline);
+  }
+
+  @media (max-width: 880px) {
+    .playbook__list {
+      margin-top: var(--space-8);
+    }
+  }
+</style>

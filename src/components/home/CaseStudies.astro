@@ -1,0 +1,89 @@
+---
+import { caseStudies } from '@content/home';
+import { href, isPlaceholder } from '@lib/href';
+import Button from '@components/ui/Button.astro';
+import Placeholder from '@components/ui/Placeholder.astro';
+---
+
+<section class="section">
+  <div class="wrap">
+    <p class="eyebrow">{caseStudies.eyebrow}</p>
+    <h2 class="h-section section-title">{caseStudies.title}</h2>
+    <ul class="cards case-grid">
+      {
+        caseStudies.items.map((c) => (
+          <li class="case">
+            <div class="case__logo" aria-hidden={isPlaceholder(c.logo) ? undefined : 'true'}>
+              {isPlaceholder(c.logo) ? (
+                <Placeholder value={c.logo} />
+              ) : (
+                <img src={href(c.logo)} alt="" height="32" loading="lazy" />
+              )}
+            </div>
+            <h3 class="card-title case__name">
+              <a class="case__link" href={href(`/portfolio/${c.slug}`)}>{c.name}</a>
+            </h3>
+            <p class="small case__outcome">{c.outcome}</p>
+            {!isPlaceholder(c.metric) && <p class="label case__metric">{c.metric}</p>}
+          </li>
+        ))
+      }
+    </ul>
+    <div class="section-cta">
+      <Button href={caseStudies.cta.href} variant="ghost">{caseStudies.cta.label}</Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-title {
+    margin-top: var(--space-5);
+  }
+  .case-grid {
+    margin: var(--space-10) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .case {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    border: var(--hairline-w) solid var(--hairline);
+  }
+  .case__logo {
+    display: flex;
+    align-items: center;
+    min-height: 32px;
+    margin-bottom: var(--space-3);
+  }
+  .case__name {
+    margin: 0;
+  }
+  .case__link {
+    text-decoration: none;
+  }
+  /* Whole card is the click target; the heading link carries the name. */
+  .case__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .case:hover .case__link,
+  .case:focus-within .case__link {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .case__outcome {
+    margin: 0;
+  }
+  .case__metric {
+    margin: auto 0 0;
+    padding-top: var(--space-3);
+    color: var(--muted);
+  }
+  .section-cta {
+    margin-top: var(--space-8);
+  }
+</style>

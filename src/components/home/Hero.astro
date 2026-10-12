@@ -1,0 +1,35 @@
+---
+import { hero } from '@content/home';
+import Button from '@components/ui/Button.astro';
+import Footnote from '@components/ui/Footnote.astro';
+---
+
+<section class="section section--flush hero">
+  <div class="wrap">
+    <p class="eyebrow">{hero.eyebrow}</p>
+    <h1 class="h-display hero__title">{hero.title}</h1>
+    <p class="lede hero__sub">
+      {hero.sub.text}<Footnote n={hero.sub.footnote} />
+    </p>
+    <div class="hero__actions">
+      <Button href={hero.primary.href}>{hero.primary.label}</Button>
+      <Button href={hero.secondary.href} variant="ghost">{hero.secondary.label}</Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero__title {
+    margin-top: var(--space-5);
+    max-width: var(--col-10);
+  }
+  .hero__sub {
+    margin-top: var(--space-6);
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-8);
+  }
+</style>

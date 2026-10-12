@@ -1,0 +1,14 @@
+---
+/** Legacy /news/:slug → /insights/news/:slug for the known articles. */
+import Redirect from '@layouts/Redirect.astro';
+import { insights } from '@content/home';
+import { prefixRedirects } from '@content/redirects.mjs';
+
+export function getStaticPaths() {
+  return insights.articles.map((a) => ({ params: { slug: a.slug } }));
+}
+
+const { slug } = Astro.params;
+---
+
+<Redirect to={`${prefixRedirects['/news/']}${slug}`} />

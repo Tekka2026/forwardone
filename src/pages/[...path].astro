@@ -1,0 +1,20 @@
+---
+/**
+ * Catch-all for the stub pages defined in src/content/pages.ts.
+ * Astro gives explicit routes priority, so index.astro and the dynamic
+ * company / article routes win where they exist.
+ */
+import Stub from '@layouts/Stub.astro';
+import { stubPages } from '@content/pages';
+
+export function getStaticPaths() {
+  return stubPages.map((page) => ({
+    params: { path: page.path.replace(/^\//, '') },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props;
+---
+
+<Stub section={page.section} title={page.title} intro={page.intro} todos={page.todos} />

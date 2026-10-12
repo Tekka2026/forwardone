@@ -1,0 +1,212 @@
+---
+import { footer } from '@content/nav';
+import { href } from '@lib/href';
+import Placeholder from '@components/ui/Placeholder.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      {
+        footer.columns.map((section) => (
+          <nav class="footer-col" aria-labelledby={`footer-${section.label.toLowerCase()}`}>
+            <h2 class="footer-col__title label" id={`footer-${section.label.toLowerCase()}`}>
+              <a href={href(section.href)}>{section.label}</a>
+            </h2>
+            <ul class="footer-col__list">
+              {section.children.map((child) => (
+                <li>
+                  <a
+                    class="footer-link"
+                    href={href(child.href)}
+                    target={child.external ? '_blank' : undefined}
+                    rel={child.external ? 'noopener noreferrer' : undefined}
+                  >
+                    {child.label}
+                    {child.external && <span aria-hidden="true"> &#8599;</span>}
+                    {child.external && <span class="visually-hidden">(opens in a new tab)</span>}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ))
+      }
+
+      <div class="footer-col footer-col--contact">
+        <h2 class="footer-col__title label">{footer.contact.heading}</h2>
+        <ul class="footer-col__list">
+          {
+            footer.contact.lines.map((line) => (
+              <li>
+                <span class="footer-contact__label">{line.label}</span>
+                <a class="footer-link" href={line.href}>{line.value}</a>
+              </li>
+            ))
+          }
+        </ul>
+        <address class="footer-address small">
+          {footer.contact.address.map((line, i) => (
+            <>{line}{i < footer.contact.address.length - 1 && <br />}</>
+          ))}
+        </address>
+      </div>
+    </div>
+
+    <div class="footer-partners">
+      <ul class="footer-partners__list" aria-label="Partners">
+        {
+          footer.partners.map((p) => (
+            <li class="footer-partner">
+              {p.src.startsWith('[PLACEHOLDER') ? (
+                <span class="footer-partner__box">
+                  <span class="visually-hidden">{p.name} logo: </span>
+                  <Placeholder value={p.src} />
+                </span>
+              ) : (
+                <img src={href(p.src)} alt={p.name} height="40" loading="lazy" />
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-tagline small">
+        {footer.tagline} <span class="footer-copy">&copy; {footer.company} {year}.</span>
+      </p>
+      <ul class="footer-legal">
+        {
+          footer.legal.map((item) => (
+            <li>
+              <a class="footer-link small" href={href(item.href)}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: var(--hairline-w) solid var(--hairline);
+    padding-block: var(--space-10);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: var(--space-8) var(--gutter);
+  }
+
+  .footer-col__title {
+    margin: 0 0 var(--space-4);
+  }
+
+  .footer-col__title a {
+    text-decoration: none;
+  }
+
+  .footer-col__title a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .footer-col__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .footer-link {
+    font-size: var(--fs-small);
+    line-height: var(--lh-small);
+    text-decoration: none;
+  }
+
+  .footer-link:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .footer-contact__label {
+    display: block;
+    font-size: var(--fs-small-tight);
+    color: var(--muted);
+  }
+
+  .footer-address {
+    margin-top: var(--space-5);
+    font-style: normal;
+  }
+
+  .footer-partners {
+    margin-top: var(--space-10);
+    padding-top: var(--space-6);
+    border-top: var(--hairline-w) solid var(--hairline);
+  }
+
+  .footer-partners__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-6);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .footer-partner__box {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+  }
+
+  .footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-4) var(--space-6);
+    margin-top: var(--space-8);
+    padding-top: var(--space-5);
+    border-top: var(--hairline-w) solid var(--hairline);
+  }
+
+  .footer-tagline {
+    margin: 0;
+  }
+
+  .footer-copy {
+    color: var(--muted);
+  }
+
+  .footer-legal {
+    display: flex;
+    gap: var(--space-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (max-width: 980px) {
+    .footer-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 640px) {
+    .footer-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .footer-col--contact {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

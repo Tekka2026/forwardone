@@ -1,0 +1,14 @@
+---
+/** Legacy /portfolio-companies/:slug → /portfolio/:slug for the known companies. */
+import Redirect from '@layouts/Redirect.astro';
+import { caseStudies } from '@content/home';
+import { prefixRedirects } from '@content/redirects.mjs';
+
+export function getStaticPaths() {
+  return caseStudies.items.map((c) => ({ params: { slug: c.slug } }));
+}
+
+const { slug } = Astro.params;
+---
+
+<Redirect to={`${prefixRedirects['/portfolio-companies/']}${slug}`} />

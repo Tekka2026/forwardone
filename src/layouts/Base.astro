@@ -1,0 +1,82 @@
+---
+import '../../css/global.css';
+import Header from '@components/Header.astro';
+import Footer from '@components/Footer.astro';
+import { site } from '@content/nav';
+import { href } from '@lib/href';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = site.description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical.href} />
+    <link rel="icon" href={href('/favicon.svg')} type="image/svg+xml" />
+    <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600&display=swap"
+    />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical.href} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{site.skipLinkLabel}</a>
+    <Header />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<style is:global>
+  .skip-link {
+    position: absolute;
+    top: var(--space-2);
+    left: var(--space-2);
+    z-index: 100;
+    padding: var(--space-3) var(--space-5);
+    background: var(--fg);
+    color: var(--bg);
+    font-size: var(--fs-small);
+    font-weight: 500;
+    text-decoration: none;
+    transform: translateY(-200%);
+  }
+  .skip-link:focus {
+    transform: none;
+    outline: 2px solid var(--bg);
+    outline-offset: -4px;
+  }
+  main:focus {
+    outline: none;
+  }
+
+  /* Visible marker for content that still has to be supplied. */
+  .placeholder {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    line-height: var(--lh-mono);
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--muted);
+    border: 1px dashed var(--muted);
+    padding: 0 var(--space-1);
+    white-space: normal;
+  }
+</style>

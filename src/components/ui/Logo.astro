@@ -1,0 +1,26 @@
+---
+/**
+ * Wordmark. The SVG logo from the current site is not in the repo yet
+ * (see PLACEHOLDERS.md); until then the name renders as text.
+ */
+import { href } from '@lib/href';
+import { site } from '@content/nav';
+---
+
+<a class="logo" href={href('/')} aria-label={`${site.name} home`}>
+  <span class="logo__mark" aria-hidden="true">{site.name}</span>
+</a>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    font-family: var(--font-sans);
+    font-size: var(--fs-card-title);
+    font-weight: 600;
+    letter-spacing: var(--ls-card-title);
+    line-height: 1;
+    white-space: nowrap;
+  }
+</style>

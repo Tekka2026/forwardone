@@ -1,0 +1,21 @@
+---
+/**
+ * Article pages. Paths come from the featured articles on the homepage until
+ * the news collection is migrated. /news/:slug redirects here.
+ */
+import Stub from '@layouts/Stub.astro';
+import { insights } from '@content/home';
+
+export function getStaticPaths() {
+  return insights.articles.map((a) => ({ params: { slug: a.slug }, props: { article: a } }));
+}
+
+const { article } = Astro.props;
+---
+
+<Stub
+  section="News"
+  title={article.title}
+  intro="Article from the existing news collection."
+  todos={['Migrate article body from the current site', 'Category: ' + article.category, 'Date: ' + article.date]}
+/>

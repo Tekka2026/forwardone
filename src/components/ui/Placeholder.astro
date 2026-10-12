@@ -1,0 +1,14 @@
+---
+/**
+ * Renders a visible marker for content still to be supplied.
+ * Pass the raw value; if it is not a placeholder it renders as plain text.
+ */
+interface Props {
+  value: string;
+  class?: string;
+}
+const { value, class: cls } = Astro.props;
+const isPh = value.startsWith('[PLACEHOLDER');
+---
+
+{isPh ? <span class:list={['placeholder', cls]}>{value}</span> : <span class={cls}>{value}</span>}

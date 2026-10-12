@@ -1,0 +1,27 @@
+---
+/** Superscript footnote marker linked to the footnotes block on the page. */
+interface Props {
+  n: number;
+}
+const { n } = Astro.props;
+---
+
+<sup class="fn"><a href={`#fn-${n}`} id={`fnref-${n}`} aria-label={`Footnote ${n}`}>{n}</a></sup>
+
+<style>
+  .fn {
+    font-size: 0.5em;
+    line-height: 0;
+    vertical-align: super;
+    letter-spacing: 0;
+    margin-left: 0.1em;
+  }
+  .fn a {
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-weight: 500;
+  }
+  .fn a:hover {
+    text-decoration: underline;
+  }
+</style>

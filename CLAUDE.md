@@ -4,9 +4,8 @@
 
 - **Always end a task with the URL of the live webpage**, not the repository:
   `https://tekka2026.github.io/forwardone/` (plus the page path if the work was
-  on a specific page). GitHub Pages serves the **default branch** from its root,
-  so the live site only shows work that has reached the default branch.
-  `index.html` at the root is the entry page.
+  on a specific page). The live site is built by GitHub Actions from the
+  **default branch**, so it only shows work that has reached that branch.
 - **Action codes.** Anything the user must do themselves (a setting only they
   can change, a decision, a credential) is listed as a numbered action item
   with a code: `A0001`, `A0002`, … Codes are sequential across the whole
@@ -20,7 +19,20 @@
 - After every push to a working branch, fast-forward the default branch to the
   same commit so the live site reflects the latest work:
   `git push origin HEAD:claude/forwardone-web-gl4kz9`.
-- Pages takes a minute or so to rebuild after a push.
+- `.github/workflows/deploy.yml` builds the Astro site on every push to the
+  default branch and deploys it to GitHub Pages (Pages source must be
+  "GitHub Actions", see A0003). A deploy takes one to two minutes.
+- Before pushing, run `npm run check` and `npm run build` locally. Both must
+  be clean.
+
+## Stack
+
+- Astro (static output), no UI framework. Content lives in `src/content/`
+  (`home.ts`, `nav.ts`, `pages.ts`, `redirects.mjs`); components contain no
+  copy. Internal links go through `href()` from `src/lib/href.ts` so the
+  `/forwardone` base path is applied.
+- Unknown values are visible `[PLACEHOLDER …]` markers and are listed in
+  `PLACEHOLDERS.md`. Never invent a number, quote or outcome.
 
 ## Design
 
@@ -33,3 +45,5 @@
 |-------|--------|--------|
 | A0001 | cancelled | Disable GitHub Pages. Withdrawn: the live site is wanted, so Pages stays on. |
 | A0002 | done   | Live site updates via the default branch. Decided 2026-10-12: see "Publishing" above. |
+| A0003 | open   | Switch the Pages source to GitHub Actions: repo Settings → Pages → Build and deployment → Source: "GitHub Actions". Until then the site is not deployed, because the default branch now holds Astro source, not static HTML. |
+| A0004 | open   | Supply the values in `PLACEHOLDERS.md` (benchmark source, disclaimer, case-study metrics, logos, LP login URL, article categories and dates, newsletter endpoint). |

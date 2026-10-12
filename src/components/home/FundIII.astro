@@ -1,0 +1,27 @@
+---
+import { fundIII } from '@content/home';
+import Button from '@components/ui/Button.astro';
+---
+
+<section class="section">
+  <div class="wrap">
+    <p class="eyebrow">{fundIII.eyebrow}</p>
+    <h2 class="h-section section-title">{fundIII.title}</h2>
+    <p class="body body--wide fund__body">{fundIII.body}</p>
+    <div class="section-cta">
+      <Button href={fundIII.cta.href}>{fundIII.cta.label}</Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-title {
+    margin-top: var(--space-5);
+  }
+  .fund__body {
+    margin-top: var(--space-6);
+  }
+  .section-cta {
+    margin-top: var(--space-8);
+  }
+</style>

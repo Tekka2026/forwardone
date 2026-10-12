@@ -1,0 +1,23 @@
+---
+import { closing } from '@content/home';
+import Button from '@components/ui/Button.astro';
+---
+
+<section class="section closing">
+  <div class="wrap">
+    <h2 class="h-feature closing__title">{closing.title}</h2>
+    <div class="closing__actions">
+      <Button href={closing.primary.href}>{closing.primary.label}</Button>
+      <Button href={closing.secondary.href} variant="ghost">{closing.secondary.label}</Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .closing__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-8);
+  }
+</style>

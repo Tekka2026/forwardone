@@ -1,0 +1,43 @@
+---
+import { whatWeDo } from '@content/home';
+import { href } from '@lib/href';
+---
+
+<section class="section">
+  <div class="wrap">
+    <p class="eyebrow">{whatWeDo.eyebrow}</p>
+    <h2 class="h-section section-title">{whatWeDo.title}</h2>
+    <div class="grid blocks">
+      {
+        whatWeDo.blocks.map((b) => (
+          <div class="col-4 block">
+            <h3 class="card-title">{b.title}</h3>
+            <p class="body block__body">{b.body}</p>
+          </div>
+        ))
+      }
+    </div>
+    <p class="section-link">
+      <a class="arrow-link" href={href(whatWeDo.link.href)}>{whatWeDo.link.label}</a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .section-title {
+    margin-top: var(--space-5);
+  }
+  .blocks {
+    margin-top: var(--space-10);
+  }
+  .block {
+    padding-top: var(--space-4);
+    border-top: var(--hairline-w) solid var(--hairline);
+  }
+  .block__body {
+    margin-top: var(--space-3);
+  }
+  .section-link {
+    margin-top: var(--space-8);
+  }
+</style>

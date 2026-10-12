@@ -1,0 +1,172 @@
+---
+import { insights } from '@content/home';
+import { href, isPlaceholder } from '@lib/href';
+import Button from '@components/ui/Button.astro';
+import Placeholder from '@components/ui/Placeholder.astro';
+
+const { newsletter } = insights;
+---
+
+<section class="section">
+  <div class="wrap">
+    <p class="eyebrow">{insights.eyebrow}</p>
+    <h2 class="h-section section-title">{insights.title}</h2>
+
+    <ul class="cards articles">
+      {
+        insights.articles.map((a) => (
+          <li class="article">
+            <p class="label article__meta">
+              <Placeholder value={a.category} />
+              <span aria-hidden="true"> &middot; </span>
+              {isPlaceholder(a.date) ? (
+                <Placeholder value={a.date} />
+              ) : (
+                <time datetime={a.date}>{a.date}</time>
+              )}
+            </p>
+            <h3 class="card-title article__title">
+              <a class="article__link" href={href(`/insights/news/${a.slug}`)}>{a.title}</a>
+            </h3>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="section-link">
+      <a class="arrow-link" href={href(insights.allLink.href)}>{insights.allLink.label}</a>
+    </p>
+
+    <div class="newsletter">
+      <div class="grid">
+        <div class="col-6">
+          <h3 class="h-section newsletter__title">{newsletter.title}</h3>
+        </div>
+        <form
+          class="col-5 start-8 newsletter__form"
+          action={newsletter.action}
+          method="post"
+          data-newsletter
+          data-confirmation={newsletter.confirmation}
+          novalidate
+        >
+          <label class="label newsletter__label" for="newsletter-email">{newsletter.emailLabel}</label>
+          <div class="newsletter__row">
+            <input
+              class="newsletter__input"
+              id="newsletter-email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              required
+              placeholder={newsletter.emailPlaceholder}
+            />
+            <Button type="submit">{newsletter.button}</Button>
+          </div>
+          <p class="small newsletter__status" role="status" aria-live="polite" data-newsletter-status></p>
+          <p class="newsletter__note"><Placeholder value={newsletter.action} /></p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-title {
+    margin-top: var(--space-5);
+  }
+  .articles {
+    margin: var(--space-10) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .article {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding-top: var(--space-4);
+    border-top: var(--hairline-w) solid var(--hairline);
+  }
+  .article__meta {
+    margin: 0;
+    color: var(--muted);
+  }
+  .article__title {
+    margin: 0;
+  }
+  .article__link {
+    text-decoration: none;
+  }
+  .article__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .article:hover .article__link,
+  .article:focus-within .article__link {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .section-link {
+    margin-top: var(--space-8);
+  }
+
+  .newsletter {
+    margin-top: var(--space-10);
+    padding: var(--space-8) 0 0;
+    border-top: var(--hairline-w) solid var(--hairline);
+  }
+  .newsletter__title {
+    margin: 0;
+  }
+  .newsletter__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  .newsletter__row {
+    display: flex;
+    gap: var(--space-3);
+  }
+  .newsletter__input {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 48px;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--fg);
+    background: var(--bg);
+    font-size: var(--fs-small);
+  }
+  .newsletter__status {
+    margin: 0;
+    min-height: 1.55em;
+  }
+  .newsletter__note {
+    margin: 0;
+  }
+
+  @media (max-width: 640px) {
+    .newsletter__row {
+      flex-direction: column;
+    }
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-newsletter]');
+  if (form) {
+    const status = form.querySelector<HTMLElement>('[data-newsletter-status]')!;
+    const email = form.querySelector<HTMLInputElement>('input[type="email"]')!;
+    form.addEventListener('submit', (e) => {
+      // [PLACEHOLDER] handler: no real submission until the ESP endpoint exists.
+      e.preventDefault();
+      if (!email.checkValidity()) {
+        status.textContent = 'Enter a valid email address.';
+        email.focus();
+        return;
+      }
+      status.textContent = form.dataset.confirmation || 'Thanks.';
+      form.reset();
+    });
+  }
+</script>

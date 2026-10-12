@@ -1,0 +1,388 @@
+---
+import { primaryNav, utilityNav } from '@content/nav';
+import { href, isActive } from '@lib/href';
+import Logo from '@components/ui/Logo.astro';
+import Button from '@components/ui/Button.astro';
+
+const current = Astro.url.pathname;
+---
+
+<header class="site-header" data-header>
+  <div class="wrap site-header__row">
+    <Logo />
+
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-nav"
+      data-menu-toggle
+    >
+      <span class="menu-toggle__label" data-label-closed>Menu</span>
+      <span class="menu-toggle__label" data-label-open hidden>Close</span>
+    </button>
+
+    <nav class="site-nav" id="site-nav" aria-label="Primary" data-nav>
+      <ul class="site-nav__list">
+        {
+          primaryNav.map((section, i) => {
+            const id = `nav-panel-${i}`;
+            const active = isActive(current, section.href);
+            return (
+              <li class="site-nav__item" data-nav-item>
+                <button
+                  class="site-nav__toggle"
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls={id}
+                  aria-current={active ? 'true' : undefined}
+                  data-nav-toggle
+                >
+                  {section.label}
+                  <svg class="site-nav__chevron" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+                    <path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" />
+                  </svg>
+                </button>
+                <div class="site-nav__panel" id={id} hidden data-nav-panel>
+                  <ul class="site-nav__sub">
+                    {section.children.map((child) => (
+                      <li>
+                        <a
+                          class="site-nav__link"
+                          href={href(child.href)}
+                          target={child.external ? '_blank' : undefined}
+                          rel={child.external ? 'noopener noreferrer' : undefined}
+                          aria-current={!child.external && current === href(child.href) ? 'page' : undefined}
+                        >
+                          {child.label}
+                          {child.external && <span aria-hidden="true"> &#8599;</span>}
+                          {child.external && <span class="visually-hidden">(opens in a new tab)</span>}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            );
+          })
+        }
+      </ul>
+
+      <!-- Utility links, repeated inside the mobile menu -->
+      <div class="site-nav__utility">
+        <a
+          class="utility-link"
+          href={utilityNav.lpLogin.href}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {utilityNav.lpLogin.label}
+          <span aria-hidden="true"> &#8599;</span>
+          <span class="visually-hidden">(opens in a new tab)</span>
+        </a>
+        <Button href={utilityNav.pitch.href} variant="ghost">{utilityNav.pitch.label}</Button>
+      </div>
+    </nav>
+
+    <div class="site-utility">
+      <a
+        class="utility-link"
+        href={utilityNav.lpLogin.href}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {utilityNav.lpLogin.label}
+        <span aria-hidden="true"> &#8599;</span>
+        <span class="visually-hidden">(opens in a new tab)</span>
+      </a>
+      <Button href={utilityNav.pitch.href} variant="ghost">{utilityNav.pitch.label}</Button>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--bg);
+    border-bottom: var(--hairline-w) solid var(--hairline);
+  }
+
+  .site-header__row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    min-height: 72px;
+  }
+
+  /* ---- Primary nav (desktop) ---- */
+  .site-nav {
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+  }
+
+  .site-nav__list {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-nav__item {
+    position: relative;
+  }
+
+  .site-nav__toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin: 0;
+    padding: var(--space-2) 0;
+    border: 0;
+    background: none;
+    font-family: var(--font-sans);
+    font-size: var(--fs-small);
+    font-weight: 500;
+    line-height: 1.6;
+    letter-spacing: 0;
+    color: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .site-nav__toggle[aria-current='true'] {
+    text-decoration: underline;
+    text-underline-offset: 6px;
+  }
+
+  .site-nav__chevron {
+    transition: transform 120ms ease;
+  }
+
+  .site-nav__toggle[aria-expanded='true'] .site-nav__chevron {
+    transform: rotate(180deg);
+  }
+
+  .site-nav__panel {
+    position: absolute;
+    top: calc(100% + var(--space-2));
+    left: calc(-1 * var(--space-5));
+    min-width: var(--col-3);
+    padding: var(--space-3) 0;
+    background: var(--bg);
+    border: var(--hairline-w) solid var(--hairline);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  }
+
+  .site-nav__sub {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-nav__link {
+    display: block;
+    padding: var(--space-2) var(--space-5);
+    font-size: var(--fs-small);
+    line-height: 1.6;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .site-nav__link:hover,
+  .site-nav__link[aria-current='page'] {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .site-nav__utility {
+    display: none;
+  }
+
+  /* ---- Utility (desktop) ---- */
+  .site-utility {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+    margin-left: auto;
+  }
+
+  .utility-link {
+    font-size: var(--fs-small);
+    font-weight: 500;
+    line-height: 1.6;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .utility-link:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  /* ---- Menu toggle (mobile only) ---- */
+  .menu-toggle {
+    display: none;
+    margin-left: auto;
+    padding: var(--space-2) 0;
+    border: 0;
+    background: none;
+    font-family: var(--font-sans);
+    font-size: var(--fs-small);
+    font-weight: 500;
+    line-height: 1.6;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  /* ---- 880px: navigation collapses into a full-screen menu ---- */
+  @media (max-width: 880px) {
+    .menu-toggle {
+      display: inline-flex;
+      order: 3;
+    }
+
+    .site-utility {
+      display: none;
+    }
+
+    .site-nav {
+      display: none;
+      position: fixed;
+      inset: 72px 0 0 0;
+      z-index: 40;
+      flex-direction: column;
+      align-items: stretch;
+      overflow-y: auto;
+      padding: var(--space-5) var(--pad) var(--space-10);
+      background: var(--bg);
+    }
+
+    .site-nav[data-open] {
+      display: flex;
+    }
+
+    .site-nav__list {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+    }
+
+    .site-nav__item {
+      border-bottom: var(--hairline-w) solid var(--hairline);
+    }
+
+    .site-nav__toggle {
+      width: 100%;
+      justify-content: space-between;
+      padding: var(--space-4) 0;
+      font-size: var(--fs-card-title);
+      font-weight: 500;
+    }
+
+    .site-nav__panel {
+      position: static;
+      min-width: 0;
+      padding: 0 0 var(--space-4);
+      border: 0;
+      box-shadow: none;
+    }
+
+    .site-nav__link {
+      padding: var(--space-2) 0;
+      font-size: var(--fs-body);
+      white-space: normal;
+    }
+
+    .site-nav__utility {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-5);
+      padding-top: var(--space-6);
+    }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+
+  if (header) {
+    const nav = header.querySelector<HTMLElement>('[data-nav]')!;
+    const menuToggle = header.querySelector<HTMLButtonElement>('[data-menu-toggle]')!;
+    const labelClosed = menuToggle.querySelector<HTMLElement>('[data-label-closed]')!;
+    const labelOpen = menuToggle.querySelector<HTMLElement>('[data-label-open]')!;
+    const toggles = Array.from(header.querySelectorAll<HTMLButtonElement>('[data-nav-toggle]'));
+    const mobile = window.matchMedia('(max-width: 880px)');
+
+    const panelFor = (btn: HTMLButtonElement) =>
+      document.getElementById(btn.getAttribute('aria-controls') || '');
+
+    function closeAll(except?: HTMLButtonElement) {
+      for (const btn of toggles) {
+        if (btn === except) continue;
+        btn.setAttribute('aria-expanded', 'false');
+        const panel = panelFor(btn);
+        if (panel) panel.hidden = true;
+      }
+    }
+
+    function setMenu(open: boolean) {
+      menuToggle.setAttribute('aria-expanded', String(open));
+      labelClosed.hidden = open;
+      labelOpen.hidden = !open;
+      if (open) nav.setAttribute('data-open', '');
+      else nav.removeAttribute('data-open');
+      document.documentElement.style.overflow = open && mobile.matches ? 'hidden' : '';
+      if (!open) closeAll();
+    }
+
+    for (const btn of toggles) {
+      btn.addEventListener('click', () => {
+        const open = btn.getAttribute('aria-expanded') === 'true';
+        // Desktop: one dropdown at a time. Mobile: accordion, same rule.
+        closeAll(btn);
+        btn.setAttribute('aria-expanded', String(!open));
+        const panel = panelFor(btn);
+        if (panel) panel.hidden = open;
+      });
+    }
+
+    menuToggle.addEventListener('click', () => {
+      setMenu(menuToggle.getAttribute('aria-expanded') !== 'true');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!header.contains(e.target as Node)) closeAll();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      const openToggle = toggles.find((b) => b.getAttribute('aria-expanded') === 'true');
+      if (openToggle && !mobile.matches) {
+        closeAll();
+        openToggle.focus();
+        return;
+      }
+      if (menuToggle.getAttribute('aria-expanded') === 'true') {
+        setMenu(false);
+        menuToggle.focus();
+      }
+    });
+
+    // Close a desktop dropdown when focus leaves it (tabbing past the last link).
+    header.addEventListener('focusout', (e) => {
+      if (mobile.matches) return;
+      const next = e.relatedTarget as Node | null;
+      if (next && !header.contains(next)) closeAll();
+    });
+
+    mobile.addEventListener('change', () => {
+      setMenu(false);
+    });
+  }
+</script>

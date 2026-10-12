@@ -55,7 +55,8 @@ Never give a text block or component an arbitrary width. Pick one from this tabl
 Helpers:
 
 - `.grid` — 12-column CSS grid, 32px gap. Children use `.col-1` … `.col-12`
-  (`grid-column: span n`) and optionally `.start-1` … `.start-12` to offset.
+  (`grid-column: auto / span n`) and optionally `.start-1` … `.start-12` to
+  offset. Combine them as `class="col-4 start-9"`.
 - `.w-1` … `.w-12` — `max-width: var(--col-n)` for blocks outside a `.grid`
   (text measures, standalone components).
 - `.bleed` — full-bleed (100vw). This is an **explicit exception per element,
@@ -100,8 +101,9 @@ All queries are `max-width`, desktop-first.
 
 ## 5. Type scale (marketing pages)
 
-Two families, both placeholders (`--font-sans`, `--font-mono`). Swap families
-later; **sizes, line heights and tracking stay**.
+Two families. `--font-sans` is **Clash Display** (weights 400/500/600, loaded
+from Fontshare in `src/layouts/Base.astro`). `--font-mono` is still a
+placeholder. **Sizes, line heights and tracking stay** whatever the family.
 
 | Role        | Class         | Size                                   | Line | Tracking | Weight | Notes |
 |-------------|---------------|----------------------------------------|------|----------|--------|-------|
@@ -192,3 +194,18 @@ touching anything above.
 
 Add new components in their own files that **consume** these tokens. Do not
 redefine any token or class from this file elsewhere.
+
+## 10. Where things live (Astro)
+
+| What | Path |
+|---|---|
+| Global stylesheet | `css/global.css`, imported once in `src/layouts/Base.astro` |
+| Page shell, skip link, font loading | `src/layouts/Base.astro` |
+| Header, nav, footer | `src/components/Header.astro`, `src/components/Footer.astro` |
+| Shared UI | `src/components/ui/` (Button, Logo, Footnote, Placeholder) |
+| Homepage sections | `src/components/home/`, composed in `src/pages/index.astro` |
+| Copy and numbers | `src/content/home.ts`, `src/content/nav.ts`, `src/content/pages.ts` |
+| Legacy redirects | `src/content/redirects.mjs` |
+| Internal links | always through `href()` from `src/lib/href.ts` so the base path is applied |
+
+Component styles are Astro scoped `<style>` blocks that use the tokens above.
