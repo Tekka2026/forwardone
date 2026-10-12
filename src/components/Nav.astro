@@ -145,7 +145,7 @@ const current = Astro.url.pathname;
 
   .nav__root {
     position: relative;
-    width: min(var(--col-10), calc(100vw - 2 * var(--page-margin)));
+    width: min(var(--col-12), calc(100vw - 2 * var(--page-margin)));
     pointer-events: auto;
   }
 
@@ -445,6 +445,9 @@ const current = Astro.url.pathname;
       scrim.hidden = false;
       // Next frame so the transition runs from the hidden state.
       requestAnimationFrame(() => root.setAttribute('data-open', ''));
+      // Push the page back from the centre of the visible viewport, not the
+      // centre of the whole document.
+      page.style.transformOrigin = `50% ${window.scrollY + window.innerHeight / 2}px`;
       page.classList.add('is-pushed');
       page.setAttribute('inert', '');
       document.documentElement.style.overflow = 'hidden';

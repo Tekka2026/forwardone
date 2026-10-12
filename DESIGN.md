@@ -217,12 +217,13 @@ The primary navigation is a bar that floats at the bottom of the viewport
 (`src/components/Nav.astro`), not a top header. The logo sits alone in a plain
 strip at the top of the page (`src/components/Header.astro`).
 
-- Closed: `--nav-bg` (#26175A), height `--nav-height`, centred, `--gap` above
-  the viewport bottom. Desktop shows the five section labels plus LP Login and
+- Closed: `--nav-bg` (#26175A), height `--nav-height`, 12 columns wide
+  (`--col-12`), centred, `--gap` above the viewport bottom. Desktop shows the five section labels plus LP Login and
   Pitch us; below 880px it shows Menu and Pitch us.
 - Open: the panel expands upward from the bar in `--nav-bg-open` (#110338)
   with the section columns (accordions on mobile) and the utility links. The
-  page behind is pushed back: scaled down, darkened and made inert. Escape,
+  page behind is pushed back 5% (scale 0.95) from the centre of the visible
+  viewport, darkened and made inert. Escape,
   the scrim or the Close button closes it and returns focus.
 - The page wrapper reserves `--nav-height` + 2 × `--gap` at the bottom so the
   footer is never hidden behind the bar.

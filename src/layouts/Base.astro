@@ -87,11 +87,11 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
      (scaled, darkened, inert) while the nav panel is open. */
   .page {
     padding-bottom: calc(var(--nav-height) + 2 * var(--gap));
-    transform-origin: 50% 100%;
+    /* transform-origin is set by Nav.astro to the centre of the viewport */
     transition: transform 320ms ease, filter 320ms ease;
   }
   .page.is-pushed {
-    transform: scale(0.96);
+    transform: scale(0.95);
     filter: brightness(0.45);
   }
 
