@@ -37,10 +37,10 @@ import Placeholder from '@components/ui/Placeholder.astro';
 
 <style>
   .section-title {
-    margin-top: var(--space-5);
+    margin-top: var(--gap);
   }
   .case-grid {
-    margin: var(--space-10) 0 0;
+    margin: var(--space-16x) 0 0;
     padding: 0;
     list-style: none;
   }
@@ -48,15 +48,15 @@ import Placeholder from '@components/ui/Placeholder.astro';
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
-    padding: var(--space-5);
+    gap: var(--gap-half);
+    padding: var(--gap);
     border: var(--hairline-w) solid var(--hairline);
   }
   .case__logo {
     display: flex;
     align-items: center;
     min-height: 32px;
-    margin-bottom: var(--space-3);
+    margin-bottom: var(--gap-half);
   }
   .case__name {
     margin: 0;
@@ -80,10 +80,10 @@ import Placeholder from '@components/ui/Placeholder.astro';
   }
   .case__metric {
     margin: auto 0 0;
-    padding-top: var(--space-3);
+    padding-top: var(--gap-half);
     color: var(--muted);
   }
   .section-cta {
-    margin-top: var(--space-8);
+    margin-top: var(--gap-double);
   }
 </style>

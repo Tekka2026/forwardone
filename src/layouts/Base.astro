@@ -59,10 +59,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 <style is:global>
   .skip-link {
     position: absolute;
-    top: var(--space-2);
-    left: var(--space-2);
+    top: var(--space-2x);
+    left: var(--space-2x);
     z-index: 100;
-    padding: var(--space-3) var(--space-5);
+    padding: var(--gap-half) var(--gap);
     background: var(--fg);
     color: var(--bg);
     font-size: var(--fs-small);
@@ -88,7 +88,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     text-transform: none;
     color: var(--muted);
     border: 1px dashed var(--muted);
-    padding: 0 var(--space-1);
+    padding: 0 var(--space);
     white-space: normal;
   }
 </style>

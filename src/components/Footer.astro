@@ -94,17 +94,17 @@ const year = new Date().getFullYear();
 <style>
   .site-footer {
     border-top: var(--hairline-w) solid var(--hairline);
-    padding-block: var(--space-10);
+    padding-block: var(--space-16x);
   }
 
   .footer-grid {
     display: grid;
     grid-template-columns: repeat(6, minmax(0, 1fr));
-    gap: var(--space-8) var(--gutter);
+    gap: var(--gap-double) var(--gutter);
   }
 
   .footer-col__title {
-    margin: 0 0 var(--space-4);
+    margin: 0 0 var(--space-4x);
   }
 
   .footer-col__title a {
@@ -119,7 +119,7 @@ const year = new Date().getFullYear();
   .footer-col__list {
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
+    gap: var(--space-2x);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -143,13 +143,13 @@ const year = new Date().getFullYear();
   }
 
   .footer-address {
-    margin-top: var(--space-5);
+    margin-top: var(--gap);
     font-style: normal;
   }
 
   .footer-partners {
-    margin-top: var(--space-10);
-    padding-top: var(--space-6);
+    margin-top: var(--space-16x);
+    padding-top: var(--space-8x);
     border-top: var(--hairline-w) solid var(--hairline);
   }
 
@@ -157,7 +157,7 @@ const year = new Date().getFullYear();
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-6);
+    gap: var(--space-8x);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -173,9 +173,9 @@ const year = new Date().getFullYear();
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: var(--space-4) var(--space-6);
-    margin-top: var(--space-8);
-    padding-top: var(--space-5);
+    gap: var(--space-4x) var(--space-8x);
+    margin-top: var(--gap-double);
+    padding-top: var(--gap);
     border-top: var(--hairline-w) solid var(--hairline);
   }
 
@@ -189,7 +189,7 @@ const year = new Date().getFullYear();
 
   .footer-legal {
     display: flex;
-    gap: var(--space-5);
+    gap: var(--gap);
     margin: 0;
     padding: 0;
     list-style: none;

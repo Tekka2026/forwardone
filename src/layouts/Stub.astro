@@ -42,26 +42,26 @@ const { section, title, intro, todos } = Astro.props;
 
 <style>
   .stub__title {
-    margin-top: var(--space-5);
+    margin-top: var(--gap);
   }
   .stub__intro {
-    margin-top: var(--space-6);
+    margin-top: var(--space-8x);
   }
   .stub__todos {
-    margin: var(--space-6) 0 0;
+    margin: var(--space-8x) 0 0;
     padding: 0;
     list-style: none;
     max-width: var(--col-8);
   }
   .stub__todo {
     display: flex;
-    gap: var(--space-4);
+    gap: var(--space-4x);
     align-items: baseline;
-    padding: var(--space-4) var(--space-5);
+    padding: var(--space-4x) var(--gap);
     border: 1px dashed var(--muted);
   }
   .stub__todo + .stub__todo {
-    margin-top: var(--space-3);
+    margin-top: var(--gap-half);
   }
   .stub__todo .label {
     color: var(--muted);

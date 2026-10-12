@@ -72,10 +72,10 @@ const { newsletter } = insights;
 
 <style>
   .section-title {
-    margin-top: var(--space-5);
+    margin-top: var(--gap);
   }
   .articles {
-    margin: var(--space-10) 0 0;
+    margin: var(--space-16x) 0 0;
     padding: 0;
     list-style: none;
   }
@@ -83,8 +83,8 @@ const { newsletter } = insights;
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
-    padding-top: var(--space-4);
+    gap: var(--gap-half);
+    padding-top: var(--space-4x);
     border-top: var(--hairline-w) solid var(--hairline);
   }
   .article__meta {
@@ -108,12 +108,12 @@ const { newsletter } = insights;
     text-underline-offset: 4px;
   }
   .section-link {
-    margin-top: var(--space-8);
+    margin-top: var(--gap-double);
   }
 
   .newsletter {
-    margin-top: var(--space-10);
-    padding: var(--space-8) 0 0;
+    margin-top: var(--space-16x);
+    padding: var(--gap-double) 0 0;
     border-top: var(--hairline-w) solid var(--hairline);
   }
   .newsletter__title {
@@ -122,17 +122,17 @@ const { newsletter } = insights;
   .newsletter__form {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--gap-half);
   }
   .newsletter__row {
     display: flex;
-    gap: var(--space-3);
+    gap: var(--gap-half);
   }
   .newsletter__input {
     flex: 1 1 auto;
     min-width: 0;
-    min-height: 48px;
-    padding: var(--space-3) var(--space-4);
+    min-height: var(--form-height);
+    padding: 0 var(--gap-half);
     border: 1px solid var(--fg);
     background: var(--bg);
     font-size: var(--fs-small);

@@ -12,7 +12,7 @@
   /* Canvas & container */
   --canvas: 1984px;                 /* whole site caps here, centred */
   --max: 1600px;                    /* content container (.wrap)     */
-  --pad: clamp(20px, 4vw, 56px);    /* the only horizontal padding   */
+  --pad: var(--page-margin);        /* the only horizontal padding   */
 
   /* Grid: 12 × 104px, 32px gutter → 12×104 + 11×32 = 1600 */
   --cols: 12;
@@ -40,19 +40,39 @@
      --bp-rows:    760px   wide list rows stack
      --bp-cards-1: 640px   cards drop to 1 column */
 
-  /* Vertical rhythm */
-  --section-pad: clamp(80px, 12vh, 160px);
+  /* Vertical rhythm (Geist: 32x desktop, 24x tablet, 16x phone; see §8) */
+  --section-pad: var(--space-32x);
   --hairline-w: 1px;
 
-  /* Spacing scale (4px base) — UI / panel internals only */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 24px;
-  --space-6: 32px;
-  --space-8: 48px;
-  --space-10: 64px;
+  /* ------------------------------------------------------------------
+     Spacing: Vercel Geist system. 4px base unit, named by multiple.
+     ------------------------------------------------------------------ */
+  --space: 4px;
+  --space-2x: 8px;
+  --space-4x: 16px;
+  --space-8x: 32px;
+  --space-16x: 64px;
+  --space-24x: 96px;
+  --space-32x: 128px;
+  --space-48x: 192px;
+  --space-64x: 256px;
+
+  /* Geist "gap": the default distance between things, with fractions */
+  --gap: 24px;
+  --gap-half: 12px;
+  --gap-quarter: 6px;
+  --gap-double: 48px;
+
+  /* Geist page margin */
+  --page-margin: 24px;
+
+  /* Geist form control heights */
+  --form-height-small: 32px;
+  --form-height: 40px;
+  --form-height-large: 48px;
+
+  /* Header */
+  --header-height: 64px;
 
   /* Type: families, loaded in src/layouts/Base.astro.
      --font-display: Clash Display (Fontshare) for headings, card titles,
@@ -399,17 +419,17 @@ code, kbd, samp, pre {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2);
+  gap: var(--space-2x);
   box-sizing: border-box;
   margin: 0;
-  padding: var(--space-3) var(--space-5);
-  min-height: 48px;               /* 12 + 24(line) + 12 */
+  padding: 0 var(--gap-half);
+  min-height: var(--form-height);
   border: 1px solid var(--fg);
   background: var(--accent);
   color: var(--accent-fg);
   font-family: var(--font-sans);
   font-size: var(--fs-small);
-  line-height: 1.6;               /* 15 × 1.6 = 24px box */
+  line-height: 1;
   letter-spacing: 0;
   font-weight: 500;
   text-decoration: none;
@@ -455,16 +475,16 @@ code, kbd, samp, pre {
    7. Panels, cards, list rows (spacing-scale consumers)
    -------------------------------------------------------------------------- */
 .panel {
-  padding: var(--space-5);         /* panel inner padding: space-5 */
+  padding: var(--gap);             /* panel inner padding: gap (24) */
   border: var(--hairline-w) solid var(--hairline);
 }
 
 .cell {
-  padding: var(--space-3);         /* cell padding: space-3 */
+  padding: var(--gap-half);        /* cell padding: gap-half (12) */
 }
 
 .group + .group {
-  margin-top: var(--space-6);      /* between titled groups: space-6 */
+  margin-top: var(--gap-double);   /* between titled groups: gap-double (48) */
 }
 
 /* Card grid: --cards-cols columns by default, 2 at ≤980, 1 at ≤640 */
@@ -480,7 +500,7 @@ code, kbd, samp, pre {
   display: grid;
   grid-template-columns: var(--col-3) minmax(0, 1fr);
   column-gap: var(--gutter);
-  padding-block: var(--space-5);
+  padding-block: var(--gap);
   border-top: var(--hairline-w) solid var(--hairline);
 }
 
@@ -488,8 +508,9 @@ code, kbd, samp, pre {
    8. Breakpoints (numbers mirror the token comment in :root)
    -------------------------------------------------------------------------- */
 
-/* 980px: cards drop to 2 columns */
+/* 980px: cards drop to 2 columns; section rhythm steps down */
 @media (max-width: 980px) {
+  :root { --section-pad: var(--space-24x); }
   .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
@@ -508,11 +529,12 @@ code, kbd, samp, pre {
 
 /* 760px: wide list rows stack */
 @media (max-width: 760px) {
-  .row { grid-template-columns: minmax(0, 1fr); row-gap: var(--space-3); }
+  .row { grid-template-columns: minmax(0, 1fr); row-gap: var(--gap-half); }
 }
 
-/* 640px: cards drop to 1 column */
+/* 640px: cards drop to 1 column; section rhythm steps down again */
 @media (max-width: 640px) {
+  :root { --section-pad: var(--space-16x); }
   .cards { grid-template-columns: minmax(0, 1fr); }
 }
 

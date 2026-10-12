@@ -47,3 +47,4 @@
 | A0002 | done   | Live site updates via the default branch. Decided 2026-10-12: see "Publishing" above. |
 | A0003 | done   | Pages source is GitHub Actions. The first workflow deploy succeeded on 2026-10-12 without a settings change. |
 | A0004 | open   | Supply the values in `PLACEHOLDERS.md` (benchmark source, disclaimer, case-study metrics, logos, LP login URL, article categories and dates, newsletter endpoint). |
+| A0005 | open   | Verify the Geist spacing values in `DESIGN.md` §6 against https://vercel.com/geist (spacing, Stack, Button). The site is unreachable from Claude's build environment, so the values were transcribed from memory of Geist's CSS variables. |

@@ -19,7 +19,7 @@ Load the stylesheet first on every page:
 |------------|---------------------------|---------|
 | `--canvas` | `1984px`                  | The entire site caps here, centred on wider viewports (applied on `body`). |
 | `--max`    | `1600px`                  | The content container width (`.wrap`). |
-| `--pad`    | `clamp(20px, 4vw, 56px)`  | The **only** horizontal page padding. |
+| `--pad`    | `var(--page-margin)` = 24px | The **only** horizontal page padding (Geist page margin). |
 
 ```html
 <div class="wrap"> … </div>
@@ -93,7 +93,8 @@ All queries are `max-width`, desktop-first.
 
 ## 4. Vertical rhythm
 
-- `.section` — `padding-block: clamp(80px, 12vh, 160px)` (`--section-pad`).
+- `.section` — `padding-block: var(--section-pad)`: 128px (`--space-32x`) on
+  desktop, 96px (`--space-24x`) at ≤980px, 64px (`--space-16x`) at ≤640px.
 - Sections are separated by a **1px hairline top border**, not extra whitespace.
   `.section` carries `border-top: 1px solid var(--hairline)`; add `.section--flush`
   on the one section that must not (e.g. the first under the header).
@@ -144,28 +145,49 @@ Rules:
   450 / 550 (set 2026-10-12), which requires the Clash Display variable font
   loaded in `src/layouts/Base.astro`; without it they snap to 500 / 600.
 
-## 6. Spacing scale (4px base) — UI / panel internals
+## 6. Spacing — Vercel Geist system
 
-| Token        | px |
-|--------------|----|
-| `--space-1`  | 4  |
-| `--space-2`  | 8  |
-| `--space-3`  | 12 |
-| `--space-4`  | 16 |
-| `--space-5`  | 24 |
-| `--space-6`  | 32 |
-| `--space-8`  | 48 |
-| `--space-10` | 64 |
+The padding system is Geist's: a 4px base unit named by multiple, a "gap"
+family for the default distance between things, a fixed page margin and fixed
+form-control heights. Applied everywhere; no off-scale values.
 
-No off-scale values. Fixed uses:
+| Token               | px  | Geist name |
+|---------------------|-----|------------|
+| `--space`           | 4   | space |
+| `--space-2x`        | 8   | space-2x |
+| `--space-4x`        | 16  | space-4x |
+| `--space-8x`        | 32  | space-8x |
+| `--space-16x`       | 64  | space-16x |
+| `--space-24x`       | 96  | space-24x |
+| `--space-32x`       | 128 | space-32x |
+| `--space-48x`       | 192 | space-48x |
+| `--space-64x`       | 256 | space-64x |
+| `--gap-quarter`     | 6   | gap-quarter |
+| `--gap-half`        | 12  | gap-half |
+| `--gap`             | 24  | gap |
+| `--gap-double`      | 48  | gap-double |
+| `--page-margin`     | 24  | page-margin |
+| `--form-height-small` | 32 | form-small-height |
+| `--form-height`     | 40  | form-height |
+| `--form-height-large` | 48 | form-large-height |
+| `--header-height`   | 64  | — |
 
-- Cell padding: `--space-3` (`.cell`).
-- Panel inner padding: `--space-5` (`.panel`).
-- Between titled groups: `--space-6` (`.group + .group`).
+Fixed uses:
 
-Page-level horizontal spacing is `--pad` and `--gutter`; page-level vertical
-spacing is `--section-pad`. The spacing scale is for what happens inside
-components.
+- Page margin: `--page-margin` (`.wrap` padding, via `--pad`).
+- Section rhythm: `--space-32x` / `--space-24x` / `--space-16x` by breakpoint.
+- Buttons and inputs: height `--form-height`, horizontal padding `--gap-half`.
+- Panel and card inner padding: `--gap`. Cell padding: `--gap-half`.
+- Between titled groups: `--gap-double`.
+- Inside a component, step with `--space-2x` / `--space-4x` / `--space-8x`;
+  between blocks within a section, `--gap`, `--space-8x`, `--gap-double`,
+  `--space-16x` in ascending order of separation.
+- The 12-column grid keeps its own `--gutter` (32px): that is grid geometry,
+  not padding.
+
+The token values were transcribed from Geist's CSS variables; the Geist site
+could not be reached from the build environment to re-verify them (see
+CLAUDE.md action A0005).
 
 ## 7. Hard rules
 
@@ -177,7 +199,7 @@ components.
    button any other way.
 3. **No arbitrary widths.** Widths come from the column table (section 2).
 4. **No arbitrary spacing.** Internal spacing comes from the spacing scale
-   (section 6); page spacing from `--pad`, `--gutter`, `--section-pad`.
+   (section 6); page spacing from `--page-margin`, `--gutter`, `--section-pad`.
 5. **No arbitrary type.** Sizes, line heights and tracking come from the type
    scale (section 5).
 6. **One `.h-display` per page.** Every section opens with an `.eyebrow`.
