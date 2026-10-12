@@ -10,10 +10,9 @@ import { href } from '@lib/href';
     <div class="grid blocks">
       {
         whatWeDo.blocks.map((b) => (
-          <div class="col-4 block">
-            <h3 class="card-title">{b.title}</h3>
-            <p class="body block__body">{b.body}</p>
-          </div>
+          <p class="col-4 body block">
+            <strong class="block__title">{b.title}</strong> {b.body}
+          </p>
         ))
       }
     </div>
@@ -32,10 +31,9 @@ import { href } from '@lib/href';
   }
   .block {
     padding-top: var(--space-4x);
-    border-top: var(--hairline-w) solid var(--hairline);
   }
-  .block__body {
-    margin-top: var(--gap-half);
+  .block__title {
+    font-weight: 600;
   }
   .section-link {
     margin-top: var(--gap-double);
