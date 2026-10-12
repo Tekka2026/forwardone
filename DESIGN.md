@@ -205,7 +205,7 @@ CLAUDE.md action A0005).
 ## 7. Hard rules
 
 1. **Square corners everywhere, except buttons and the navigation bar**, which
-   use `--radius` (2px). The reset applies `border-radius: 0` to every other
+   use `--radius` (4px). The reset applies `border-radius: 0` to every other
    element and pseudo-element.
 2. **Links and buttons share ONE `.btn` component** and must render identically.
    `<a class="btn">` and `<button class="btn">` get the same reset, box, type and

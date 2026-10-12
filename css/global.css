@@ -151,7 +151,7 @@
 
   /* Corner radius for buttons and the navigation bar. Everything else stays
      square (the reset sets border-radius: 0 on every element). */
-  --radius: 2px;
+  --radius: 4px;
 }
 
 /* --------------------------------------------------------------------------
