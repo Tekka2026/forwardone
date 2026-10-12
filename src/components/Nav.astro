@@ -493,8 +493,9 @@ const current = Astro.url.pathname;
       document.documentElement.style.overflow = 'hidden';
       menu.setAttribute('aria-expanded', 'true');
       menu.setAttribute('aria-label', 'Close menu');
-      iconClosed.hidden = true;
-      iconOpen.hidden = false;
+      // SVG elements have no `hidden` property; toggle the attribute.
+      iconClosed.toggleAttribute('hidden', true);
+      iconOpen.toggleAttribute('hidden', false);
       for (const c of cols) setAccordion(c, false);
       const firstTarget = panel.querySelector<HTMLElement>(mobile.matches ? '[data-nav-acc]' : 'a');
       firstTarget?.focus();
@@ -511,8 +512,8 @@ const current = Astro.url.pathname;
       document.documentElement.style.overflow = '';
       menu.setAttribute('aria-expanded', 'false');
       menu.setAttribute('aria-label', 'Menu');
-      iconClosed.hidden = false;
-      iconOpen.hidden = true;
+      iconClosed.toggleAttribute('hidden', false);
+      iconOpen.toggleAttribute('hidden', true);
       menu.focus();
     }
 
