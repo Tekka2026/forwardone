@@ -13,6 +13,15 @@
   project and never reused. Keep the running list below up to date: add new
   items, mark done ones.
 
+## Publishing
+
+- The owner (jeroen@havok.nl) gave standing permission on 2026-10-12 to push
+  to the default branch (`claude/forwardone-web-gl4kz9`) without asking.
+- After every push to a working branch, fast-forward the default branch to the
+  same commit so the live site reflects the latest work:
+  `git push origin HEAD:claude/forwardone-web-gl4kz9`.
+- Pages takes a minute or so to rebuild after a push.
+
 ## Design
 
 - `DESIGN.md` and `css/global.css` are the layout source of truth. Read
@@ -23,4 +32,4 @@
 | Code  | Status | Action |
 |-------|--------|--------|
 | A0001 | cancelled | Disable GitHub Pages. Withdrawn: the live site is wanted, so Pages stays on. |
-| A0002 | open   | Decide how the live site gets updated. Pages serves the default branch (`claude/forwardone-web-gl4kz9`), which is currently empty. Either tell Claude to update the default branch after each push, or in Settings → Pages point the source at the working branch. |
+| A0002 | done   | Live site updates via the default branch. Decided 2026-10-12: see "Publishing" above. |
