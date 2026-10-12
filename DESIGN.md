@@ -222,8 +222,8 @@ strip at the top of the page (`src/components/Header.astro`).
   Pitch us; below 880px it shows Menu and Pitch us.
 - Open: the panel expands upward from the bar in `--nav-bg-open` (#110338)
   with the section columns (accordions on mobile) and the utility links. The
-  page behind is pushed back 5% (scale 0.95) from the centre of the visible
-  viewport, darkened and made inert. Escape,
+  page behind is pushed back 3% (scale 0.97) from the centre of the visible
+  viewport, covered by an 80% white layer and made inert. Escape,
   the scrim or the Close button closes it and returns focus.
 - The page wrapper reserves `--nav-height` + 2 × `--gap` at the bottom so the
   footer is never hidden behind the bar.
