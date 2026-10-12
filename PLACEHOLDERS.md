@@ -30,7 +30,6 @@ invented; replace the value in the file named and the marker disappears.
 |---|---|
 | `src/components/ui/Logo.astro` | SVG wordmark from the current site. Renders as text until supplied. |
 | `css/global.css` colour tokens | Brand colours. Current values are neutral placeholders. |
-| `css/global.css` `--font-mono` | Brand monospace, if any. Clash Display is already wired for the sans. |
 
 ## Stub pages (`src/content/pages.ts`)
 

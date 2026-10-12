@@ -110,7 +110,9 @@ Three families, all loaded in `src/layouts/Base.astro`:
 - `--font-sans`: **Inter** (Google Fonts, variable 400–600). H3 and below
   (card titles, the Playbook list) and all body and UI text: lede, body,
   small, buttons, navigation, forms, footer.
-- `--font-mono`: still a placeholder. Eyebrow, label, code.
+- `--font-mono`: **Geist Mono** (Vercel, SIL OFL; self-hosted from
+  `src/assets/fonts/geist-mono`, weights 400 and 500). Eyebrow, label, code, and
+  the nav panel column titles.
 
 **Sizes, line heights and tracking stay** whatever the family.
 
