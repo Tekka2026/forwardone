@@ -250,8 +250,9 @@ button sit in a plain strip at the top of the page
   logo. The
   page behind is pushed back 3% (scale 0.97) from the centre of the visible
   viewport, covered by an 80% white layer and made inert. Opening and closing
-  use the same fluid, snappy motion (420ms, ease-out). The panel moves only;
-  it never fades. Escape,
+  use the same fluid, snappy motion (420ms, ease-out). The panel never fades:
+  it unfolds up out of the bar and folds back down into it, and the panel
+  and bar always share one colour, changing together. Escape,
   the scrim or the Close button closes it and returns focus.
 - The page wrapper reserves `--nav-height` + 2 × `--gap` at the bottom so the
   footer is never hidden behind the bar.

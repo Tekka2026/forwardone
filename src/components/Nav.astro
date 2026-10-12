@@ -209,15 +209,21 @@ const current = Astro.url.pathname;
     padding: 0 var(--gap-half) 0 var(--gap);
     background: var(--nav-bg);
     border-radius: var(--radius);
-    transition: none; /* closing: the bar returns to its colour at once */
+    /* closing: colour changes together with the panel above it */
+    transition: background-color var(--nav-close-ms) var(--nav-close-ease);
     cursor: pointer; /* the whole bar toggles the menu */
     user-select: none;
   }
 
   .nav[data-open] .nav__bar {
     background: var(--nav-bg-open);
-    border-radius: 0 0 var(--radius) var(--radius); /* joins the panel above */
     transition: background-color var(--nav-open-ms) var(--nav-open-ease);
+  }
+
+  /* While the panel is out (opening, open or folding away), the bar's top
+     corners are square so bar and panel read as one shape. */
+  .nav[data-shape] .nav__bar {
+    border-radius: 0 0 var(--radius) var(--radius);
   }
 
   .nav__ask {
@@ -417,18 +423,23 @@ const current = Astro.url.pathname;
     max-height: calc(100dvh - var(--nav-height) - 3 * var(--gap));
     overflow-y: auto;
     padding: var(--gap);
-    background: var(--nav-bg-open);
+    /* The panel and the bar are one surface: same colour rule, same timing.
+       It folds down into the bar (clip from the top) instead of fading, so
+       there is never a dark panel over a light bar or the other way round. */
+    background: var(--nav-bg);
     border-radius: var(--radius) var(--radius) 0 0;
-    transform-origin: 50% 100%;
-    transform: translateY(var(--space-2x)) scaleY(0.96);
-    /* no opacity animation: motion only */
-    transition: transform var(--nav-close-ms) var(--nav-close-ease);
+    clip-path: inset(100% 0 0 0 round var(--radius) var(--radius) 0 0);
+    transition:
+      clip-path var(--nav-close-ms) var(--nav-close-ease),
+      background-color var(--nav-close-ms) var(--nav-close-ease);
   }
 
   .nav[data-open] .nav__panel {
-    transform: none;
-    /* opening: fluid overshoot-free spring */
-    transition: transform var(--nav-open-ms) var(--nav-open-ease);
+    background: var(--nav-bg-open);
+    clip-path: inset(0 0 0 0 round var(--radius) var(--radius) 0 0);
+    transition:
+      clip-path var(--nav-open-ms) var(--nav-open-ease),
+      background-color var(--nav-open-ms) var(--nav-open-ease);
   }
 
   .nav__columns {
@@ -769,6 +780,8 @@ const current = Astro.url.pathname;
       window.clearTimeout(closeTimer);
       panel.hidden = false;
       scrim.hidden = false;
+      root.setAttribute('data-shape', '');
+      void panel.offsetWidth; // start the fold from the collapsed state
       requestAnimationFrame(() => root.setAttribute('data-open', ''));
       // Push the page back from the centre of the visible viewport.
       page.style.transformOrigin = `50% ${window.scrollY + window.innerHeight / 2}px`;
@@ -776,14 +789,6 @@ const current = Astro.url.pathname;
       page.setAttribute('inert', '');
       document.documentElement.style.overflow = 'hidden';
       showAi();
-      // Bar colour: set explicitly (not via the [data-open] rule) so every
-      // engine shows the open colour. Eased in over the open duration.
-      const navStyle = getComputedStyle(root);
-      bar.style.transition = 'none';
-      bar.style.backgroundColor = navStyle.getPropertyValue('--nav-bg').trim();
-      void bar.offsetWidth;
-      bar.style.transition = `background-color ${navStyle.getPropertyValue('--nav-open-ms').trim() || '420ms'} ${navStyle.getPropertyValue('--nav-open-ease').trim() || 'ease-out'}`;
-      bar.style.backgroundColor = navStyle.getPropertyValue('--nav-bg-open').trim();
       menu.setAttribute('aria-expanded', 'true');
       menu.setAttribute('aria-label', 'Close menu');
       // SVG elements have no `hidden` property; toggle the attribute.
@@ -801,18 +806,15 @@ const current = Astro.url.pathname;
       if (!isOpen) return;
       isOpen = false;
       root.removeAttribute('data-open');
-      // Force the bar back to its resting colour at once, in every engine.
-      bar.style.transition = 'none';
-      bar.style.backgroundColor = getComputedStyle(root).getPropertyValue('--nav-bg').trim();
-      void bar.offsetWidth; // flush so no transition can pick this up
-      bar.style.backgroundColor = '';
-      // Let the close transition play, then take the panel out of the tree.
+      // Let the fold play out, then take the panel out of the tree and give
+      // the bar its rounded top corners back.
       window.clearTimeout(closeTimer);
       closeTimer = window.setTimeout(() => {
         if (isOpen) return;
         panel.hidden = true;
         scrim.hidden = true;
-      }, 440);
+        root.removeAttribute('data-shape');
+      }, 460);
       page.classList.remove('is-pushed');
       page.removeAttribute('inert');
       document.documentElement.style.overflow = '';
