@@ -18,6 +18,7 @@ const current = Astro.url.pathname;
 ---
 
 <div class="nav" data-nav>
+  <div class="nav__shade" aria-hidden="true"></div>
   <div class="nav__scrim" data-nav-scrim hidden></div>
 
   <nav class="nav__root" aria-label="Primary">
@@ -126,6 +127,25 @@ const current = Astro.url.pathname;
     justify-content: center;
     pointer-events: none;
     color: var(--nav-fg);
+  }
+
+  /* Gradient behind the bar: black 30% at the viewport bottom to black 0%
+     at 20px above the bar. Fades in once the bar has slid into place. */
+  .nav__shade {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -2;
+    height: calc(var(--nav-height) + var(--gap) + 20px);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0));
+    opacity: 0;
+    transition: opacity 320ms ease 480ms;
+    pointer-events: none;
+  }
+
+  .nav[data-visible] .nav__shade {
+    opacity: 1;
   }
 
   /* 80% white layer over the pushed-back page while the panel is open */

@@ -224,6 +224,8 @@ strip at the top of the page (`src/components/Header.astro`).
 
 - Hidden on load. It slides in from the bottom on the visitor's first scroll
   (or at once when the page cannot scroll, or on the first Tab press).
+  Once in place, a gradient fades in behind it: black 30% at the viewport
+  bottom to black 0% at 20px above the bar.
 - Closed: `--nav-bg` (#26175A), height `--nav-height`, 12 columns wide
   (`--col-12`), centred, `--gap` above the viewport bottom. Left: a greeting
   typed with a typewriter effect and a blinking `_` cursor (copy in
