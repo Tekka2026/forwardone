@@ -11,6 +11,7 @@ const BASE_PATH = process.env.BASE_PATH ?? '/forwardone';
 
 // Astro does not prefix redirect destinations with `base`, so do it here.
 const prefix = BASE_PATH === '/' ? '' : BASE_PATH.replace(/\/+$/, '');
+/** @param {string} to */
 const dest = (to) => `${prefix}${to}/`;
 
 /** @type {Record<string, { status: 301, destination: string }>} */

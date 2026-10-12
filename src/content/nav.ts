@@ -75,19 +75,18 @@ export const primaryNav: NavSection[] = [
 ];
 
 /**
- * Greeting typed into the navigation bar (typewriter effect, blinking cursor).
- * The first line holds for `holdMs`, erases, then the second line is typed
- * and stays.
+ * Greeting typed into the navigation bar (typewriter effect).
+ * `first` shows while the menu is closed. Pressing the bar opens the menu:
+ * the AI mark appears and `second` is typed, then the grey placeholder.
  */
 export const navGreeting = {
   first: 'Welcome to FORWARD.one',
   second: 'How can we help you?',
-  holdMs: 4000,
   /** Click-to-type prompt in the bar. No backend yet (see PLACEHOLDERS.md). */
   ask: {
     label: 'Ask FORWARD.one a question',
     placeholder: 'Type your question',
-    /** How long the second line stays before it erases into the placeholder. */
+    /** How long `second` stays before it erases into the placeholder. */
     placeholderAfterMs: 2000,
     /** Shown after submit until an assistant endpoint exists. */
     notConnected: 'Thanks. The assistant is not connected yet.',

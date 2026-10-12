@@ -231,19 +231,18 @@ button sit in a plain strip at the top of the page
   Once in place, a gradient fades in behind it: black 30% at the viewport
   bottom to black 0% at 20px above the bar.
 - Closed: `--nav-bg` (#26175A), height `--nav-height`, 12 columns wide
-  (`--col-12`), centred, `--gap` above the viewport bottom. Left: a greeting
-  typed with a typewriter effect and a blinking `_` cursor; its first six
-  characters carry a circular #78F6FB-to-white gradient centred on the first
-  letter (copy in
-  `src/content/nav.ts`, `navGreeting`: first line, 4 s hold, erase, second
-  line stays; 2 s later it erases and "Type your question" is typed out in
-  grey). The `_` cursor shows only while text is being typed or erased;
-  idle states have no cursor. While the panel is open an AI mark appears before the
-  greeting: the text slides right to make room as the panel opens, and
-  750ms later the mark rises straight up into the slot the way the last H1
-  word does (one invisible frame, then a smooth rise). The whole bar opens the
-  panel; clicking the greeting also turns it into a text field (no backend
-  yet). Right: a hamburger button, the keyboard control.
+  (`--col-12`), centred, `--gap` above the viewport bottom. Left:
+  "Welcome to FORWARD.one", typed once and kept until the bar is pressed.
+  Right: a hamburger button. The whole bar opens the panel; the hamburger is
+  the keyboard control.
+- Pressing the bar: the text slides right, the AI mark (#78F6FB) rises into
+  place 750ms later the way the last H1 word does, and the line is retyped as
+  "How can we help you?". After 2 s it becomes the grey "Type your question".
+  Clicking the line, or typing anywhere while the placeholder shows, opens a
+  text field (no backend yet). Closing types the welcome line back.
+- The first six typed characters carry a circular #78F6FB-to-white gradient
+  centred on the first letter. The `_` cursor shows only while text is being
+  typed or erased. Copy lives in `src/content/nav.ts` (`navGreeting`).
 - Open: the panel expands upward from the bar in `--nav-bg-open` (#110338)
   with the section columns (accordions on mobile). LP Login is reached via
   the Investors column; Pitch us is a button in the top strip beside the

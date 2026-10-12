@@ -4,10 +4,11 @@
  *
  * - Hidden on load; slides in from the bottom on the visitor's first scroll
  *   (or at once when the page cannot scroll, or on the first Tab press).
- * - Closed: a greeting typed with a typewriter effect on the left and a
- *   hamburger button on the right. The whole bar opens the panel; clicking
- *   the greeting also turns it into a text field. An AI mark appears before
- *   the greeting only while the panel is open.
+ * - Closed: "Welcome to FORWARD.one" typed on the left, hamburger on the
+ *   right. It stays until the bar is pressed.
+ * - Pressing the bar opens the panel; the AI mark appears and the line
+ *   becomes "How can we help you?", then the grey placeholder. Clicking the
+ *   greeting also turns it into a text field.
  * - Open: a panel grows upward out of the bar with the section columns
  *   (accordions on mobile); the page behind is pushed
  *   back, covered by a white layer and made inert.
@@ -81,7 +82,6 @@ const current = Astro.url.pathname;
         data-nav-ask
         data-first={navGreeting.first}
         data-second={navGreeting.second}
-        data-hold={navGreeting.holdMs}
         data-not-connected={navGreeting.ask.notConnected}
         data-placeholder={navGreeting.ask.placeholder}
         data-placeholder-after={navGreeting.ask.placeholderAfterMs}
@@ -118,7 +118,7 @@ const current = Astro.url.pathname;
         <svg class="nav__icon" data-icon-closed width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M3 6h18M3 12h18M3 18h18" fill="none" stroke="currentColor" stroke-width="1.75" />
         </svg>
-        <svg class="nav__icon" data-icon-open width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" hidden>
+        <svg class="nav__icon" data-icon-open width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="1.75" />
         </svg>
       </button>
@@ -393,8 +393,13 @@ const current = Astro.url.pathname;
     display: block;
   }
 
-  .nav__icon[hidden] {
+  /* Hamburger when closed, cross when open */
+  .nav__icon[data-icon-open],
+  .nav[data-open] .nav__icon[data-icon-closed] {
     display: none;
+  }
+  .nav[data-open] .nav__icon[data-icon-open] {
+    display: block;
   }
 
   /* Buttons on the dark panel */
@@ -568,20 +573,20 @@ const current = Astro.url.pathname;
 </style>
 
 <script>
-  const root = document.querySelector<HTMLElement>('[data-nav]');
-  const page = document.querySelector<HTMLElement>('[data-page]');
+  const rootEl = document.querySelector<HTMLElement>('[data-nav]');
+  const pageEl = document.querySelector<HTMLElement>('[data-page]');
 
-  if (root && page) {
+  if (rootEl && pageEl) {
+    // Narrowed consts so nested functions see non-null elements.
+    const root: HTMLElement = rootEl;
+    const page: HTMLElement = pageEl;
     const panel = root.querySelector<HTMLElement>('[data-nav-panel]')!;
     const bar = root.querySelector<HTMLElement>('[data-nav-bar]')!;
     const scrim = root.querySelector<HTMLElement>('[data-nav-scrim]')!;
     const menu = root.querySelector<HTMLButtonElement>('[data-nav-menu]')!;
-    const iconClosed = menu.querySelector<HTMLElement>('[data-icon-closed]')!;
-    const iconOpen = menu.querySelector<HTMLElement>('[data-icon-open]')!;
     const cols = Array.from(root.querySelectorAll<HTMLElement>('[data-nav-col]'));
     const accs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-nav-acc]'));
     const greeting = root.querySelector<HTMLFormElement>('[data-nav-ask]')!;
-    const typed = root.querySelector<HTMLElement>('[data-nav-typed]')!;
     const typedHead = root.querySelector<HTMLElement>('[data-nav-typed-head]')!;
     const typedRest = root.querySelector<HTMLElement>('[data-nav-typed-rest]')!;
     const HEAD_CHARS = 6;
@@ -628,15 +633,21 @@ const current = Astro.url.pathname;
       document.addEventListener('keydown', onFirstTab);
     }
 
-    /* ---- Typewriter greeting ---- */
+    /* ---- Typewriter greeting ----
+       Closed: "Welcome to FORWARD.one" stays until the bar is pressed.
+       Open:   the AI mark appears, the line becomes "How can we help you?",
+               and after a short hold it turns into the grey placeholder.
+       Closing again types the welcome line back. Every sequence gets a run
+       id; starting a new one cancels whatever was still typing. */
     const first = greeting.dataset.first || '';
     const second = greeting.dataset.second || '';
-    const hold = Number(greeting.dataset.hold) || 4000;
     const TYPE_MS = 55;
     const ERASE_MS = 30;
     const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-    let interrupted = false; // set when the visitor starts typing
+    let runId = 0;
+    const alive = (id: number) => id === runId;
+    const idle = () => cursor.classList.add('is-still'); // no cursor when idle
 
     // The AI mark is shown only while the panel is open, 750ms after opening.
     const AI_DELAY_MS = 750;
@@ -650,71 +661,100 @@ const current = Astro.url.pathname;
       window.clearTimeout(aiTimer);
       ai.classList.remove('is-in', 'is-room');
     }
-    async function typeText(text: string) {
+    async function typeText(text: string, id: number) {
       cursor.classList.remove('is-still');
-      for (let i = 1; i <= text.length && !interrupted; i++) {
+      for (let i = 1; i <= text.length; i++) {
+        if (!alive(id)) return;
         setTyped(text.slice(0, i));
         await wait(TYPE_MS);
       }
     }
-    async function eraseText() {
+    async function eraseText(id: number) {
       cursor.classList.remove('is-still');
       let text = current;
-      while (text.length && !interrupted) {
+      while (text.length) {
+        if (!alive(id)) return;
         text = text.slice(0, -1);
         setTyped(text);
         await wait(ERASE_MS);
       }
     }
-    async function startGreeting() {
-      if (reduceMotion.matches) {
-        setPlaceholderState();
-        return;
-      }
-      await wait(480); // let the bar finish sliding in
-      await typeText(first);
-      cursor.classList.add('is-still'); // idle during the hold: no cursor
-      await wait(hold);
-      if (interrupted) return;
-      await eraseText();
-      await wait(240);
-      if (interrupted) return;
-      await typeText(second);
-      if (interrupted) return;
-      cursor.classList.add('is-still'); // idle: no cursor
-      await toPlaceholder();
-    }
 
-    /* ---- Click to type ---- */
+    /* ---- States ---- */
     const notConnected = greeting.dataset.notConnected || '';
     const placeholder = greeting.dataset.placeholder || '';
     const placeholderAfter = Number(greeting.dataset.placeholderAfter) || 2000;
     let placeholderMode = false;
 
-    function setPlaceholderState() {
-      placeholderMode = true;
-      prompt.classList.add('is-placeholder');
-      setTyped(placeholder);
-      cursor.classList.add('is-still');
+    function showPrompt() {
       prompt.hidden = false;
       input.hidden = true;
     }
-    // After the greeting: erase the second line and write the placeholder in grey.
-    async function toPlaceholder() {
-      await wait(placeholderAfter);
-      if (interrupted) return;
-      await eraseText();
-      if (interrupted) return;
-      prompt.classList.add('is-placeholder');
-      await typeText(placeholder);
-      if (!interrupted) {
-        placeholderMode = true;
-        cursor.classList.add('is-still');
+    // Closed state: the welcome line.
+    async function toWelcome(animate: boolean, delay = 0) {
+      const id = ++runId;
+      placeholderMode = false;
+      showPrompt();
+      if (!animate || reduceMotion.matches) {
+        prompt.classList.remove('is-placeholder');
+        setTyped(first);
+        idle();
+        return;
       }
+      if (delay) await wait(delay);
+      if (!alive(id)) return;
+      if (current) {
+        await eraseText(id);
+        if (!alive(id)) return;
+        await wait(120);
+        if (!alive(id)) return;
+      }
+      prompt.classList.remove('is-placeholder');
+      await typeText(first, id);
+      if (alive(id)) idle();
+    }
+    // Open state, idle: the grey placeholder.
+    function setPlaceholderState() {
+      ++runId;
+      placeholderMode = true;
+      prompt.classList.add('is-placeholder');
+      setTyped(placeholder);
+      idle();
+      showPrompt();
+    }
+    // Open state: the question, then the grey placeholder.
+    async function toQuestion() {
+      const id = ++runId;
+      placeholderMode = false;
+      showPrompt();
+      if (reduceMotion.matches) {
+        prompt.classList.remove('is-placeholder');
+        setTyped(second);
+        idle();
+        return;
+      }
+      await eraseText(id);
+      if (!alive(id)) return;
+      prompt.classList.remove('is-placeholder');
+      await wait(240);
+      if (!alive(id)) return;
+      await typeText(second, id);
+      if (!alive(id)) return;
+      idle();
+      await wait(placeholderAfter);
+      if (!alive(id)) return;
+      await eraseText(id);
+      if (!alive(id)) return;
+      prompt.classList.add('is-placeholder');
+      await typeText(placeholder, id);
+      if (!alive(id)) return;
+      idle();
+      placeholderMode = true;
     }
 
+    /* ---- Click to type ---- */
     function startTyping() {
-      interrupted = true;
+      ++runId; // stop any sequence still typing
       placeholderMode = false;
       prompt.hidden = true;
       input.hidden = false;
@@ -722,7 +762,8 @@ const current = Astro.url.pathname;
     }
     function stopTyping() {
       if (input.value.trim()) return; // keep the field while there is text
-      setPlaceholderState();
+      if (isOpen) setPlaceholderState();
+      else toWelcome(false);
     }
     // Typing anywhere while the placeholder is showing starts the question.
     document.addEventListener('keydown', (e) => {
@@ -758,14 +799,23 @@ const current = Astro.url.pathname;
       // [PLACEHOLDER] handler: no backend yet.
       e.preventDefault();
       if (!input.value.trim()) return;
+      const id = ++runId;
       input.value = '';
-      input.hidden = true;
-      prompt.hidden = false;
+      showPrompt();
       prompt.classList.remove('is-placeholder');
       setTyped(notConnected);
-      cursor.classList.add('is-still');
-      window.setTimeout(() => { if (input.hidden) setPlaceholderState(); }, 3000);
+      idle();
+      window.setTimeout(() => {
+        if (!alive(id) || !input.hidden) return;
+        if (isOpen) setPlaceholderState();
+        else toWelcome(true);
+      }, 3000);
     });
+
+    function startGreeting() {
+      // First appearance: type the welcome line once the bar has slid in.
+      toWelcome(true, 480);
+    }
 
     /* ---- Panel open / close ---- */
     function setAccordion(col: HTMLElement, open: boolean) {
@@ -789,11 +839,9 @@ const current = Astro.url.pathname;
       page.setAttribute('inert', '');
       document.documentElement.style.overflow = 'hidden';
       showAi();
+      if (input.hidden) toQuestion();
       menu.setAttribute('aria-expanded', 'true');
       menu.setAttribute('aria-label', 'Close menu');
-      // SVG elements have no `hidden` property; toggle the attribute.
-      iconClosed.toggleAttribute('hidden', true);
-      iconOpen.toggleAttribute('hidden', false);
       for (const c of cols) setAccordion(c, false);
       if (keyboard && input.hidden) {
         const firstTarget = panel.querySelector<HTMLElement>(mobile.matches ? '[data-nav-acc]' : 'a');
@@ -819,11 +867,9 @@ const current = Astro.url.pathname;
       page.removeAttribute('inert');
       document.documentElement.style.overflow = '';
       hideAi();
-      if (!input.hidden && !input.value.trim()) setPlaceholderState();
+      if (input.hidden || !input.value.trim()) toWelcome(true);
       menu.setAttribute('aria-expanded', 'false');
       menu.setAttribute('aria-label', 'Menu');
-      iconClosed.toggleAttribute('hidden', false);
-      iconOpen.toggleAttribute('hidden', true);
       if (keyboard) menu.focus();
       else (document.activeElement as HTMLElement | null)?.blur();
     }
