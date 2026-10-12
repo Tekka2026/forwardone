@@ -249,11 +249,13 @@ const current = Astro.url.pathname;
     opacity: 0;
   }
 
-  .nav__ai.is-in {
+  /* The slot opens as soon as the panel opens (text slides right)… */
+  .nav__ai.is-room {
     width: 16px;
     margin-right: 0;
   }
 
+  /* …and the glyph rises into it 750ms later, moving only vertically. */
   .nav__ai.is-in svg {
     animation:
       nav-ai-show calc(var(--reveal-frame) * 9) step-end forwards,
@@ -535,7 +537,8 @@ const current = Astro.url.pathname;
     .nav__cursor {
       animation: none;
     }
-    .nav__ai.is-in svg {
+    /* …and the glyph rises into it 750ms later, moving only vertically. */
+  .nav__ai.is-in svg {
       animation: none;
       opacity: 1;
     }
@@ -617,11 +620,12 @@ const current = Astro.url.pathname;
     let aiTimer: number | undefined;
     function showAi() {
       window.clearTimeout(aiTimer);
+      ai.classList.add('is-room'); // text slides right now
       aiTimer = window.setTimeout(() => ai.classList.add('is-in'), AI_DELAY_MS);
     }
     function hideAi() {
       window.clearTimeout(aiTimer);
-      ai.classList.remove('is-in');
+      ai.classList.remove('is-in', 'is-room');
     }
     async function typeText(text: string) {
       for (let i = 1; i <= text.length && !interrupted; i++) {
