@@ -54,9 +54,14 @@
   --space-8: 48px;
   --space-10: 64px;
 
-  /* Type: families. Clash Display (Fontshare) is the brand display/UI sans,
-     loaded in src/layouts/Base.astro. Mono is still a placeholder. */
-  --font-sans: "Clash Display", system-ui, -apple-system, "Segoe UI", Roboto,
+  /* Type: families, loaded in src/layouts/Base.astro.
+     --font-display: Clash Display (Fontshare) for headings, card titles,
+                     stat values and the wordmark.
+     --font-sans:    Inter (Google Fonts) for body copy and all UI text.
+     Mono is still a placeholder. */
+  --font-display: "Clash Display", "Inter", system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
     "Liberation Mono", monospace;
@@ -178,9 +183,9 @@ button, input, select, textarea {
 /* Headings: sentence case, never all-caps (UPPERCASE is reserved for mono
    eyebrow/label). Default heading element styles map to the scale so that
    semantic markup without classes still lands on-grid. */
-h1 { font-size: var(--fs-display); line-height: var(--lh-display); letter-spacing: var(--ls-display); font-weight: var(--fw-heading); }
-h2 { font-size: var(--fs-section); line-height: var(--lh-section); letter-spacing: var(--ls-section); font-weight: var(--fw-heading); max-width: var(--measure-heading); }
-h3 { font-size: var(--fs-card-title); line-height: var(--lh-card-title); letter-spacing: var(--ls-card-title); font-weight: var(--fw-card-title); }
+h1 { font-family: var(--font-display); font-size: var(--fs-display); line-height: var(--lh-display); letter-spacing: var(--ls-display); font-weight: var(--fw-heading); }
+h2 { font-family: var(--font-display); font-size: var(--fs-section); line-height: var(--lh-section); letter-spacing: var(--ls-section); font-weight: var(--fw-heading); max-width: var(--measure-heading); }
+h3 { font-family: var(--font-display); font-size: var(--fs-card-title); line-height: var(--lh-card-title); letter-spacing: var(--ls-card-title); font-weight: var(--fw-card-title); }
 
 code, kbd, samp, pre {
   font-family: var(--font-mono);
@@ -282,7 +287,7 @@ code, kbd, samp, pre {
    5. Type classes
    -------------------------------------------------------------------------- */
 .h-display {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-size: var(--fs-display);
   line-height: var(--lh-display);
   letter-spacing: var(--ls-display);
@@ -291,7 +296,7 @@ code, kbd, samp, pre {
 }
 
 .h-section {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-size: var(--fs-section);
   line-height: var(--lh-section);
   letter-spacing: var(--ls-section);
@@ -301,7 +306,7 @@ code, kbd, samp, pre {
 }
 
 .h-feature {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-size: var(--fs-feature);
   line-height: var(--lh-feature);
   letter-spacing: var(--ls-feature);
@@ -311,7 +316,7 @@ code, kbd, samp, pre {
 }
 
 .card-title {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-size: var(--fs-card-title);
   line-height: var(--lh-card-title);
   letter-spacing: var(--ls-card-title);

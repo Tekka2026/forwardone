@@ -101,10 +101,17 @@ All queries are `max-width`, desktop-first.
 
 ## 5. Type scale (marketing pages)
 
-Two families. `--font-sans` is **Clash Display** (variable font, weight axis 200–700,
-plus static 400/500/600 as fallback, loaded from Fontshare in
-`src/layouts/Base.astro`). `--font-mono` is still a
-placeholder. **Sizes, line heights and tracking stay** whatever the family.
+Three families, all loaded in `src/layouts/Base.astro`:
+
+- `--font-display`: **Clash Display** (Fontshare; variable font, weight axis
+  200–700, plus static 400/500/600 as fallback). Used for Display, Section and
+  Feature headings, card titles, stat values, the Playbook list and the
+  wordmark.
+- `--font-sans`: **Inter** (Google Fonts, 400/500/600). Body copy is always
+  Inter: lede, body, small, buttons, navigation, forms, footer.
+- `--font-mono`: still a placeholder. Eyebrow, label, code.
+
+**Sizes, line heights and tracking stay** whatever the family.
 
 | Role        | Class         | Size                                   | Line | Tracking | Weight | Notes |
 |-------------|---------------|----------------------------------------|------|----------|--------|-------|
