@@ -236,8 +236,8 @@ button sit in a plain strip at the top of the page
   letter (copy in
   `src/content/nav.ts`, `navGreeting`: first line, 4 s hold, erase, second
   line stays and the cursor stops blinking). While the panel is open an AI mark animates in before the
-  greeting, 750ms after opening, entering from the bottom in the same stepped
-  frames as the first H1 word, and the text slides right to make room. The whole bar opens the
+  greeting, 750ms after opening, entering from the bottom the way the last H1
+  word does (one invisible frame, then a smooth rise), and the text slides right to make room. The whole bar opens the
   panel; clicking the greeting also turns it into a text field (no backend
   yet). Right: a hamburger button, the keyboard control.
 - Open: the panel expands upward from the bar in `--nav-bg-open` (#110338)

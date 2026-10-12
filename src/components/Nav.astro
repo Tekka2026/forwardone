@@ -230,8 +230,8 @@ const current = Astro.url.pathname;
   }
 
   /* The mark grows from zero width so the text slides right with it, while
-     the glyph itself enters from the bottom in the same stepped frames as
-     the first word of the H1 (invisible, 2 steps down, 1 step, rest). */
+     the glyph itself enters like the last word of the H1: invisible for one
+     frame, then fully visible, rising smoothly from 7 steps down. */
   .nav__ai {
     --icon-step: 2px; /* the H1 step at display size */
     display: inline-flex;
@@ -255,15 +255,22 @@ const current = Astro.url.pathname;
   }
 
   .nav__ai.is-in svg {
-    animation: nav-ai-in calc(var(--reveal-frame) * 4) step-end forwards;
+    animation:
+      nav-ai-show calc(var(--reveal-frame) * 9) step-end forwards,
+      nav-ai-rise calc(var(--reveal-frame) * 9) cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
   }
 
-  @keyframes nav-ai-in {
-    0%   { opacity: 0; transform: translateY(calc(2 * var(--icon-step))); }
-    25%  { opacity: 1; transform: translateY(calc(2 * var(--icon-step))); }
-    50%  { opacity: 1; transform: translateY(calc(1 * var(--icon-step))); }
-    75%  { opacity: 1; transform: translateY(0); }
-    100% { opacity: 1; transform: translateY(0); }
+  /* Frame 0 invisible, visible from frame 1 (no fade) */
+  @keyframes nav-ai-show {
+    0%      { opacity: 0; }
+    11.111% { opacity: 1; }
+    100%    { opacity: 1; }
+  }
+
+  /* Smooth rise from 7 steps down to rest */
+  @keyframes nav-ai-rise {
+    0%   { transform: translateY(calc(7 * var(--icon-step))); }
+    100% { transform: translateY(0); }
   }
 
   .nav__prompt {
