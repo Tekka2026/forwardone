@@ -122,9 +122,9 @@
   --fw-card-title: 550;  /* Card title */
 
   /* Type: tracking */
-  --ls-display: -0.04em;
-  --ls-section: -0.03em;
-  --ls-feature: -0.03em;
+  --ls-display: 0;       /* was -0.04em; set to 0 on 2026-10-12 for review */
+  --ls-section: 0;       /* was -0.03em */
+  --ls-feature: 0;       /* was -0.03em */
   --ls-card-title: -0.01em;
   --ls-eyebrow: 0.14em;
   --ls-label: 0.16em;

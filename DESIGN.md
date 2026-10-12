@@ -116,9 +116,9 @@ Three families, all loaded in `src/layouts/Base.astro`:
 
 | Role        | Class         | Size                                   | Line | Tracking | Weight | Notes |
 |-------------|---------------|----------------------------------------|------|----------|--------|-------|
-| Display/H1  | `.h-display`  | `clamp(44px, 7vw, 100px)`              | 1.04 | −0.04em  | 450    | **One per page.** |
-| Section/H2  | `.h-section`  | `clamp(30px, 4.2vw, 56px)`             | 1.06 | −0.03em  | 450    | max-width 1056px (8 cols). |
-| Feature/H3  | `.h-feature`  | `clamp(34px, 5vw, 72px)`               | 1.04 | −0.03em  | 450    | max-width 1056px (8 cols). |
+| Display/H1  | `.h-display`  | `clamp(44px, 7vw, 100px)`              | 1.04 | 0        | 450    | **One per page.** |
+| Section/H2  | `.h-section`  | `clamp(30px, 4.2vw, 56px)`             | 1.06 | 0        | 450    | max-width 1056px (8 cols). |
+| Feature/H3  | `.h-feature`  | `clamp(34px, 5vw, 72px)`               | 1.04 | 0        | 450    | max-width 1056px (8 cols). |
 | Card title  | `.card-title` | 19px                                   | 1.3  | −0.01em  | 550    | |
 | Lede        | `.lede`       | `clamp(18px, 1.6vw, 21px)`             | 1.5  | 0        | 400    | max-width 784px (6 cols). |
 | Body        | `.body`       | 17px; `clamp(17px, 1.4vw, 19px)` inside `.section--feature` | 1.55 | 0 | 400 | max-width 648px (5 cols); `.body--wide` allows 784px, never more. |
@@ -140,8 +140,8 @@ Rules:
   render them through `src/components/ui/Sentences.astro`.
 - No em dashes anywhere in copy. Use a comma, colon or full stop. Page titles
   join with a vertical bar.
-- Negative tracking belongs to large display text only. At 11–18px tracking
-  stays at or near 0.
+- Heading tracking is 0 (previously −0.04em / −0.03em; tokens `--ls-display`,
+  `--ls-section`, `--ls-feature`). At 11–18px tracking stays at or near 0.
 - Body text never exceeds 6 columns (784px).
 - Every size, line height, tracking and heading weight value exists as a token
   (`--fs-*`, `--lh-*`, `--ls-*`, `--fw-heading`, `--fw-card-title`). New
