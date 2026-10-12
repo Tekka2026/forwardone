@@ -179,6 +179,7 @@ Fixed uses:
 - Buttons and inputs: height `--form-height`, horizontal padding `--gap-half`.
 - Panel and card inner padding: `--gap`. Cell padding: `--gap-half`.
 - Between titled groups: `--gap-double`.
+- Eyebrow to the heading under it: `--gap-half` (12px).
 - Heading to the body copy or lede that follows it: `--space-4x` (16px).
 - Inside a component, step with `--space-2x` / `--space-4x` / `--space-8x`;
   between blocks within a section, `--gap`, `--space-8x`, `--gap-double`,
