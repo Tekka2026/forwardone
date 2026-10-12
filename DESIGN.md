@@ -231,9 +231,11 @@ button sit in a plain strip at the top of the page
   bottom to black 0% at 20px above the bar.
 - Closed: `--nav-bg` (#26175A), height `--nav-height`, 12 columns wide
   (`--col-12`), centred, `--gap` above the viewport bottom. Left: a greeting
-  typed with a typewriter effect and a blinking `_` cursor (copy in
+  typed with a typewriter effect and a blinking `_` cursor; its first six
+  characters carry a circular #78F6FB-to-white gradient (copy in
   `src/content/nav.ts`, `navGreeting`: first line, 4 s hold, erase, second
-  line stays, preceded by an AI mark that animates in). Clicking the greeting
+  line stays). While the panel is open an AI mark animates in before the
+  greeting. Clicking the greeting
   turns it into a text field (no backend yet). Right: a hamburger button. The
   rest of the bar is the click target; the hamburger is the keyboard control.
 - Open: the panel expands upward from the bar in `--nav-bg-open` (#110338)

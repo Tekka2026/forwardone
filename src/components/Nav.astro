@@ -4,9 +4,9 @@
  *
  * - Hidden on load; slides in from the bottom on the visitor's first scroll
  *   (or at once when the page cannot scroll, or on the first Tab press).
- * - Closed: a greeting typed with a typewriter effect on the left (with an
- *   AI mark once the second line starts; click it to type a question) and a
- *   hamburger button on the right.
+ * - Closed: a greeting typed with a typewriter effect on the left (click it
+ *   to type a question) and a hamburger button on the right. An AI mark
+ *   appears before the greeting only while the panel is open.
  * - Open: a panel grows upward out of the bar with the section columns
  *   (accordions on mobile) and the utility links; the page behind is pushed
  *   back, covered by a white layer and made inert.
@@ -97,7 +97,7 @@ const current = Astro.url.pathname;
           </svg>
         </span>
         <button class="nav__prompt" type="button" aria-label={navGreeting.ask.label} data-nav-prompt>
-          <span class="nav__typed" data-nav-typed></span><span class="nav__cursor" aria-hidden="true">_</span>
+          <span class="nav__typed" data-nav-typed><span class="nav__typed-head" data-nav-typed-head></span><span data-nav-typed-rest></span></span><span class="nav__cursor" aria-hidden="true">_</span>
         </button>
         <input
           class="nav__input"
@@ -260,6 +260,14 @@ const current = Astro.url.pathname;
   .nav__prompt:focus,
   .nav__prompt:focus-visible {
     outline: none;
+  }
+
+  /* First six characters: #78F6FB to white, circular gradient */
+  .nav__typed-head {
+    background: radial-gradient(circle at 50% 50%, #78f6fb 0%, #ffffff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
   .nav__prompt[hidden] {
@@ -520,6 +528,15 @@ const current = Astro.url.pathname;
     const accs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-nav-acc]'));
     const greeting = root.querySelector<HTMLFormElement>('[data-nav-ask]')!;
     const typed = root.querySelector<HTMLElement>('[data-nav-typed]')!;
+    const typedHead = root.querySelector<HTMLElement>('[data-nav-typed-head]')!;
+    const typedRest = root.querySelector<HTMLElement>('[data-nav-typed-rest]')!;
+    const HEAD_CHARS = 6;
+    let current = '';
+    function setTyped(text: string) {
+      current = text;
+      typedHead.textContent = text.slice(0, HEAD_CHARS);
+      typedRest.textContent = text.slice(HEAD_CHARS);
+    }
     const prompt = root.querySelector<HTMLButtonElement>('[data-nav-prompt]')!;
     const input = root.querySelector<HTMLInputElement>('[data-nav-input]')!;
     const ai = root.querySelector<HTMLElement>('[data-nav-ai]')!;
@@ -566,28 +583,32 @@ const current = Astro.url.pathname;
 
     let interrupted = false; // set when the visitor starts typing
 
+    // The AI mark is shown only while the panel is open.
     function showAi() {
       ai.hidden = false;
       requestAnimationFrame(() => requestAnimationFrame(() => ai.classList.add('is-in')));
     }
+    function hideAi() {
+      ai.classList.remove('is-in');
+      ai.hidden = true;
+    }
     async function typeText(text: string) {
       for (let i = 1; i <= text.length && !interrupted; i++) {
-        typed.textContent = text.slice(0, i);
+        setTyped(text.slice(0, i));
         await wait(TYPE_MS);
       }
     }
     async function eraseText() {
-      let text = typed.textContent || '';
+      let text = current;
       while (text.length && !interrupted) {
         text = text.slice(0, -1);
-        typed.textContent = text;
+        setTyped(text);
         await wait(ERASE_MS);
       }
     }
     async function startGreeting() {
       if (reduceMotion.matches) {
-        showAi();
-        typed.textContent = second;
+        setTyped(second);
         return;
       }
       await wait(480); // let the bar finish sliding in
@@ -597,7 +618,6 @@ const current = Astro.url.pathname;
       await eraseText();
       await wait(240);
       if (interrupted) return;
-      showAi();
       await typeText(second);
     }
 
@@ -605,7 +625,6 @@ const current = Astro.url.pathname;
     const notConnected = greeting.dataset.notConnected || '';
     function startTyping() {
       interrupted = true;
-      showAi();
       prompt.hidden = true;
       input.hidden = false;
       input.focus();
@@ -614,7 +633,7 @@ const current = Astro.url.pathname;
       if (input.value.trim()) return; // keep the field while there is text
       input.hidden = true;
       prompt.hidden = false;
-      if (!typed.textContent) typed.textContent = second;
+      if (!current) setTyped(second);
     }
     // Clicks inside the prompt must not toggle the menu.
     greeting.addEventListener('click', (e) => e.stopPropagation());
@@ -634,7 +653,7 @@ const current = Astro.url.pathname;
       input.value = '';
       input.hidden = true;
       prompt.hidden = false;
-      typed.textContent = notConnected;
+      setTyped(notConnected);
     });
 
     /* ---- Panel open / close ---- */
@@ -655,6 +674,7 @@ const current = Astro.url.pathname;
       page.classList.add('is-pushed');
       page.setAttribute('inert', '');
       document.documentElement.style.overflow = 'hidden';
+      showAi();
       menu.setAttribute('aria-expanded', 'true');
       menu.setAttribute('aria-label', 'Close menu');
       // SVG elements have no `hidden` property; toggle the attribute.
@@ -676,6 +696,7 @@ const current = Astro.url.pathname;
       page.classList.remove('is-pushed');
       page.removeAttribute('inert');
       document.documentElement.style.overflow = '';
+      hideAi();
       menu.setAttribute('aria-expanded', 'false');
       menu.setAttribute('aria-label', 'Menu');
       iconClosed.toggleAttribute('hidden', false);
