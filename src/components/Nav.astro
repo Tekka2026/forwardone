@@ -299,6 +299,12 @@ const current = Astro.url.pathname;
     50% { opacity: 0; }
   }
 
+  /* Once the greeting has finished typing, the cursor stops blinking */
+  .nav__cursor.is-still {
+    animation: none;
+    opacity: 1;
+  }
+
   .nav__menu {
     display: inline-flex;
     align-items: center;
@@ -513,6 +519,7 @@ const current = Astro.url.pathname;
     const prompt = root.querySelector<HTMLButtonElement>('[data-nav-prompt]')!;
     const input = root.querySelector<HTMLInputElement>('[data-nav-input]')!;
     const ai = root.querySelector<HTMLElement>('[data-nav-ai]')!;
+    const cursor = root.querySelector<HTMLElement>('.nav__cursor')!;
     const mobile = window.matchMedia('(max-width: 880px)');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let isOpen = false;
@@ -582,6 +589,7 @@ const current = Astro.url.pathname;
     async function startGreeting() {
       if (reduceMotion.matches) {
         setTyped(second);
+        cursor.classList.add('is-still');
         return;
       }
       await wait(480); // let the bar finish sliding in
@@ -592,6 +600,7 @@ const current = Astro.url.pathname;
       await wait(240);
       if (interrupted) return;
       await typeText(second);
+      if (!interrupted) cursor.classList.add('is-still');
     }
 
     /* ---- Click to type ---- */

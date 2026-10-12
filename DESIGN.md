@@ -235,7 +235,7 @@ button sit in a plain strip at the top of the page
   characters carry a circular #78F6FB-to-white gradient centred on the first
   letter (copy in
   `src/content/nav.ts`, `navGreeting`: first line, 4 s hold, erase, second
-  line stays). While the panel is open an AI mark animates in before the
+  line stays and the cursor stops blinking). While the panel is open an AI mark animates in before the
   greeting. The whole bar opens the
   panel; clicking the greeting also turns it into a text field (no backend
   yet). Right: a hamburger button, the keyboard control.
