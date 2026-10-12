@@ -3,17 +3,96 @@
  * Renders heading text with a line break after every sentence, so
  * "One strategy. Executed without exception." becomes two lines.
  * Used for Display (H1) and Section (H2) headings.
+ *
+ * With `reveal`, each word enters from the bottom in discrete frames:
+ *   frame 0  invisible
+ *   frame 1  visible, 2 steps down
+ *   frame 2  visible, 1 step down
+ *   frame 3  visible, at rest
+ * The last word does the same over 8 frames (7 steps down to rest).
+ * Frame length and step size are tokens: --reveal-frame, --reveal-step.
  */
 interface Props {
   text: string;
+  reveal?: boolean;
 }
-const { text } = Astro.props;
+const { text, reveal = false } = Astro.props;
 const parts = text.split(/(?<=[.?!])\s+/).filter(Boolean);
+
+// Word index runs across all sentences so the stagger is continuous.
+const sentences = parts.map((part) => part.split(/\s+/).filter(Boolean));
+const total = sentences.reduce((n, words) => n + words.length, 0);
+let index = 0;
 ---
 
-{parts.map((part, i) => (
-  <>
-    {i > 0 && <br />}
-    {part}
-  </>
-))}
+{
+  reveal
+    ? sentences.map((words, si) => (
+        <>
+          {si > 0 && <br />}
+          {words.map((word, wi) => {
+            const i = index++;
+            const last = i === total - 1;
+            return (
+              <>
+                {wi > 0 && ' '}
+                <span class:list={['rw', last && 'rw--last']} style={`--i: ${i}`}>
+                  {word}
+                </span>
+              </>
+            );
+          })}
+        </>
+      ))
+    : parts.map((part, i) => (
+        <>
+          {i > 0 && <br />}
+          {part}
+        </>
+      ))
+}
+
+<style>
+  .rw {
+    display: inline-block;
+    /* Hold the initial (invisible) frame until the animation starts */
+    opacity: 0;
+    animation: rw-in calc(var(--reveal-frame) * 4) step-end forwards;
+    animation-delay: calc(var(--i) * var(--reveal-stagger));
+  }
+
+  .rw--last {
+    animation-name: rw-in-last;
+    animation-duration: calc(var(--reveal-frame) * 9);
+  }
+
+  /* 4 frames: 0 invisible, then -2, -1, 0 */
+  @keyframes rw-in {
+    0%   { opacity: 0; transform: translateY(calc(2 * var(--reveal-step))); }
+    25%  { opacity: 1; transform: translateY(calc(2 * var(--reveal-step))); }
+    50%  { opacity: 1; transform: translateY(calc(1 * var(--reveal-step))); }
+    75%  { opacity: 1; transform: translateY(0); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  /* 9 frames: 0 invisible, then -7 … 0 */
+  @keyframes rw-in-last {
+    0%      { opacity: 0; transform: translateY(calc(7 * var(--reveal-step))); }
+    11.111% { opacity: 1; transform: translateY(calc(7 * var(--reveal-step))); }
+    22.222% { opacity: 1; transform: translateY(calc(6 * var(--reveal-step))); }
+    33.333% { opacity: 1; transform: translateY(calc(5 * var(--reveal-step))); }
+    44.444% { opacity: 1; transform: translateY(calc(4 * var(--reveal-step))); }
+    55.555% { opacity: 1; transform: translateY(calc(3 * var(--reveal-step))); }
+    66.666% { opacity: 1; transform: translateY(calc(2 * var(--reveal-step))); }
+    77.777% { opacity: 1; transform: translateY(calc(1 * var(--reveal-step))); }
+    88.888% { opacity: 1; transform: translateY(0); }
+    100%    { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rw {
+      opacity: 1;
+      animation: none;
+    }
+  }
+</style>
