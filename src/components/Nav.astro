@@ -773,9 +773,14 @@ const current = Astro.url.pathname;
       page.setAttribute('inert', '');
       document.documentElement.style.overflow = 'hidden';
       showAi();
-      // Bar colour: eased in via the [data-open] rule; cleared explicitly on close.
-      bar.style.transition = '';
-      bar.style.backgroundColor = '';
+      // Bar colour: set explicitly (not via the [data-open] rule) so every
+      // engine shows the open colour. Eased in over the open duration.
+      const navStyle = getComputedStyle(root);
+      bar.style.transition = 'none';
+      bar.style.backgroundColor = navStyle.getPropertyValue('--nav-bg').trim();
+      void bar.offsetWidth;
+      bar.style.transition = `background-color ${navStyle.getPropertyValue('--nav-open-ms').trim() || '420ms'} ${navStyle.getPropertyValue('--nav-open-ease').trim() || 'ease-out'}`;
+      bar.style.backgroundColor = navStyle.getPropertyValue('--nav-bg-open').trim();
       menu.setAttribute('aria-expanded', 'true');
       menu.setAttribute('aria-label', 'Close menu');
       // SVG elements have no `hidden` property; toggle the attribute.
