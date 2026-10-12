@@ -208,6 +208,15 @@ const current = Astro.url.pathname;
     cursor: pointer;
   }
 
+  /* No outline on the hamburger. Keyboard focus shows as a faint tint. */
+  .nav__menu:focus,
+  .nav__menu:focus-visible {
+    outline: none;
+  }
+  .nav__menu:focus-visible {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
   .nav__icon {
     display: block;
   }
@@ -414,6 +423,10 @@ const current = Astro.url.pathname;
     const mobile = window.matchMedia('(max-width: 880px)');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let isOpen = false;
+    // Track input modality so focus is only moved for keyboard users.
+    let keyboard = false;
+    document.addEventListener('keydown', () => (keyboard = true), true);
+    document.addEventListener('pointerdown', () => (keyboard = false), true);
 
     /* ---- Entrance on first scroll ---- */
     let shown = false;
@@ -499,8 +512,10 @@ const current = Astro.url.pathname;
       iconClosed.toggleAttribute('hidden', true);
       iconOpen.toggleAttribute('hidden', false);
       for (const c of cols) setAccordion(c, false);
-      const firstTarget = panel.querySelector<HTMLElement>(mobile.matches ? '[data-nav-acc]' : 'a');
-      firstTarget?.focus();
+      if (keyboard) {
+        const firstTarget = panel.querySelector<HTMLElement>(mobile.matches ? '[data-nav-acc]' : 'a');
+        firstTarget?.focus();
+      }
     }
 
     function close() {
@@ -516,7 +531,8 @@ const current = Astro.url.pathname;
       menu.setAttribute('aria-label', 'Menu');
       iconClosed.toggleAttribute('hidden', false);
       iconOpen.toggleAttribute('hidden', true);
-      menu.focus();
+      if (keyboard) menu.focus();
+      else (document.activeElement as HTMLElement | null)?.blur();
     }
 
     // The whole bar toggles the menu. Keyboard activation of the hamburger
