@@ -205,7 +205,7 @@ const current = Astro.url.pathname;
     min-height: var(--nav-height);
     padding: 0 var(--gap-half) 0 var(--gap);
     background: var(--nav-bg);
-    transition: background-color var(--nav-close-ms) var(--nav-close-ease);
+    transition: none; /* closing: the bar returns to its colour at once */
     cursor: pointer; /* the whole bar toggles the menu */
     user-select: none;
   }
