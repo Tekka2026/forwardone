@@ -563,12 +563,18 @@ const current = Astro.url.pathname;
 
     let interrupted = false; // set when the visitor starts typing
 
-    // The AI mark is shown only while the panel is open.
+    // The AI mark is shown only while the panel is open, 750ms after opening.
+    const AI_DELAY_MS = 750;
+    let aiTimer: number | undefined;
     function showAi() {
-      ai.hidden = false;
-      requestAnimationFrame(() => requestAnimationFrame(() => ai.classList.add('is-in')));
+      window.clearTimeout(aiTimer);
+      aiTimer = window.setTimeout(() => {
+        ai.hidden = false;
+        requestAnimationFrame(() => requestAnimationFrame(() => ai.classList.add('is-in')));
+      }, AI_DELAY_MS);
     }
     function hideAi() {
+      window.clearTimeout(aiTimer);
       ai.classList.remove('is-in');
       ai.hidden = true;
     }
