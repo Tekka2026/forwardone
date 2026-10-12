@@ -169,7 +169,7 @@ export const insights = {
 };
 
 export const closing = {
-  title: 'Serious about performance? So are we.',
+  title: 'Building for the many? Let\u2019s talk.',
   primary: { label: 'Contact investor relations', href: '/investors/contact' } as Cta,
   secondary: { label: 'Founders: pitch us', href: '/founders' } as Cta,
 };
