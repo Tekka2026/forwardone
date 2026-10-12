@@ -73,7 +73,7 @@
 
   /* H1 word reveal (see src/components/ui/Sentences.astro) */
   --reveal-frame: 80ms;     /* length of one frame */
-  --reveal-step: 0.04em;    /* one vertical step; words rise in steps */
+  --reveal-step: 0.02em;    /* one vertical step; words rise in steps */
   --reveal-stagger: 90ms;   /* delay between consecutive words */
 
   /* Navigation bar (floats at the bottom of the viewport) */
