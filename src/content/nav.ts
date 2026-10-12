@@ -83,6 +83,14 @@ export const navGreeting = {
   first: 'Welcome to FORWARD.one',
   second: 'How can we help you',
   holdMs: 4000,
+  /** Click-to-type prompt in the bar. No backend yet (see PLACEHOLDERS.md). */
+  ask: {
+    label: 'Ask FORWARD.one a question',
+    placeholder: 'Type your question',
+    /** Shown after submit until an assistant endpoint exists. */
+    notConnected: 'Thanks. The assistant is not connected yet.',
+    handler: '[PLACEHOLDER: assistant handler]',
+  },
 };
 
 /** Utility links, shown inside the navigation panel. */

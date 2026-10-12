@@ -221,8 +221,9 @@ CLAUDE.md action A0005).
 ## 8. Navigation
 
 The primary navigation is a bar that floats at the bottom of the viewport
-(`src/components/Nav.astro`), not a top header. The logo sits alone in a plain
-strip at the top of the page (`src/components/Header.astro`).
+(`src/components/Nav.astro`), not a top header. The logo and the Pitch us
+button sit in a plain strip at the top of the page
+(`src/components/Header.astro`).
 
 - Hidden on load. It slides in from the bottom on the visitor's first scroll
   (or at once when the page cannot scroll, or on the first Tab press).
@@ -232,11 +233,13 @@ strip at the top of the page (`src/components/Header.astro`).
   (`--col-12`), centred, `--gap` above the viewport bottom. Left: a greeting
   typed with a typewriter effect and a blinking `_` cursor (copy in
   `src/content/nav.ts`, `navGreeting`: first line, 4 s hold, erase, second
-  line stays). Right: a hamburger button. Nothing else in the bar. The whole
-  bar is the click target; the hamburger is the keyboard control.
+  line stays, preceded by an AI mark that animates in). Clicking the greeting
+  turns it into a text field (no backend yet). Right: a hamburger button. The
+  rest of the bar is the click target; the hamburger is the keyboard control.
 - Open: the panel expands upward from the bar in `--nav-bg-open` (#110338)
   with the section columns (accordions on mobile) and the utility links
-  (LP Login and Pitch us live here on every width). The
+  (LP Login lives here; Pitch us is a button in the top strip beside the
+  logo). The
   page behind is pushed back 3% (scale 0.97) from the centre of the visible
   viewport, covered by an 80% white layer and made inert. Escape,
   the scrim or the Close button closes it and returns focus.

@@ -4,7 +4,8 @@
  *
  * - Hidden on load; slides in from the bottom on the visitor's first scroll
  *   (or at once when the page cannot scroll, or on the first Tab press).
- * - Closed: a greeting typed with a typewriter effect on the left and a
+ * - Closed: a greeting typed with a typewriter effect on the left (with an
+ *   AI mark once the second line starts; click it to type a question) and a
  *   hamburger button on the right.
  * - Open: a panel grows upward out of the bar with the section columns
  *   (accordions on mobile) and the utility links; the page behind is pushed
@@ -12,7 +13,6 @@
  */
 import { primaryNav, utilityNav, navGreeting } from '@content/nav';
 import { href, isActive } from '@lib/href';
-import Button from '@components/ui/Button.astro';
 
 const current = Astro.url.pathname;
 ---
@@ -61,7 +61,6 @@ const current = Astro.url.pathname;
                         aria-current={!child.external && current === href(child.href) ? 'page' : undefined}
                       >
                         {child.label}
-                        {child.external && <span aria-hidden="true"> &#8599;</span>}
                         {child.external && <span class="visually-hidden">(opens in a new tab)</span>}
                       </a>
                     </li>
@@ -76,24 +75,41 @@ const current = Astro.url.pathname;
       <div class="nav__panel-utility">
         <a class="nav__utility-link" href={utilityNav.lpLogin.href} target="_blank" rel="noopener noreferrer">
           {utilityNav.lpLogin.label}
-          <span aria-hidden="true"> &#8599;</span>
           <span class="visually-hidden">(opens in a new tab)</span>
         </a>
-        <Button href={utilityNav.pitch.href} variant="ghost">{utilityNav.pitch.label}</Button>
       </div>
     </div>
 
     <div class="nav__bar" data-nav-bar>
-      <p
-        class="nav__greeting"
-        aria-hidden="true"
-        data-nav-greeting
+      <form
+        class="nav__ask"
+        data-nav-ask
         data-first={navGreeting.first}
         data-second={navGreeting.second}
         data-hold={navGreeting.holdMs}
+        data-not-connected={navGreeting.ask.notConnected}
+        action={navGreeting.ask.handler}
+        method="post"
       >
-        <span class="nav__typed" data-nav-typed></span><span class="nav__cursor">_</span>
-      </p>
+        <span class="nav__ai" data-nav-ai hidden aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M8 1.5c.6 3.4 3.1 5.9 6.5 6.5-3.4.6-5.9 3.1-6.5 6.5-.6-3.4-3.1-5.9-6.5-6.5 3.4-.6 5.9-3.1 6.5-6.5z" fill="currentColor" />
+          </svg>
+        </span>
+        <button class="nav__prompt" type="button" aria-label={navGreeting.ask.label} data-nav-prompt>
+          <span class="nav__typed" data-nav-typed></span><span class="nav__cursor" aria-hidden="true">_</span>
+        </button>
+        <input
+          class="nav__input"
+          type="text"
+          name="q"
+          autocomplete="off"
+          aria-label={navGreeting.ask.label}
+          placeholder={navGreeting.ask.placeholder}
+          data-nav-input
+          hidden
+        />
+      </form>
 
       <button
         class="nav__menu"
@@ -194,15 +210,81 @@ const current = Astro.url.pathname;
     background: var(--nav-bg-open);
   }
 
-  .nav__greeting {
+  .nav__ask {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2x);
+    flex: 1 1 auto;
+    min-width: 0;
     margin: 0;
     font-family: var(--font-sans);
     font-size: var(--fs-small);
     line-height: 1;
     letter-spacing: 0;
+    cursor: text; /* clicking here types; it does not toggle the menu */
+  }
+
+  .nav__ai {
+    display: inline-flex;
+    flex: 0 0 auto;
+    transform: scale(0.4) rotate(-45deg);
+    opacity: 0;
+    transition: transform 360ms cubic-bezier(0.2, 0.7, 0.2, 1), opacity 240ms ease;
+  }
+
+  .nav__ai[hidden] {
+    display: none;
+  }
+
+  .nav__ai.is-in {
+    transform: none;
+    opacity: 1;
+  }
+
+  .nav__prompt {
+    display: inline-flex;
+    align-items: baseline;
+    min-width: 0;
+    margin: 0;
+    padding: var(--space-2x) 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: clip;
+    cursor: text;
+  }
+
+  .nav__prompt:focus,
+  .nav__prompt:focus-visible {
+    outline: none;
+  }
+
+  .nav__prompt[hidden] {
+    display: none;
+  }
+
+  .nav__input {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
+    padding: var(--space-2x) 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    outline: none;
+  }
+
+  .nav__input::placeholder {
+    color: inherit;
+    opacity: 0.5;
+  }
+
+  .nav__input[hidden] {
+    display: none;
   }
 
   .nav__cursor {
@@ -250,8 +332,6 @@ const current = Astro.url.pathname;
     align-items: center;
     gap: var(--gap);
     margin-top: var(--gap);
-    padding-top: var(--gap);
-    border-top: var(--hairline-w) solid var(--nav-hairline);
   }
 
   .nav__utility-link {
@@ -438,8 +518,11 @@ const current = Astro.url.pathname;
     const iconOpen = menu.querySelector<HTMLElement>('[data-icon-open]')!;
     const cols = Array.from(root.querySelectorAll<HTMLElement>('[data-nav-col]'));
     const accs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-nav-acc]'));
-    const greeting = root.querySelector<HTMLElement>('[data-nav-greeting]')!;
+    const greeting = root.querySelector<HTMLFormElement>('[data-nav-ask]')!;
     const typed = root.querySelector<HTMLElement>('[data-nav-typed]')!;
+    const prompt = root.querySelector<HTMLButtonElement>('[data-nav-prompt]')!;
+    const input = root.querySelector<HTMLInputElement>('[data-nav-input]')!;
+    const ai = root.querySelector<HTMLElement>('[data-nav-ai]')!;
     const mobile = window.matchMedia('(max-width: 880px)');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let isOpen = false;
@@ -481,15 +564,21 @@ const current = Astro.url.pathname;
     const ERASE_MS = 30;
     const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+    let interrupted = false; // set when the visitor starts typing
+
+    function showAi() {
+      ai.hidden = false;
+      requestAnimationFrame(() => requestAnimationFrame(() => ai.classList.add('is-in')));
+    }
     async function typeText(text: string) {
-      for (let i = 1; i <= text.length; i++) {
+      for (let i = 1; i <= text.length && !interrupted; i++) {
         typed.textContent = text.slice(0, i);
         await wait(TYPE_MS);
       }
     }
     async function eraseText() {
       let text = typed.textContent || '';
-      while (text.length) {
+      while (text.length && !interrupted) {
         text = text.slice(0, -1);
         typed.textContent = text;
         await wait(ERASE_MS);
@@ -497,16 +586,56 @@ const current = Astro.url.pathname;
     }
     async function startGreeting() {
       if (reduceMotion.matches) {
+        showAi();
         typed.textContent = second;
         return;
       }
       await wait(480); // let the bar finish sliding in
       await typeText(first);
       await wait(hold);
+      if (interrupted) return;
       await eraseText();
       await wait(240);
+      if (interrupted) return;
+      showAi();
       await typeText(second);
     }
+
+    /* ---- Click to type ---- */
+    const notConnected = greeting.dataset.notConnected || '';
+    function startTyping() {
+      interrupted = true;
+      showAi();
+      prompt.hidden = true;
+      input.hidden = false;
+      input.focus();
+    }
+    function stopTyping() {
+      if (input.value.trim()) return; // keep the field while there is text
+      input.hidden = true;
+      prompt.hidden = false;
+      if (!typed.textContent) typed.textContent = second;
+    }
+    // Clicks inside the prompt must not toggle the menu.
+    greeting.addEventListener('click', (e) => e.stopPropagation());
+    prompt.addEventListener('click', startTyping);
+    input.addEventListener('blur', stopTyping);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        input.value = '';
+        input.blur();
+      }
+    });
+    greeting.addEventListener('submit', (e) => {
+      // [PLACEHOLDER] handler: no backend yet.
+      e.preventDefault();
+      if (!input.value.trim()) return;
+      input.value = '';
+      input.hidden = true;
+      prompt.hidden = false;
+      typed.textContent = notConnected;
+    });
 
     /* ---- Panel open / close ---- */
     function setAccordion(col: HTMLElement, open: boolean) {
