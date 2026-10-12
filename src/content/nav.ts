@@ -87,6 +87,8 @@ export const navGreeting = {
   ask: {
     label: 'Ask FORWARD.one a question',
     placeholder: 'Type your question',
+    /** How long the second line stays before it erases into the placeholder. */
+    placeholderAfterMs: 2000,
     /** Shown after submit until an assistant endpoint exists. */
     notConnected: 'Thanks. The assistant is not connected yet.',
     handler: '[PLACEHOLDER: assistant handler]',

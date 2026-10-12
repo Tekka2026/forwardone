@@ -83,6 +83,8 @@ const current = Astro.url.pathname;
         data-second={navGreeting.second}
         data-hold={navGreeting.holdMs}
         data-not-connected={navGreeting.ask.notConnected}
+        data-placeholder={navGreeting.ask.placeholder}
+        data-placeholder-after={navGreeting.ask.placeholderAfterMs}
         action={navGreeting.ask.handler}
         method="post"
       >
@@ -100,7 +102,6 @@ const current = Astro.url.pathname;
           name="q"
           autocomplete="off"
           aria-label={navGreeting.ask.label}
-          placeholder={navGreeting.ask.placeholder}
           data-nav-input
           hidden
         />
@@ -205,6 +206,7 @@ const current = Astro.url.pathname;
     min-height: var(--nav-height);
     padding: 0 var(--gap-half) 0 var(--gap);
     background: var(--nav-bg);
+    border-radius: var(--radius);
     transition: none; /* closing: the bar returns to its colour at once */
     cursor: pointer; /* the whole bar toggles the menu */
     user-select: none;
@@ -212,6 +214,7 @@ const current = Astro.url.pathname;
 
   .nav[data-open] .nav__bar {
     background: var(--nav-bg-open);
+    border-radius: 0 0 var(--radius) var(--radius); /* joins the panel above */
     transition: background-color var(--nav-open-ms) var(--nav-open-ease);
   }
 
@@ -294,6 +297,21 @@ const current = Astro.url.pathname;
   .nav__prompt:focus,
   .nav__prompt:focus-visible {
     outline: none;
+  }
+
+  /* Placeholder state: grey text, cursor in front of it */
+  .nav__prompt.is-placeholder .nav__typed {
+    color: rgba(255, 255, 255, 0.5);
+  }
+  .nav__prompt.is-placeholder .nav__typed-head {
+    background: none;
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    color: inherit;
+  }
+  .nav__prompt.is-placeholder .nav__cursor {
+    order: -1;
+    margin-right: 1px;
   }
 
   /* First six characters: #78F6FB to white, circular gradient */
@@ -402,6 +420,7 @@ const current = Astro.url.pathname;
     overflow-y: auto;
     padding: var(--gap);
     background: var(--nav-bg-open);
+    border-radius: var(--radius) var(--radius) 0 0;
     transform-origin: 50% 100%;
     transform: translateY(var(--space-2x)) scaleY(0.96);
     /* no opacity animation: motion only */
@@ -637,8 +656,7 @@ const current = Astro.url.pathname;
     }
     async function startGreeting() {
       if (reduceMotion.matches) {
-        setTyped(second);
-        cursor.classList.add('is-still');
+        setPlaceholderState();
         return;
       }
       await wait(480); // let the bar finish sliding in
@@ -649,23 +667,57 @@ const current = Astro.url.pathname;
       await wait(240);
       if (interrupted) return;
       await typeText(second);
-      if (!interrupted) cursor.classList.add('is-still');
+      if (interrupted) return;
+      cursor.classList.add('is-still');
+      await toPlaceholder();
     }
 
     /* ---- Click to type ---- */
     const notConnected = greeting.dataset.notConnected || '';
+    const placeholder = greeting.dataset.placeholder || '';
+    const placeholderAfter = Number(greeting.dataset.placeholderAfter) || 2000;
+    let placeholderMode = false;
+
+    function setPlaceholderState() {
+      placeholderMode = true;
+      prompt.classList.add('is-placeholder');
+      setTyped(placeholder);
+      cursor.classList.add('is-still');
+      prompt.hidden = false;
+      input.hidden = true;
+    }
+    // After the greeting: erase the second line and write the placeholder in grey.
+    async function toPlaceholder() {
+      await wait(placeholderAfter);
+      if (interrupted) return;
+      await eraseText();
+      if (interrupted) return;
+      prompt.classList.add('is-placeholder');
+      await typeText(placeholder);
+      if (!interrupted) placeholderMode = true;
+    }
+
     function startTyping() {
       interrupted = true;
+      placeholderMode = false;
       prompt.hidden = true;
       input.hidden = false;
       input.focus();
     }
     function stopTyping() {
       if (input.value.trim()) return; // keep the field while there is text
-      input.hidden = true;
-      prompt.hidden = false;
-      if (!current) setTyped(second);
+      setPlaceholderState();
     }
+    // Typing anywhere while the placeholder is showing starts the question.
+    document.addEventListener('keydown', (e) => {
+      if (!placeholderMode || !input.hidden) return;
+      if (e.metaKey || e.ctrlKey || e.altKey || e.key.length !== 1 || e.key === ' ') return;
+      const el = document.activeElement as HTMLElement | null;
+      if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable)) return;
+      e.preventDefault();
+      startTyping();
+      input.value = e.key;
+    });
     // The whole bar opens the menu; the prompt also drops you into the field.
     // The bar handler runs after this one (bubbling), so open there, type here.
     prompt.addEventListener('click', () => {
@@ -693,7 +745,9 @@ const current = Astro.url.pathname;
       input.value = '';
       input.hidden = true;
       prompt.hidden = false;
+      prompt.classList.remove('is-placeholder');
       setTyped(notConnected);
+      window.setTimeout(() => { if (input.hidden) setPlaceholderState(); }, 3000);
     });
 
     /* ---- Panel open / close ---- */
@@ -744,11 +798,7 @@ const current = Astro.url.pathname;
       page.removeAttribute('inert');
       document.documentElement.style.overflow = '';
       hideAi();
-      if (!input.hidden && !input.value.trim()) {
-        input.hidden = true;
-        prompt.hidden = false;
-        if (!current) setTyped(second);
-      }
+      if (!input.hidden && !input.value.trim()) setPlaceholderState();
       menu.setAttribute('aria-expanded', 'false');
       menu.setAttribute('aria-label', 'Menu');
       iconClosed.toggleAttribute('hidden', false);

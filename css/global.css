@@ -149,8 +149,9 @@
   --accent: #111111;
   --accent-fg: #ffffff;
 
-  /* Hard rule: nothing is rounded */
-  --radius: 0;
+  /* Corner radius for buttons and the navigation bar. Everything else stays
+     square (the reset sets border-radius: 0 on every element). */
+  --radius: 2px;
 }
 
 /* --------------------------------------------------------------------------
@@ -468,7 +469,7 @@ code, kbd, samp, pre {
   white-space: nowrap;
   cursor: pointer;
   user-select: none;
-  border-radius: 0;
+  border-radius: var(--radius);
   transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
 }
 

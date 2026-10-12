@@ -204,8 +204,9 @@ CLAUDE.md action A0005).
 
 ## 7. Hard rules
 
-1. **`border-radius: 0` everywhere.** The reset applies it to every element and
-   pseudo-element. Sharp corners are the point; nothing is rounded.
+1. **Square corners everywhere, except buttons and the navigation bar**, which
+   use `--radius` (2px). The reset applies `border-radius: 0` to every other
+   element and pseudo-element.
 2. **Links and buttons share ONE `.btn` component** and must render identically.
    `<a class="btn">` and `<button class="btn">` get the same reset, box, type and
    states. `.btn--ghost` is the only variant. Never style a link to look like a
@@ -235,7 +236,8 @@ button sit in a plain strip at the top of the page
   characters carry a circular #78F6FB-to-white gradient centred on the first
   letter (copy in
   `src/content/nav.ts`, `navGreeting`: first line, 4 s hold, erase, second
-  line stays and the cursor stops blinking). While the panel is open an AI mark appears before the
+  line stays and the cursor stops blinking; 2 s later it erases and "Type your
+  question" is typed out in grey with the cursor in front of it). While the panel is open an AI mark appears before the
   greeting: the text slides right to make room as the panel opens, and
   750ms later the mark rises straight up into the slot the way the last H1
   word does (one invisible frame, then a smooth rise). The whole bar opens the
