@@ -126,12 +126,12 @@ const current = Astro.url.pathname;
 </div>
 
 <style>
-  /* Open / close motion: fluid and snappy in, quicker out. */
+  /* Open / close motion: fluid and snappy, the same in both directions. */
   .nav {
     --nav-open-ms: 420ms;
     --nav-open-ease: cubic-bezier(0.22, 1, 0.36, 1);
-    --nav-close-ms: 180ms;
-    --nav-close-ease: cubic-bezier(0.4, 0, 1, 1);
+    --nav-close-ms: var(--nav-open-ms);     /* close mirrors open */
+    --nav-close-ease: var(--nav-open-ease);
   }
 
   /* No transform on .nav itself: the scrim is a fixed child and must span
@@ -405,7 +405,6 @@ const current = Astro.url.pathname;
     transform-origin: 50% 100%;
     transform: translateY(var(--space-2x)) scaleY(0.96);
     /* no opacity animation: motion only */
-    /* closing: quick snap down */
     transition: transform var(--nav-close-ms) var(--nav-close-ease);
   }
 
@@ -740,7 +739,7 @@ const current = Astro.url.pathname;
         if (isOpen) return;
         panel.hidden = true;
         scrim.hidden = true;
-      }, 200);
+      }, 440);
       page.classList.remove('is-pushed');
       page.removeAttribute('inert');
       document.documentElement.style.overflow = '';
