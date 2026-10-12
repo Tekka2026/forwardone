@@ -88,10 +88,11 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   .page {
     padding-bottom: calc(var(--nav-height) + 2 * var(--gap));
     /* transform-origin is set by Nav.astro to the centre of the viewport */
-    transition: transform 320ms ease;
+    transition: transform 180ms cubic-bezier(0.4, 0, 1, 1); /* release: quick */
   }
   .page.is-pushed {
     transform: scale(0.97);
+    transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1); /* push: fluid */
   }
 
   /* Visible marker for content that still has to be supplied. */

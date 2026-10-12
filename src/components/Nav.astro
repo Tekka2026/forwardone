@@ -126,6 +126,14 @@ const current = Astro.url.pathname;
 </div>
 
 <style>
+  /* Open / close motion: fluid and snappy in, quicker out. */
+  .nav {
+    --nav-open-ms: 420ms;
+    --nav-open-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --nav-close-ms: 180ms;
+    --nav-close-ease: cubic-bezier(0.4, 0, 1, 1);
+  }
+
   /* No transform on .nav itself: the scrim is a fixed child and must span
      the viewport. The entrance slide lives on .nav__root. */
   .nav {
@@ -166,12 +174,13 @@ const current = Astro.url.pathname;
     z-index: -1;
     background: rgba(255, 255, 255, 0.8);
     opacity: 0;
-    transition: opacity 240ms ease;
+    transition: opacity var(--nav-close-ms) var(--nav-close-ease);
     pointer-events: auto;
   }
 
   .nav[data-open] .nav__scrim {
     opacity: 1;
+    transition: opacity var(--nav-open-ms) var(--nav-open-ease);
   }
 
   .nav__root {
@@ -196,13 +205,14 @@ const current = Astro.url.pathname;
     min-height: var(--nav-height);
     padding: 0 var(--gap-half) 0 var(--gap);
     background: var(--nav-bg);
-    transition: background-color 200ms ease;
+    transition: background-color var(--nav-close-ms) var(--nav-close-ease);
     cursor: pointer; /* the whole bar toggles the menu */
     user-select: none;
   }
 
   .nav[data-open] .nav__bar {
     background: var(--nav-bg-open);
+    transition: background-color var(--nav-open-ms) var(--nav-open-ease);
   }
 
   .nav__ask {
@@ -383,14 +393,22 @@ const current = Astro.url.pathname;
     overflow-y: auto;
     padding: var(--gap);
     background: var(--nav-bg-open);
-    transform: translateY(var(--space-4x));
+    transform-origin: 50% 100%;
+    transform: translateY(var(--space-2x)) scaleY(0.96);
     opacity: 0;
-    transition: transform 240ms ease, opacity 200ms ease;
+    /* closing: quick snap down */
+    transition:
+      transform var(--nav-close-ms) var(--nav-close-ease),
+      opacity var(--nav-close-ms) var(--nav-close-ease);
   }
 
   .nav[data-open] .nav__panel {
     transform: none;
     opacity: 1;
+    /* opening: fluid overshoot-free spring */
+    transition:
+      transform var(--nav-open-ms) var(--nav-open-ease),
+      opacity calc(var(--nav-open-ms) * 0.6) ease-out;
   }
 
   .nav__columns {
@@ -683,6 +701,7 @@ const current = Astro.url.pathname;
     function open() {
       show();
       isOpen = true;
+      window.clearTimeout(closeTimer);
       panel.hidden = false;
       scrim.hidden = false;
       requestAnimationFrame(() => root.setAttribute('data-open', ''));
@@ -704,12 +723,18 @@ const current = Astro.url.pathname;
       }
     }
 
+    let closeTimer: number | undefined;
     function close() {
       if (!isOpen) return;
       isOpen = false;
       root.removeAttribute('data-open');
-      panel.hidden = true;
-      scrim.hidden = true;
+      // Let the close transition play, then take the panel out of the tree.
+      window.clearTimeout(closeTimer);
+      closeTimer = window.setTimeout(() => {
+        if (isOpen) return;
+        panel.hidden = true;
+        scrim.hidden = true;
+      }, 200);
       page.classList.remove('is-pushed');
       page.removeAttribute('inert');
       document.documentElement.style.overflow = '';
