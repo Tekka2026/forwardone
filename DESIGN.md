@@ -240,9 +240,9 @@ button sit in a plain strip at the top of the page
   panel; clicking the greeting also turns it into a text field (no backend
   yet). Right: a hamburger button, the keyboard control.
 - Open: the panel expands upward from the bar in `--nav-bg-open` (#110338)
-  with the section columns (accordions on mobile) and the utility links
-  (LP Login lives here; Pitch us is a button in the top strip beside the
-  logo). The
+  with the section columns (accordions on mobile). LP Login is reached via
+  the Investors column; Pitch us is a button in the top strip beside the
+  logo. The
   page behind is pushed back 3% (scale 0.97) from the centre of the visible
   viewport, covered by an 80% white layer and made inert. Escape,
   the scrim or the Close button closes it and returns focus.

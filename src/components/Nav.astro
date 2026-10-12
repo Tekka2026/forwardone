@@ -9,10 +9,10 @@
  *   the greeting also turns it into a text field. An AI mark appears before
  *   the greeting only while the panel is open.
  * - Open: a panel grows upward out of the bar with the section columns
- *   (accordions on mobile) and the utility links; the page behind is pushed
+ *   (accordions on mobile); the page behind is pushed
  *   back, covered by a white layer and made inert.
  */
-import { primaryNav, utilityNav, navGreeting } from '@content/nav';
+import { primaryNav, navGreeting } from '@content/nav';
 import { href, isActive } from '@lib/href';
 
 const current = Astro.url.pathname;
@@ -73,12 +73,6 @@ const current = Astro.url.pathname;
         }
       </div>
 
-      <div class="nav__panel-utility">
-        <a class="nav__utility-link" href={utilityNav.lpLogin.href} target="_blank" rel="noopener noreferrer">
-          {utilityNav.lpLogin.label}
-          <span class="visually-hidden">(opens in a new tab)</span>
-        </a>
-      </div>
     </div>
 
     <div class="nav__bar" data-nav-bar>
@@ -334,28 +328,6 @@ const current = Astro.url.pathname;
 
   .nav__icon[hidden] {
     display: none;
-  }
-
-  .nav__panel-utility {
-    display: flex;
-    align-items: center;
-    gap: var(--gap);
-    margin-top: var(--gap);
-  }
-
-  .nav__utility-link {
-    font-size: var(--fs-small);
-    font-weight: 500;
-    line-height: 1;
-    text-decoration: none;
-    white-space: nowrap;
-    opacity: 0.85;
-  }
-
-  .nav__utility-link:hover {
-    opacity: 1;
-    text-decoration: underline;
-    text-underline-offset: 4px;
   }
 
   /* Buttons on the dark panel */
