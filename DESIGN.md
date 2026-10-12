@@ -236,8 +236,9 @@ button sit in a plain strip at the top of the page
   characters carry a circular #78F6FB-to-white gradient centred on the first
   letter (copy in
   `src/content/nav.ts`, `navGreeting`: first line, 4 s hold, erase, second
-  line stays and the cursor stops blinking; 2 s later it erases and "Type your
-  question" is typed out in grey with the cursor in front of it). While the panel is open an AI mark appears before the
+  line stays; 2 s later it erases and "Type your question" is typed out in
+  grey). The `_` cursor shows only while text is being typed or erased;
+  idle states have no cursor. While the panel is open an AI mark appears before the
   greeting: the text slides right to make room as the panel opens, and
   750ms later the mark rises straight up into the slot the way the last H1
   word does (one invisible frame, then a smooth rise). The whole bar opens the

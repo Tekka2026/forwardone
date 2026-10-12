@@ -358,10 +358,9 @@ const current = Astro.url.pathname;
     50% { opacity: 0; }
   }
 
-  /* Once the greeting has finished typing, the cursor stops blinking */
+  /* The cursor exists only while text is being typed or erased */
   .nav__cursor.is-still {
-    animation: none;
-    opacity: 1;
+    display: none;
   }
 
   .nav__menu {
@@ -644,12 +643,14 @@ const current = Astro.url.pathname;
       ai.classList.remove('is-in', 'is-room');
     }
     async function typeText(text: string) {
+      cursor.classList.remove('is-still');
       for (let i = 1; i <= text.length && !interrupted; i++) {
         setTyped(text.slice(0, i));
         await wait(TYPE_MS);
       }
     }
     async function eraseText() {
+      cursor.classList.remove('is-still');
       let text = current;
       while (text.length && !interrupted) {
         text = text.slice(0, -1);
@@ -664,6 +665,7 @@ const current = Astro.url.pathname;
       }
       await wait(480); // let the bar finish sliding in
       await typeText(first);
+      cursor.classList.add('is-still'); // idle during the hold: no cursor
       await wait(hold);
       if (interrupted) return;
       await eraseText();
@@ -671,7 +673,7 @@ const current = Astro.url.pathname;
       if (interrupted) return;
       await typeText(second);
       if (interrupted) return;
-      cursor.classList.add('is-still');
+      cursor.classList.add('is-still'); // idle: no cursor
       await toPlaceholder();
     }
 
@@ -697,7 +699,10 @@ const current = Astro.url.pathname;
       if (interrupted) return;
       prompt.classList.add('is-placeholder');
       await typeText(placeholder);
-      if (!interrupted) placeholderMode = true;
+      if (!interrupted) {
+        placeholderMode = true;
+        cursor.classList.add('is-still');
+      }
     }
 
     function startTyping() {
@@ -750,6 +755,7 @@ const current = Astro.url.pathname;
       prompt.hidden = false;
       prompt.classList.remove('is-placeholder');
       setTyped(notConnected);
+      cursor.classList.add('is-still');
       window.setTimeout(() => { if (input.hidden) setPlaceholderState(); }, 3000);
     });
 
