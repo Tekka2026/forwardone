@@ -301,7 +301,8 @@ const current = Astro.url.pathname;
     outline: none;
   }
 
-  /* Placeholder state: grey text, cursor in front of it */
+  /* Placeholder state: grey text. The cursor follows the text like everywhere
+     else and is hidden when idle. */
   .nav__prompt.is-placeholder .nav__typed {
     color: rgba(255, 255, 255, 0.5);
   }
@@ -310,10 +311,6 @@ const current = Astro.url.pathname;
     -webkit-background-clip: initial;
     background-clip: initial;
     color: inherit;
-  }
-  .nav__prompt.is-placeholder .nav__cursor {
-    order: -1;
-    margin-right: 1px;
   }
 
   /* First six characters: #78F6FB to white, circular gradient */
