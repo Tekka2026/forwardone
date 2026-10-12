@@ -74,7 +74,18 @@ export const primaryNav: NavSection[] = [
   },
 ];
 
-/** Utility links, top right. Always visible; repeated in the mobile menu. */
+/**
+ * Greeting typed into the navigation bar (typewriter effect, blinking cursor).
+ * The first line holds for `holdMs`, erases, then the second line is typed
+ * and stays.
+ */
+export const navGreeting = {
+  first: 'Welcome to FORWARD.one',
+  second: 'How can we help you',
+  holdMs: 4000,
+};
+
+/** Utility links, shown inside the navigation panel. */
 export const utilityNav = {
   lpLogin: { label: 'LP Login', href: LP_LOGIN_URL, external: true },
   pitch: { label: 'Pitch us', href: '/founders' },

@@ -1,12 +1,16 @@
 ---
 /**
  * Floating navigation bar at the bottom of the viewport.
- * Closed: a bar with the section labels and utility links.
- * Open: a panel grows upward out of the bar; the page behind is pushed back
- * (scaled, darkened, inert). One panel for all sections; the clicked section
- * is marked current and, on mobile, its accordion is opened.
+ *
+ * - Hidden on load; slides in from the bottom on the visitor's first scroll
+ *   (or at once when the page cannot scroll, or on the first Tab press).
+ * - Closed: a greeting typed with a typewriter effect on the left and a
+ *   hamburger button on the right.
+ * - Open: a panel grows upward out of the bar with the section columns
+ *   (accordions on mobile) and the utility links; the page behind is pushed
+ *   back, covered by a white layer and made inert.
  */
-import { primaryNav, utilityNav } from '@content/nav';
+import { primaryNav, utilityNav, navGreeting } from '@content/nav';
 import { href, isActive } from '@lib/href';
 import Button from '@components/ui/Button.astro';
 
@@ -79,50 +83,39 @@ const current = Astro.url.pathname;
     </div>
 
     <div class="nav__bar">
-      <ul class="nav__items">
-        {
-          primaryNav.map((section, i) => (
-            <li>
-              <button
-                class="nav__item"
-                type="button"
-                aria-expanded="false"
-                aria-controls="nav-panel"
-                aria-current={isActive(current, section.href) ? 'true' : undefined}
-                data-nav-open={i}
-              >
-                {section.label}
-              </button>
-            </li>
-          ))
-        }
-      </ul>
+      <p
+        class="nav__greeting"
+        aria-hidden="true"
+        data-nav-greeting
+        data-first={navGreeting.first}
+        data-second={navGreeting.second}
+        data-hold={navGreeting.holdMs}
+      >
+        <span class="nav__typed" data-nav-typed></span><span class="nav__cursor">_</span>
+      </p>
 
       <button
         class="nav__menu"
         type="button"
         aria-expanded="false"
         aria-controls="nav-panel"
+        aria-label="Menu"
         data-nav-menu
       >
-        <span data-label-closed>Menu</span>
-        <span data-label-open hidden>Close</span>
+        <svg class="nav__icon" data-icon-closed width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 6h18M3 12h18M3 18h18" fill="none" stroke="currentColor" stroke-width="1.75" />
+        </svg>
+        <svg class="nav__icon" data-icon-open width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" hidden>
+          <path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="1.75" />
+        </svg>
       </button>
-
-      <div class="nav__bar-utility">
-        <a class="nav__utility-link" href={utilityNav.lpLogin.href} target="_blank" rel="noopener noreferrer">
-          {utilityNav.lpLogin.label}
-          <span aria-hidden="true"> &#8599;</span>
-          <span class="visually-hidden">(opens in a new tab)</span>
-        </a>
-        <Button href={utilityNav.pitch.href} variant="ghost">{utilityNav.pitch.label}</Button>
-      </div>
     </div>
   </nav>
 </div>
 
 <style>
-  /* No transform here: the scrim is a fixed child and must span the viewport. */
+  /* No transform on .nav itself: the scrim is a fixed child and must span
+     the viewport. The entrance slide lives on .nav__root. */
   .nav {
     position: fixed;
     bottom: var(--gap);
@@ -154,12 +147,20 @@ const current = Astro.url.pathname;
     position: relative;
     width: min(var(--col-12), calc(100vw - 2 * var(--page-margin)));
     pointer-events: auto;
+    /* Hidden below the viewport until the first scroll */
+    transform: translateY(calc(100% + var(--gap) + var(--space-4x)));
+    transition: transform 480ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .nav[data-visible] .nav__root {
+    transform: none;
   }
 
   /* ---- Bar (closed state) ---- */
   .nav__bar {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: var(--gap);
     min-height: var(--nav-height);
     padding: 0 var(--gap-half) 0 var(--gap);
@@ -171,65 +172,51 @@ const current = Astro.url.pathname;
     background: var(--nav-bg-open);
   }
 
-  .nav__items {
-    display: flex;
-    align-items: center;
-    gap: var(--gap);
+  .nav__greeting {
     margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .nav__item {
-    margin: 0;
-    padding: var(--space-2x) 0;
-    border: 0;
-    background: none;
-    color: inherit;
-    font-family: var(--font-sans);
+    font-family: var(--font-mono);
     font-size: var(--fs-small);
-    font-weight: 500;
     line-height: 1;
     letter-spacing: 0;
-    cursor: pointer;
     white-space: nowrap;
-    opacity: 0.85;
+    overflow: hidden;
+    text-overflow: clip;
   }
 
-  .nav__item:hover,
-  .nav__item[aria-expanded='true'],
-  .nav__item[aria-current='true'] {
-    opacity: 1;
+  .nav__cursor {
+    display: inline-block;
+    animation: nav-blink 1s steps(1, end) infinite;
   }
 
-  .nav__item[aria-current='true'] {
-    text-decoration: underline;
-    text-underline-offset: 6px;
+  @keyframes nav-blink {
+    50% { opacity: 0; }
   }
 
   .nav__menu {
-    display: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--form-height-small);
+    height: var(--form-height-small);
     margin: 0;
-    padding: var(--space-2x) 0;
+    padding: 0;
     border: 0;
     background: none;
     color: inherit;
-    font-family: var(--font-sans);
-    font-size: var(--fs-small);
-    font-weight: 500;
-    line-height: 1;
     cursor: pointer;
   }
 
-  .nav__bar-utility,
+  .nav__icon {
+    display: block;
+  }
+
   .nav__panel-utility {
     display: flex;
     align-items: center;
     gap: var(--gap);
-  }
-
-  .nav__bar-utility {
-    margin-left: auto;
+    margin-top: var(--gap);
+    padding-top: var(--gap);
+    border-top: var(--hairline-w) solid var(--nav-hairline);
   }
 
   .nav__utility-link {
@@ -247,7 +234,7 @@ const current = Astro.url.pathname;
     text-underline-offset: 4px;
   }
 
-  /* Buttons on the dark bar */
+  /* Buttons on the dark panel */
   .nav :global(.btn) {
     min-height: var(--form-height-small);
     border-color: var(--nav-fg);
@@ -309,7 +296,7 @@ const current = Astro.url.pathname;
   }
 
   .nav__col-title:hover,
-  .nav__col.is-current .nav__col-title {
+  .nav__col-title[aria-current='true'] {
     opacity: 1;
   }
 
@@ -349,28 +336,8 @@ const current = Astro.url.pathname;
     text-underline-offset: 4px;
   }
 
-  .nav__panel-utility {
-    display: none;
-    margin-top: var(--gap);
-    padding-top: var(--gap);
-    border-top: var(--hairline-w) solid var(--nav-hairline);
-  }
-
-  /* ---- 880px: Menu button, accordion columns, utility in the panel ---- */
+  /* ---- 880px: accordion columns ---- */
   @media (max-width: 880px) {
-    .nav__items,
-    .nav__bar-utility .nav__utility-link {
-      display: none;
-    }
-
-    .nav__menu {
-      display: inline-block;
-    }
-
-    .nav__bar {
-      padding-left: var(--gap);
-    }
-
     .nav__columns {
       grid-template-columns: minmax(0, 1fr);
       gap: 0;
@@ -415,9 +382,11 @@ const current = Astro.url.pathname;
       font-size: var(--fs-body);
       padding: var(--space) 0;
     }
+  }
 
-    .nav__panel-utility {
-      display: flex;
+  @media (prefers-reduced-motion: reduce) {
+    .nav__cursor {
+      animation: none;
     }
   }
 </style>
@@ -429,46 +398,102 @@ const current = Astro.url.pathname;
   if (root && page) {
     const panel = root.querySelector<HTMLElement>('[data-nav-panel]')!;
     const scrim = root.querySelector<HTMLElement>('[data-nav-scrim]')!;
-    const openers = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-nav-open]'));
     const menu = root.querySelector<HTMLButtonElement>('[data-nav-menu]')!;
-    const labelClosed = menu.querySelector<HTMLElement>('[data-label-closed]')!;
-    const labelOpen = menu.querySelector<HTMLElement>('[data-label-open]')!;
+    const iconClosed = menu.querySelector<HTMLElement>('[data-icon-closed]')!;
+    const iconOpen = menu.querySelector<HTMLElement>('[data-icon-open]')!;
     const cols = Array.from(root.querySelectorAll<HTMLElement>('[data-nav-col]'));
     const accs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-nav-acc]'));
+    const greeting = root.querySelector<HTMLElement>('[data-nav-greeting]')!;
+    const typed = root.querySelector<HTMLElement>('[data-nav-typed]')!;
     const mobile = window.matchMedia('(max-width: 880px)');
-    let lastTrigger: HTMLElement | null = null;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let isOpen = false;
 
+    /* ---- Entrance on first scroll ---- */
+    let shown = false;
+    function show() {
+      if (shown) return;
+      shown = true;
+      root.setAttribute('data-visible', '');
+      window.removeEventListener('scroll', show);
+      window.removeEventListener('wheel', show);
+      window.removeEventListener('touchmove', show);
+      document.removeEventListener('keydown', onFirstTab);
+      startGreeting();
+    }
+    function onFirstTab(e: KeyboardEvent) {
+      if (e.key === 'Tab') show();
+    }
+    const canScroll = document.documentElement.scrollHeight > window.innerHeight + 1;
+    if (!canScroll || window.scrollY > 0) {
+      requestAnimationFrame(() => requestAnimationFrame(show));
+    } else {
+      window.addEventListener('scroll', show, { passive: true });
+      window.addEventListener('wheel', show, { passive: true });
+      window.addEventListener('touchmove', show, { passive: true });
+      document.addEventListener('keydown', onFirstTab);
+    }
+
+    /* ---- Typewriter greeting ---- */
+    const first = greeting.dataset.first || '';
+    const second = greeting.dataset.second || '';
+    const hold = Number(greeting.dataset.hold) || 4000;
+    const TYPE_MS = 55;
+    const ERASE_MS = 30;
+    const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+    async function typeText(text: string) {
+      for (let i = 1; i <= text.length; i++) {
+        typed.textContent = text.slice(0, i);
+        await wait(TYPE_MS);
+      }
+    }
+    async function eraseText() {
+      let text = typed.textContent || '';
+      while (text.length) {
+        text = text.slice(0, -1);
+        typed.textContent = text;
+        await wait(ERASE_MS);
+      }
+    }
+    async function startGreeting() {
+      if (reduceMotion.matches) {
+        typed.textContent = second;
+        return;
+      }
+      await wait(480); // let the bar finish sliding in
+      await typeText(first);
+      await wait(hold);
+      await eraseText();
+      await wait(240);
+      await typeText(second);
+    }
+
+    /* ---- Panel open / close ---- */
     function setAccordion(col: HTMLElement, open: boolean) {
       col.classList.toggle('is-open', open);
       const btn = col.querySelector<HTMLButtonElement>('[data-nav-acc]');
       if (btn) btn.setAttribute('aria-expanded', String(open));
     }
 
-    function open(index: number | null, trigger: HTMLElement) {
-      lastTrigger = trigger;
+    function open() {
+      show();
       isOpen = true;
       panel.hidden = false;
       scrim.hidden = false;
-      // Next frame so the transition runs from the hidden state.
       requestAnimationFrame(() => root.setAttribute('data-open', ''));
-      // Push the page back from the centre of the visible viewport, not the
-      // centre of the whole document.
+      // Push the page back from the centre of the visible viewport.
       page.style.transformOrigin = `50% ${window.scrollY + window.innerHeight / 2}px`;
       page.classList.add('is-pushed');
       page.setAttribute('inert', '');
       document.documentElement.style.overflow = 'hidden';
-      for (const b of openers) b.setAttribute('aria-expanded', String(b === trigger));
-      menu.setAttribute('aria-expanded', String(menu === trigger));
-      labelClosed.hidden = menu === trigger;
-      labelOpen.hidden = menu !== trigger;
-      cols.forEach((col, i) => {
-        col.classList.toggle('is-current', i === index);
-        setAccordion(col, mobile.matches && i === index);
-      });
-      const target = index === null ? cols[0] : cols[index];
-      const first = target.querySelector<HTMLElement>(mobile.matches && index === null ? '[data-nav-acc]' : 'a');
-      first?.focus();
+      menu.setAttribute('aria-expanded', 'true');
+      menu.setAttribute('aria-label', 'Close menu');
+      iconClosed.hidden = true;
+      iconOpen.hidden = false;
+      for (const c of cols) setAccordion(c, false);
+      const firstTarget = panel.querySelector<HTMLElement>(mobile.matches ? '[data-nav-acc]' : 'a');
+      firstTarget?.focus();
     }
 
     function close() {
@@ -480,24 +505,14 @@ const current = Astro.url.pathname;
       page.classList.remove('is-pushed');
       page.removeAttribute('inert');
       document.documentElement.style.overflow = '';
-      for (const b of openers) b.setAttribute('aria-expanded', 'false');
       menu.setAttribute('aria-expanded', 'false');
-      labelClosed.hidden = false;
-      labelOpen.hidden = true;
-      lastTrigger?.focus();
+      menu.setAttribute('aria-label', 'Menu');
+      iconClosed.hidden = false;
+      iconOpen.hidden = true;
+      menu.focus();
     }
 
-    openers.forEach((btn, i) => {
-      btn.addEventListener('click', () => {
-        if (isOpen && btn.getAttribute('aria-expanded') === 'true') close();
-        else open(i, btn);
-      });
-    });
-
-    menu.addEventListener('click', () => {
-      if (isOpen) close();
-      else open(null, menu);
-    });
+    menu.addEventListener('click', () => (isOpen ? close() : open()));
 
     for (const acc of accs) {
       acc.addEventListener('click', () => {
