@@ -79,7 +79,7 @@
   /* Blocks after the H1 (homepage intro): appear in one frame like the H1's
      last word, then rise smoothly over 9 frames. */
   --reveal-rise: 12px;
-  --video-overlay: rgba(0, 0, 0, 0.55); /* flat overlay on card background videos */
+  --video-overlay: rgba(0, 0, 0, 0.45); /* flat overlay on card background videos */
   --brand-cyan: #78f6fb;            /* accent: AI mark, H1 gradient, stage labels */
   --reveal-tint: var(--brand-cyan);  /* H1 last word starts in this colour */
   --reveal-tint-duration: calc(var(--reveal-frame) * 32); /* tint to white */

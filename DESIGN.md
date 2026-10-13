@@ -237,7 +237,7 @@ Built like the "Follow the battery." section on vikka.io
   horizontal overflow, so there is no page scroll.
 - Card: date in `--brand-cyan` (group label and month + year, e.g. "EXIT: APRIL
   2022"), visual centred in the right half, or a background video filling
-  the card (WebM first, MP4 fallback, poster frame; under one flat overlay (`--video-overlay`, 55% black); plays only while on screen, never under reduced motion), then along the bottom, across the whole card, the company name at Feature size (no
+  the card (WebM first, MP4 fallback, poster frame; under one flat overlay (`--video-overlay`, 45% black); plays only while on screen, never under reduced motion), then along the bottom, across the whole card, the company name at Feature size (no
   hover underline; focus shows an outline), the outcome line and optional
   mono facts. A filled `metric` shows top right. At ≤760px the card stacks.
 - Controls under the slider: a 1px progress line across the content width
