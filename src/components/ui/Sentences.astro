@@ -2,6 +2,8 @@
 /**
  * Renders heading text with a line break after every sentence, so
  * "One strategy. Executed without exception." becomes two lines.
+ * A "\n" in the text forces an extra break mid-sentence
+ * ("Performance\nis our product.").
  * Used for Display (H1) and Section (H2) headings.
  *
  * With `reveal`, each word enters from the bottom in discrete frames:
@@ -18,7 +20,7 @@ interface Props {
   reveal?: boolean;
 }
 const { text, reveal = false } = Astro.props;
-const parts = text.split(/(?<=[.?!])\s+/).filter(Boolean);
+const parts = text.split(/(?<=[.?!])\s+|\s*\n\s*/).filter(Boolean);
 
 // Word index runs across all sentences so the stagger is continuous.
 const sentences = parts.map((part) => part.split(/\s+/).filter(Boolean));
