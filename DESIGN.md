@@ -340,7 +340,8 @@ button sit in a plain strip at the top of the page
   `--accent` #FFF, `--muted` #A1A1A1, white hairlines, button hover mix) so
   any component inside it inverts without its own dark styles.
 - Homepage intro (`.intro` in `src/pages/index.astro`): header, hero and
-  figures on one black block, edge to edge (beyond the canvas too), at
+  figures on one black block, edge to edge (beyond the canvas too, and
+  upwards, so no white strip shows when the open menu pushes the page back), at
   least 90% of the viewport high
   (`90svh`), figures at its bottom, hero content centred vertically in the space
   between header and figures. The header sits transparently on top
