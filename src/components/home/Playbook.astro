@@ -9,7 +9,7 @@ import Sentences from '@components/ui/Sentences.astro';
     <p class="eyebrow">{playbook.eyebrow}</p>
     <div class="grid playbook">
       <div class="col-7">
-        <h2 class="h-feature"><Sentences text={playbook.title} /></h2>
+        <h2 class="h-feature"><Sentences text={playbook.title} reveal onScroll /></h2>
         <p class="body body--wide playbook__body">{playbook.body}</p>
         <div class="section-cta">
           <Button href={playbook.cta.href}>{playbook.cta.label}</Button>

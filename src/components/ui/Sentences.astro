@@ -18,6 +18,9 @@
  * over --reveal-tint-duration (32 frames), leaving the heading colour.
  * With `tick`, every word (the last one too) uses the stepped motion; used
  * for the eyebrow above the H1, which ticks in alongside it.
+ * With `onScroll`, the reveal waits until the heading scrolls into view
+ * (above the bottom 15% of the window, where the floating nav sits) and then
+ * starts without the page-load pause (--reveal-start: 0).
  * Frame length and step size are tokens: --reveal-frame, --reveal-step.
  */
 interface Props {
@@ -25,8 +28,10 @@ interface Props {
   reveal?: boolean;
   /** All words tick in; no smooth rise or gradient on the last word. */
   tick?: boolean;
+  /** Start the reveal when the heading scrolls into view, not on load. */
+  onScroll?: boolean;
 }
-const { text, reveal = false, tick = false } = Astro.props;
+const { text, reveal = false, tick = false, onScroll = false } = Astro.props;
 const parts = text.split(/(?<=[.?!])\s+|\s*\n\s*/).filter(Boolean);
 
 // Word index runs across all sentences so the stagger is continuous.
@@ -60,6 +65,29 @@ let index = 0;
           {part}
         </>
       ))
+}
+{
+  reveal && onScroll && (
+    <script is:inline>
+      // Hold this heading's word reveal until it scrolls into view. Runs
+      // while the page is parsed, before the words are first styled.
+      (function () {
+        var el = document.currentScript.parentElement;
+        if (!el || !('IntersectionObserver' in window)) return;
+        el.style.setProperty('--reveal-start', '0ms');
+        el.classList.add('reveal-waiting');
+        var io = new IntersectionObserver(
+          function (entries) {
+            if (!entries.some(function (e) { return e.isIntersecting || e.boundingClientRect.bottom < 0; })) return;
+            io.disconnect();
+            el.classList.remove('reveal-waiting');
+          },
+          { rootMargin: '0px 0px -15% 0px' }
+        );
+        io.observe(el);
+      })();
+    </script>
+  )
 }
 
 <style>
@@ -134,6 +162,11 @@ let index = 0;
   }
   @keyframes rw-tint {
     from { --rw-sweep: 0%; }
+  }
+
+  /* Held until the heading scrolls into view (onScroll). */
+  :global(.reveal-waiting) .rw {
+    animation-play-state: paused;
   }
 
   @media (prefers-reduced-motion: reduce) {
