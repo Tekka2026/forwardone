@@ -199,8 +199,10 @@ Built like the "Follow the battery." section on vikka.io
   canvas); the current card aligns with the content edge, earlier and later
   cards are cut off by the browser on either side. The root clips
   horizontal overflow, so there is no page scroll.
-- Card: year in `--brand-cyan` (the exit year for exits), visual centred in
-  the right half, then bottom-left the company name at Feature size (no
+- Card: date in `--brand-cyan` (the exit date for exits, e.g. "April 11,
+  2022"), visual centred in the right half, or a background video filling
+  the card (WebM first, MP4 fallback, poster frame; darkened towards the
+  text and date; plays only while on screen, never under reduced motion), then bottom-left the company name at Feature size (no
   hover underline; focus shows an outline), the outcome line and optional
   mono facts. A filled `metric` shows top right. At ≤760px the card stacks.
 - Controls under the slider: a 1px progress line across the content width

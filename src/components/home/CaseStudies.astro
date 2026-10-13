@@ -5,7 +5,8 @@
  * per company (8 columns wide) in a horizontal, snapping slider that runs to
  * both window edges, with a progress line and back/next buttons.
  *
- * Cards: year label (the exit year for exits), visual on the right, company
+ * Cards: date label (the exit date for exits), visual on the right (or a
+ * background video filling the card), company
  * name, outcome line, optional facts along the bottom. The metric shows as a
  * large figure once it is filled in.
  */
@@ -34,20 +35,42 @@ const total = slides.length;
       <ul class="cases__track" data-cases-track tabindex="0" aria-label={`${caseStudies.title} ${total} companies`}>
         {
           slides.map((c, i) => (
-            <li class="case theme-dark" data-cases-slide aria-label={`${i + 1} of ${total}: ${c.name}`}>
-              <p class="label case__year">
-                <Placeholder value={c.year} />
+            <li
+              class:list={['case theme-dark', c.video && 'case--video']}
+              data-cases-slide
+              aria-label={`${i + 1} of ${total}: ${c.name}`}
+            >
+              {c.video && (
+                <video
+                  class="case__video"
+                  data-cases-video
+                  poster={href(c.video.poster)}
+                  muted
+                  loop
+                  playsinline
+                  preload="none"
+                  aria-hidden="true"
+                  tabindex="-1"
+                >
+                  {c.video.webm && <source src={href(c.video.webm)} type="video/webm" />}
+                  <source src={href(c.video.mp4)} type="video/mp4" />
+                </video>
+              )}
+              <p class="label case__date">
+                <Placeholder value={c.date} />
               </p>
 
               {!isPlaceholder(c.metric) && <p class="case__metric">{c.metric}</p>}
 
-              <div class="case__visual">
-                {isPlaceholder(c.visual) ? (
-                  <Placeholder value={c.visual} />
-                ) : (
-                  <img src={href(c.visual)} alt="" loading="lazy" />
-                )}
-              </div>
+              {!c.video && (
+                <div class="case__visual">
+                  {isPlaceholder(c.visual) ? (
+                    <Placeholder value={c.visual} />
+                  ) : (
+                    <img src={href(c.visual)} alt="" loading="lazy" />
+                  )}
+                </div>
+              )}
 
               <div class="case__text">
                 <h3 class="case__name">
@@ -154,7 +177,34 @@ const total = slides.length;
     background: var(--card-bg);
     scroll-snap-align: start;
   }
-  .case__year {
+  /* Background video: fills the card behind its content, darkened towards
+     the text (bottom left) and the date (top) so white type stays legible. */
+  .case--video {
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .case__video {
+    position: absolute;
+    inset: 0;
+    z-index: -2; /* under the darkening layer (::before, -1) */
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .case--video::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.5) 40%, rgba(0, 0, 0, 0) 70%),
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 25%);
+  }
+  .case--video .case__text {
+    grid-column: 1 / -1;
+  }
+
+  .case__date {
     grid-column: 1 / -1;
     margin: 0;
     color: var(--brand-cyan);
@@ -314,6 +364,13 @@ const total = slides.length;
     .case__text {
       grid-row: auto;
     }
+    /* Video cards have no visual block: keep the text at the bottom. */
+    .case--video {
+      grid-template-rows: auto 1fr auto;
+    }
+    .case--video .case__text {
+      grid-row: 3;
+    }
     .cases__head .cases__intro {
       margin-top: var(--gap-half);
     }
@@ -369,5 +426,25 @@ const total = slides.length;
     );
     window.addEventListener('resize', () => go(index));
     update();
+
+    // Background videos play only while their card is on screen, and never
+    // under reduced motion (the poster frame stays).
+    const videos = Array.from(root.querySelectorAll<HTMLVideoElement>('[data-cases-video]'));
+    if (videos.length && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            const v = e.target as HTMLVideoElement;
+            if (e.isIntersecting && !reduce.matches) v.play().catch(() => {});
+            else v.pause();
+          }
+        },
+        { threshold: 0.25 },
+      );
+      for (const v of videos) io.observe(v);
+      reduce.addEventListener('change', () => {
+        if (reduce.matches) for (const v of videos) v.pause();
+      });
+    }
   }
 </script>

@@ -60,8 +60,8 @@ export const whatWeDo = {
 export type CaseStudy = {
   name: string;
   slug: string;
-  /** Year shown at the top of the card: the exit year for exits. */
-  year: string;
+  /** Date shown at the top of the card: the exit date for exits. */
+  date: string;
   outcome: string;
   /**
    * Headline outcome, e.g. "8× revenue in 3 years". Shown as a large figure
@@ -72,6 +72,13 @@ export type CaseStudy = {
   logo: string;
   /** Card visual (image path under public/). Placeholder until supplied. */
   visual: string;
+  /**
+   * Optional background video for the whole card (paths under public/):
+   * WebM (VP9) first, MP4 (H.264) as the fallback Safari uses, and a still
+   * `poster` shown before it plays and under reduced motion. Replaces the
+   * visual.
+   */
+  video?: { webm?: string; mp4: string; poster: string };
   /** Short mono facts along the card's bottom edge. Optional; hidden when empty. */
   facts: string[];
 };
@@ -91,7 +98,7 @@ export const caseStudies = {
         {
           name: 'Sensorfact',
           slug: 'sensorfact',
-          year: '[PLACEHOLDER: exit year]',
+          date: '[PLACEHOLDER: exit date]',
           outcome: 'Energy intelligence for SMEs. Acquired by ABB.',
           metric: '[PLACEHOLDER: outcome figure]',
           logo: '[PLACEHOLDER: /logos/sensorfact.svg]',
@@ -101,17 +108,18 @@ export const caseStudies = {
         {
           name: 'Mayht',
           slug: 'mayht',
-          year: '[PLACEHOLDER: exit year]',
+          date: 'April 11, 2022',
           outcome: 'Loudspeaker technology. Acquired by Sonos.',
           metric: '[PLACEHOLDER: outcome figure]',
           logo: '[PLACEHOLDER: /logos/mayht.svg]',
-          visual: '[PLACEHOLDER: image]',
+          visual: '',
+          video: { webm: '/cases/mayht.webm', mp4: '/cases/mayht.mp4', poster: '/cases/mayht.jpg' },
           facts: [],
         },
         {
           name: 'Axign',
           slug: 'axign',
-          year: '[PLACEHOLDER: exit year]',
+          date: '[PLACEHOLDER: exit date]',
           outcome: 'Audio semiconductors. Acquired by MPS.',
           metric: '[PLACEHOLDER: outcome figure]',
           logo: '[PLACEHOLDER: /logos/axign.svg]',
@@ -126,7 +134,7 @@ export const caseStudies = {
         {
           name: 'QuantWare',
           slug: 'quantware',
-          year: '[PLACEHOLDER: year]',
+          date: '[PLACEHOLDER: date]',
           outcome: 'Largest private round for a dedicated quantum processor company.',
           metric: '[PLACEHOLDER: outcome figure]',
           logo: '[PLACEHOLDER: /logos/quantware.svg]',
@@ -136,7 +144,7 @@ export const caseStudies = {
         {
           name: 'Edmund',
           slug: 'edmund',
-          year: '[PLACEHOLDER: year]',
+          date: '[PLACEHOLDER: date]',
           outcome: 'Selling to top-tier industrial customers within 12 months.',
           metric: '[PLACEHOLDER: outcome figure]',
           logo: '[PLACEHOLDER: /logos/edmund.svg]',
