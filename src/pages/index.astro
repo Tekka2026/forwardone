@@ -3,9 +3,11 @@ import Base from '@layouts/Base.astro';
 import { meta } from '@content/home';
 import Hero from '@components/home/Hero.astro';
 import Stats from '@components/home/Stats.astro';
+import TrackRecord from '@components/home/TrackRecord.astro';
 import WhatWeDo from '@components/home/WhatWeDo.astro';
 import CaseStudies from '@components/home/CaseStudies.astro';
 import Playbook from '@components/home/Playbook.astro';
+import Partners from '@components/home/Partners.astro';
 import FundIII from '@components/home/FundIII.astro';
 import Insights from '@components/home/Insights.astro';
 import ClosingCta from '@components/home/ClosingCta.astro';
@@ -15,9 +17,11 @@ import Footnotes from '@components/home/Footnotes.astro';
 <Base title={meta.title} description={meta.description}>
   <Hero />
   <Stats />
+  <TrackRecord />
   <WhatWeDo />
   <CaseStudies />
   <Playbook />
+  <Partners />
   <FundIII />
   <Insights />
   <ClosingCta />

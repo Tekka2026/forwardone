@@ -1,0 +1,88 @@
+---
+import { partners } from '@content/home';
+import { href, isPlaceholder } from '@lib/href';
+import Placeholder from '@components/ui/Placeholder.astro';
+import Sentences from '@components/ui/Sentences.astro';
+---
+
+<section class="section">
+  <div class="wrap">
+    <p class="eyebrow">{partners.eyebrow}</p>
+    <h2 class="h-section section-title"><Sentences text={partners.title} /></h2>
+    <ul class="cards partners">
+      {
+        partners.people.map((p) => (
+          <li class="partner">
+            <div class="partner__photo">
+              {isPlaceholder(p.photo) ? (
+                <Placeholder value={p.photo} />
+              ) : (
+                <img src={href(p.photo)} alt={p.name} loading="lazy" />
+              )}
+            </div>
+            <h3 class="card-title partner__name">{p.name}</h3>
+            <p class="label partner__role">{p.role}</p>
+            {isPlaceholder(p.quote) ? (
+              <p class="small partner__quote">
+                <Placeholder value={p.quote} />
+              </p>
+            ) : (
+              <blockquote class="small partner__quote">
+                <p>“{p.quote}”</p>
+              </blockquote>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+    <p class="section-link">
+      <a class="arrow-link" href={href(partners.link.href)}>{partners.link.label}</a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .section-title {
+    margin-top: var(--gap-half);
+  }
+  .partners {
+    --cards-cols: 4;
+    margin: var(--space-4x) 0 0;   /* heading → content: 16px */
+    padding: 0;
+    list-style: none;
+  }
+  .partner {
+    display: flex;
+    flex-direction: column;
+  }
+  .partner__photo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 4 / 5;
+    margin-bottom: var(--gap-half);
+    border: var(--hairline-w) solid var(--hairline);
+    overflow: hidden;
+  }
+  .partner__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .partner__name {
+    margin: 0;
+  }
+  .partner__role {
+    margin: var(--space) 0 0;
+    color: var(--muted);
+  }
+  .partner__quote {
+    margin: var(--gap-half) 0 0;
+  }
+  .partner__quote p {
+    margin: 0;
+  }
+  .section-link {
+    margin-top: var(--gap-double);
+  }
+</style>

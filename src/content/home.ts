@@ -13,7 +13,7 @@ export type Cta = { label: string; href: string };
 
 export const hero = {
   eyebrow: 'Serious about performance',
-  title: 'We back the few who build for the many.',
+  title: 'Performance is our product.',
   sub: {
     text: 'Early-stage venture capital for Europe’s industrial technology. Funds I and II rank in the top 5% of European VC.',
     footnote: 1,
@@ -22,13 +22,14 @@ export const hero = {
   secondary: { label: 'Invest with us', href: '/investors/contact' } as Cta,
 };
 
+/** `value` renders first in the DOM and on top visually; it never wraps. */
 export type Stat = { value: string; label: string; footnote?: number };
 
 export const stats: Stat[] = [
   { value: 'Top 5%', label: 'European VC (Funds I & II)', footnote: 1 },
   { value: '€383M', label: 'across three funds' },
   { value: '5', label: 'exits to strategic buyers' },
-  { value: '2,500 → ~8', label: 'companies screened → backed per year' },
+  { value: '~8 of 2,500', label: 'companies backed per year' },
   { value: '75–80%', label: 'of each fund reserved for follow-on' },
 ];
 
@@ -56,61 +57,144 @@ export type CaseStudy = {
   name: string;
   slug: string;
   outcome: string;
-  /** e.g. "8× revenue in 3 years". Hidden when it is a placeholder. */
+  /**
+   * Headline outcome, e.g. "8× revenue in 3 years". The most prominent line
+   * on the card when filled; hidden while empty or a placeholder.
+   */
   metric: string;
   /** Logo path under public/. Placeholder until supplied. */
   logo: string;
 };
 
+export type CaseGroup = { label: string; items: CaseStudy[] };
+
 export const caseStudies = {
   eyebrow: 'Proof',
   title: 'From lab to exit.',
-  items: [
+  groups: [
     {
-      name: 'Sensorfact',
-      slug: 'sensorfact',
-      outcome: 'Energy intelligence for SMEs. Acquired by ABB.',
-      metric: '[PLACEHOLDER]',
-      logo: '[PLACEHOLDER: /logos/sensorfact.svg]',
+      label: 'Exits',
+      items: [
+        {
+          name: 'Sensorfact',
+          slug: 'sensorfact',
+          outcome: 'Energy intelligence for SMEs. Acquired by ABB.',
+          metric: '[PLACEHOLDER: outcome figure]',
+          logo: '[PLACEHOLDER: /logos/sensorfact.svg]',
+        },
+        {
+          name: 'Mayht',
+          slug: 'mayht',
+          outcome: 'Loudspeaker technology. Acquired by Sonos.',
+          metric: '[PLACEHOLDER: outcome figure]',
+          logo: '[PLACEHOLDER: /logos/mayht.svg]',
+        },
+        {
+          name: 'Axign',
+          slug: 'axign',
+          outcome: 'Audio semiconductors. Acquired by MPS.',
+          metric: '[PLACEHOLDER: outcome figure]',
+          logo: '[PLACEHOLDER: /logos/axign.svg]',
+        },
+      ],
     },
     {
-      name: 'Mayht',
-      slug: 'mayht',
-      outcome: 'Loudspeaker technology. Acquired by Sonos.',
-      metric: '[PLACEHOLDER]',
-      logo: '[PLACEHOLDER: /logos/mayht.svg]',
+      label: 'Traction',
+      items: [
+        {
+          name: 'QuantWare',
+          slug: 'quantware',
+          outcome: 'Largest private round for a dedicated quantum processor company.',
+          metric: '[PLACEHOLDER: outcome figure]',
+          logo: '[PLACEHOLDER: /logos/quantware.svg]',
+        },
+        {
+          name: 'Edmund',
+          slug: 'edmund',
+          outcome: 'Selling to top-tier industrial customers within 12 months.',
+          metric: '[PLACEHOLDER: outcome figure]',
+          logo: '[PLACEHOLDER: /logos/edmund.svg]',
+        },
+      ],
     },
-    {
-      name: 'Axign',
-      slug: 'axign',
-      outcome: 'Audio semiconductors. Acquired by MPS.',
-      metric: '[PLACEHOLDER]',
-      logo: '[PLACEHOLDER: /logos/axign.svg]',
-    },
-    {
-      name: 'QuantWare',
-      slug: 'quantware',
-      outcome: 'The world’s largest private round for a dedicated quantum processor company.',
-      metric: '[PLACEHOLDER]',
-      logo: '[PLACEHOLDER: /logos/quantware.svg]',
-    },
-    {
-      name: 'Edmund',
-      slug: 'edmund',
-      outcome: 'Selling to top-tier industrial customers within 12 months.',
-      metric: '[PLACEHOLDER]',
-      logo: '[PLACEHOLDER: /logos/edmund.svg]',
-    },
-  ] as CaseStudy[],
+  ] as CaseGroup[],
   cta: { label: 'See all case studies', href: '/portfolio/case-studies' } as Cta,
+};
+
+/** Every case study across the Proof rows, for the company pages. */
+export const allCaseStudies: CaseStudy[] = caseStudies.groups.flatMap((g) => g.items);
+
+export type FundRow = {
+  fund: string;
+  size: string;
+  companies: string;
+  status: string;
+};
+
+export const trackRecord = {
+  eyebrow: 'Track record',
+  title: 'Three funds. One discipline.',
+  /** Column headings, in table order. Also the labels on mobile cards. */
+  columns: { fund: 'Fund', size: 'Size', companies: 'Companies', status: 'Status' },
+  caption: 'FORWARD.one funds by size, number of companies and status',
+  funds: [
+    { fund: 'Fund III', size: '€200M (hard cap €250M)', companies: '~30 (target)', status: 'Investing' },
+    { fund: 'Fund II', size: '€145M', companies: '20', status: '[PLACEHOLDER: status]' },
+    { fund: 'Fund I', size: '€38M', companies: '12', status: '[PLACEHOLDER: status]' },
+  ] as FundRow[],
+  exits: {
+    label: 'Exits:',
+    items: ['Mayht (Sonos)', 'Sensorfact (ABB)', 'Axign (MPS)', 'Aito', 'Nuventura'],
+  },
+  link: { label: 'Funds & track record', href: '/investors/funds' } as Cta,
 };
 
 export const playbook = {
   eyebrow: 'The Playbook',
   title: 'Capital follows performance.',
-  body: 'We co-engineer commercial success: pricing, repeatable sales, first customers, partnerships. Companies that perform get concentrated follow-on capital. Those that don’t, don’t.',
+  body: 'We co-engineer commercial success. Companies that perform get concentrated follow-on capital. Those that don’t, don’t.',
   list: ['Pricing', 'Repeatable sales', 'First customers', 'Partnerships'],
   cta: { label: 'How we commercialize', href: '/strategy/playbook' } as Cta,
+};
+
+export type Partner = {
+  name: string;
+  role: string;
+  /** Path under public/. Placeholder until supplied. */
+  photo: string;
+  quote: string;
+};
+
+export const partners = {
+  eyebrow: 'The team',
+  title: 'The people you’d be backing.',
+  people: [
+    {
+      name: 'Arjan Göbel',
+      role: 'General Partner',
+      photo: '[PLACEHOLDER: photo]',
+      quote: 'Set near-impossible deadlines, make them holy, and reach them.',
+    },
+    {
+      name: 'Riemer Smink',
+      role: 'Managing Partner',
+      photo: '[PLACEHOLDER: photo]',
+      quote: 'Commercial execution always beats technical elegance.',
+    },
+    {
+      name: 'Robin van Boxsel',
+      role: 'General Partner',
+      photo: '[PLACEHOLDER: photo]',
+      quote: '[PLACEHOLDER: quote]',
+    },
+    {
+      name: 'Paul Pruijmboom',
+      role: 'Managing Partner',
+      photo: '[PLACEHOLDER: photo]',
+      quote: '[PLACEHOLDER: quote]',
+    },
+  ] as Partner[],
+  link: { label: 'Meet the team', href: '/about/team' } as Cta,
 };
 
 export const fundIII = {
@@ -133,8 +217,9 @@ export const insights = {
   title: 'Intelligence from the front line of European industrial tech.',
   /**
    * Default featured articles from the existing news collection.
-   * Category and date were not supplied; slugs are derived from the titles
-   * and must be matched to the CMS slugs when the collection is migrated.
+   * The repo has no news collection yet, so category and date stay
+   * placeholders; slugs are derived from the titles and must be matched to
+   * the CMS slugs when the collection is migrated. Titles in sentence case.
    */
   articles: [
     {
@@ -150,7 +235,7 @@ export const insights = {
       date: '[PLACEHOLDER: date]',
     },
     {
-      title: 'Fund III: Doubling Down on Europe’s Industrial Technology Winners',
+      title: 'Fund III: doubling down on Europe’s industrial technology winners',
       slug: 'fund-iii-doubling-down-on-europes-industrial-technology-winners',
       category: '[PLACEHOLDER: category]',
       date: '[PLACEHOLDER: date]',
@@ -169,7 +254,7 @@ export const insights = {
 };
 
 export const closing = {
-  title: 'Building for the many? Let\u2019s talk.',
+  title: 'Serious about performance? So are we.',
   primary: { label: 'Contact investor relations', href: '/investors/contact' } as Cta,
   secondary: { label: 'Founders: pitch us', href: '/founders' } as Cta,
 };

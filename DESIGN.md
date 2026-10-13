@@ -106,7 +106,8 @@ Three families, all loaded in `src/layouts/Base.astro`:
 
 - `--font-display`: **Clash Display** (Fontshare; variable font, weight axis
   200–700, plus static 400/500/600 as fallback). Used for Display (H1),
-  Section (H2) and Feature headings, stat values and the wordmark only.
+  Section (H2) and Feature headings, stat values, card metrics and the
+  wordmark only.
 - `--font-sans`: **Inter** (Google Fonts, variable 400–600). H3 and below
   (card titles, the Playbook list) and all body and UI text: lede, body,
   small, buttons, navigation, forms, footer.
@@ -122,6 +123,7 @@ Three families, all loaded in `src/layouts/Base.astro`:
 | Section/H2  | `.h-section`  | `clamp(30px, 4.2vw, 56px)`             | 1.06 | 0        | 450    | max-width 1056px (8 cols). |
 | Feature/H3  | `.h-feature`  | `clamp(34px, 5vw, 72px)`               | 1.04 | 0        | 450    | max-width 1056px (8 cols). |
 | Card title  | `.card-title` | 19px                                   | 1.3  | −0.01em  | 550    | |
+| Metric      | `--fs-metric` | `clamp(24px, 2.4vw, 32px)`             | 1.15 | 0        | 450    | Headline figure on a card (Proof). Also stat values at ≤640px. |
 | Lede        | `.lede`       | `clamp(18px, 1.6vw, 21px)`             | 1.5  | 0        | 400    | max-width 784px (6 cols). |
 | Body        | `.body`       | 17px; `clamp(17px, 1.4vw, 19px)` inside `.section--feature` | 1.55 | 0 | 400 | max-width 648px (5 cols); `.body--wide` allows 784px, never more. |
 | Small       | `.small`      | 15px (`.small--tight` = 14.5px)        | 1.55 | 0        | 400    | Card body, list items. |
@@ -155,6 +157,17 @@ Rules:
   components reference tokens, never literal values. Heading weights are
   450 / 550 (set 2026-10-12), which requires the Clash Display variable font
   loaded in `src/layouts/Base.astro`; without it they snap to 500 / 600.
+
+### Figures and tables
+
+- Stat values never wrap. The stats grid uses `minmax(min-content, 1fr)`
+  columns, so a column is never narrower than its number; labels wrap instead.
+  In the DOM the number comes before its label (screen readers read it first).
+- A card's `metric` is its most prominent line when filled and is not rendered
+  while it is empty or a placeholder.
+- Data tables are real `<table>` elements with `scope`d headers. At ≤760px
+  each row restacks into a hairline card with mono labels taken from
+  `data-label`; tables never scroll horizontally.
 
 ## 6. Spacing — Vercel Geist system
 

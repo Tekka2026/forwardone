@@ -10,26 +10,31 @@ import Sentences from '@components/ui/Sentences.astro';
   <div class="wrap">
     <p class="eyebrow">{caseStudies.eyebrow}</p>
     <h2 class="h-section section-title"><Sentences text={caseStudies.title} /></h2>
-    <ul class="cards case-grid">
-      {
-        caseStudies.items.map((c) => (
-          <li class="case">
-            <div class="case__logo" aria-hidden={isPlaceholder(c.logo) ? undefined : 'true'}>
-              {isPlaceholder(c.logo) ? (
-                <Placeholder value={c.logo} />
-              ) : (
-                <img src={href(c.logo)} alt="" height="32" loading="lazy" />
-              )}
-            </div>
-            <h3 class="card-title case__name">
-              <a class="case__link" href={href(`/portfolio/${c.slug}`)}>{c.name}</a>
-            </h3>
-            <p class="small case__outcome">{c.outcome}</p>
-            {!isPlaceholder(c.metric) && <p class="label case__metric">{c.metric}</p>}
-          </li>
-        ))
-      }
-    </ul>
+    {
+      caseStudies.groups.map((g, gi) => (
+        <div class="case-group">
+          <h3 class="label case-group__label" id={`proof-group-${gi}`}>{g.label}</h3>
+          <ul class="cards case-grid">
+            {g.items.map((c) => (
+              <li class="case">
+                <div class="case__logo" aria-hidden={isPlaceholder(c.logo) ? undefined : 'true'}>
+                  {isPlaceholder(c.logo) ? (
+                    <Placeholder value={c.logo} />
+                  ) : (
+                    <img src={href(c.logo)} alt="" height="32" loading="lazy" />
+                  )}
+                </div>
+                {!isPlaceholder(c.metric) && <p class="case__metric">{c.metric}</p>}
+                <h4 class="card-title case__name">
+                  <a class="case__link" href={href(`/portfolio/${c.slug}`)}>{c.name}</a>
+                </h4>
+                <p class="small case__outcome">{c.outcome}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
     <div class="section-cta">
       <Button href={caseStudies.cta.href} variant="ghost">{caseStudies.cta.label}</Button>
     </div>
@@ -40,8 +45,18 @@ import Sentences from '@components/ui/Sentences.astro';
   .section-title {
     margin-top: var(--gap-half);
   }
+  .case-group {
+    margin-top: var(--space-4x);   /* heading → content: 16px */
+  }
+  .case-group + .case-group {
+    margin-top: var(--gap-double); /* between rows: 48 */
+  }
+  .case-group__label {
+    margin: 0;
+    color: var(--muted);
+  }
   .case-grid {
-    margin: var(--space-4x) 0 0;   /* heading → content: 16px */
+    margin: var(--gap-half) 0 0;   /* row label → cards: 12 */
     padding: 0;
     list-style: none;
   }
@@ -79,10 +94,14 @@ import Sentences from '@components/ui/Sentences.astro';
   .case__outcome {
     margin: 0;
   }
+  /* Headline outcome: the most prominent line on the card when filled. */
   .case__metric {
-    margin: auto 0 0;
-    padding-top: var(--gap-half);
-    color: var(--muted);
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--fs-metric);
+    line-height: var(--lh-metric);
+    font-weight: var(--fw-heading);
+    font-variant-numeric: tabular-nums;
   }
   .section-cta {
     margin-top: var(--gap-double);

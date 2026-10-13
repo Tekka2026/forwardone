@@ -1,0 +1,152 @@
+---
+import { trackRecord } from '@content/home';
+import { href } from '@lib/href';
+import Placeholder from '@components/ui/Placeholder.astro';
+import Sentences from '@components/ui/Sentences.astro';
+
+const { columns: col } = trackRecord;
+const keys = ['size', 'companies', 'status'] as const;
+---
+
+<section class="section">
+  <div class="wrap">
+    <p class="eyebrow">{trackRecord.eyebrow}</p>
+    <h2 class="h-section section-title"><Sentences text={trackRecord.title} /></h2>
+
+    <!-- A real table; below 760px each row restacks into a card (no scroll). -->
+    <table class="funds">
+      <caption class="visually-hidden">{trackRecord.caption}</caption>
+      <thead>
+        <tr>
+          <th scope="col">{col.fund}</th>
+          {keys.map((k) => <th scope="col">{col[k]}</th>)}
+        </tr>
+      </thead>
+      <tbody>
+        {
+          trackRecord.funds.map((f) => (
+            <tr>
+              <th scope="row" class="funds__name">{f.fund}</th>
+              {keys.map((k) => (
+                <td data-label={col[k]}>
+                  <Placeholder value={f[k]} />
+                </td>
+              ))}
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+
+    <p class="small funds__exits">
+      <strong>{trackRecord.exits.label}</strong> {trackRecord.exits.items.join(', ')}.
+    </p>
+    <p class="section-link">
+      <a class="arrow-link" href={href(trackRecord.link.href)}>{trackRecord.link.label}</a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .section-title {
+    margin-top: var(--gap-half);
+  }
+  .funds {
+    width: 100%;
+    margin-top: var(--space-4x);   /* heading → content: 16px */
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .funds th,
+  .funds td {
+    padding: var(--space-4x) var(--gutter) var(--space-4x) 0;
+    border-top: var(--hairline-w) solid var(--hairline);
+    text-align: left;
+    vertical-align: baseline;
+  }
+  .funds tbody tr:last-child > * {
+    border-bottom: var(--hairline-w) solid var(--hairline);
+  }
+  .funds thead th {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    line-height: var(--lh-mono);
+    letter-spacing: var(--ls-label);
+    font-weight: 500;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .funds tbody th,
+  .funds td {
+    font-size: var(--fs-card-title);
+    line-height: var(--lh-card-title);
+  }
+  .funds__name {
+    font-weight: var(--fw-card-title);
+  }
+  .funds td {
+    font-weight: 400;
+  }
+  .funds__exits {
+    margin-top: var(--gap);
+  }
+  .section-link {
+    margin-top: var(--gap-double);
+  }
+
+  /* Mobile: each fund becomes a stacked card with its own labels. */
+  @media (max-width: 760px) {
+    .funds,
+    .funds tbody,
+    .funds tr,
+    .funds th,
+    .funds td {
+      display: block;
+    }
+    .funds thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    .funds tbody {
+      display: grid;
+      gap: var(--gap-half);
+    }
+    .funds tbody tr {
+      padding: var(--gap);
+      border: var(--hairline-w) solid var(--hairline);
+    }
+    .funds tbody th,
+    .funds td {
+      padding: 0;
+      border: 0;
+    }
+    .funds tbody tr:last-child > * {
+      border: 0;
+    }
+    .funds tbody th {
+      margin-bottom: var(--gap-half);
+    }
+    .funds tbody td[data-label] {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+      gap: var(--gap-half);
+      padding-block: var(--space-2x);
+      font-size: var(--fs-small);
+      line-height: var(--lh-small);
+    }
+    .funds td::before {
+      content: attr(data-label);
+      font-family: var(--font-mono);
+      font-size: var(--fs-label);
+      line-height: var(--lh-small);
+      letter-spacing: var(--ls-label);
+      font-weight: 500;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+  }
+</style>

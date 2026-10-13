@@ -4,10 +4,10 @@
  * portfolio collection is migrated. /portfolio-companies/:slug redirects here.
  */
 import Stub from '@layouts/Stub.astro';
-import { caseStudies } from '@content/home';
+import { allCaseStudies } from '@content/home';
 
 export function getStaticPaths() {
-  return caseStudies.items.map((c) => ({ params: { slug: c.slug }, props: { company: c } }));
+  return allCaseStudies.map((c) => ({ params: { slug: c.slug }, props: { company: c } }));
 }
 
 const { company } = Astro.props;

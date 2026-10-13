@@ -5,19 +5,19 @@ import Footnote from '@components/ui/Footnote.astro';
 
 <section class="section stats" aria-label="Key figures">
   <div class="wrap">
-    <dl class="stats__list">
+    <ul class="stats__list">
       {
         stats.map((s) => (
-          <div class="stat">
-            <dt class="stat__label small">
+          <li class="stat">
+            <p class="stat__value">{s.value}</p>
+            <p class="stat__label small">
               {s.label}
               {s.footnote && <Footnote n={s.footnote} />}
-            </dt>
-            <dd class="stat__value">{s.value}</dd>
-          </div>
+            </p>
+          </li>
         ))
       }
-    </dl>
+    </ul>
   </div>
 </section>
 
@@ -27,14 +27,18 @@ import Footnote from '@components/ui/Footnote.astro';
   }
   .stats__list {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    /* A column is never narrower than its number, so numbers never wrap or
+       overflow; the labels wrap instead. */
+    grid-template-columns: repeat(5, minmax(min-content, 1fr));
     gap: var(--space-8x) var(--gutter);
     margin: 0;
+    padding: 0;
+    list-style: none;
   }
+  /* Number first in the DOM (read first), and on top visually. */
   .stat {
     display: flex;
-    flex-direction: column-reverse; /* value visually above its label */
-    justify-content: flex-end;      /* = top, in a reversed column */
+    flex-direction: column;
     gap: var(--space-2x);
     padding-top: var(--space-4x);
     border-top: var(--hairline-w) solid var(--hairline);
@@ -47,19 +51,25 @@ import Footnote from '@components/ui/Footnote.astro';
     letter-spacing: var(--ls-section);
     font-weight: 500;
     font-variant-numeric: tabular-nums;
+    white-space: nowrap;
   }
   .stat__label {
+    margin: 0;
     color: var(--muted);
   }
 
   @media (max-width: 980px) {
     .stats__list {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(min-content, 1fr));
     }
   }
   @media (max-width: 640px) {
     .stats__list {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(min-content, 1fr));
+    }
+    .stat__value {
+      font-size: var(--fs-metric);
+      line-height: var(--lh-metric);
     }
   }
 </style>
