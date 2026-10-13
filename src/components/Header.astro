@@ -11,7 +11,7 @@ import { utilityNav } from '@content/nav';
 <header class="site-top">
   <div class="wrap site-top__row">
     <Logo />
-    <Button href={utilityNav.pitch.href} variant="ghost" class="site-top__pitch">{utilityNav.pitch.label}</Button>
+    <Button href={utilityNav.pitch.href} variant="ghost" size="small">{utilityNav.pitch.label}</Button>
   </div>
 </header>
 
@@ -25,10 +25,5 @@ import { utilityNav } from '@content/nav';
     align-items: center;
     justify-content: space-between;
     gap: var(--gap);
-  }
-
-  /* Same height as the wordmark's line box */
-  .site-top :global(.site-top__pitch) {
-    min-height: var(--form-height-small);
   }
 </style>

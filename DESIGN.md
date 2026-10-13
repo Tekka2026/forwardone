@@ -202,7 +202,9 @@ Fixed uses:
 
 - Page margin: `--page-margin` (`.wrap` padding, via `--pad`).
 - Section rhythm: `--space-32x` / `--space-24x` / `--space-16x` by breakpoint.
-- Buttons and inputs: height `--form-height`, horizontal padding `--gap-half`.
+- Buttons: Geist sizes, `--form-height-small` / `--form-height` /
+  `--form-height-large` with `--btn-pad-small` / `--btn-pad` / `--btn-pad-large`.
+- Inputs: height `--form-height`, horizontal padding `--gap-half`.
 - Panel and card inner padding: `--gap`. Cell padding: `--gap-half`.
 - Between titled groups: `--gap-double`.
 - Eyebrow to the heading under it: `--gap-half` (12px).
@@ -219,13 +221,23 @@ CLAUDE.md action A0005).
 
 ## 7. Hard rules
 
-1. **Square corners everywhere, except buttons and the navigation bar**, which
-   use `--radius` (4px). The reset applies `border-radius: 0` to every other
+1. **Square corners everywhere, except buttons and the navigation bar.**
+   Buttons use Geist's `--btn-radius` (6px; 8px on large); the navigation bar
+   uses `--radius` (4px). The reset applies `border-radius: 0` to every other
    element and pseudo-element.
 2. **Links and buttons share ONE `.btn` component** and must render identically.
    `<a class="btn">` and `<button class="btn">` get the same reset, box, type and
-   states. `.btn--ghost` is the only variant. Never style a link to look like a
-   button any other way.
+   states. The look follows the Vercel Geist button (font stays Inter):
+   - `.btn` = Geist primary: `--fg` fill, white text, hover `#383838`.
+   - `.btn--ghost` = Geist secondary: page fill, 1px `rgba(0,0,0,.08)` ring
+     (box-shadow, no border), hover fill `rgba(0,0,0,.05)`.
+   - Sizes `.btn--small` (32px, header "Pitch us"), default (40px) and
+     `.btn--large` (48px); 14px/20px text, 16px/24px on large; weight 500.
+   - Focus: Geist ring, 2px page-coloured gap then 2px blue
+     (`--focus-ring`). Disabled: `#f2f2f2` fill, `#8f8f8f` text.
+   - Transitions 150ms ease on background, colour and ring.
+   Set them with `<Button variant size>`. Never style a link to look like a
+   button any other way. Values transcribed from Geist; verify (A0007).
 3. **No arbitrary widths.** Widths come from the column table (section 2).
 4. **No arbitrary spacing.** Internal spacing comes from the spacing scale
    (section 6); page spacing from `--page-margin`, `--gutter`, `--section-pad`.

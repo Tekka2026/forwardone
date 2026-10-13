@@ -404,18 +404,6 @@ const current = Astro.url.pathname;
     display: block;
   }
 
-  /* Buttons on the dark panel */
-  .nav :global(.btn) {
-    min-height: var(--form-height-small);
-    border-color: var(--nav-fg);
-    background: transparent;
-    color: var(--nav-fg);
-  }
-  .nav :global(.btn:hover),
-  .nav :global(.btn:focus-visible) {
-    background: var(--nav-fg);
-    color: var(--nav-bg-open);
-  }
   .nav :global(:focus-visible) {
     outline-color: var(--nav-fg);
   }

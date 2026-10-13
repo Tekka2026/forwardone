@@ -7,13 +7,16 @@ import { href as toHref } from '@lib/href';
 
 interface Props {
   href?: string;
+  /** solid = Geist primary, ghost = Geist secondary. */
   variant?: 'solid' | 'ghost';
+  /** Geist sizes: small 32px, medium 40px (default), large 48px. */
+  size?: 'small' | 'medium' | 'large';
   type?: 'button' | 'submit';
   external?: boolean;
   class?: string;
 }
-const { href, variant = 'solid', type = 'button', external = false, class: cls } = Astro.props;
-const classes = ['btn', variant === 'ghost' && 'btn--ghost', cls];
+const { href, variant = 'solid', size = 'medium', type = 'button', external = false, class: cls } = Astro.props;
+const classes = ['btn', variant === 'ghost' && 'btn--ghost', size !== 'medium' && `btn--${size}`, cls];
 ---
 
 {
