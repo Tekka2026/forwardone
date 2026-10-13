@@ -192,7 +192,7 @@ export const trackRecord = {
 
 export const playbook = {
   eyebrow: 'The Playbook',
-  title: 'Traction earns the next round',
+  title: 'Traction earns the next round.',
   body: 'We co-engineer commercial success. Companies that perform get concentrated follow-on capital. Those that don’t, don’t.',
   list: ['Pricing', 'Repeatable sales', 'First customers', 'Partnerships'],
   cta: { label: 'How we commercialize', href: '/strategy/playbook' } as Cta,
