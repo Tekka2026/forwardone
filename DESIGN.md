@@ -206,7 +206,7 @@ Built like the "Follow the battery." section on vikka.io
   hover underline; focus shows an outline), the outcome line and optional
   mono facts. A filled `metric` shows top right. At ≤760px the card stacks.
 - Controls under the slider: a 1px progress line across the content width
-  filling by slide in `--brand-cyan`, and round back/next buttons at the content's right edge
+  filling by slide in `--fg` (black), and round back/next buttons at the content's right edge
   (disabled at the ends). Swipe, trackpad and keyboard scroll the track too.
 
 ## 6. Spacing — Vercel Geist system
