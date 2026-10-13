@@ -75,10 +75,16 @@
   --reveal-frame: 80ms;     /* length of one frame */
   --reveal-step: 0.02em;    /* one vertical step; words rise in steps */
   --reveal-stagger: 90ms;   /* delay between consecutive words */
+  --reveal-start: 800ms;    /* pause after load before the H1 starts */
   /* Blocks after the H1 (homepage intro): appear in one frame like the H1's
      last word, then rise smoothly over 9 frames. */
   --reveal-rise: 12px;
   --reveal-tint: #78f6fb;           /* H1 last word starts in this colour */
+  --reveal-tint-duration: calc(var(--reveal-frame) * 32); /* tint to white */
+  /* Gentle ease-in for supporting text (hero body copy, figure labels). */
+  --reveal-gentle: 1600ms;
+  --reveal-gentle-rise: 8px;
+  --reveal-gentle-ease: cubic-bezier(0.45, 0, 0.2, 1); /* slow start, soft landing */
   --reveal-stagger-figures: 180ms; /* between consecutive figures */
 
   /* Navigation bar (floats at the bottom of the viewport) */
@@ -560,8 +566,30 @@ code, kbd, samp, pre {
   0%   { transform: translateY(var(--reveal-rise)); }
   100% { transform: translateY(0); }
 }
+/* Snap: the H1 word motion (invisible, then 2 steps down, 1 step, rest). */
+.reveal-snap {
+  animation: reveal-snap calc(var(--reveal-frame) * 4) step-end both;
+}
+@keyframes reveal-snap {
+  0%   { opacity: 0; transform: translateY(calc(2 * var(--reveal-step))); }
+  25%  { opacity: 1; transform: translateY(calc(2 * var(--reveal-step))); }
+  50%  { opacity: 1; transform: translateY(calc(1 * var(--reveal-step))); }
+  75%  { opacity: 1; transform: translateY(0); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Gentle: a slow fade while rising a few pixels. */
+.reveal-gentle {
+  animation: reveal-gentle var(--reveal-gentle) var(--reveal-gentle-ease) both;
+}
+@keyframes reveal-gentle {
+  from { opacity: 0; transform: translateY(var(--reveal-gentle-rise)); }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .reveal-block { animation: none; }
+  .reveal-block,
+  .reveal-snap,
+  .reveal-gentle { animation: none; }
 }
 
 /* Dark theme scope: re-points the colour tokens, so every component inside

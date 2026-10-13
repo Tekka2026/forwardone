@@ -13,7 +13,8 @@
  *   frame 3  visible, at rest
  * The last word appears the same way (invisible for one frame, then fully
  * visible) but rises smoothly from 7 steps down over the span of 8 frames.
- * Meanwhile it changes from --reveal-tint (#78F6FB) to the heading colour.
+ * From the moment it appears it changes from --reveal-tint (#78F6FB) to the
+ * heading colour over --reveal-tint-duration (32 frames).
  * Frame length and step size are tokens: --reveal-frame, --reveal-step.
  */
 interface Props {
@@ -62,7 +63,7 @@ let index = 0;
     /* Hold the initial (invisible) frame until the animation starts */
     opacity: 0;
     animation: rw-in calc(var(--reveal-frame) * 4) step-end forwards;
-    animation-delay: calc(var(--i) * var(--reveal-stagger));
+    animation-delay: calc(var(--reveal-start) + var(--i) * var(--reveal-stagger));
   }
 
   /* The last word: same one-frame appearance as the other words (invisible,
@@ -71,13 +72,13 @@ let index = 0;
     animation:
       rw-show calc(var(--reveal-frame) * 9) step-end forwards,
       rw-rise calc(var(--reveal-frame) * 9) cubic-bezier(0.2, 0.7, 0.2, 1) forwards,
-      rw-tint calc(var(--reveal-frame) * 8) cubic-bezier(0.2, 0.7, 0.2, 1) both;
+      rw-tint var(--reveal-tint-duration) var(--reveal-gentle-ease) both;
     /* The tint waits out the invisible first frame, so the word is fully
        #78F6FB the moment it appears. */
     animation-delay:
-      calc(var(--i) * var(--reveal-stagger)),
-      calc(var(--i) * var(--reveal-stagger)),
-      calc(var(--i) * var(--reveal-stagger) + var(--reveal-frame));
+      calc(var(--reveal-start) + var(--i) * var(--reveal-stagger)),
+      calc(var(--reveal-start) + var(--i) * var(--reveal-stagger)),
+      calc(var(--reveal-start) + var(--i) * var(--reveal-stagger) + var(--reveal-frame));
   }
 
   /* 4 frames: 0 invisible, then -2, -1, 0 */

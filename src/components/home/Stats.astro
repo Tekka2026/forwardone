@@ -8,9 +8,9 @@ import Footnote from '@components/ui/Footnote.astro';
     <ul class="stats__list">
       {
         stats.map((s, i) => (
-          <li class="stat reveal-block" style={`--n: ${i}`}>
-            <p class="stat__value">{s.value}</p>
-            <p class="stat__label small">
+          <li class="stat" style={`--n: ${i}`}>
+            <p class="stat__value reveal-snap">{s.value}</p>
+            <p class="stat__label small reveal-gentle">
               {s.label}
               {s.footnote && <Footnote n={s.footnote} />}
             </p>

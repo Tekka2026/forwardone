@@ -64,15 +64,23 @@ const h1Words = hero.title.split(/\s+/).filter(Boolean).length;
   /* Sequence: H1 word by word, then body copy and buttons together, then the
      figures one by one (starting once the body is under way). */
   .intro {
-    --h1-end: calc((var(--h1-words) - 1) * var(--reveal-stagger) + 9 * var(--reveal-frame));
+    --h1-end: calc(var(--reveal-start) + (var(--h1-words) - 1) * var(--reveal-stagger) + 9 * var(--reveal-frame));
     --figures-at: calc(var(--h1-end) + 4 * var(--reveal-frame));
   }
   .intro .hero__sub,
   .intro .hero__actions {
     animation-delay: var(--h1-end);
   }
+  /* Figures: the number snaps in like an H1 word; its label eases in
+     gently once the number has landed. */
   .intro .stat {
-    animation-delay: calc(var(--figures-at) + var(--n) * var(--reveal-stagger-figures));
+    --stat-at: calc(var(--figures-at) + var(--n) * var(--reveal-stagger-figures));
+  }
+  .intro .stat__value {
+    animation-delay: var(--stat-at);
+  }
+  .intro .stat__label {
+    animation-delay: calc(var(--stat-at) + 3 * var(--reveal-frame));
   }
   .intro + .section {
     border-top: 0;

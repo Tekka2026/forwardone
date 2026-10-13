@@ -147,15 +147,20 @@ Rules:
 - H1 words enter from the bottom one by one in discrete frames (invisible,
   then 2 steps down, 1 step, rest; the last word rises smoothly from 7
   steps down over the span of 8 frames, changing from `--reveal-tint`
-  #78F6FB to the heading colour over the same span). Tokens
+  #78F6FB to the heading colour over `--reveal-tint-duration`, 32 frames,
+  from the moment it appears). Tokens
   `--reveal-frame` (80ms), `--reveal-step` (0.02em), `--reveal-stagger`
   (90ms). Pass `reveal` to `Sentences`. Off under reduced motion.
-- Homepage intro sequence: the H1 words first; once its last word has
-  landed (`--h1-end`), the body copy and both buttons appear together; four
+- Homepage intro sequence: after `--reveal-start` (800ms) the H1 words; once its last word has
+  landed (`--h1-end`), the body copy and both buttons start together; four
   frames later the figures arrive one by one, `--reveal-stagger-figures`
-  (180ms) apart. Blocks use `.reveal-block` (global.css): invisible for one
-  frame, then visible while rising `--reveal-rise` (12px) to rest over 9
-  frames, the same motion as the H1's last word. Off under reduced motion.
+  (180ms) apart. Three motions (global.css), all off under reduced motion:
+  - `.reveal-gentle`: slow fade while rising 8px, `--reveal-gentle`
+    (1600ms), slow start and soft landing. Body copy and the figure labels.
+  - `.reveal-snap`: the H1 word motion (invisible, 2 steps, 1 step, rest).
+    The figure numbers; each label eases in 3 frames after its number.
+  - `.reveal-block`: one-frame appearance, then a smooth 12px rise over
+    9 frames, like the H1's last word. The buttons.
 - No em dashes anywhere in copy. Use a comma, colon or full stop. Page titles
   join with a vertical bar.
 - Heading tracking is 0 (previously −0.04em / −0.03em; tokens `--ls-display`,
