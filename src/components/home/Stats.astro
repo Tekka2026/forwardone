@@ -20,6 +20,33 @@ import Footnote from '@components/ui/Footnote.astro';
     </ul>
   </div>
 </section>
+<script is:inline>
+  // Figures come in when they scroll into view. Their reveal animations are
+  // held (paused) from the start; once the strip is 30% visible they play,
+  // keeping their one-by-one stagger. If that happens before the intro
+  // sequence has reached them, they keep their place in it. Without
+  // IntersectionObserver (or with reduced motion) nothing is held.
+  (function () {
+    var strip = document.currentScript.previousElementSibling;
+    if (!('IntersectionObserver' in window)) return;
+    strip.classList.add('is-waiting');
+    var io = new IntersectionObserver(function (entries) {
+      if (!entries.some(function (e) { return e.isIntersecting; })) return;
+      io.disconnect();
+      var first = strip.querySelector('.stat__value');
+      var base = first ? parseFloat(getComputedStyle(first).animationDelay) * 1000 : 0;
+      var elapsed = document.timeline ? document.timeline.currentTime : base;
+      strip.querySelectorAll('.stat__value, .stat__label').forEach(function (el) {
+        el.getAnimations().forEach(function (a) {
+          a.currentTime = Math.min(elapsed, base);
+          a.play();
+        });
+      });
+      strip.classList.remove('is-waiting');
+    }, { threshold: 0.3 });
+    io.observe(strip);
+  })();
+</script>
 
 <style>
   .stats {
@@ -54,6 +81,11 @@ import Footnote from '@components/ui/Footnote.astro';
   .stat__label {
     margin: 0;
     color: var(--muted);
+  }
+  /* Held until the strip scrolls into view (see the script below). */
+  .stats:global(.is-waiting) .stat__value,
+  .stats:global(.is-waiting) .stat__label {
+    animation-play-state: paused;
   }
 
   @media (max-width: 980px) {
