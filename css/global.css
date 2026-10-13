@@ -253,6 +253,8 @@ img, svg, video, canvas {
 
 a {
   color: inherit;
+  /* Hairline underlines everywhere (the font's default is heavy). */
+  text-decoration-thickness: 1px;
 }
 
 /* Visible focus everywhere, keyboard only */
@@ -502,7 +504,7 @@ code, kbd, samp, pre {
   line-height: var(--btn-lh);
   letter-spacing: 0;
   font-weight: 500;
-  text-decoration: none;
+  text-decoration-line: none;
   text-align: center;
   text-transform: none;
   white-space: nowrap;

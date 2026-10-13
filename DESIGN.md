@@ -323,6 +323,9 @@ CLAUDE.md action A0005).
 6. **One `.h-display` per page.** Every section opens with an `.eyebrow`.
 7. **Full-bleed is opt-in** per element via `.bleed`, never a default.
 
+Link underlines (hover, current page) are 1px (`a` in global.css); the
+font's default underline is too heavy.
+
 ## 8. Navigation
 
 The primary navigation is a bar that floats at the bottom of the viewport
