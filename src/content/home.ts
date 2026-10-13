@@ -18,10 +18,9 @@ export const hero = {
   title: 'Performance,\nengineered.',
   /** `text`, then the footnote marker, then `after`. */
   sub: {
-    text: 'Funds I and II rank in the top 5% of European VC.',
+    text: 'Our Funds I and II rank in the top 5% of European VC.',
     footnote: 1,
-    after:
-      'Fund III backs founders from pre-seed to Series A in robotics, compute, energy and dual-use, and keeps most of its capital for the companies that prove commercial traction.',
+    after: 'Fund III invests early and puts most of its capital behind the companies that prove it.',
   },
   primary: { label: 'See the track record', href: '/investors/funds' } as Cta,
   secondary: { label: 'Invest with us', href: '/investors/contact' } as Cta,

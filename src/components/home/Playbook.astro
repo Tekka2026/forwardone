@@ -42,7 +42,12 @@ import Sentences from '@components/ui/Sentences.astro';
   .section-cta {
     margin-top: var(--gap-double);
   }
+  /* The list stretches to the text column's height and shares any spare
+     room between its items, so both columns end on the same line. */
   .playbook__list {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -51,8 +56,9 @@ import Sentences from '@components/ui/Sentences.astro';
   .playbook__item {
     display: flex;
     align-items: baseline;
+    flex: 1 1 auto;
     gap: var(--space-4x);
-    padding: var(--space-4x) 0;
+    padding: var(--space-2x) 0;
     border-top: var(--hairline-w) solid var(--hairline);
     font-family: var(--font-sans);
     font-size: var(--fs-card-title);
