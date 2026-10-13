@@ -193,7 +193,8 @@ Rules:
 
 Centred: eyebrow, then the headline figure (`€384M`) with the number at
 twice the H1 size (`calc(var(--fs-display) * 2)`) and the € and M at H1
-size (`--fs-display`) on one baseline, then the H2 centred below it. The
+size (`--fs-display`) on one baseline, weight `--fw-figure` (650) and
+tracking `--ls-figure` (−0.04em), then the H2 centred below it. The
 table follows 64px lower.
 
 ### Playbook list

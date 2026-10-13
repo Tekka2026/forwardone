@@ -63,9 +63,8 @@ const keys = ['size', 'companies', 'status'] as const;
   .track__figure {
     margin: var(--gap) 0 0;
     font-family: var(--font-display);
-    font-weight: var(--fw-heading);
+    font-weight: var(--fw-figure);
     line-height: 1;
-    letter-spacing: var(--ls-display);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
   }
@@ -75,6 +74,11 @@ const keys = ['size', 'companies', 'status'] as const;
   }
   .track__value {
     font-size: calc(var(--fs-display) * 2);
+  }
+  /* Tracking set per span so the em follows each span's own size. */
+  .track__unit,
+  .track__value {
+    letter-spacing: var(--ls-figure);
   }
   .track__title {
     margin: var(--gap) auto 0;
