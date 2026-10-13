@@ -158,8 +158,8 @@ Rules:
   played without the page-load pause. Used on the Playbook H2.
 - Homepage intro sequence: the eyebrow's lead ("Early-stage VC") is
   visible from the start; its rest ("for European industrial tech") ticks
-  in word by word alongside the H1 (`<Sentences reveal tick>`), which
-  starts after `--reveal-start` (800ms); once its last word has
+  in word by word straight away (`<Sentences reveal tick>`, start 0ms);
+  the H1 starts after `--reveal-start` (800ms); once its last word has
   landed (`--h1-end`), the body copy; eight frames later (body copy about half visible) the buttons
   one after the other (`--reveal-stagger-buttons`, 180ms); later the figures arrive one by one, `--reveal-stagger-figures`
   (180ms) apart. Three motions (global.css), all off under reduced motion:
@@ -369,6 +369,11 @@ button sit in a plain strip at the top of the page
   gradient. The check uses the bar's resting centre line and runs on scroll
   and resize. The panel takes the same colour while closed, so opening and
   folding away animate bar and panel together (white to #000 and back).
+
+- Entrance glow: as the bar slides in, a transparent → `--brand-cyan`
+  gradient across the whole bar slides out to the right over
+  `--reveal-tint-duration` with `--reveal-gentle-ease`, the same as the H1's
+  last word. Off under reduced motion.
 
 ## 9. Colour (placeholders)
 

@@ -208,7 +208,15 @@ const current = Astro.url.pathname;
     gap: var(--gap);
     min-height: var(--nav-height);
     padding: 0 var(--gap-half) 0 var(--gap);
-    background: var(--nav-bg);
+    background-color: var(--nav-bg);
+    /* Entrance glow: transparent to --brand-cyan across the bar, sliding out
+       to the right like the H1's last word (see .nav[data-visible] below).
+       At rest (--nav-glow: 100%) the cyan sits past the right edge. */
+    background-image: linear-gradient(
+      90deg,
+      transparent var(--nav-glow),
+      var(--brand-cyan) calc(var(--nav-glow) + 100%)
+    );
     border-radius: var(--radius);
     /* closing: colour changes together with the panel above it */
     transition:
@@ -219,7 +227,7 @@ const current = Astro.url.pathname;
   }
 
   .nav[data-open] .nav__bar {
-    background: var(--nav-bg-open);
+    background-color: var(--nav-bg-open);
     transition:
       background-color var(--nav-open-ms) var(--nav-open-ease),
       color var(--nav-open-ms) var(--nav-open-ease);
@@ -230,7 +238,26 @@ const current = Astro.url.pathname;
      and panel together (white <-> #000), never apart. */
   .nav[data-inverse]:not([data-open]) .nav__bar,
   .nav[data-inverse]:not([data-open]) .nav__panel {
-    background: var(--nav-bg-inverse);
+    background-color: var(--nav-bg-inverse);
+  }
+
+  /* The glow plays once, as the bar slides in: same span and easing as the
+     H1's last word (--reveal-tint-duration, --reveal-gentle-ease). */
+  @property --nav-glow {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 100%;
+  }
+  .nav[data-visible] .nav__bar {
+    animation: nav-glow var(--reveal-tint-duration) var(--reveal-gentle-ease) both;
+  }
+  @keyframes nav-glow {
+    from { --nav-glow: 0%; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nav[data-visible] .nav__bar {
+      animation: none;
+    }
   }
   .nav[data-inverse]:not([data-open]) .nav__bar {
     color: var(--nav-fg-inverse);
