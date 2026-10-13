@@ -165,6 +165,10 @@
   --btn-lh-small: 20px;
   --btn-fs: 16px;
   --btn-lh: 24px;
+  /* Hover overlays measured from vercel.com, applied to the site's colours:
+     filled #161616 → #313131 (12% white), outlined #fff → #f0f0f0 (6% black). */
+  --btn-hover-lighten: 12%;
+  --btn-hover-shade: rgba(0, 0, 0, 0.06);
 }
 
 /* --------------------------------------------------------------------------
@@ -488,8 +492,9 @@ code, kbd, samp, pre {
 
 .btn:hover,
 .btn:focus-visible {
-  background: var(--bg);
-  color: var(--fg);
+  --btn-hover-fill: color-mix(in srgb, var(--accent), #ffffff var(--btn-hover-lighten));
+  background: var(--btn-hover-fill);
+  border-color: var(--btn-hover-fill); /* no dark rim around the lighter fill */
 }
 
 .btn:focus-visible {
@@ -511,8 +516,8 @@ code, kbd, samp, pre {
 
 .btn--ghost:hover,
 .btn--ghost:focus-visible {
-  background: var(--fg);
-  color: var(--bg);
+  background: var(--btn-hover-shade);
+  border-color: var(--fg);
 }
 
 .btn--small {

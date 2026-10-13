@@ -50,4 +50,4 @@
 | A0005 | open   | Verify the Geist spacing values in `DESIGN.md` §6 against https://vercel.com/geist (spacing, Stack, Button). The site is unreachable from Claude's build environment, so the values were transcribed from memory of Geist's CSS variables. |
 | A0006 | done   | Live homepage checked by the owner on 2026-10-13: Clash Display headings render, no console errors. |
 | A0007 | done   | Button reference supplied by the owner on 2026-10-13 (vercel.com screenshot). Buttons take Geist's shape only (pill, sizes, type size); colours stay the site's own. |
-| A0008 | open   | Repo Settings → Pages → Build and deployment → Source: choose **GitHub Actions**. Every push also starts a branch-based "pages build and deployment" (Jekyll) run that fails; the Astro workflow is what serves the site. |
+| A0008 | done   | Pages source switched to GitHub Actions by the owner on 2026-10-13. |

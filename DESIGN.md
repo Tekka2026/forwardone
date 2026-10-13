@@ -233,9 +233,12 @@ CLAUDE.md action A0005).
    - Sizes `.btn--small` (32px, 14px/20px text, header "Pitch us"), default
      (40px, 16px/24px) and `.btn--large` (48px, 16px/24px); weight 500;
      padding `--btn-pad-small` / `--btn-pad` / `--btn-pad-large`.
-   - `.btn`: `--accent` fill, 1px `--fg` border; hover inverts to the page
-     colour. `.btn--ghost`: transparent with a 1px `--fg` border; hover fills
-     with `--fg`. Focus: 2px `--fg` outline, 2px offset. Disabled: 40% opacity.
+   - `.btn`: `--accent` fill, 1px `--fg` border. `.btn--ghost`: transparent
+     with a 1px `--fg` border. Focus: 2px `--fg` outline, 2px offset.
+     Disabled: 40% opacity.
+   - Hover (and focus) copies the vercel.com overlays: filled buttons get a
+     12% white overlay (`--btn-hover-lighten`), outlined buttons a 6% black
+     overlay (`--btn-hover-shade`). Text colour does not change.
    Set them with `<Button variant size>`. Never style a link to look like a
    button any other way.
 3. **No arbitrary widths.** Widths come from the column table (section 2).
