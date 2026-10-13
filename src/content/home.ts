@@ -12,11 +12,14 @@
 export type Cta = { label: string; href: string };
 
 export const hero = {
-  eyebrow: 'Serious about performance',
+  /** Says what FORWARD.one does; the headline does not. */
+  eyebrow: 'Early-stage VC for European industrial tech.',
   title: 'Performance is our product.',
+  /** `text`, then the footnote marker, then `after`. */
   sub: {
-    text: 'Early-stage venture capital for Europe’s industrial technology. Funds I and II rank in the top 5% of European VC.',
+    text: 'Funds I and II rank in the top 5% of European VC.',
     footnote: 1,
+    after: 'Fund III backs founders from pre-seed to Series A.',
   },
   primary: { label: 'See the track record', href: '/investors/funds' } as Cta,
   secondary: { label: 'Invest with us', href: '/investors/contact' } as Cta,
