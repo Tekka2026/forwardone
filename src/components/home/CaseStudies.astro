@@ -2,23 +2,20 @@
 /**
  * Proof: "From lab to exit." Built like the "Follow the battery." section on
  * vikka.io: a heading row (title left, intro right), then one large dark card
- * per company in a horizontal, snapping slider that runs off the right edge
- * of the page, with a counter, a progress line and back/next buttons.
+ * per company (8 columns wide) in a horizontal, snapping slider that runs to
+ * both window edges, with a progress line and back/next buttons.
  *
- * Cards: "01  Exit" label, visual on the right, company name, outcome line,
- * optional facts along the bottom. The metric shows as a large figure once
- * it is filled in.
+ * Cards: year label (the exit year for exits), visual on the right, company
+ * name, outcome line, optional facts along the bottom. The metric shows as a
+ * large figure once it is filled in.
  */
-import { caseStudies, type CaseStudy } from '@content/home';
+import { caseStudies, allCaseStudies as slides } from '@content/home';
 import { href, isPlaceholder } from '@lib/href';
 import Button from '@components/ui/Button.astro';
 import Placeholder from '@components/ui/Placeholder.astro';
 import Sentences from '@components/ui/Sentences.astro';
 
-type Slide = CaseStudy & { stage: string };
-const slides: Slide[] = caseStudies.groups.flatMap((g) => g.items.map((c) => ({ ...c, stage: g.label })));
 const total = slides.length;
-const pad = (n: number) => String(n).padStart(2, '0');
 ---
 
 <section class="section cases" aria-labelledby="cases-title">
@@ -38,9 +35,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
         {
           slides.map((c, i) => (
             <li class="case theme-dark" data-cases-slide aria-label={`${i + 1} of ${total}: ${c.name}`}>
-              <p class="label case__stage">
-                <span class="case__num">{pad(i + 1)}</span>
-                <span class="case__kind">{c.stage}</span>
+              <p class="label case__year">
+                <Placeholder value={c.year} />
               </p>
 
               {!isPlaceholder(c.metric) && <p class="case__metric">{c.metric}</p>}
@@ -74,9 +70,6 @@ const pad = (n: number) => String(n).padStart(2, '0');
       </ul>
 
       <div class="cases__controls">
-        <p class="label cases__count" aria-live="polite">
-          <span data-cases-current>01</span> / {pad(total)}
-        </p>
         <div class="cases__progress" aria-hidden="true">
           <span class="cases__progress-fill" data-cases-fill style={`transform: scaleX(${1 / total})`}></span>
         </div>
@@ -98,15 +91,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 </section>
 
 <style>
-  /* The track runs past the right edge of the content to the window edge;
-     clip it there so it never adds page width. */
   .cases {
-    overflow-x: clip;
-    /* content width of .wrap, and the space from its right edge to the window */
-    --wrap-w: min(var(--max), 100vw - 2 * var(--pad));
-    --bleed: max(var(--pad), (100vw - var(--max)) / 2);
-    /* card: 10 columns wide at most, always leaving the next card peeking */
-    --card-w: min(var(--col-10), var(--wrap-w) - var(--gap-double));
     --card-bg: #111111;
     --card-fg-soft: rgba(255, 255, 255, 0.78);
   }
@@ -123,15 +108,26 @@ const pad = (n: number) => String(n).padStart(2, '0');
   }
 
   /* ---- Slider ---- */
+  /* The slider is the content width (a size container, so 100cqw is exactly
+     the .wrap content). The track inside runs from window edge to window
+     edge; the root clips horizontal overflow, so cards are cut by the
+     browser on both sides, never at the canvas edge. */
   .cases__slider {
+    container-type: inline-size;
     margin-top: var(--gap-double);
   }
   .cases__track {
+    /* window edge to content edge */
+    --edge: calc(50vw - 50cqw);
+    /* 8 of 12 columns */
+    --card-w: calc((100cqw - 11 * var(--gutter)) / 12 * 8 + 7 * var(--gutter));
     display: flex;
     gap: var(--gutter);
-    margin: 0 calc(-1 * var(--bleed)) 0 0;
-    /* lets the last card snap to the left edge too */
-    padding: 0 calc(var(--wrap-w) + var(--bleed) - var(--card-w)) 0 0;
+    width: 100vw;
+    margin: 0 0 0 calc(-1 * var(--edge));
+    /* first card starts at the content edge; the last can snap there too */
+    padding: 0 calc(100vw - var(--edge) - var(--card-w)) 0 var(--edge);
+    scroll-padding-inline-start: var(--edge);
     list-style: none;
     overflow-x: auto;
     overscroll-behavior-x: contain;
@@ -158,15 +154,11 @@ const pad = (n: number) => String(n).padStart(2, '0');
     background: var(--card-bg);
     scroll-snap-align: start;
   }
-  .case__stage {
+  .case__year {
     grid-column: 1 / -1;
-    display: flex;
-    gap: var(--gap-half);
     margin: 0;
-    color: var(--muted);
-  }
-  .case__kind {
     color: var(--brand-cyan);
+    font-variant-numeric: tabular-nums;
   }
   .case__metric {
     position: absolute;
@@ -208,11 +200,10 @@ const pad = (n: number) => String(n).padStart(2, '0');
   .case__link {
     text-decoration: none;
   }
-  .case__link:hover,
+  /* No underline on hover; keyboard focus shows an outline instead. */
   .case__link:focus-visible {
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 0.12em;
+    outline: 2px solid var(--fg);
+    outline-offset: 4px;
   }
   .case__outcome {
     max-width: var(--col-5);
@@ -239,18 +230,12 @@ const pad = (n: number) => String(n).padStart(2, '0');
   }
 
   /* ---- Controls ---- */
+  /* Progress line across the content width, buttons at its right edge. */
   .cases__controls {
     display: flex;
     align-items: center;
     gap: var(--gap);
     margin-top: var(--gap);
-    max-width: var(--card-w);
-  }
-  .cases__count {
-    margin: 0;
-    color: var(--muted);
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
   }
   .cases__progress {
     position: relative;
@@ -300,6 +285,13 @@ const pad = (n: number) => String(n).padStart(2, '0');
     margin-top: var(--gap-double);
   }
 
+  /* Single-column grid (≤880px): a card is the content width minus a peek. */
+  @media (max-width: 880px) {
+    .cases__track {
+      --card-w: calc(100cqw - var(--gap-double));
+    }
+  }
+
   /* ---- Narrow screens: stacked card ---- */
   @media (max-width: 760px) {
     .case {
@@ -340,7 +332,6 @@ const pad = (n: number) => String(n).padStart(2, '0');
     const slides = Array.from(root.querySelectorAll<HTMLElement>('[data-cases-slide]'));
     const prev = root.querySelector<HTMLButtonElement>('[data-cases-prev]')!;
     const next = root.querySelector<HTMLButtonElement>('[data-cases-next]')!;
-    const current = root.querySelector<HTMLElement>('[data-cases-current]')!;
     const fill = root.querySelector<HTMLElement>('[data-cases-fill]')!;
     const total = slides.length;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -354,9 +345,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
       for (let i = 1; i < total; i++) {
         if (Math.abs(offset(i) - track.scrollLeft) < Math.abs(offset(nearest) - track.scrollLeft)) nearest = i;
       }
-      if (nearest === index && current.textContent) return;
       index = nearest;
-      current.textContent = String(index + 1).padStart(2, '0');
       fill.style.transform = `scaleX(${(index + 1) / total})`;
       prev.disabled = index === 0;
       next.disabled = index === total - 1;

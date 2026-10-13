@@ -193,16 +193,19 @@ Built like the "Follow the battery." section on vikka.io
 
 - Heading row: eyebrow and H2 in 6 columns, intro in 5 columns from column 8.
 - One dark card (`#111111`, dark theme) per company in a horizontal
-  scroll-snap track. Cards are at most `--col-10` (1328px) wide and always
-  leave the next card peeking; the track runs past the content edge to the
-  window edge, clipped by the section (no page scroll).
-- Card: stage label (`01  Exit`, stage in `--brand-cyan`), visual centred in
-  the right half, then bottom-left the company name at Feature size, the
-  outcome line and optional mono facts. A filled `metric` shows top right.
-  At ≤760px the card stacks (label, visual, text).
-- Controls under the card: `01 / 05` counter, a 1px progress line filling by
-  slide, round back/next buttons (disabled at the ends). Swipe, trackpad and
-  keyboard scroll the track too.
+  scroll-snap track. Cards are 8 of 12 columns wide (1056px at full width);
+  in the single-column grid (≤880px) the content width minus a 48px peek.
+- The track runs from window edge to window edge (also beyond the 1984px
+  canvas); the current card aligns with the content edge, earlier and later
+  cards are cut off by the browser on either side. The root clips
+  horizontal overflow, so there is no page scroll.
+- Card: year in `--brand-cyan` (the exit year for exits), visual centred in
+  the right half, then bottom-left the company name at Feature size (no
+  hover underline; focus shows an outline), the outcome line and optional
+  mono facts. A filled `metric` shows top right. At ≤760px the card stacks.
+- Controls under the slider: a 1px progress line across the content width
+  filling by slide, and round back/next buttons at the content's right edge
+  (disabled at the ends). Swipe, trackpad and keyboard scroll the track too.
 
 ## 6. Spacing — Vercel Geist system
 

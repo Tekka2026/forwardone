@@ -11,6 +11,7 @@ invented; replace the value in the file named and the marker disappears.
 | Hero, stats, footnotes | `footnotes[0]` | Benchmark source and date for the top-5% ranking (footnote ¹). |
 | Footnotes | `disclaimer` | Past performance disclaimer, to be supplied by compliance. |
 | Proof slider | `caseStudies.intro` | One or two lines to the right of "From lab to exit." (like "The regulation follows a battery through its entire life." on vikka.io). |
+| Proof slider | `caseStudies.groups[*].items[*].year` | Year at the top of each card: the exit year for Sensorfact, Mayht and Axign. For QuantWare and Edmund (traction, no exit) decide which year to show, e.g. the year of first investment. |
 | Proof slider | `caseStudies.groups[*].items[*].visual` | Visual per company card (product shot, object or photo; transparent PNG/WebP works best on the dark card). Drop files in `public/cases/` and set the path. |
 | Proof slider | `caseStudies.groups[*].items[*].facts` | Optional: two or three short facts per company for the mono row at the card's bottom edge (like "Raw material origin · Carbon footprint"). Hidden while empty. |
 | Proof slider | `caseStudies.groups[*].items[*].metric` | Outcome figure per company, e.g. "8× revenue in 3 years". Shown as a large figure in the card's top-right corner once filled; hidden while it is a placeholder. |

@@ -60,6 +60,8 @@ export const whatWeDo = {
 export type CaseStudy = {
   name: string;
   slug: string;
+  /** Year shown at the top of the card: the exit year for exits. */
+  year: string;
   outcome: string;
   /**
    * Headline outcome, e.g. "8× revenue in 3 years". Shown as a large figure
@@ -89,6 +91,7 @@ export const caseStudies = {
         {
           name: 'Sensorfact',
           slug: 'sensorfact',
+          year: '[PLACEHOLDER: exit year]',
           outcome: 'Energy intelligence for SMEs. Acquired by ABB.',
           metric: '[PLACEHOLDER: outcome figure]',
           logo: '[PLACEHOLDER: /logos/sensorfact.svg]',
@@ -98,6 +101,7 @@ export const caseStudies = {
         {
           name: 'Mayht',
           slug: 'mayht',
+          year: '[PLACEHOLDER: exit year]',
           outcome: 'Loudspeaker technology. Acquired by Sonos.',
           metric: '[PLACEHOLDER: outcome figure]',
           logo: '[PLACEHOLDER: /logos/mayht.svg]',
@@ -107,6 +111,7 @@ export const caseStudies = {
         {
           name: 'Axign',
           slug: 'axign',
+          year: '[PLACEHOLDER: exit year]',
           outcome: 'Audio semiconductors. Acquired by MPS.',
           metric: '[PLACEHOLDER: outcome figure]',
           logo: '[PLACEHOLDER: /logos/axign.svg]',
@@ -121,6 +126,7 @@ export const caseStudies = {
         {
           name: 'QuantWare',
           slug: 'quantware',
+          year: '[PLACEHOLDER: year]',
           outcome: 'Largest private round for a dedicated quantum processor company.',
           metric: '[PLACEHOLDER: outcome figure]',
           logo: '[PLACEHOLDER: /logos/quantware.svg]',
@@ -130,6 +136,7 @@ export const caseStudies = {
         {
           name: 'Edmund',
           slug: 'edmund',
+          year: '[PLACEHOLDER: year]',
           outcome: 'Selling to top-tier industrial customers within 12 months.',
           metric: '[PLACEHOLDER: outcome figure]',
           logo: '[PLACEHOLDER: /logos/edmund.svg]',
