@@ -145,7 +145,7 @@
   /* Type: heading weights. Intermediate values need the variable font,
      loaded in src/layouts/Base.astro; static fallback snaps to 500/600. */
   --fw-heading: 450;     /* Display, Section, Feature */
-  --fw-figure: 550;          /* headline figures (Track record €383M) */
+  --fw-figure: var(--fw-heading); /* headline figures (Track record €383M): same as the H1 */
   --ls-figure: 0;            /* headline figure tracking */
   --fw-card-title: 550;  /* Card title */
 
