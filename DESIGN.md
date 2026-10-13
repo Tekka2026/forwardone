@@ -162,8 +162,8 @@ Rules:
     (1600ms), slow start and soft landing. Body copy and the figure labels.
   - `.reveal-snap`: the H1 word motion (invisible, 2 steps, 1 step, rest).
     The figure numbers; each label eases in 3 frames after its number.
-    The figures are held until the strip is 30% in view, then come in one
-    by one; if they are in view at load they keep their place in the intro
+    The figures are held until 15% of the section after the intro is on
+    screen (clear of the floating nav), then come in one by one; if they are in view at load they keep their place in the intro
     sequence.
   - `.reveal-block`: one-frame appearance, then a smooth 12px rise over
     9 frames, like the H1's last word. The buttons.

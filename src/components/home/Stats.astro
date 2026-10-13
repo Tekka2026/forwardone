@@ -22,16 +22,20 @@ import Footnote from '@components/ui/Footnote.astro';
 </section>
 <script is:inline>
   // Figures come in when they scroll into view. Their reveal animations are
-  // held (paused) from the start; once the strip is 30% visible they play,
-  // keeping their one-by-one stagger. If that happens before the intro
+  // held (paused) from the start; once 15% of the section after the intro is
+  // on screen (so the figures sit clear of the floating navigation bar) they
+  // play, keeping their one-by-one stagger. If that happens before the intro
   // sequence has reached them, they keep their place in it. Without
   // IntersectionObserver (or with reduced motion) nothing is held.
   (function () {
     var strip = document.currentScript.previousElementSibling;
     if (!('IntersectionObserver' in window)) return;
     strip.classList.add('is-waiting');
+    var share = 0.15;
     var io = new IntersectionObserver(function (entries) {
-      if (!entries.some(function (e) { return e.isIntersecting; })) return;
+      // 15% visible (isIntersecting alone is true from the first pixel), or
+      // already scrolled past (e.g. a jump down the page).
+      if (!entries.some(function (e) { return e.intersectionRatio >= share || e.boundingClientRect.bottom < 0; })) return;
       io.disconnect();
       var first = strip.querySelector('.stat__value');
       var base = first ? parseFloat(getComputedStyle(first).animationDelay) * 1000 : 0;
@@ -43,8 +47,14 @@ import Footnote from '@components/ui/Footnote.astro';
         });
       });
       strip.classList.remove('is-waiting');
-    }, { threshold: 0.3 });
-    io.observe(strip);
+    }, { threshold: [0, share] });
+    // The section after the intro is not parsed yet when this runs.
+    function start() {
+      var intro = strip.closest('.intro');
+      io.observe((intro && intro.nextElementSibling) || strip);
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+    else start();
   })();
 </script>
 
