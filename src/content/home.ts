@@ -105,7 +105,8 @@ export const caseStudies = {
           outcome: 'Energy intelligence for SMEs. Acquired by ABB.',
           metric: '[PLACEHOLDER: outcome figure]',
           logo: '[PLACEHOLDER: /logos/sensorfact.svg]',
-          visual: '[PLACEHOLDER: image]',
+          visual: '',
+          video: { webm: '/cases/sensorfact.webm', mp4: '/cases/sensorfact.mp4', poster: '/cases/sensorfact.jpg' },
           facts: [],
         },
         {
