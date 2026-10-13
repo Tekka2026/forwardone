@@ -147,8 +147,8 @@ Rules:
 - H1 words enter from the bottom one by one in discrete frames (invisible,
   then 2 steps down, 1 step, rest; the last word rises smoothly from 7
   steps down over the span of 8 frames, appearing as a left-to-right
-  gradient from `--reveal-tint` #78F6FB to the heading colour, whose blue
-  end fades to the heading colour over `--reveal-tint-duration`, 32 frames,
+  gradient from the heading colour to `--reveal-tint` #78F6FB; the blue
+  then slides out to the right over `--reveal-tint-duration`, 32 frames,
   from the moment it appears). Tokens
   `--reveal-frame` (80ms), `--reveal-step` (0.02em), `--reveal-stagger`
   (90ms). Pass `reveal` to `Sentences`. Off under reduced motion.

@@ -13,9 +13,9 @@
  *   frame 3  visible, at rest
  * The last word appears the same way (invisible for one frame, then fully
  * visible) but rises smoothly from 7 steps down over the span of 8 frames.
- * It appears as a left-to-right gradient, --reveal-tint (#78F6FB) to the
- * heading colour; from the moment it is visible the blue end fades into the
- * heading colour over --reveal-tint-duration (32 frames).
+ * It appears as a left-to-right gradient, heading colour to --reveal-tint
+ * (#78F6FB); from the moment it is visible the blue slides out to the right
+ * over --reveal-tint-duration (32 frames), leaving the heading colour.
  * With `tick`, every word (the last one too) uses the stepped motion; used
  * for the eyebrow above the H1, which ticks in alongside it.
  * Frame length and step size are tokens: --reveal-frame, --reveal-step.
@@ -74,10 +74,15 @@ let index = 0;
   /* The last word: same one-frame appearance as the other words (invisible,
      then fully visible), but its rise is smooth over the 9-frame span. */
   .rw--last {
-    /* Text painted by a gradient: --rw-tint (left) to the heading colour
-       (right). At rest both ends are the heading colour. */
-    --rw-tint: var(--fg);
-    background: linear-gradient(90deg, var(--rw-tint), var(--fg));
+    /* Text painted by a gradient: heading colour (left) to --reveal-tint
+       (right), spanning the word. --rw-sweep moves the gradient right; at
+       rest (100%) the blue sits past the word's right edge. */
+    --rw-sweep: 100%;
+    background: linear-gradient(
+      90deg,
+      var(--fg) var(--rw-sweep),
+      var(--reveal-tint) calc(var(--rw-sweep) + 100%)
+    );
     /* Grow the painted box past ascenders and descenders (the gradient only
        paints inside it) without moving the line: padding out, margin back. */
     padding-block: 0.25em;
@@ -120,15 +125,15 @@ let index = 0;
     100% { transform: translateY(0); }
   }
 
-  /* The gradient's left end starts in --reveal-tint and settles on the
-     heading colour (no `to` keyframe). */
-  @property --rw-tint {
-    syntax: '<color>';
+  /* The blue leaves on the right: the gradient slides from spanning the
+     word (0%) to past its right edge (100%, the resting value). */
+  @property --rw-sweep {
+    syntax: '<percentage>';
     inherits: false;
-    initial-value: transparent;
+    initial-value: 100%;
   }
   @keyframes rw-tint {
-    from { --rw-tint: var(--reveal-tint); }
+    from { --rw-sweep: 0%; }
   }
 
   @media (prefers-reduced-motion: reduce) {
