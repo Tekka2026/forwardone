@@ -568,6 +568,11 @@ const current = Astro.url.pathname;
       border-top: 0;
     }
 
+    /* First item: no extra room on top of the panel's own padding. */
+    .nav__col:first-child .nav__col-head {
+      padding-top: 0;
+    }
+
     .nav__col-head {
       padding: var(--gap-half) 0;
     }

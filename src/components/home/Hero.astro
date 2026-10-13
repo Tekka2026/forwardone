@@ -8,9 +8,8 @@ import Sentences from '@components/ui/Sentences.astro';
 <section class="section section--flush hero">
   <div class="wrap">
     <p class="eyebrow">
-      {hero.eyebrow.lead}
       <!-- The rest starts at once (no page-load pause), so the lead is not left alone. -->
-      <span class="hero__eyebrow-rest"><Sentences text={hero.eyebrow.rest} reveal tick /></span>
+      {hero.eyebrow.lead}{' '}<span class="hero__eyebrow-rest"><Sentences text={hero.eyebrow.rest} reveal tick /></span>
     </p>
     <h1 class="h-display hero__title"><Sentences text={hero.title} reveal /></h1>
     <p class="lede hero__sub reveal-gentle">
