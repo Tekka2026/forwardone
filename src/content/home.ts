@@ -60,7 +60,10 @@ export const whatWeDo = {
 export type CaseStudy = {
   name: string;
   slug: string;
-  /** Date shown at the top of the card: the exit date for exits. */
+  /**
+   * Date at the top of the card, e.g. "April 11th, 2022"; shown after the
+   * group label ("Exit: April 11th, 2022"). Ordinal suffixes stay lowercase.
+   */
   date: string;
   outcome: string;
   /**
@@ -108,7 +111,7 @@ export const caseStudies = {
         {
           name: 'Mayht',
           slug: 'mayht',
-          date: 'April 11, 2022',
+          date: 'April 11th, 2022',
           outcome: 'Loudspeaker technology. Acquired by Sonos.',
           metric: '[PLACEHOLDER: outcome figure]',
           logo: '[PLACEHOLDER: /logos/mayht.svg]',
@@ -187,7 +190,7 @@ export const trackRecord = {
 
 export const playbook = {
   eyebrow: 'The Playbook',
-  title: 'Capital follows performance.',
+  title: 'Traction earns the next round',
   body: 'We co-engineer commercial success. Companies that perform get concentrated follow-on capital. Those that don’t, don’t.',
   list: ['Pricing', 'Repeatable sales', 'First customers', 'Partnerships'],
   cta: { label: 'How we commercialize', href: '/strategy/playbook' } as Cta,
