@@ -2,7 +2,6 @@
 import { trackRecord } from '@content/home';
 import { href } from '@lib/href';
 import Placeholder from '@components/ui/Placeholder.astro';
-import Sentences from '@components/ui/Sentences.astro';
 
 const { columns: col } = trackRecord;
 const keys = ['size', 'companies', 'status'] as const;
@@ -15,7 +14,8 @@ const keys = ['size', 'companies', 'status'] as const;
       <p class="track__figure">
         <span class="track__unit">{trackRecord.figure.prefix}</span><span class="track__value">{trackRecord.figure.value}</span><span class="track__unit">{trackRecord.figure.suffix}</span>
       </p>
-      <h2 class="h-section track__title"><Sentences text={trackRecord.title} /></h2>
+      <!-- One line here (exception to the break-after-each-sentence rule). -->
+      <h2 class="h-section track__title">{trackRecord.title}</h2>
     </div>
 
     <!-- A real table; below 760px each row restacks into a card (no scroll). -->
