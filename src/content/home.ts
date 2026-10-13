@@ -93,7 +93,7 @@ export const caseStudies = {
   eyebrow: 'Proof',
   title: 'From lab to exit.',
   /** Line to the right of the heading. */
-  intro: 'Five exits so far. Each one turned engineering into a business that a global industry leader chose to buy.',
+  intro: 'Five exits so far. Five engineering companies that global industry leaders chose to buy.',
   groups: [
     {
       label: 'Exit',
