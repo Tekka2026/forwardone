@@ -101,7 +101,7 @@ export const caseStudies = {
         {
           name: 'Sensorfact',
           slug: 'sensorfact',
-          date: '[PLACEHOLDER: exit date]',
+          date: 'January 21st, 2025',
           outcome: 'Energy intelligence for SMEs. Acquired by ABB.',
           metric: '[PLACEHOLDER: outcome figure]',
           logo: '[PLACEHOLDER: /logos/sensorfact.svg]',
