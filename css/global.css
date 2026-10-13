@@ -78,8 +78,8 @@
 
   /* Navigation bar (floats at the bottom of the viewport) */
   --nav-height: var(--form-height-large);
-  --nav-bg: #26175a;
-  --nav-bg-open: #110338;
+  --nav-bg: #1a1a1a;
+  --nav-bg-open: #000000;
   --nav-fg: #ffffff;
   --nav-hairline: rgba(255, 255, 255, 0.18);
 

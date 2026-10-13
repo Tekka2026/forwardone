@@ -260,7 +260,7 @@ button sit in a plain strip at the top of the page
   (or at once when the page cannot scroll, or on the first Tab press).
   Once in place, a gradient fades in behind it: black 30% at the viewport
   bottom to black 0% at 20px above the bar.
-- Closed: `--nav-bg` (#26175A), height `--nav-height`, 12 columns wide
+- Closed: `--nav-bg` (#1A1A1A), height `--nav-height`, 12 columns wide
   (`--col-12`), centred, `--gap` above the viewport bottom. Left:
   "Welcome to FORWARD.one", typed once and kept until the bar is pressed.
   Right: a hamburger button. The whole bar opens the panel; the hamburger is
@@ -274,7 +274,7 @@ button sit in a plain strip at the top of the page
 - The first six typed characters carry a circular #78F6FB-to-white gradient
   centred on the first letter. The `_` cursor shows only while text is being
   typed or erased. Copy lives in `src/content/nav.ts` (`navGreeting`).
-- Open: the panel expands upward from the bar in `--nav-bg-open` (#110338)
+- Open: the panel expands upward from the bar in `--nav-bg-open` (#000000)
   with the section columns (accordions on mobile). LP Login is reached via
   the Investors column; Pitch us is a button in the top strip beside the
   logo. The
