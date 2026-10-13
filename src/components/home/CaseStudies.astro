@@ -31,7 +31,7 @@ const dateParts = (d: string) => d.split(/(?<=\d)(st|nd|rd|th)\b/);
         <p class="eyebrow">{caseStudies.eyebrow}</p>
         <h2 class="h-section cases__title" id="cases-title"><Sentences text={caseStudies.title} /></h2>
       </div>
-      <p class="col-5 start-8 small cases__intro">
+      <p class="col-5 start-8 body cases__intro">
         <Placeholder value={caseStudies.intro} />
       </p>
     </div>
@@ -137,9 +137,9 @@ const dateParts = (d: string) => d.split(/(?<=\d)(st|nd|rd|th)\b/);
   .cases__title {
     margin: var(--gap-half) 0 0;
   }
+  /* Same treatment as the What we do copy: body size, text colour. */
   .cases__intro {
     margin: 0;
-    color: var(--muted);
   }
 
   /* ---- Slider ---- */

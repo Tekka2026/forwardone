@@ -191,7 +191,7 @@ Rules:
 Built like the "Follow the battery." section on vikka.io
 (`src/components/home/CaseStudies.astro`):
 
-- Heading row: eyebrow and H2 in 6 columns, intro (small body copy) in 5
+- Heading row: eyebrow and H2 in 6 columns, intro (body copy, like What we do) in 5
   columns from column 8.
 - One dark card (`#111111`, dark theme) per company in a horizontal
   scroll-snap track. Cards are 10 of 12 columns wide (`--card-cols`; 1328px at full width);
