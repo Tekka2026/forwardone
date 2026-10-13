@@ -52,9 +52,19 @@ const h1Words = hero.title.split(/\s+/).filter(Boolean).length;
   }
   /* Tighter rhythm inside the block so it fits 90% where the content allows;
      on narrow screens it grows with its content. */
+  /* Hero content (tag, title, body, buttons) centred vertically in the
+     space between the header and the figures. */
   .intro > .hero {
-    padding-top: var(--space-16x);
-    padding-bottom: 0;
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-block: var(--gap);
+  }
+  /* .wrap centres itself with auto margins; in a flex column that would
+     shrink it to its content, so keep it full width. */
+  .intro > .hero > .wrap {
+    width: 100%;
   }
   .intro > .stats {
     margin-top: auto;

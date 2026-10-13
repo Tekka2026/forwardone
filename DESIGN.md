@@ -146,8 +146,9 @@ Rules:
   (hero: "Performance, / engineered.").
 - H1 words enter from the bottom one by one in discrete frames (invisible,
   then 2 steps down, 1 step, rest; the last word rises smoothly from 7
-  steps down over the span of 8 frames, changing from `--reveal-tint`
-  #78F6FB to the heading colour over `--reveal-tint-duration`, 32 frames,
+  steps down over the span of 8 frames, appearing as a left-to-right
+  gradient from `--reveal-tint` #78F6FB to the heading colour, whose blue
+  end fades to the heading colour over `--reveal-tint-duration`, 32 frames,
   from the moment it appears). Tokens
   `--reveal-frame` (80ms), `--reveal-step` (0.02em), `--reveal-stagger`
   (90ms). Pass `reveal` to `Sentences`. Off under reduced motion.
@@ -314,7 +315,8 @@ button sit in a plain strip at the top of the page
 - Homepage intro (`.intro` in `src/pages/index.astro`): header, hero and
   figures on one black block, edge to edge (beyond the canvas too), at
   least 90% of the viewport high
-  (`90svh`), figures at its bottom. The header sits transparently on top
+  (`90svh`), figures at its bottom, hero content centred vertically in the space
+  between header and figures. The header sits transparently on top
   (`Base` prop `darkTop`; `--header-h` = 80px). Where the content needs more
   room (phones) the block grows.
 

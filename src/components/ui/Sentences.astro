@@ -13,7 +13,8 @@
  *   frame 3  visible, at rest
  * The last word appears the same way (invisible for one frame, then fully
  * visible) but rises smoothly from 7 steps down over the span of 8 frames.
- * From the moment it appears it changes from --reveal-tint (#78F6FB) to the
+ * It appears as a left-to-right gradient, --reveal-tint (#78F6FB) to the
+ * heading colour; from the moment it is visible the blue end fades into the
  * heading colour over --reveal-tint-duration (32 frames).
  * Frame length and step size are tokens: --reveal-frame, --reveal-step.
  */
@@ -69,6 +70,18 @@ let index = 0;
   /* The last word: same one-frame appearance as the other words (invisible,
      then fully visible), but its rise is smooth over the 9-frame span. */
   .rw--last {
+    /* Text painted by a gradient: --rw-tint (left) to the heading colour
+       (right). At rest both ends are the heading colour. */
+    --rw-tint: var(--fg);
+    background: linear-gradient(90deg, var(--rw-tint), var(--fg));
+    /* Grow the painted box past ascenders and descenders (the gradient only
+       paints inside it) without moving the line: padding out, margin back. */
+    padding-block: 0.25em;
+    margin-block: -0.25em;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
     animation:
       rw-show calc(var(--reveal-frame) * 9) step-end forwards,
       rw-rise calc(var(--reveal-frame) * 9) cubic-bezier(0.2, 0.7, 0.2, 1) forwards,
@@ -103,10 +116,15 @@ let index = 0;
     100% { transform: translateY(0); }
   }
 
-  /* Starts in --reveal-tint and settles on the heading's own colour (no
-     `to` keyframe), over the same span as the rise. */
+  /* The gradient's left end starts in --reveal-tint and settles on the
+     heading colour (no `to` keyframe). */
+  @property --rw-tint {
+    syntax: '<color>';
+    inherits: false;
+    initial-value: transparent;
+  }
   @keyframes rw-tint {
-    from { color: var(--reveal-tint); }
+    from { --rw-tint: var(--reveal-tint); }
   }
 
   @media (prefers-reduced-motion: reduce) {
