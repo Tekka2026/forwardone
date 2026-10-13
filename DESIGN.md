@@ -342,8 +342,8 @@ button sit in a plain strip at the top of the page
 - Homepage intro (`.intro` in `src/pages/index.astro`): header, hero and
   figures on one black block, edge to edge (beyond the canvas too, and
   upwards, so no white strip shows when the open menu pushes the page back), at
-  least 90% of the viewport high
-  (`90svh`), figures at its bottom, hero content centred vertically in the space
+  least 130% of the viewport high
+  (`130svh`), figures at its bottom, hero content centred vertically in the space
   between header and figures. The header sits transparently on top
   (`Base` prop `darkTop`; `--header-h` = 80px). Where the content needs more
   room (phones) the block grows.

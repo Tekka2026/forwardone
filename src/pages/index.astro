@@ -17,7 +17,7 @@ const h1Words = hero.title.split(/\s+/).filter(Boolean).length;
 ---
 
 <Base title={meta.title} description={meta.description} darkTop>
-  <!-- Black intro: header, hero and figures, 90% of the viewport high. -->
+  <!-- Black intro: header, hero and figures, 130% of the viewport high. -->
   <div class="intro theme-dark" data-nav-dark style={`--h1-words: ${h1Words}`}>
     <Hero />
     <Stats />
@@ -35,13 +35,13 @@ const h1Words = hero.title.split(/\s+/).filter(Boolean).length;
 
 <style is:global>
   /* Black intro block. It starts under the header (pulled up by the header's
-     height) and is at least 90% of the viewport high; the figures sit at
+     height) and is at least 130% of the viewport high; the figures sit at
      its bottom. */
   .intro {
     display: flex;
     flex-direction: column;
-    min-height: 90vh;
-    min-height: 90svh;
+    min-height: 130vh;
+    min-height: 130svh;
     margin-top: calc(-1 * var(--header-h));
     padding-top: var(--header-h);
     background: var(--bg);
