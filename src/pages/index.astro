@@ -76,14 +76,17 @@ const h1Words = hero.title.split(/\s+/).filter(Boolean).length;
   .intro {
     --h1-end: calc(var(--reveal-start) + (var(--h1-words) - 1) * var(--reveal-stagger) + 9 * var(--reveal-frame));
     --buttons-at: calc(var(--h1-end) + var(--reveal-gentle) / 2);
-    --figures-at: calc(var(--buttons-at) + 4 * var(--reveal-frame));
+    --figures-at: calc(var(--buttons-at) + var(--reveal-stagger-buttons) + 4 * var(--reveal-frame));
   }
   .intro .hero__sub {
     animation-delay: var(--h1-end);
   }
-  /* Buttons once the body copy is halfway in, then the figures. */
-  .intro .hero__actions {
+  /* Buttons one by one once the body copy is halfway in, then the figures. */
+  .intro .hero__actions > .btn {
     animation-delay: var(--buttons-at);
+  }
+  .intro .hero__actions > .btn + .btn {
+    animation-delay: calc(var(--buttons-at) + var(--reveal-stagger-buttons));
   }
   /* Figures: the number snaps in like an H1 word; its label eases in
      gently once the number has landed. */

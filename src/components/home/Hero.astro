@@ -12,9 +12,9 @@ import Sentences from '@components/ui/Sentences.astro';
     <p class="lede hero__sub reveal-gentle">
       {hero.sub.text}<Footnote n={hero.sub.footnote} />{' '}{hero.sub.after}
     </p>
-    <div class="hero__actions reveal-block">
-      <Button href={hero.primary.href}>{hero.primary.label}</Button>
-      <Button href={hero.secondary.href} variant="ghost">{hero.secondary.label}</Button>
+    <div class="hero__actions">
+      <Button href={hero.primary.href} class="reveal-block">{hero.primary.label}</Button>
+      <Button href={hero.secondary.href} variant="ghost" class="reveal-block">{hero.secondary.label}</Button>
     </div>
   </div>
 </section>

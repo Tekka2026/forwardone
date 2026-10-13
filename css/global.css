@@ -86,6 +86,7 @@
   --reveal-gentle-rise: 8px;
   --reveal-gentle-ease: cubic-bezier(0.45, 0, 0.2, 1); /* slow start, soft landing */
   --reveal-stagger-figures: 180ms; /* between consecutive figures */
+  --reveal-stagger-buttons: 180ms; /* between the two hero buttons */
 
   /* Navigation bar (floats at the bottom of the viewport) */
   --nav-height: var(--form-height-large);
