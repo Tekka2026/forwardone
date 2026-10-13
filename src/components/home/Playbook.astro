@@ -16,7 +16,16 @@ import Sentences from '@components/ui/Sentences.astro';
         </div>
       </div>
       <ol class="col-4 start-9 playbook__list">
-        {playbook.list.map((item) => <li class="playbook__item">{item}</li>)}
+        {
+          playbook.list.map((step) => (
+            <li class="playbook__item">
+              <div class="playbook__text">
+                <span class="playbook__title">{step.title}</span>
+                <span class="small playbook__line">{step.line}</span>
+              </div>
+            </li>
+          ))
+        }
       </ol>
     </div>
   </div>
@@ -50,6 +59,19 @@ import Sentences from '@components/ui/Sentences.astro';
     font-weight: 500;
     letter-spacing: var(--ls-card-title);
     line-height: var(--lh-card-title);
+  }
+  .playbook__text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space);
+  }
+  /* Second line: small, muted, aligned with the title. */
+  .playbook__line {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--muted);
+    text-wrap: pretty; /* no single-word last lines */
   }
   .playbook__item::before {
     counter-increment: step;

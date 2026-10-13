@@ -190,11 +190,19 @@ export const trackRecord = {
   link: { label: 'Funds & track record', href: '/investors/funds' } as Cta,
 };
 
+export type PlaybookStep = { title: string; line: string };
+
 export const playbook = {
   eyebrow: 'The Playbook',
-  title: 'Traction earns the next round.',
-  body: 'We co-engineer commercial success. Companies that perform get concentrated follow-on capital. Those that don’t, don’t.',
-  list: ['Pricing', 'Repeatable sales', 'First customers', 'Partnerships'],
+  title: 'We help them win. Then we double down.',
+  body: 'We work hands-on with every company on the commercial side that deep-tech founders tend to skip. The ones that prove traction get most of our follow-on capital.',
+  /** Numbered list, right column: a title and one line each. */
+  list: [
+    { title: 'First customers', line: 'Paying customers early, not after the product is perfect.' },
+    { title: 'Pricing', line: 'Priced on value from day one.' },
+    { title: 'Repeatable sales', line: 'From founder-led deals to a process that scales.' },
+    { title: 'Follow-on', line: '75–80% of each fund goes to the companies that prove it.' },
+  ] as PlaybookStep[],
   cta: { label: 'How we commercialize', href: '/strategy/playbook' } as Cta,
 };
 

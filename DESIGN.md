@@ -189,6 +189,14 @@ Rules:
   each row restacks into a hairline card with mono labels taken from
   `data-label`; tables never scroll horizontally.
 
+### Playbook list
+
+Numbered list in the right column (`src/components/home/Playbook.astro`):
+mono number (`01`–`04`), then a title (card-title size) with one line under
+it in small, muted text (`--muted`), aligned with the title; hairline
+dividers between items. Text and list columns are top-aligned; on narrow
+screens the list stacks under the CTA.
+
 ### Proof slider ("From lab to exit.")
 
 Built like the "Follow the battery." section on vikka.io
