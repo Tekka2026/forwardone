@@ -61,8 +61,8 @@ export type CaseStudy = {
   name: string;
   slug: string;
   /**
-   * Date at the top of the card, e.g. "April 11th, 2022"; shown after the
-   * group label ("Exit: April 11th, 2022"). Ordinal suffixes stay lowercase.
+   * Month and year at the top of the card, e.g. "April 2022"; shown after
+   * the group label ("Exit: April 2022").
    */
   date: string;
   outcome: string;
@@ -112,7 +112,7 @@ export const caseStudies = {
         {
           name: 'Mayht',
           slug: 'mayht',
-          date: 'April 11th, 2022',
+          date: 'April 2022',
           outcome: 'Loudspeaker technology. Acquired by Sonos.',
           metric: '[PLACEHOLDER: outcome figure]',
           logo: '[PLACEHOLDER: /logos/mayht.svg]',

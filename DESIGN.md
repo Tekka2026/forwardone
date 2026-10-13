@@ -201,8 +201,8 @@ Built like the "Follow the battery." section on vikka.io
   at the end, with its right edge), earlier and later
   cards are cut off by the browser on either side. The root clips
   horizontal overflow, so there is no page scroll.
-- Card: date in `--brand-cyan` (group label and date, e.g. "EXIT: APRIL 11th,
-  2022", ordinal suffix lowercase), visual centred in the right half, or a background video filling
+- Card: date in `--brand-cyan` (group label and month + year, e.g. "EXIT: APRIL
+  2022"), visual centred in the right half, or a background video filling
   the card (WebM first, MP4 fallback, poster frame; darkened towards the
   text and date; plays only while on screen, never under reduced motion), then along the bottom, across the whole card, the company name at Feature size (no
   hover underline; focus shows an outline), the outcome line and optional
