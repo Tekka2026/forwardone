@@ -10,8 +10,13 @@ const keys = ['size', 'companies', 'status'] as const;
 
 <section class="section">
   <div class="wrap">
-    <p class="eyebrow">{trackRecord.eyebrow}</p>
-    <h2 class="h-section section-title"><Sentences text={trackRecord.title} /></h2>
+    <div class="track__head">
+      <p class="eyebrow">{trackRecord.eyebrow}</p>
+      <p class="track__figure">
+        <span class="track__unit">{trackRecord.figure.prefix}</span><span class="track__value">{trackRecord.figure.value}</span><span class="track__unit">{trackRecord.figure.suffix}</span>
+      </p>
+      <h2 class="h-section track__title"><Sentences text={trackRecord.title} /></h2>
+    </div>
 
     <!-- A real table; below 760px each row restacks into a card (no scroll). -->
     <table class="funds">
@@ -48,12 +53,35 @@ const keys = ['size', 'companies', 'status'] as const;
 </section>
 
 <style>
-  .section-title {
-    margin-top: var(--gap-half);
+  /* Centred head: eyebrow, headline figure, title. */
+  .track__head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .track__figure {
+    margin: var(--gap) 0 0;
+    font-family: var(--font-display);
+    font-weight: var(--fw-heading);
+    line-height: 1;
+    letter-spacing: var(--ls-display);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  /* € and M at H1 size, the number at twice that, on one baseline. */
+  .track__unit {
+    font-size: var(--fs-display);
+  }
+  .track__value {
+    font-size: calc(var(--fs-display) * 2);
+  }
+  .track__title {
+    margin: var(--gap) auto 0;
   }
   .funds {
     width: 100%;
-    margin-top: var(--space-4x);   /* heading → content: 16px */
+    margin-top: var(--space-16x);  /* centred head → table */
     border-collapse: collapse;
     font-variant-numeric: tabular-nums;
   }

@@ -173,6 +173,12 @@ export type FundRow = {
 
 export const trackRecord = {
   eyebrow: 'Track record',
+  /**
+   * Headline figure, centred above the title: the number at twice the H1
+   * size, prefix and suffix at H1 size. As supplied by the owner (the fund
+   * sizes in the table below add up to €383M).
+   */
+  figure: { prefix: '€', value: '384', suffix: 'M' },
   title: 'Three funds. One discipline.',
   /** Column headings, in table order. Also the labels on mobile cards. */
   columns: { fund: 'Fund', size: 'Size', companies: 'Companies', status: 'Status' },
