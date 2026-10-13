@@ -20,7 +20,8 @@ export const hero = {
   sub: {
     text: 'Funds I and II rank in the top 5% of European VC.',
     footnote: 1,
-    after: 'Fund III backs founders from pre-seed to Series A.',
+    after:
+      'Fund III backs founders from pre-seed to Series A in robotics, compute, energy and dual-use, and keeps most of its capital for the companies that prove commercial traction.',
   },
   primary: { label: 'See the track record', href: '/investors/funds' } as Cta,
   secondary: { label: 'Invest with us', href: '/investors/contact' } as Cta,
