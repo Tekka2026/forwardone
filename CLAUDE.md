@@ -22,6 +22,9 @@
 - `.github/workflows/deploy.yml` builds the Astro site on every push to the
   default branch and deploys it to GitHub Pages (Pages source must be
   "GitHub Actions", see A0003). A deploy takes one to two minutes.
+- The workflow also runs on a schedule at 00:05 and 01:05 Amsterdam time on
+  1 January, so the footer's build-time year (`© FORWARD.one <year>.`) rolls
+  over without a push. Builds run with `TZ=Europe/Amsterdam`.
 - Before pushing, run `npm run check` and `npm run build` locally. Both must
   be clean.
 
