@@ -222,22 +222,22 @@ CLAUDE.md action A0005).
 ## 7. Hard rules
 
 1. **Square corners everywhere, except buttons and the navigation bar.**
-   Buttons use Geist's `--btn-radius` (6px; 8px on large); the navigation bar
+   Buttons are pills (`--btn-radius`, as on vercel.com); the navigation bar
    uses `--radius` (4px). The reset applies `border-radius: 0` to every other
    element and pseudo-element.
 2. **Links and buttons share ONE `.btn` component** and must render identically.
    `<a class="btn">` and `<button class="btn">` get the same reset, box, type and
-   states. The look follows the Vercel Geist button (font stays Inter):
-   - `.btn` = Geist primary: `--fg` fill, white text, hover `#383838`.
-   - `.btn--ghost` = Geist secondary: page fill, 1px `rgba(0,0,0,.08)` ring
-     (box-shadow, no border), hover fill `rgba(0,0,0,.05)`.
-   - Sizes `.btn--small` (32px, header "Pitch us"), default (40px) and
-     `.btn--large` (48px); 14px/20px text, 16px/24px on large; weight 500.
-   - Focus: Geist ring, 2px page-coloured gap then 2px blue
-     (`--focus-ring`). Disabled: `#f2f2f2` fill, `#8f8f8f` text.
-   - Transitions 150ms ease on background, colour and ring.
+   states. **Shape** follows the Vercel Geist / vercel.com button; **colours**
+   are the site's own (Geist colours deliberately not used, 2026-10-13):
+   - Pill shape on every size (`--btn-radius`).
+   - Sizes `.btn--small` (32px, 14px/20px text, header "Pitch us"), default
+     (40px, 16px/24px) and `.btn--large` (48px, 16px/24px); weight 500;
+     padding `--btn-pad-small` / `--btn-pad` / `--btn-pad-large`.
+   - `.btn`: `--accent` fill, 1px `--fg` border; hover inverts to the page
+     colour. `.btn--ghost`: transparent with a 1px `--fg` border; hover fills
+     with `--fg`. Focus: 2px `--fg` outline, 2px offset. Disabled: 40% opacity.
    Set them with `<Button variant size>`. Never style a link to look like a
-   button any other way. Values transcribed from Geist; verify (A0007).
+   button any other way.
 3. **No arbitrary widths.** Widths come from the column table (section 2).
 4. **No arbitrary spacing.** Internal spacing comes from the spacing scale
    (section 6); page spacing from `--page-margin`, `--gutter`, `--section-pad`.

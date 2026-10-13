@@ -48,5 +48,5 @@
 | A0003 | done   | Pages source is GitHub Actions. The first workflow deploy succeeded on 2026-10-12 without a settings change. |
 | A0004 | open   | Supply the values in `PLACEHOLDERS.md` (benchmark source, disclaimer, Proof outcome figures and logos, Fund I and II status, partner photos and two quotes, LP login URL, article categories and dates, newsletter endpoint). |
 | A0005 | open   | Verify the Geist spacing values in `DESIGN.md` §6 against https://vercel.com/geist (spacing, Stack, Button). The site is unreachable from Claude's build environment, so the values were transcribed from memory of Geist's CSS variables. |
-| A0006 | open   | Open the live homepage and confirm the Clash Display headings render and the browser console shows no errors. Fontshare and github.io are unreachable from Claude's build environment. |
-| A0007 | open   | Verify the button values in `DESIGN.md` §7 rule 2 and the `--btn-*` tokens in `css/global.css` against https://vercel.com/geist/button. They were transcribed from memory because the site is unreachable from Claude's build environment. |
+| A0006 | done   | Live homepage checked by the owner on 2026-10-13: Clash Display headings render, no console errors. |
+| A0007 | done   | Button reference supplied by the owner on 2026-10-13 (vercel.com screenshot). Buttons take Geist's shape only (pill, sizes, type size); colours stay the site's own. |

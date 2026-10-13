@@ -155,27 +155,16 @@
      (the reset sets border-radius: 0 on every element), except buttons. */
   --radius: 4px;
 
-  /* Buttons: Vercel Geist button (sizes, radius, states). Font stays Inter.
-     Values transcribed from Geist; see CLAUDE.md action A0007. */
-  --btn-radius: 6px;               /* small and medium */
-  --btn-radius-large: 8px;
-  --btn-pad-small: 10px;           /* Geist: 6px button + 4px content padding */
-  --btn-pad: 16px;                 /* Geist: 10px button + 6px content padding */
-  --btn-pad-large: 22px;           /* Geist: 14px button + 8px content padding */
-  --btn-fs: 14px;
-  --btn-fs-large: 16px;
-  --btn-lh: 20px;
-  --btn-lh-large: 24px;
-  --btn-primary-bg: var(--fg);     /* Geist gray-1000 */
-  --btn-primary-fg: var(--bg);
-  --btn-primary-hover: #383838;    /* Geist primary hover */
-  --btn-secondary-ring: rgba(0, 0, 0, 0.08);  /* Geist gray-alpha-400 */
-  --btn-secondary-hover: rgba(0, 0, 0, 0.05); /* Geist gray-alpha-100 */
-  --btn-disabled-bg: #f2f2f2;      /* Geist gray-100 */
-  --btn-disabled-fg: #8f8f8f;      /* Geist gray-700 */
-  --focus-ring-color: hsl(212, 100%, 48%); /* Geist blue-700 */
-  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--focus-ring-color);
-  --btn-ease: 150ms ease;
+  /* Buttons: shape from the Vercel Geist / vercel.com button (pill, sizes,
+     padding, type size). Colours stay the site's own. */
+  --btn-radius: 9999px;
+  --btn-pad-small: 10px;
+  --btn-pad: 16px;
+  --btn-pad-large: 22px;
+  --btn-fs-small: 14px;
+  --btn-lh-small: 20px;
+  --btn-fs: 16px;
+  --btn-lh: 24px;
 }
 
 /* --------------------------------------------------------------------------
@@ -479,10 +468,10 @@ code, kbd, samp, pre {
   margin: 0;
   padding: 0 var(--btn-pad);
   height: var(--form-height);
-  border: 0;
+  border: 1px solid var(--fg);
   border-radius: var(--btn-radius);
-  background: var(--btn-primary-bg);
-  color: var(--btn-primary-fg);
+  background: var(--accent);
+  color: var(--accent-fg);
   font-family: var(--font-sans);
   font-size: var(--btn-fs);
   line-height: var(--btn-lh);
@@ -494,57 +483,48 @@ code, kbd, samp, pre {
   white-space: nowrap;
   cursor: pointer;
   user-select: none;
-  outline: none;
-  transition:
-    background-color var(--btn-ease),
-    color var(--btn-ease),
-    box-shadow var(--btn-ease);
+  transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
 }
 
-.btn:hover {
-  background: var(--btn-primary-hover);
-}
-
-/* Geist focus ring: page-coloured gap, then blue. */
+.btn:hover,
 .btn:focus-visible {
-  box-shadow: var(--focus-ring);
-}
-
-/* Secondary: page background with a hairline ring. */
-.btn--ghost {
   background: var(--bg);
   color: var(--fg);
-  box-shadow: 0 0 0 1px var(--btn-secondary-ring);
 }
 
-.btn--ghost:hover {
-  background: var(--btn-secondary-hover);
+.btn:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
 }
 
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--fg);
+}
+
+.btn--ghost:hover,
 .btn--ghost:focus-visible {
-  box-shadow: 0 0 0 1px var(--btn-secondary-ring), var(--focus-ring);
+  background: var(--fg);
+  color: var(--bg);
 }
 
 .btn--small {
   height: var(--form-height-small);
   padding: 0 var(--btn-pad-small);
+  font-size: var(--btn-fs-small);
+  line-height: var(--btn-lh-small);
 }
 
 .btn--large {
   height: var(--form-height-large);
   padding: 0 var(--btn-pad-large);
-  border-radius: var(--btn-radius-large);
-  font-size: var(--btn-fs-large);
-  line-height: var(--btn-lh-large);
-}
-
-.btn:disabled,
-.btn[aria-disabled="true"] {
-  background: var(--btn-disabled-bg);
-  color: var(--btn-disabled-fg);
-  box-shadow: 0 0 0 1px var(--btn-secondary-ring);
-  cursor: not-allowed;
-  pointer-events: none;
 }
 
 /* --------------------------------------------------------------------------
