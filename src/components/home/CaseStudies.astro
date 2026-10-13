@@ -194,8 +194,8 @@ const dateParts = (d: string) => d.split(/(?<=\d)(st|nd|rd|th)\b/);
   .case:last-child {
     scroll-snap-align: end;
   }
-  /* Background video: fills the card behind its content, darkened towards
-     the text (bottom left) and the date (top) so white type stays legible. */
+  /* Background video: fills the card behind its content, under one flat
+     overlay so white type stays legible. */
   .case--video {
     isolation: isolate;
     overflow: hidden;
@@ -208,14 +208,14 @@ const dateParts = (d: string) => d.split(/(?<=\d)(st|nd|rd|th)\b/);
     height: 100%;
     object-fit: cover;
   }
+  /* One flat overlay over the video (no gradients). Strong enough that white
+     text over the brightest footage keeps ~4.7:1 contrast. */
   .case--video::before {
     content: '';
     position: absolute;
     inset: 0;
     z-index: -1;
-    background:
-      linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.5) 40%, rgba(0, 0, 0, 0) 70%),
-      linear-gradient(to bottom, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 25%);
+    background: var(--video-overlay);
   }
 
   .case__ord {
