@@ -193,10 +193,11 @@ Built like the "Follow the battery." section on vikka.io
 
 - Heading row: eyebrow and H2 in 6 columns, intro in 5 columns from column 8.
 - One dark card (`#111111`, dark theme) per company in a horizontal
-  scroll-snap track. Cards are 8 of 12 columns wide (1056px at full width);
+  scroll-snap track. Cards are 10 of 12 columns wide (`--card-cols`; 1328px at full width);
   in the single-column grid (≤880px) the content width minus a 48px peek.
 - The track runs from window edge to window edge (also beyond the 1984px
-  canvas); the current card aligns with the content edge, earlier and later
+  canvas); the current card aligns with the content's left edge (the last card,
+  at the end, with its right edge), earlier and later
   cards are cut off by the browser on either side. The root clips
   horizontal overflow, so there is no page scroll.
 - Card: date in `--brand-cyan` (group label and date, e.g. "EXIT: APRIL 11th,

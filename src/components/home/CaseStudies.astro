@@ -2,7 +2,7 @@
 /**
  * Proof: "From lab to exit." Built like the "Follow the battery." section on
  * vikka.io: a heading row (title left, intro right), then one large dark card
- * per company (8 columns wide) in a horizontal, snapping slider that runs to
+ * per company (10 columns wide) in a horizontal, snapping slider that runs to
  * both window edges, with a progress line and back/next buttons.
  *
  * Cards: date label (the exit date for exits), visual on the right (or a
@@ -154,15 +154,17 @@ const dateParts = (d: string) => d.split(/(?<=\d)(st|nd|rd|th)\b/);
   .cases__track {
     /* window edge to content edge */
     --edge: calc(50vw - 50cqw);
-    /* 8 of 12 columns */
-    --card-w: calc((100cqw - 11 * var(--gutter)) / 12 * 8 + 7 * var(--gutter));
+    /* card width in columns of the 12-column grid */
+    --card-cols: 10;
+    --card-w: calc((100cqw - 11 * var(--gutter)) / 12 * var(--card-cols) + (var(--card-cols) - 1) * var(--gutter));
     display: flex;
     gap: var(--gutter);
     width: 100vw;
     margin: 0 0 0 calc(-1 * var(--edge));
-    /* first card starts at the content edge; the last can snap there too */
-    padding: 0 calc(100vw - var(--edge) - var(--card-w)) 0 var(--edge);
-    scroll-padding-inline-start: var(--edge);
+    /* first card starts at the content's left edge; the last card ends at
+       its right edge (column 12) */
+    padding: 0 var(--edge);
+    scroll-padding-inline: var(--edge);
     list-style: none;
     overflow-x: auto;
     overscroll-behavior-x: contain;
@@ -188,6 +190,9 @@ const dateParts = (d: string) => d.split(/(?<=\d)(st|nd|rd|th)\b/);
     padding: var(--gap-double);
     background: var(--card-bg);
     scroll-snap-align: start;
+  }
+  .case:last-child {
+    scroll-snap-align: end;
   }
   /* Background video: fills the card behind its content, darkened towards
      the text (bottom left) and the date (top) so white type stays legible. */
@@ -406,7 +411,10 @@ const dateParts = (d: string) => d.split(/(?<=\d)(st|nd|rd|th)\b/);
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
     let index = 0;
 
-    const offset = (i: number) => slides[i].offsetLeft - slides[0].offsetLeft;
+    // Scroll position for each card: aligned left, except where the track
+    // runs out (the last card ends at the content's right edge).
+    const offset = (i: number) =>
+      Math.min(slides[i].offsetLeft - slides[0].offsetLeft, track.scrollWidth - track.clientWidth);
 
     function update() {
       // The slide whose left edge is nearest the track's scroll position.
