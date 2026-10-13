@@ -152,7 +152,9 @@ Rules:
   from the moment it appears). Tokens
   `--reveal-frame` (80ms), `--reveal-step` (0.02em), `--reveal-stagger`
   (90ms). Pass `reveal` to `Sentences`. Off under reduced motion.
-- Homepage intro sequence: after `--reveal-start` (800ms) the H1 words; once its last word has
+- Homepage intro sequence: after `--reveal-start` (800ms) the H1 words,
+  with the eyebrow above it ticking in word by word at the same time
+  (`<Sentences reveal tick>`: every word stepped, no gradient); once its last word has
   landed (`--h1-end`), the body copy; halfway through its fade the buttons;
   four frames after the buttons the figures arrive one by one, `--reveal-stagger-figures`
   (180ms) apart. Three motions (global.css), all off under reduced motion:

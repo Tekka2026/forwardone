@@ -16,13 +16,17 @@
  * It appears as a left-to-right gradient, --reveal-tint (#78F6FB) to the
  * heading colour; from the moment it is visible the blue end fades into the
  * heading colour over --reveal-tint-duration (32 frames).
+ * With `tick`, every word (the last one too) uses the stepped motion; used
+ * for the eyebrow above the H1, which ticks in alongside it.
  * Frame length and step size are tokens: --reveal-frame, --reveal-step.
  */
 interface Props {
   text: string;
   reveal?: boolean;
+  /** All words tick in; no smooth rise or gradient on the last word. */
+  tick?: boolean;
 }
-const { text, reveal = false } = Astro.props;
+const { text, reveal = false, tick = false } = Astro.props;
 const parts = text.split(/(?<=[.?!])\s+|\s*\n\s*/).filter(Boolean);
 
 // Word index runs across all sentences so the stagger is continuous.
@@ -38,7 +42,7 @@ let index = 0;
           {si > 0 && <br />}
           {words.map((word, wi) => {
             const i = index++;
-            const last = i === total - 1;
+            const last = !tick && i === total - 1;
             return (
               <>
                 {wi > 0 && ' '}

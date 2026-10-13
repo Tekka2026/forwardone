@@ -7,7 +7,7 @@ import Sentences from '@components/ui/Sentences.astro';
 
 <section class="section section--flush hero">
   <div class="wrap">
-    <p class="eyebrow">{hero.eyebrow}</p>
+    <p class="eyebrow"><Sentences text={hero.eyebrow} reveal tick /></p>
     <h1 class="h-display hero__title"><Sentences text={hero.title} reveal /></h1>
     <p class="lede hero__sub reveal-gentle">
       {hero.sub.text}<Footnote n={hero.sub.footnote} />{' '}{hero.sub.after}
