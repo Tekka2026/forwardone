@@ -79,13 +79,15 @@
   /* Blocks after the H1 (homepage intro): appear in one frame like the H1's
      last word, then rise smoothly over 9 frames. */
   --reveal-rise: 12px;
-  --reveal-tint: #78f6fb;           /* H1 last word starts in this colour */
+  --brand-cyan: #78f6fb;            /* accent: AI mark, H1 gradient, stage labels */
+  --reveal-tint: var(--brand-cyan);  /* H1 last word starts in this colour */
   --reveal-tint-duration: calc(var(--reveal-frame) * 32); /* tint to white */
   /* Gentle ease-in for supporting text (hero body copy, figure labels). */
   --reveal-gentle: 1600ms;
   --reveal-gentle-rise: 8px;
   --reveal-gentle-ease: cubic-bezier(0.45, 0, 0.2, 1); /* slow start, soft landing */
   --reveal-stagger-figures: 180ms; /* between consecutive figures */
+  --reveal-stagger-buttons: 180ms; /* between the two hero buttons */
 
   /* Navigation bar (floats at the bottom of the viewport) */
   --nav-height: var(--form-height-large);

@@ -62,9 +62,10 @@ const h1Words = hero.title.split(/\s+/).filter(Boolean).length;
     padding-block: var(--gap);
   }
   /* .wrap centres itself with auto margins; in a flex column that would
-     shrink it to its content, so keep it full width. */
+     shrink it to its content, so give it the full width minus its own
+     padding (.wrap is content-box; max-width still caps it). */
   .intro > .hero > .wrap {
-    width: 100%;
+    width: calc(100% - 2 * var(--pad));
   }
   .intro > .stats {
     margin-top: auto;
@@ -81,10 +82,12 @@ const h1Words = hero.title.split(/\s+/).filter(Boolean).length;
   .intro .hero__sub {
     animation-delay: var(--h1-end);
   }
-  /* Buttons: each its own reveal, both at the same moment, just after the
-     body copy starts. */
+  /* Buttons one after the other, starting just after the body copy. */
   .intro .hero__actions > .btn {
     animation-delay: var(--buttons-at);
+  }
+  .intro .hero__actions > .btn + .btn {
+    animation-delay: calc(var(--buttons-at) + var(--reveal-stagger-buttons));
   }
   /* Figures: the number snaps in like an H1 word; its label eases in
      gently once the number has landed. */

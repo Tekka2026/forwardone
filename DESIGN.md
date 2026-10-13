@@ -155,8 +155,8 @@ Rules:
 - Homepage intro sequence: after `--reveal-start` (800ms) the H1 words,
   with the eyebrow above it ticking in word by word at the same time
   (`<Sentences reveal tick>`: every word stepped, no gradient); once its last word has
-  landed (`--h1-end`), the body copy; eight frames later (body copy about half visible) both buttons
-  (each its own reveal, same moment); later the figures arrive one by one, `--reveal-stagger-figures`
+  landed (`--h1-end`), the body copy; eight frames later (body copy about half visible) the buttons
+  one after the other (`--reveal-stagger-buttons`, 180ms); later the figures arrive one by one, `--reveal-stagger-figures`
   (180ms) apart. Three motions (global.css), all off under reduced motion:
   - `.reveal-gentle`: slow fade while rising 8px, `--reveal-gentle`
     (1600ms), slow start and soft landing. Body copy and the figure labels.
@@ -185,6 +185,24 @@ Rules:
 - Data tables are real `<table>` elements with `scope`d headers. At ≤760px
   each row restacks into a hairline card with mono labels taken from
   `data-label`; tables never scroll horizontally.
+
+### Proof slider ("From lab to exit.")
+
+Built like the "Follow the battery." section on vikka.io
+(`src/components/home/CaseStudies.astro`):
+
+- Heading row: eyebrow and H2 in 6 columns, intro in 5 columns from column 8.
+- One dark card (`#111111`, dark theme) per company in a horizontal
+  scroll-snap track. Cards are at most `--col-10` (1328px) wide and always
+  leave the next card peeking; the track runs past the content edge to the
+  window edge, clipped by the section (no page scroll).
+- Card: stage label (`01  Exit`, stage in `--brand-cyan`), visual centred in
+  the right half, then bottom-left the company name at Feature size, the
+  outcome line and optional mono facts. A filled `metric` shows top right.
+  At ≤760px the card stacks (label, visual, text).
+- Controls under the card: `01 / 05` counter, a 1px progress line filling by
+  slide, round back/next buttons (disabled at the ends). Swipe, trackpad and
+  keyboard scroll the track too.
 
 ## 6. Spacing — Vercel Geist system
 

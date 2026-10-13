@@ -63,22 +63,29 @@ export type CaseStudy = {
   slug: string;
   outcome: string;
   /**
-   * Headline outcome, e.g. "8× revenue in 3 years". The most prominent line
+   * Headline outcome, e.g. "8× revenue in 3 years". Shown as a large figure
    * on the card when filled; hidden while empty or a placeholder.
    */
   metric: string;
   /** Logo path under public/. Placeholder until supplied. */
   logo: string;
+  /** Card visual (image path under public/). Placeholder until supplied. */
+  visual: string;
+  /** Short mono facts along the card's bottom edge. Optional; hidden when empty. */
+  facts: string[];
 };
 
+/** `label` is the stage shown on each card ("01 Exit", "04 Traction"). */
 export type CaseGroup = { label: string; items: CaseStudy[] };
 
 export const caseStudies = {
   eyebrow: 'Proof',
   title: 'From lab to exit.',
+  /** Line to the right of the heading. */
+  intro: '[PLACEHOLDER: section intro]',
   groups: [
     {
-      label: 'Exits',
+      label: 'Exit',
       items: [
         {
           name: 'Sensorfact',
@@ -86,6 +93,8 @@ export const caseStudies = {
           outcome: 'Energy intelligence for SMEs. Acquired by ABB.',
           metric: '[PLACEHOLDER: outcome figure]',
           logo: '[PLACEHOLDER: /logos/sensorfact.svg]',
+          visual: '[PLACEHOLDER: image]',
+          facts: [],
         },
         {
           name: 'Mayht',
@@ -93,6 +102,8 @@ export const caseStudies = {
           outcome: 'Loudspeaker technology. Acquired by Sonos.',
           metric: '[PLACEHOLDER: outcome figure]',
           logo: '[PLACEHOLDER: /logos/mayht.svg]',
+          visual: '[PLACEHOLDER: image]',
+          facts: [],
         },
         {
           name: 'Axign',
@@ -100,6 +111,8 @@ export const caseStudies = {
           outcome: 'Audio semiconductors. Acquired by MPS.',
           metric: '[PLACEHOLDER: outcome figure]',
           logo: '[PLACEHOLDER: /logos/axign.svg]',
+          visual: '[PLACEHOLDER: image]',
+          facts: [],
         },
       ],
     },
@@ -112,6 +125,8 @@ export const caseStudies = {
           outcome: 'Largest private round for a dedicated quantum processor company.',
           metric: '[PLACEHOLDER: outcome figure]',
           logo: '[PLACEHOLDER: /logos/quantware.svg]',
+          visual: '[PLACEHOLDER: image]',
+          facts: [],
         },
         {
           name: 'Edmund',
@@ -119,6 +134,8 @@ export const caseStudies = {
           outcome: 'Selling to top-tier industrial customers within 12 months.',
           metric: '[PLACEHOLDER: outcome figure]',
           logo: '[PLACEHOLDER: /logos/edmund.svg]',
+          visual: '[PLACEHOLDER: image]',
+          facts: [],
         },
       ],
     },

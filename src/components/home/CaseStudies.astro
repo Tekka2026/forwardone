@@ -1,40 +1,96 @@
 ---
-import { caseStudies } from '@content/home';
+/**
+ * Proof: "From lab to exit." Built like the "Follow the battery." section on
+ * vikka.io: a heading row (title left, intro right), then one large dark card
+ * per company in a horizontal, snapping slider that runs off the right edge
+ * of the page, with a counter, a progress line and back/next buttons.
+ *
+ * Cards: "01  Exit" label, visual on the right, company name, outcome line,
+ * optional facts along the bottom. The metric shows as a large figure once
+ * it is filled in.
+ */
+import { caseStudies, type CaseStudy } from '@content/home';
 import { href, isPlaceholder } from '@lib/href';
 import Button from '@components/ui/Button.astro';
 import Placeholder from '@components/ui/Placeholder.astro';
 import Sentences from '@components/ui/Sentences.astro';
+
+type Slide = CaseStudy & { stage: string };
+const slides: Slide[] = caseStudies.groups.flatMap((g) => g.items.map((c) => ({ ...c, stage: g.label })));
+const total = slides.length;
+const pad = (n: number) => String(n).padStart(2, '0');
 ---
 
-<section class="section">
+<section class="section cases" aria-labelledby="cases-title">
   <div class="wrap">
-    <p class="eyebrow">{caseStudies.eyebrow}</p>
-    <h2 class="h-section section-title"><Sentences text={caseStudies.title} /></h2>
-    {
-      caseStudies.groups.map((g, gi) => (
-        <div class="case-group">
-          <h3 class="label case-group__label" id={`proof-group-${gi}`}>{g.label}</h3>
-          <ul class="cards case-grid">
-            {g.items.map((c) => (
-              <li class="case">
-                <div class="case__logo" aria-hidden={isPlaceholder(c.logo) ? undefined : 'true'}>
-                  {isPlaceholder(c.logo) ? (
-                    <Placeholder value={c.logo} />
-                  ) : (
-                    <img src={href(c.logo)} alt="" height="32" loading="lazy" />
-                  )}
-                </div>
-                {!isPlaceholder(c.metric) && <p class="case__metric">{c.metric}</p>}
-                <h4 class="card-title case__name">
+    <div class="grid cases__head">
+      <div class="col-6">
+        <p class="eyebrow">{caseStudies.eyebrow}</p>
+        <h2 class="h-section cases__title" id="cases-title"><Sentences text={caseStudies.title} /></h2>
+      </div>
+      <p class="col-5 start-8 lede cases__intro">
+        <Placeholder value={caseStudies.intro} />
+      </p>
+    </div>
+
+    <div class="cases__slider" data-cases>
+      <ul class="cases__track" data-cases-track tabindex="0" aria-label={`${caseStudies.title} ${total} companies`}>
+        {
+          slides.map((c, i) => (
+            <li class="case theme-dark" data-cases-slide aria-label={`${i + 1} of ${total}: ${c.name}`}>
+              <p class="label case__stage">
+                <span class="case__num">{pad(i + 1)}</span>
+                <span class="case__kind">{c.stage}</span>
+              </p>
+
+              {!isPlaceholder(c.metric) && <p class="case__metric">{c.metric}</p>}
+
+              <div class="case__visual">
+                {isPlaceholder(c.visual) ? (
+                  <Placeholder value={c.visual} />
+                ) : (
+                  <img src={href(c.visual)} alt="" loading="lazy" />
+                )}
+              </div>
+
+              <div class="case__text">
+                <h3 class="case__name">
                   <a class="case__link" href={href(`/portfolio/${c.slug}`)}>{c.name}</a>
-                </h4>
-                <p class="small case__outcome">{c.outcome}</p>
-              </li>
-            ))}
-          </ul>
+                </h3>
+                <p class="case__outcome">{c.outcome}</p>
+                {c.facts.length > 0 && (
+                  <ul class="case__facts">
+                    {c.facts.map((f) => (
+                      <li class="case__fact">
+                        <Placeholder value={f} />
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="cases__controls">
+        <p class="label cases__count" aria-live="polite">
+          <span data-cases-current>01</span> / {pad(total)}
+        </p>
+        <div class="cases__progress" aria-hidden="true">
+          <span class="cases__progress-fill" data-cases-fill style={`transform: scaleX(${1 / total})`}></span>
         </div>
-      ))
-    }
+        <div class="cases__buttons">
+          <button class="cases__btn" type="button" data-cases-prev aria-label="Previous company" disabled>
+            <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M13 8H3M7 4 3 8l4 4" fill="none" stroke="currentColor" stroke-width="1.5" /></svg>
+          </button>
+          <button class="cases__btn" type="button" data-cases-next aria-label="Next company">
+            <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" /></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div class="section-cta">
       <Button href={caseStudies.cta.href} variant="ghost">{caseStudies.cta.label}</Button>
     </div>
@@ -42,60 +98,80 @@ import Sentences from '@components/ui/Sentences.astro';
 </section>
 
 <style>
-  .section-title {
-    margin-top: var(--gap-half);
+  /* The track runs past the right edge of the content to the window edge;
+     clip it there so it never adds page width. */
+  .cases {
+    overflow-x: clip;
+    /* content width of .wrap, and the space from its right edge to the window */
+    --wrap-w: min(var(--max), 100vw - 2 * var(--pad));
+    --bleed: max(var(--pad), (100vw - var(--max)) / 2);
+    /* card: 10 columns wide at most, always leaving the next card peeking */
+    --card-w: min(var(--col-10), var(--wrap-w) - var(--gap-double));
+    --card-bg: #111111;
+    --card-fg-soft: rgba(255, 255, 255, 0.78);
   }
-  .case-group {
-    margin-top: var(--space-4x);   /* heading → content: 16px */
+
+  .cases__head {
+    align-items: end;
   }
-  .case-group + .case-group {
-    margin-top: var(--gap-double); /* between rows: 48 */
+  .cases__title {
+    margin: var(--gap-half) 0 0;
   }
-  .case-group__label {
+  .cases__intro {
     margin: 0;
     color: var(--muted);
   }
-  .case-grid {
-    margin: var(--gap-half) 0 0;   /* row label → cards: 12 */
-    padding: 0;
-    list-style: none;
+
+  /* ---- Slider ---- */
+  .cases__slider {
+    margin-top: var(--gap-double);
   }
+  .cases__track {
+    display: flex;
+    gap: var(--gutter);
+    margin: 0 calc(-1 * var(--bleed)) 0 0;
+    /* lets the last card snap to the left edge too */
+    padding: 0 calc(var(--wrap-w) + var(--bleed) - var(--card-w)) 0 0;
+    list-style: none;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .cases__track::-webkit-scrollbar {
+    display: none;
+  }
+  .cases__track:focus-visible {
+    outline: 2px solid var(--fg);
+    outline-offset: 4px;
+  }
+
+  /* ---- Card ---- */
   .case {
     position: relative;
+    flex: 0 0 var(--card-w);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto;
+    min-height: min(860px, 75svh);
+    padding: var(--gap-double);
+    background: var(--card-bg);
+    scroll-snap-align: start;
+  }
+  .case__stage {
+    grid-column: 1 / -1;
     display: flex;
-    flex-direction: column;
     gap: var(--gap-half);
-    padding: var(--gap);
-    border: var(--hairline-w) solid var(--hairline);
-  }
-  .case__logo {
-    display: flex;
-    align-items: center;
-    min-height: 32px;
-    margin-bottom: var(--gap-half);
-  }
-  .case__name {
     margin: 0;
+    color: var(--muted);
   }
-  .case__link {
-    text-decoration: none;
+  .case__kind {
+    color: var(--brand-cyan);
   }
-  /* Whole card is the click target; the heading link carries the name. */
-  .case__link::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-  }
-  .case:hover .case__link,
-  .case:focus-within .case__link {
-    text-decoration: underline;
-    text-underline-offset: 4px;
-  }
-  .case__outcome {
-    margin: 0;
-  }
-  /* Headline outcome: the most prominent line on the card when filled. */
   .case__metric {
+    position: absolute;
+    top: var(--gap-double);
+    right: var(--gap-double);
     margin: 0;
     font-family: var(--font-display);
     font-size: var(--fs-metric);
@@ -103,7 +179,206 @@ import Sentences from '@components/ui/Sentences.astro';
     font-weight: var(--fw-heading);
     font-variant-numeric: tabular-nums;
   }
+  .case__visual {
+    grid-column: 2;
+    grid-row: 2 / 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+  }
+  .case__visual img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+  .case__text {
+    grid-column: 1;
+    grid-row: 3;
+    align-self: end;
+  }
+  .case__name {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--fs-feature);
+    line-height: var(--lh-feature);
+    letter-spacing: var(--ls-feature);
+    font-weight: var(--fw-heading);
+  }
+  .case__link {
+    text-decoration: none;
+  }
+  .case__link:hover,
+  .case__link:focus-visible {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.12em;
+  }
+  .case__outcome {
+    max-width: var(--col-5);
+    margin: var(--space-4x) 0 0;
+    font-size: var(--fs-body-feature);
+    line-height: var(--lh-body);
+    color: var(--card-fg-soft);
+  }
+  .case__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2x) var(--gap);
+    margin: var(--gap-double) 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    line-height: var(--lh-mono);
+    color: var(--card-fg-soft);
+  }
+  .case__fact::before {
+    content: '\00b7\00a0';
+    color: var(--brand-cyan);
+  }
+
+  /* ---- Controls ---- */
+  .cases__controls {
+    display: flex;
+    align-items: center;
+    gap: var(--gap);
+    margin-top: var(--gap);
+    max-width: var(--card-w);
+  }
+  .cases__count {
+    margin: 0;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .cases__progress {
+    position: relative;
+    flex: 1 1 auto;
+    height: 1px;
+    background: var(--hairline);
+  }
+  .cases__progress-fill {
+    position: absolute;
+    inset: -0.5px 0;
+    background: var(--fg);
+    transform-origin: left center;
+    transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .cases__buttons {
+    display: flex;
+    gap: var(--space-2x);
+  }
+  .cases__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--form-height);
+    height: var(--form-height);
+    padding: 0;
+    border: 1px solid var(--fg);
+    border-radius: var(--btn-radius);
+    background: transparent;
+    color: var(--fg);
+    cursor: pointer;
+    transition: background-color 120ms ease, opacity 120ms ease;
+  }
+  .cases__btn:hover {
+    background: var(--btn-hover-shade);
+  }
+  .cases__btn:focus-visible {
+    outline: 2px solid var(--fg);
+    outline-offset: 2px;
+  }
+  .cases__btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+    background: transparent;
+  }
+
   .section-cta {
     margin-top: var(--gap-double);
   }
+
+  /* ---- Narrow screens: stacked card ---- */
+  @media (max-width: 760px) {
+    .case {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto auto auto;
+      min-height: 0;
+      padding: var(--gap);
+    }
+    .case__metric {
+      position: static;
+      grid-row: 2;
+      margin-top: var(--gap);
+    }
+    .case__visual {
+      grid-column: 1;
+      grid-row: auto;
+      aspect-ratio: 4 / 3;
+      margin-block: var(--gap);
+    }
+    .case__text {
+      grid-row: auto;
+    }
+    .cases__head .cases__intro {
+      margin-top: var(--gap-half);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cases__progress-fill {
+      transition: none;
+    }
+  }
 </style>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-cases]')) {
+    const track = root.querySelector<HTMLElement>('[data-cases-track]')!;
+    const slides = Array.from(root.querySelectorAll<HTMLElement>('[data-cases-slide]'));
+    const prev = root.querySelector<HTMLButtonElement>('[data-cases-prev]')!;
+    const next = root.querySelector<HTMLButtonElement>('[data-cases-next]')!;
+    const current = root.querySelector<HTMLElement>('[data-cases-current]')!;
+    const fill = root.querySelector<HTMLElement>('[data-cases-fill]')!;
+    const total = slides.length;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let index = 0;
+
+    const offset = (i: number) => slides[i].offsetLeft - slides[0].offsetLeft;
+
+    function update() {
+      // The slide whose left edge is nearest the track's scroll position.
+      let nearest = 0;
+      for (let i = 1; i < total; i++) {
+        if (Math.abs(offset(i) - track.scrollLeft) < Math.abs(offset(nearest) - track.scrollLeft)) nearest = i;
+      }
+      if (nearest === index && current.textContent) return;
+      index = nearest;
+      current.textContent = String(index + 1).padStart(2, '0');
+      fill.style.transform = `scaleX(${(index + 1) / total})`;
+      prev.disabled = index === 0;
+      next.disabled = index === total - 1;
+    }
+
+    function go(i: number) {
+      const target = Math.max(0, Math.min(total - 1, i));
+      track.scrollTo({ left: offset(target), behavior: reduce.matches ? 'auto' : 'smooth' });
+    }
+
+    prev.addEventListener('click', () => go(index - 1));
+    next.addEventListener('click', () => go(index + 1));
+
+    let frame = 0;
+    track.addEventListener(
+      'scroll',
+      () => {
+        if (!frame) frame = requestAnimationFrame(() => ((frame = 0), update()));
+      },
+      { passive: true },
+    );
+    window.addEventListener('resize', () => go(index));
+    update();
+  }
+</script>
