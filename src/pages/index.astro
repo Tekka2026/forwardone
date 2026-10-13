@@ -45,6 +45,10 @@ const h1Words = hero.title.split(/\s+/).filter(Boolean).length;
     margin-top: calc(-1 * var(--header-h));
     padding-top: var(--header-h);
     background: var(--bg);
+    /* Black to the window edges beyond the capped canvas, without adding
+       width or scroll: a spread shadow, clipped to the block's height. */
+    box-shadow: 0 0 0 100vmax var(--bg);
+    clip-path: inset(0 -100vmax);
   }
   /* Tighter rhythm inside the block so it fits 90% where the content allows;
      on narrow screens it grows with its content. */
