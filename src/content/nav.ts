@@ -85,6 +85,8 @@ export const navGreeting = {
   /** Click-to-type prompt in the bar. No backend yet (see PLACEHOLDERS.md). */
   ask: {
     label: 'Ask FORWARD.one a question',
+    /** Grey "Type your question" step after the question. Off for now. */
+    placeholderEnabled: false,
     placeholder: 'Type your question',
     /** How long `second` stays before it erases into the placeholder. */
     placeholderAfterMs: 2000,

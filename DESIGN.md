@@ -237,9 +237,10 @@ button sit in a plain strip at the top of the page
   the keyboard control.
 - Pressing the bar: the text slides right, the AI mark (#78F6FB) rises into
   place 750ms later the way the last H1 word does, and the line is retyped as
-  "How can I help you?". After 2 s it becomes the grey "Type your question".
-  Clicking the line, or typing anywhere while the placeholder shows, opens a
-  text field (no backend yet). Closing types the welcome line back.
+  "How can I help you?", which stays. (A grey "Type your question" step
+  after 2 s exists but is switched off: `navGreeting.ask.placeholderEnabled`.)
+  Clicking the line, or typing anywhere once it has been typed, opens a text
+  field (no backend yet). Closing types the welcome line back.
 - The first six typed characters carry a circular #78F6FB-to-white gradient
   centred on the first letter. The `_` cursor shows only while text is being
   typed or erased. Copy lives in `src/content/nav.ts` (`navGreeting`).
