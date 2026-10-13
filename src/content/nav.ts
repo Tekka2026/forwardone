@@ -81,7 +81,7 @@ export const primaryNav: NavSection[] = [
  */
 export const navGreeting = {
   first: 'Welcome to FORWARD.one',
-  second: 'How can we help you?',
+  second: 'How can I help you?',
   /** Click-to-type prompt in the bar. No backend yet (see PLACEHOLDERS.md). */
   ask: {
     label: 'Ask FORWARD.one a question',

@@ -237,7 +237,7 @@ button sit in a plain strip at the top of the page
   the keyboard control.
 - Pressing the bar: the text slides right, the AI mark (#78F6FB) rises into
   place 750ms later the way the last H1 word does, and the line is retyped as
-  "How can we help you?". After 2 s it becomes the grey "Type your question".
+  "How can I help you?". After 2 s it becomes the grey "Type your question".
   Clicking the line, or typing anywhere while the placeholder shows, opens a
   text field (no backend yet). Closing types the welcome line back.
 - The first six typed characters carry a circular #78F6FB-to-white gradient
