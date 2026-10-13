@@ -1,6 +1,6 @@
 ---
 import Base from '@layouts/Base.astro';
-import { meta } from '@content/home';
+import { meta, hero } from '@content/home';
 import Hero from '@components/home/Hero.astro';
 import Stats from '@components/home/Stats.astro';
 import TrackRecord from '@components/home/TrackRecord.astro';
@@ -12,11 +12,13 @@ import FundIII from '@components/home/FundIII.astro';
 import Insights from '@components/home/Insights.astro';
 import ClosingCta from '@components/home/ClosingCta.astro';
 import Footnotes from '@components/home/Footnotes.astro';
+// The intro sequence starts after the H1's last word has landed.
+const h1Words = hero.title.split(/\s+/).filter(Boolean).length;
 ---
 
 <Base title={meta.title} description={meta.description} darkTop>
   <!-- Black intro: header, hero and figures, 90% of the viewport high. -->
-  <div class="intro theme-dark" data-nav-dark>
+  <div class="intro theme-dark" data-nav-dark style={`--h1-words: ${h1Words}`}>
     <Hero />
     <Stats />
   </div>
@@ -53,6 +55,20 @@ import Footnotes from '@components/home/Footnotes.astro';
   .intro > .stats {
     margin-top: auto;
     padding-block: var(--gap-double);
+  }
+
+  /* Sequence: H1 word by word, then body copy and buttons together, then the
+     figures one by one (starting once the body is under way). */
+  .intro {
+    --h1-end: calc((var(--h1-words) - 1) * var(--reveal-stagger) + 9 * var(--reveal-frame));
+    --figures-at: calc(var(--h1-end) + 4 * var(--reveal-frame));
+  }
+  .intro .hero__sub,
+  .intro .hero__actions {
+    animation-delay: var(--h1-end);
+  }
+  .intro .stat {
+    animation-delay: calc(var(--figures-at) + var(--n) * var(--reveal-stagger-figures));
   }
   .intro + .section {
     border-top: 0;

@@ -149,6 +149,12 @@ Rules:
   steps down over the span of 8 frames). Tokens
   `--reveal-frame` (80ms), `--reveal-step` (0.02em), `--reveal-stagger`
   (90ms). Pass `reveal` to `Sentences`. Off under reduced motion.
+- Homepage intro sequence: the H1 words first; once its last word has
+  landed (`--h1-end`), the body copy and both buttons appear together; four
+  frames later the figures arrive one by one, `--reveal-stagger-figures`
+  (180ms) apart. Blocks use `.reveal-block` (global.css): invisible for one
+  frame, then visible while rising `--reveal-rise` (12px) to rest over 9
+  frames, the same motion as the H1's last word. Off under reduced motion.
 - No em dashes anywhere in copy. Use a comma, colon or full stop. Page titles
   join with a vertical bar.
 - Heading tracking is 0 (previously −0.04em / −0.03em; tokens `--ls-display`,

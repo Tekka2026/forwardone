@@ -75,6 +75,10 @@
   --reveal-frame: 80ms;     /* length of one frame */
   --reveal-step: 0.02em;    /* one vertical step; words rise in steps */
   --reveal-stagger: 90ms;   /* delay between consecutive words */
+  /* Blocks after the H1 (homepage intro): appear in one frame like the H1's
+     last word, then rise smoothly over 9 frames. */
+  --reveal-rise: 12px;
+  --reveal-stagger-figures: 180ms; /* between consecutive figures */
 
   /* Navigation bar (floats at the bottom of the viewport) */
   --nav-height: var(--form-height-large);
@@ -536,6 +540,27 @@ code, kbd, samp, pre {
 .btn--large {
   height: var(--form-height-large);
   padding: 0 var(--btn-pad-large);
+}
+
+/* Block reveal: invisible for one frame, then visible (no fade) while it
+   rises smoothly from --reveal-rise to rest over 9 frames. Set
+   animation-delay per element. */
+.reveal-block {
+  animation:
+    reveal-show calc(var(--reveal-frame) * 9) step-end both,
+    reveal-rise calc(var(--reveal-frame) * 9) cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes reveal-show {
+  0%      { opacity: 0; }
+  11.111% { opacity: 1; }
+  100%    { opacity: 1; }
+}
+@keyframes reveal-rise {
+  0%   { transform: translateY(var(--reveal-rise)); }
+  100% { transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-block { animation: none; }
 }
 
 /* Dark theme scope: re-points the colour tokens, so every component inside

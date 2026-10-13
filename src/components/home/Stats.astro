@@ -7,8 +7,8 @@ import Footnote from '@components/ui/Footnote.astro';
   <div class="wrap">
     <ul class="stats__list">
       {
-        stats.map((s) => (
-          <li class="stat">
+        stats.map((s, i) => (
+          <li class="stat reveal-block" style={`--n: ${i}`}>
             <p class="stat__value">{s.value}</p>
             <p class="stat__label small">
               {s.label}
