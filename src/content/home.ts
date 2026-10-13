@@ -141,7 +141,8 @@ export const caseStudies = {
           outcome: 'Largest private round for a dedicated quantum processor company.',
           metric: '[PLACEHOLDER: outcome figure]',
           logo: '[PLACEHOLDER: /logos/quantware.svg]',
-          visual: '[PLACEHOLDER: image]',
+          visual: '',
+          video: { webm: '/cases/quantware.webm', mp4: '/cases/quantware.mp4', poster: '/cases/quantware.jpg' },
           facts: [],
         },
         {
