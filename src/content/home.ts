@@ -172,7 +172,7 @@ export type Partner = {
 
 export const partners = {
   eyebrow: 'The team',
-  title: 'The people you’d be backing.',
+  title: 'The partners behind the performance.',
   people: [
     {
       name: 'Arjan Göbel',
