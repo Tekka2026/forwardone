@@ -202,7 +202,7 @@ Built like the "Follow the battery." section on vikka.io
 - Card: date in `--brand-cyan` (the exit date for exits, e.g. "April 11,
   2022"), visual centred in the right half, or a background video filling
   the card (WebM first, MP4 fallback, poster frame; darkened towards the
-  text and date; plays only while on screen, never under reduced motion), then bottom-left the company name at Feature size (no
+  text and date; plays only while on screen, never under reduced motion), then along the bottom, across the whole card, the company name at Feature size (no
   hover underline; focus shows an outline), the outcome line and optional
   mono facts. A filled `metric` shows top right. At ≤760px the card stacks.
 - Controls under the slider: a 1px progress line across the content width
