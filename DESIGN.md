@@ -146,7 +146,8 @@ Rules:
   (hero: "Performance / is our product.").
 - H1 words enter from the bottom one by one in discrete frames (invisible,
   then 2 steps down, 1 step, rest; the last word rises smoothly from 7
-  steps down over the span of 8 frames). Tokens
+  steps down over the span of 8 frames, changing from `--reveal-tint`
+  #78F6FB to the heading colour over the same span). Tokens
   `--reveal-frame` (80ms), `--reveal-step` (0.02em), `--reveal-stagger`
   (90ms). Pass `reveal` to `Sentences`. Off under reduced motion.
 - Homepage intro sequence: the H1 words first; once its last word has

@@ -13,6 +13,7 @@
  *   frame 3  visible, at rest
  * The last word appears the same way (invisible for one frame, then fully
  * visible) but rises smoothly from 7 steps down over the span of 8 frames.
+ * Meanwhile it changes from --reveal-tint (#78F6FB) to the heading colour.
  * Frame length and step size are tokens: --reveal-frame, --reveal-step.
  */
 interface Props {
@@ -69,8 +70,14 @@ let index = 0;
   .rw--last {
     animation:
       rw-show calc(var(--reveal-frame) * 9) step-end forwards,
-      rw-rise calc(var(--reveal-frame) * 9) cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
-    animation-delay: calc(var(--i) * var(--reveal-stagger));
+      rw-rise calc(var(--reveal-frame) * 9) cubic-bezier(0.2, 0.7, 0.2, 1) forwards,
+      rw-tint calc(var(--reveal-frame) * 8) cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    /* The tint waits out the invisible first frame, so the word is fully
+       #78F6FB the moment it appears. */
+    animation-delay:
+      calc(var(--i) * var(--reveal-stagger)),
+      calc(var(--i) * var(--reveal-stagger)),
+      calc(var(--i) * var(--reveal-stagger) + var(--reveal-frame));
   }
 
   /* 4 frames: 0 invisible, then -2, -1, 0 */
@@ -93,6 +100,12 @@ let index = 0;
   @keyframes rw-rise {
     0%   { transform: translateY(calc(7 * var(--reveal-step))); }
     100% { transform: translateY(0); }
+  }
+
+  /* Starts in --reveal-tint and settles on the heading's own colour (no
+     `to` keyframe), over the same span as the rise. */
+  @keyframes rw-tint {
+    from { color: var(--reveal-tint); }
   }
 
   @media (prefers-reduced-motion: reduce) {

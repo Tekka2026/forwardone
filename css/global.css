@@ -78,6 +78,7 @@
   /* Blocks after the H1 (homepage intro): appear in one frame like the H1's
      last word, then rise smoothly over 9 frames. */
   --reveal-rise: 12px;
+  --reveal-tint: #78f6fb;           /* H1 last word starts in this colour */
   --reveal-stagger-figures: 180ms; /* between consecutive figures */
 
   /* Navigation bar (floats at the bottom of the viewport) */
