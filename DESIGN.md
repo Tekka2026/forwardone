@@ -152,8 +152,8 @@ Rules:
   `--reveal-frame` (80ms), `--reveal-step` (0.02em), `--reveal-stagger`
   (90ms). Pass `reveal` to `Sentences`. Off under reduced motion.
 - Homepage intro sequence: after `--reveal-start` (800ms) the H1 words; once its last word has
-  landed (`--h1-end`), the body copy and both buttons start together; four
-  frames later the figures arrive one by one, `--reveal-stagger-figures`
+  landed (`--h1-end`), the body copy; halfway through its fade the buttons;
+  four frames after the buttons the figures arrive one by one, `--reveal-stagger-figures`
   (180ms) apart. Three motions (global.css), all off under reduced motion:
   - `.reveal-gentle`: slow fade while rising 8px, `--reveal-gentle`
     (1600ms), slow start and soft landing. Body copy and the figure labels.

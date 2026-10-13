@@ -61,15 +61,19 @@ const h1Words = hero.title.split(/\s+/).filter(Boolean).length;
     padding-block: var(--gap-double);
   }
 
-  /* Sequence: H1 word by word, then body copy and buttons together, then the
-     figures one by one (starting once the body is under way). */
+  /* Sequence: H1 word by word, then the body copy, then the buttons, then
+     the figures one by one. */
   .intro {
     --h1-end: calc(var(--reveal-start) + (var(--h1-words) - 1) * var(--reveal-stagger) + 9 * var(--reveal-frame));
-    --figures-at: calc(var(--h1-end) + 4 * var(--reveal-frame));
+    --buttons-at: calc(var(--h1-end) + var(--reveal-gentle) / 2);
+    --figures-at: calc(var(--buttons-at) + 4 * var(--reveal-frame));
   }
-  .intro .hero__sub,
-  .intro .hero__actions {
+  .intro .hero__sub {
     animation-delay: var(--h1-end);
+  }
+  /* Buttons once the body copy is halfway in, then the figures. */
+  .intro .hero__actions {
+    animation-delay: var(--buttons-at);
   }
   /* Figures: the number snaps in like an H1 word; its label eases in
      gently once the number has landed. */
