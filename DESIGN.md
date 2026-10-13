@@ -320,7 +320,7 @@ button sit in a plain strip at the top of the page
   the keyboard control.
 - Pressing the bar: the text slides right, the AI mark (#78F6FB) rises into
   place 750ms later the way the last H1 word does, and the line is retyped as
-  "How can I help you?", which stays. (A grey "Type your question" step
+  "How can we help you?", which stays. (A grey "Type your question" step
   after 2 s exists but is switched off: `navGreeting.ask.placeholderEnabled`.)
   Clicking the line, or typing anywhere once it has been typed, opens a text
   field (no backend yet). Closing types the welcome line back.

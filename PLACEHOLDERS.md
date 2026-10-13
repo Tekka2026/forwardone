@@ -30,7 +30,7 @@ invented; replace the value in the file named and the marker disappears.
 |---|---|---|
 | Utility nav, Investors menu, footer | `LP_LOGIN_URL` | URL of the LP reporting portal. |
 | Footer | `footer.partners[*].src` | Invest Europe, EU and EIF logos from the current site. Drop files in `public/partners/` and set the path. |
-| Nav bar prompt | `navGreeting.ask.handler` | Endpoint for the "How can I help you" text field. Submitting currently shows a not-connected message. |
+| Nav bar prompt | `navGreeting.ask.handler` | Endpoint for the "How can we help you" text field. Submitting currently shows a not-connected message. |
 
 ## Brand
 
