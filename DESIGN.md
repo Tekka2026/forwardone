@@ -197,7 +197,10 @@ Rules:
 Centred: eyebrow, then the headline figure (`€383M`) with the number at
 twice the H1 size (`calc(var(--fs-display) * 2)`) and the € and M at H1
 size (`--fs-display`) on one baseline, weight `--fw-figure` (= `--fw-heading`, 450, like the H1) and
-tracking `--ls-figure` (0), then the H2 centred below it on one line (an exception to the
+tracking `--ls-figure` (0), then the H2 centred below it. Same rhythm as
+the hero: eyebrow → figure 12px, figure → title 16px; the number's line
+height is `(--lh-display + 0.7) / 2` so the room around the digits equals
+the H1's (an H1 line height at twice the size would double it) on one line (an exception to the
 break-after-each-sentence rule; it wraps only where it does not fit). The
 table follows 64px lower.
 

@@ -60,11 +60,13 @@ const keys = ['size', 'companies', 'status'] as const;
     align-items: center;
     text-align: center;
   }
+  /* Same rhythm as the hero: eyebrow → figure 12px, figure → title 16px,
+     figure line height as the H1. */
   .track__figure {
-    margin: var(--gap) 0 0;
+    margin: var(--gap-half) 0 0;
     font-family: var(--font-display);
     font-weight: var(--fw-figure);
-    line-height: 1;
+    line-height: var(--lh-display);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
   }
@@ -72,8 +74,12 @@ const keys = ['size', 'companies', 'status'] as const;
   .track__unit {
     font-size: var(--fs-display);
   }
+  /* At twice the H1 size, an H1 line height would double the room above and
+     below the digits. This line height leaves the same absolute room as the
+     H1 does: (H1 line height + cap height ~0.7) / 2. */
   .track__value {
     font-size: calc(var(--fs-display) * 2);
+    line-height: calc((var(--lh-display) + 0.7) / 2);
   }
   /* Tracking set per span so the em follows each span's own size. */
   .track__unit,
@@ -81,7 +87,7 @@ const keys = ['size', 'companies', 'status'] as const;
     letter-spacing: var(--ls-figure);
   }
   .track__title {
-    margin: var(--gap) auto 0;
+    margin: var(--space-4x) auto 0;
   }
   .funds {
     width: 100%;
