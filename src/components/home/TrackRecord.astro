@@ -43,12 +43,15 @@ const keys = ['size', 'companies', 'status'] as const;
       </tbody>
     </table>
 
-    <p class="small funds__exits">
-      <strong>{trackRecord.exits.label}</strong> {trackRecord.exits.items.join(', ')}.
-    </p>
-    <p class="section-link">
-      <a class="arrow-link" href={href(trackRecord.link.href)}>{trackRecord.link.label}</a>
-    </p>
+    <!-- One row under the table: link left, exits right (stacks when narrow). -->
+    <div class="funds__foot">
+      <p class="funds__link">
+        <a class="arrow-link" href={href(trackRecord.link.href)}>{trackRecord.link.label}</a>
+      </p>
+      <p class="small funds__exits">
+        <strong>{trackRecord.exits.label}</strong> {trackRecord.exits.items.join(', ')}.
+      </p>
+    </div>
   </div>
 </section>
 
@@ -126,11 +129,28 @@ const keys = ['size', 'companies', 'status'] as const;
   .funds td {
     font-weight: 400;
   }
-  .funds__exits {
+  .funds__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--gap-half) var(--gap);
     margin-top: var(--gap);
   }
-  .section-link {
-    margin-top: var(--gap-double);
+  .funds__link,
+  .funds__exits {
+    margin: 0;
+  }
+  .funds__exits {
+    text-align: right;
+  }
+  @media (max-width: 760px) {
+    .funds__foot {
+      flex-direction: column;
+    }
+    .funds__exits {
+      text-align: left;
+    }
   }
 
   /* Mobile: each fund becomes a stacked card with its own labels. */

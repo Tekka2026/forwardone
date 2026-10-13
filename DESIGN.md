@@ -206,6 +206,10 @@ the H1's (an H1 line height at twice the size would double it) on one line (an e
 break-after-each-sentence rule; it wraps only where it does not fit). The
 table follows 64px lower.
 
+Under the table one row: the "Funds & track record" link on the left, the
+exits line on the right (right-aligned with the table); stacked, link
+first, at ≤760px.
+
 ### Playbook list
 
 Numbered list in the right column (`src/components/home/Playbook.astro`):
