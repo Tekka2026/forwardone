@@ -287,7 +287,23 @@ button sit in a plain strip at the top of the page
 - The page wrapper reserves `--nav-height` + 2 × `--gap` at the bottom so the
   footer is never hidden behind the bar.
 
+- Inverse: while closed and over an element marked `data-nav-dark` (the
+  homepage intro), the bar turns `--nav-bg-inverse` (#FFFFFF) with
+  `--nav-fg-inverse` (#1A1A1A) text, and the greeting drops its cyan
+  gradient. The check uses the bar's resting centre line and runs on scroll
+  and resize. The panel takes the same colour while closed, so opening and
+  folding away animate bar and panel together (white to #000 and back).
+
 ## 9. Colour (placeholders)
+
+- `.theme-dark` re-points the colour tokens (`--bg` #000, `--fg` #FFF,
+  `--accent` #FFF, `--muted` #A1A1A1, white hairlines, button hover mix) so
+  any component inside it inverts without its own dark styles.
+- Homepage intro (`.intro` in `src/pages/index.astro`): header, hero and
+  figures on one black block, at least 90% of the viewport high
+  (`90svh`), figures at its bottom. The header sits transparently on top
+  (`Base` prop `darkTop`; `--header-h` = 80px). Where the content needs more
+  room (phones) the block grows.
 
 `--bg`, `--fg`, `--muted`, `--hairline`, `--accent`, `--accent-fg`. These exist so
 the layout can be seen; they are not a palette. Brand them later without

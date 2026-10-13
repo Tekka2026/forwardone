@@ -14,9 +14,12 @@ import ClosingCta from '@components/home/ClosingCta.astro';
 import Footnotes from '@components/home/Footnotes.astro';
 ---
 
-<Base title={meta.title} description={meta.description}>
-  <Hero />
-  <Stats />
+<Base title={meta.title} description={meta.description} darkTop>
+  <!-- Black intro: header, hero and figures, 90% of the viewport high. -->
+  <div class="intro theme-dark" data-nav-dark>
+    <Hero />
+    <Stats />
+  </div>
   <TrackRecord />
   <WhatWeDo />
   <CaseStudies />
@@ -29,6 +32,32 @@ import Footnotes from '@components/home/Footnotes.astro';
 </Base>
 
 <style is:global>
+  /* Black intro block. It starts under the header (pulled up by the header's
+     height) and is at least 90% of the viewport high; the figures sit at
+     its bottom. */
+  .intro {
+    display: flex;
+    flex-direction: column;
+    min-height: 90vh;
+    min-height: 90svh;
+    margin-top: calc(-1 * var(--header-h));
+    padding-top: var(--header-h);
+    background: var(--bg);
+  }
+  /* Tighter rhythm inside the block so it fits 90% where the content allows;
+     on narrow screens it grows with its content. */
+  .intro > .hero {
+    padding-top: var(--space-16x);
+    padding-bottom: 0;
+  }
+  .intro > .stats {
+    margin-top: auto;
+    padding-block: var(--gap-double);
+  }
+  .intro + .section {
+    border-top: 0;
+  }
+
   /* Shared inline text link with arrow, used for section links. */
   .arrow-link {
     font-size: var(--fs-small);

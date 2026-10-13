@@ -211,14 +211,38 @@ const current = Astro.url.pathname;
     background: var(--nav-bg);
     border-radius: var(--radius);
     /* closing: colour changes together with the panel above it */
-    transition: background-color var(--nav-close-ms) var(--nav-close-ease);
+    transition:
+      background-color var(--nav-close-ms) var(--nav-close-ease),
+      color var(--nav-close-ms) var(--nav-close-ease);
     cursor: pointer; /* the whole bar toggles the menu */
     user-select: none;
   }
 
   .nav[data-open] .nav__bar {
     background: var(--nav-bg-open);
-    transition: background-color var(--nav-open-ms) var(--nav-open-ease);
+    transition:
+      background-color var(--nav-open-ms) var(--nav-open-ease),
+      color var(--nav-open-ms) var(--nav-open-ease);
+  }
+
+  /* Closed bar over a dark area ([data-nav-dark]): inverted. The panel takes
+     the same colour while closed, so opening and folding away animate bar
+     and panel together (white <-> #000), never apart. */
+  .nav[data-inverse]:not([data-open]) .nav__bar,
+  .nav[data-inverse]:not([data-open]) .nav__panel {
+    background: var(--nav-bg-inverse);
+  }
+  .nav[data-inverse]:not([data-open]) .nav__bar {
+    color: var(--nav-fg-inverse);
+  }
+  .nav[data-inverse]:not([data-open]) .nav__typed-head {
+    background: none;
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    color: inherit; /* the cyan gradient is for the dark bar only */
+  }
+  .nav[data-inverse]:not([data-open]) .nav__menu:focus-visible {
+    background: rgba(0, 0, 0, 0.08);
   }
 
   /* While the panel is out (opening, open or folding away), the bar's top
@@ -895,5 +919,29 @@ const current = Astro.url.pathname;
     });
 
     mobile.addEventListener('change', close);
+
+    /* ---- Inverse over dark areas ---- */
+    // The bar's resting centre line, measured from the viewport bottom, so the
+    // check is right even before the bar has slid in.
+    const darkZones = Array.from(document.querySelectorAll<HTMLElement>('[data-nav-dark]'));
+    let inverseFrame = 0;
+    function updateInverse() {
+      inverseFrame = 0;
+      const bottom = parseFloat(getComputedStyle(root).bottom) || 0;
+      const y = window.innerHeight - bottom - bar.offsetHeight / 2;
+      const over = darkZones.some((z) => {
+        const r = z.getBoundingClientRect();
+        return r.top <= y && r.bottom >= y;
+      });
+      root.toggleAttribute('data-inverse', over);
+    }
+    function queueInverse() {
+      if (!inverseFrame) inverseFrame = requestAnimationFrame(updateInverse);
+    }
+    if (darkZones.length) {
+      updateInverse();
+      window.addEventListener('scroll', queueInverse, { passive: true });
+      window.addEventListener('resize', queueInverse);
+    }
   }
 </script>

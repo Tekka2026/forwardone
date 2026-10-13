@@ -2,13 +2,20 @@
 /**
  * Top strip: the logo on the left and the Pitch us button on the right.
  * Navigation lives in Nav.astro, floating at the bottom of the viewport.
+ * With `dark`, it sits transparently on top of the page's black intro block
+ * (see .intro in src/pages/index.astro) and uses the dark theme.
  */
 import Logo from '@components/ui/Logo.astro';
 import Button from '@components/ui/Button.astro';
 import { utilityNav } from '@content/nav';
+
+interface Props {
+  dark?: boolean;
+}
+const { dark = false } = Astro.props;
 ---
 
-<header class="site-top">
+<header class:list={['site-top', dark && 'site-top--dark theme-dark']}>
   <div class="wrap site-top__row">
     <Logo />
     <Button href={utilityNav.pitch.href} variant="ghost" size="small">{utilityNav.pitch.label}</Button>
@@ -19,11 +26,17 @@ import { utilityNav } from '@content/nav';
   .site-top {
     padding-block: var(--gap);
   }
+  /* Over the intro block: no background of its own, above it in the stack. */
+  .site-top--dark {
+    position: relative;
+    z-index: 1;
+  }
 
   .site-top__row {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--gap);
+    min-height: var(--form-height-small); /* total height = --header-h */
   }
 </style>

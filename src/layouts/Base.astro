@@ -9,9 +9,11 @@ import { href } from '@lib/href';
 interface Props {
   title: string;
   description?: string;
+  /** Header on a black intro block (homepage). */
+  darkTop?: boolean;
 }
 
-const { title, description = site.description } = Astro.props;
+const { title, description = site.description, darkTop = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 
@@ -50,7 +52,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   <body>
     <a class="skip-link" href="#main">{site.skipLinkLabel}</a>
     <div class="page" data-page>
-      <Header />
+      <Header dark={darkTop} />
       <main id="main" tabindex="-1">
         <slot />
       </main>

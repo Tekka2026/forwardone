@@ -13,7 +13,7 @@ export type Cta = { label: string; href: string };
 
 export const hero = {
   /** Says what FORWARD.one does; the headline does not. */
-  eyebrow: 'Early-stage VC for European industrial tech.',
+  eyebrow: 'Early-stage VC for European industrial tech',
   /** `\n` forces the line break. */
   title: 'Performance\nis our product.',
   /** `text`, then the footnote marker, then `after`. */

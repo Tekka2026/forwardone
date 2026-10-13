@@ -78,9 +78,14 @@
 
   /* Navigation bar (floats at the bottom of the viewport) */
   --nav-height: var(--form-height-large);
+  /* Top strip (logo + Pitch us): gap above and below a small form height. */
+  --header-h: calc(2 * var(--gap) + var(--form-height-small));
   --nav-bg: #1a1a1a;
   --nav-bg-open: #000000;
   --nav-fg: #ffffff;
+  /* Closed bar over a dark area ([data-nav-dark]): inverted. */
+  --nav-bg-inverse: #ffffff;
+  --nav-fg-inverse: #1a1a1a;
   --nav-hairline: rgba(255, 255, 255, 0.18);
 
   /* Type: families, loaded in src/layouts/Base.astro.
@@ -168,6 +173,7 @@
   /* Hover overlays measured from vercel.com, applied to the site's colours:
      filled #161616 → #313131 (12% white), outlined #fff → #f0f0f0 (6% black). */
   --btn-hover-lighten: 12%;
+  --btn-hover-mix: #ffffff;        /* overlay colour on filled buttons */
   --btn-hover-shade: rgba(0, 0, 0, 0.06);
 }
 
@@ -492,7 +498,7 @@ code, kbd, samp, pre {
 
 .btn:hover,
 .btn:focus-visible {
-  --btn-hover-fill: color-mix(in srgb, var(--accent), #ffffff var(--btn-hover-lighten));
+  --btn-hover-fill: color-mix(in srgb, var(--accent), var(--btn-hover-mix) var(--btn-hover-lighten));
   background: var(--btn-hover-fill);
   border-color: var(--btn-hover-fill); /* no dark rim around the lighter fill */
 }
@@ -530,6 +536,20 @@ code, kbd, samp, pre {
 .btn--large {
   height: var(--form-height-large);
   padding: 0 var(--btn-pad-large);
+}
+
+/* Dark theme scope: re-points the colour tokens, so every component inside
+   (text, muted labels, hairlines, buttons, focus outlines) inverts. */
+.theme-dark {
+  --bg: #000000;
+  --fg: #ffffff;
+  --accent: #ffffff;
+  --accent-fg: #000000;
+  --muted: #a1a1a1;
+  --hairline: rgba(255, 255, 255, 0.2);
+  --btn-hover-mix: #000000;                    /* 12% black over white */
+  --btn-hover-shade: rgba(255, 255, 255, 0.08);
+  color: var(--fg);
 }
 
 /* --------------------------------------------------------------------------
