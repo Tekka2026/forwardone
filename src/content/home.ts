@@ -15,7 +15,7 @@ export const hero = {
   /** Says what FORWARD.one does; the headline does not. */
   eyebrow: 'Early-stage VC for European industrial tech',
   /** `\n` forces the line break. */
-  title: 'Performance\nis our product.',
+  title: 'Performance,\nengineered.',
   /** `text`, then the footnote marker, then `after`. */
   sub: {
     text: 'Funds I and II rank in the top 5% of European VC.',

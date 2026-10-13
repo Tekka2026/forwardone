@@ -143,7 +143,7 @@ Rules:
 - Display and Section headings break onto a new line after every sentence:
   render them through `src/components/ui/Sentences.astro`.
   A `\n` in the content string forces an extra break mid-sentence
-  (hero: "Performance / is our product.").
+  (hero: "Performance, / engineered.").
 - H1 words enter from the bottom one by one in discrete frames (invisible,
   then 2 steps down, 1 step, rest; the last word rises smoothly from 7
   steps down over the span of 8 frames, changing from `--reveal-tint`
