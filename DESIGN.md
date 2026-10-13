@@ -156,8 +156,10 @@ Rules:
   scroll into view (`<Sentences reveal onScroll>`): held until the heading
   is above the bottom 15% of the window (clear of the floating nav), then
   played without the page-load pause. Used on the Playbook H2.
-- Homepage intro sequence: the eyebrow is visible from the start (no
-  animation); after `--reveal-start` (800ms) the H1 words; once its last word has
+- Homepage intro sequence: the eyebrow's lead ("Early-stage VC") is
+  visible from the start; its rest ("for European industrial tech") ticks
+  in word by word alongside the H1 (`<Sentences reveal tick>`), which
+  starts after `--reveal-start` (800ms); once its last word has
   landed (`--h1-end`), the body copy; eight frames later (body copy about half visible) the buttons
   one after the other (`--reveal-stagger-buttons`, 180ms); later the figures arrive one by one, `--reveal-stagger-figures`
   (180ms) apart. Three motions (global.css), all off under reduced motion:
