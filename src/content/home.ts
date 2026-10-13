@@ -32,7 +32,6 @@ export type Stat = { value: string; label: string; footnote?: number };
 
 export const stats: Stat[] = [
   { value: 'Top 5%', label: 'European VC (Funds I & II)', footnote: 1 },
-  { value: '€383M', label: 'across three funds' },
   { value: '5', label: 'exits to strategic buyers' },
   { value: '~8 of 2,500', label: 'companies backed per year' },
   { value: '75–80%', label: 'of each fund reserved for follow-on' },

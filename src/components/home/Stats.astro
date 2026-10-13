@@ -5,7 +5,7 @@ import Footnote from '@components/ui/Footnote.astro';
 
 <section class="section section--flush stats" aria-label="Key figures">
   <div class="wrap">
-    <ul class="stats__list">
+    <ul class="stats__list" style={`--stats: ${stats.length}`}>
       {
         stats.map((s, i) => (
           <li class="stat" style={`--n: ${i}`}>
@@ -29,7 +29,7 @@ import Footnote from '@components/ui/Footnote.astro';
     display: grid;
     /* A column is never narrower than its number, so numbers never wrap or
        overflow; the labels wrap instead. */
-    grid-template-columns: repeat(5, minmax(min-content, 1fr));
+    grid-template-columns: repeat(var(--stats), minmax(min-content, 1fr));
     gap: var(--space-8x) var(--gutter);
     margin: 0;
     padding: 0;
@@ -58,7 +58,7 @@ import Footnote from '@components/ui/Footnote.astro';
 
   @media (max-width: 980px) {
     .stats__list {
-      grid-template-columns: repeat(3, minmax(min-content, 1fr));
+      grid-template-columns: repeat(2, minmax(min-content, 1fr));
     }
   }
   @media (max-width: 640px) {
