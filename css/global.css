@@ -169,6 +169,7 @@
   --fg: #111111;
   --muted: #666666;
   --hairline: rgba(0, 0, 0, 0.14);
+  --bg-tint: rgba(0, 0, 0, 0.04);   /* tinted section band (.section--tint) */
   --accent: #111111;
   --accent-fg: #ffffff;
 
@@ -367,6 +368,11 @@ code, kbd, samp, pre {
 
 .section--flush {
   border-top: 0;                   /* e.g. the first section under the header */
+}
+
+/* Tinted band: full-width background, e.g. the Track record (funds) section */
+.section--tint {
+  background-color: var(--bg-tint);
 }
 
 /* Feature sections: body copy steps up to the fluid feature size */
@@ -608,6 +614,7 @@ code, kbd, samp, pre {
   --accent-fg: #000000;
   --muted: #a1a1a1;
   --hairline: rgba(255, 255, 255, 0.2);
+  --bg-tint: rgba(255, 255, 255, 0.04);
   --btn-hover-mix: #000000;                    /* 12% black over white */
   --btn-hover-shade: rgba(255, 255, 255, 0.08);
   color: var(--fg);
