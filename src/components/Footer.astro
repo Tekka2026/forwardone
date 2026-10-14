@@ -64,7 +64,10 @@ const year = new Date().getFullYear();
       <ul class="footer-partners__list" aria-label="Partners">
         {
           footer.partners.map((p) => (
-            <li class="footer-partner" data-logo={p.logo} set:html={labelled(logo(p.logo), p.name)} />
+            <li class="footer-partner">
+              {p.prefix && <span class="footer-partner__prefix small">{p.prefix}</span>}
+              <Fragment set:html={labelled(logo(p.logo), p.name)} />
+            </li>
           ))
         }
       </ul>
@@ -159,19 +162,16 @@ const year = new Date().getFullYear();
     list-style: none;
   }
 
-  /* One height for the wide logos; widths follow each logo's proportions. */
+  /* One height for all logos; widths follow each logo's proportions. */
   .footer-partner {
     display: flex;
+    align-items: center;
+    gap: var(--gap-half);
   }
   .footer-partner :global(.footer-partner__logo) {
     display: block;
     height: 44px;
     width: auto;
-  }
-  /* The EIF mark is nearly square with small lettering: taller, so it
-     reads at the same optical size as the two wide logos. */
-  .footer-partner[data-logo='eif'] :global(.footer-partner__logo) {
-    height: 60px;
   }
 
   .footer-bottom {

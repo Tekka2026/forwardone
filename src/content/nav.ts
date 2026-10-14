@@ -122,13 +122,13 @@ export const footer = {
   /**
    * Partner logos, supplied as single-colour SVGs. `logo` names a file in
    * src/assets/partners/ (inlined, drawn in currentColor); `name` is the
-   * accessible label.
+   * accessible label; `prefix` is set as text before the logo.
    */
   partners: [
-    { name: 'Member of Invest Europe', logo: 'invest-europe' },
+    { name: 'Invest Europe', logo: 'invest-europe', prefix: 'Member of:' },
     { name: 'European Investment Fund', logo: 'eif' },
     { name: 'Funded by the European Union', logo: 'eu' },
-  ],
+  ] as { name: string; logo: string; prefix?: string }[],
   tagline: 'Performance-engineered venture capital.',
   company: 'FORWARD.one',
 };
