@@ -242,7 +242,8 @@ gauge and tooltips, shared) and `portal/icons.ts`; copy in `fundIII` and
 
 - Fund III section background: a diagonal gradient, full width, evenly from
   `#B6E3E5` in the bottom-left corner to `rgba(0, 0, 0, 0.04)` over the page
-  white in the top-right corner.
+  white in the top-right corner. `background-clip: padding-box`, so the
+  top hairline keeps the standard grey instead of tinting over the gradient.
 - Fund III head is centred: eyebrow, H2, body (balanced), CTA.
 - Under it, 48px below the CTA, a desktop dashboard drawn in HTML: the middle
   10 of 12 columns (full width at ≤880px). No device bezel: edged by a 1px line on
