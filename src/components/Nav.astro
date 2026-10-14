@@ -6,8 +6,9 @@
  *   (or at once when the page cannot scroll, or on the first Tab press).
  * - Closed: "Welcome to FORWARD.one" typed on the left, hamburger on the
  *   right. It stays until the bar is pressed.
- * - Pressing the bar opens the panel; the AI mark appears and the line
- *   becomes "How can we help you?", then the grey placeholder. Clicking the
+ * - The AI mark sits left of the line from the start. Pressing the bar
+ *   opens the panel; the mark swaps (a second mark pushes it out) and the
+ *   line becomes "How can we help you?". Clicking the
  *   greeting also turns it into a text field.
  * - Open: a panel grows upward out of the bar with the section columns
  *   (accordions on mobile); the page behind is pushed
@@ -90,7 +91,11 @@ const current = Astro.url.pathname;
         method="post"
       >
         <span class="nav__ai" data-nav-ai aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+          <!-- Two copies of the mark: on each press the next one pushes the current one out. -->
+          <svg class="nav__ai-current" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M7.5 1C7.5 2.49363 7.43712 3.64056 7.25977 4.52734C7.08347 5.40861 6.8021 5.99087 6.39648 6.39648C5.99087 6.8021 5.40861 7.08347 4.52734 7.25977C3.64056 7.43712 2.49363 7.5 1 7.5V8.5C2.49363 8.5 3.64056 8.56288 4.52734 8.74023C5.40861 8.91653 5.99087 9.1979 6.39648 9.60352C6.8021 10.0091 7.08347 10.5914 7.25977 11.4727C7.43712 12.3594 7.5 13.5064 7.5 15H8.5C8.5 13.5064 8.56288 12.3594 8.74023 11.4727C8.91653 10.5914 9.1979 10.0091 9.60352 9.60352C10.0091 9.1979 10.5914 8.91653 11.4727 8.74023C12.3594 8.56288 13.5064 8.5 15 8.5V7.5C13.5064 7.5 12.3594 7.43712 11.4727 7.25977C10.5914 7.08347 10.0091 6.8021 9.60352 6.39648C9.1979 5.99087 8.91653 5.40861 8.74023 4.52734C8.56288 3.64056 8.5 2.49363 8.5 1H7.5Z" fill="currentColor" stroke="currentColor" />
+          </svg>
+          <svg class="nav__ai-next" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
             <path d="M7.5 1C7.5 2.49363 7.43712 3.64056 7.25977 4.52734C7.08347 5.40861 6.8021 5.99087 6.39648 6.39648C5.99087 6.8021 5.40861 7.08347 4.52734 7.25977C3.64056 7.43712 2.49363 7.5 1 7.5V8.5C2.49363 8.5 3.64056 8.56288 4.52734 8.74023C5.40861 8.91653 5.99087 9.1979 6.39648 9.60352C6.8021 10.0091 7.08347 10.5914 7.25977 11.4727C7.43712 12.3594 7.5 13.5064 7.5 15H8.5C8.5 13.5064 8.56288 12.3594 8.74023 11.4727C8.91653 10.5914 9.1979 10.0091 9.60352 9.60352C10.0091 9.1979 10.5914 8.91653 11.4727 8.74023C12.3594 8.56288 13.5064 8.5 15 8.5V7.5C13.5064 7.5 12.3594 7.43712 11.4727 7.25977C10.5914 7.08347 10.0091 6.8021 9.60352 6.39648C9.1979 5.99087 8.91653 5.40861 8.74023 4.52734C8.56288 3.64056 8.5 2.49363 8.5 1H7.5Z" fill="currentColor" stroke="currentColor" />
           </svg>
         </span>
@@ -294,50 +299,41 @@ const current = Astro.url.pathname;
     cursor: pointer;
   }
 
-  /* The mark grows from zero width so the text slides right with it, while
-     the glyph itself enters like the last word of the H1: invisible for one
-     frame, then fully visible, rising smoothly from 7 steps down. */
+  /* AI mark: always in the bar, left of the greeting. Two stacked copies;
+     on each press of the bar (.is-swap) the current one shrinks and is
+     pushed up and to the right while the next one grows in from the bottom
+     left into the same spot. When that ends both reset, which looks the
+     same, ready for the next press. */
   .nav__ai {
-    --icon-step: 2px; /* the H1 step at display size */
+    position: relative;
     display: inline-flex;
     flex: 0 0 auto;
-    width: 0;
+    align-self: center;
+    width: 16px;
+    height: 16px;
     color: #78f6fb;
-    margin-right: calc(-1 * var(--space-2x)); /* cancel the flex gap while out */
-    transition:
-      width 360ms cubic-bezier(0.2, 0.7, 0.2, 1),
-      margin-right 360ms cubic-bezier(0.2, 0.7, 0.2, 1);
   }
-
   .nav__ai svg {
-    flex: 0 0 auto;
+    position: absolute;
+    inset: 0;
+    transform-origin: 50% 50%;
+  }
+  .nav__ai-next {
     opacity: 0;
   }
-
-  /* The slot opens as soon as the panel opens (text slides right)… */
-  .nav__ai.is-room {
-    width: 16px;
-    margin-right: 0;
+  .nav__ai.is-swap .nav__ai-current {
+    animation: nav-ai-out 420ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
-
-  /* …and the glyph rises into it 750ms later, moving only vertically. */
-  .nav__ai.is-in svg {
-    animation:
-      nav-ai-show calc(var(--reveal-frame) * 9) step-end forwards,
-      nav-ai-rise calc(var(--reveal-frame) * 9) cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  .nav__ai.is-swap .nav__ai-next {
+    animation: nav-ai-in 420ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
   }
-
-  /* Frame 0 invisible, visible from frame 1 (no fade) */
-  @keyframes nav-ai-show {
-    0%      { opacity: 0; }
-    11.111% { opacity: 1; }
-    100%    { opacity: 1; }
+  @keyframes nav-ai-out {
+    from { transform: none; }
+    to   { transform: translate(6px, -6px) scale(0); }
   }
-
-  /* Smooth rise from 7 steps down to rest */
-  @keyframes nav-ai-rise {
-    0%   { transform: translateY(calc(7 * var(--icon-step))); }
-    100% { transform: translateY(0); }
+  @keyframes nav-ai-in {
+    from { opacity: 1; transform: translate(-10px, 10px) scale(0); }
+    to   { opacity: 1; transform: none; }
   }
 
   .nav__prompt {
@@ -612,10 +608,8 @@ const current = Astro.url.pathname;
     .nav__cursor {
       animation: none;
     }
-    /* …and the glyph rises into it 750ms later, moving only vertically. */
-  .nav__ai.is-in svg {
+    .nav__ai.is-swap svg {
       animation: none;
-      opacity: 1;
     }
   }
 </style>
@@ -683,7 +677,7 @@ const current = Astro.url.pathname;
 
     /* ---- Typewriter greeting ----
        Closed: "Welcome to FORWARD.one" stays until the bar is pressed.
-       Open:   the AI mark appears, the line becomes "How can we help you?",
+       Open:   the AI mark swaps, the line becomes "How can we help you?",
                and after a short hold it turns into the grey placeholder.
        Closing again types the welcome line back. Every sequence gets a run
        id; starting a new one cancels whatever was still typing. */
@@ -697,17 +691,15 @@ const current = Astro.url.pathname;
     const alive = (id: number) => id === runId;
     const idle = () => cursor.classList.add('is-still'); // no cursor when idle
 
-    // The AI mark is shown only while the panel is open, 750ms after opening.
-    const AI_DELAY_MS = 750;
-    let aiTimer: number | undefined;
-    function showAi() {
-      window.clearTimeout(aiTimer);
-      ai.classList.add('is-room'); // text slides right now
-      aiTimer = window.setTimeout(() => ai.classList.add('is-in'), AI_DELAY_MS);
-    }
-    function hideAi() {
-      window.clearTimeout(aiTimer);
-      ai.classList.remove('is-in', 'is-room');
+    // The AI mark is always shown. Each press of the bar (open or close)
+    // plays the swap: the next mark pushes the current one out.
+    const aiNext = ai.querySelector<SVGElement>('.nav__ai-next')!;
+    aiNext.addEventListener('animationend', () => ai.classList.remove('is-swap'));
+    function swapAi() {
+      if (reduceMotion.matches) return;
+      ai.classList.remove('is-swap');
+      void ai.offsetWidth; // restart if pressed again mid-swap
+      ai.classList.add('is-swap');
     }
     async function typeText(text: string, id: number) {
       cursor.classList.remove('is-still');
@@ -894,7 +886,7 @@ const current = Astro.url.pathname;
       page.classList.add('is-pushed');
       page.setAttribute('inert', '');
       document.documentElement.style.overflow = 'hidden';
-      showAi();
+      swapAi();
       if (input.hidden) toQuestion();
       menu.setAttribute('aria-expanded', 'true');
       menu.setAttribute('aria-label', 'Close menu');
@@ -922,7 +914,7 @@ const current = Astro.url.pathname;
       page.classList.remove('is-pushed');
       page.removeAttribute('inert');
       document.documentElement.style.overflow = '';
-      hideAi();
+      swapAi();
       if (input.hidden || !input.value.trim()) toWelcome(true);
       menu.setAttribute('aria-expanded', 'false');
       menu.setAttribute('aria-label', 'Menu');

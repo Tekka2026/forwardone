@@ -430,8 +430,10 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   "Welcome to FORWARD.one", typed once and kept until the bar is pressed.
   Right: a hamburger button. The whole bar opens the panel; the hamburger is
   the keyboard control.
-- Pressing the bar: the text slides right, the AI mark (#78F6FB) rises into
-  place 750ms later the way the last H1 word does, and the line is retyped as
+- The AI mark (#78F6FB) sits left of the line from the start. Pressing the
+  bar (open or close) plays a swap: the mark shrinks and is pushed up and to
+  the right while a second mark grows in from the bottom left into its place
+  (420ms; off under reduced motion). On opening the line is retyped as
   "How can we help you?", which stays. (A grey "Type your question" step
   after 2 s exists but is switched off: `navGreeting.ask.placeholderEnabled`.)
   Clicking the line, or typing anywhere once it has been typed, opens a text
