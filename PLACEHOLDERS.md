@@ -23,6 +23,7 @@ invented; replace the value in the file named and the marker disappears.
 | Insights | `insights.articles[*].date` | Publication date (ISO) of each featured article. |
 | Insights | `insights.articles[*].slug` | Slugs are derived from titles; match them to the CMS slugs when the news collection is migrated. |
 | Newsletter | `insights.newsletter.action` | Email service endpoint. The form currently prevents submission and shows a confirmation only. |
+| Investor portal preview | `portal.article.image` | Image for the article card in the dashboard illustration (the reference shows a photo of a man at a laptop). Drop a file in `public/portal/` and set the path. |
 
 ## Navigation and footer (`src/content/nav.ts`)
 

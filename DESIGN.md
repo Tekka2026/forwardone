@@ -232,6 +232,26 @@ stretches to the text column's height and shares spare room between its
 items, so both columns end on the same line where the list fits; on narrow
 screens the list stacks under the CTA.
 
+### Investor portal preview (under Fund III)
+
+`src/components/home/PortalPreview.astro`, copy in `portal` (home.ts).
+
+- A desktop dashboard drawn in HTML inside a dark device bezel (rounded: it
+  is a device, not UI), 10 of 12 columns wide, 48px under the Fund III CTA;
+  full width at ≤880px.
+- Designed at a fixed 1328 × 840 stage (= `--col-10` at full width) and
+  scaled to the column width like an image (a ResizeObserver sets
+  `--pp-scale`), so the layout never reflows. The screen crops the content
+  at the bottom, as a screenshot would.
+- Geist-style parts in the site's type and colours: black top bar with
+  underlined active tab, square cards with Geist's shadow border on a
+  `#fafafa` canvas, the site's small ghost pill button (Filter), pill
+  badges (cyan on the mail icon, black for counts), a dark tooltip, mono
+  uppercase table heads, 1.5px stroke icons, links in `--brand-purple`.
+- Chart tones: cyan, purple, ink, light grey, lilac (purple 45% toward
+  white), slate.
+- An illustration: `role="img"` with a label; nothing inside is focusable.
+
 ### Proof slider ("From lab to exit.")
 
 Built like the "Follow the battery." section on vikka.io

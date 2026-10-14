@@ -262,6 +262,71 @@ export const fundIII = {
   cta: { label: 'Talk to investor relations', href: '/investors/contact' } as Cta,
 };
 
+/**
+ * Investor portal preview under Fund III: a desktop dashboard illustration.
+ * Copy follows the supplied reference screenshot, with the bank name set to
+ * FORWARD.one and CHF set to EUR. `share` values on asset classes size the
+ * donut segments only (traced from the reference drawing; only the 45% is
+ * shown as text). `tone` picks the chart colour in PortalPreview.astro.
+ */
+export type PortalTone = 'cyan' | 'purple' | 'ink' | 'grey' | 'lilac' | 'slate';
+
+export const portal = {
+  label: 'Illustration of the FORWARD.one investor portal dashboard',
+  brand: 'FORWARD.one',
+  nav: [
+    { label: 'Home', active: true },
+    { label: 'Wealth', menu: true },
+    { label: 'Transactions', menu: true },
+    { label: 'Documents' },
+    { label: 'Mobile' },
+  ],
+  unread: '3',
+  greeting: 'Good afternoon',
+  valueDate: 'Value date Monday, 05.02.2030 13:52',
+  filter: 'Filter',
+  total: { label: 'Total Assets', value: 'EUR 1’500’300' },
+  classes: {
+    title: 'Assets by class',
+    // Legend order as in the reference; the donut draws clockwise from the top.
+    items: [
+      { label: 'Cash deposits', tone: 'cyan', share: 45 },
+      { label: 'Other', tone: 'purple', share: 5 },
+      { label: 'Equity', tone: 'ink', share: 17 },
+      { label: 'Cash accounts', tone: 'grey', share: 8 },
+      { label: 'Fixed income', tone: 'lilac', share: 15 },
+      { label: 'Time deposits', tone: 'slate', share: 10 },
+    ] as { label: string; tone: PortalTone; share: number }[],
+    donutOrder: ['Cash deposits', 'Time deposits', 'Cash accounts', 'Equity', 'Fixed income', 'Other'],
+    tooltip: { label: 'Cash deposits', tone: 'cyan' as PortalTone, value: 'EUR 800’100', share: '45%' },
+  },
+  portfolios: {
+    title: '3 Portfolios',
+    link: 'Investment structure',
+    bank: 'FORWARD.one Bank AG | Zurich',
+    holder: '000000 - James B',
+    account: { number: '000000-1', value: 'EUR 650’000', toggle: 'Hide breakdown' },
+    columns: { asset: 'Assets', total: 'Total', share: '%' },
+    rows: [
+      { label: 'Cash deposits', tone: 'cyan', total: 'EUR 500’000', share: '73%' },
+      { label: 'Equity', tone: 'ink', total: 'EUR 100’000', share: '15%' },
+    ] as { label: string; tone: PortalTone; total: string; share: string }[],
+  },
+  team: 'Your team at FORWARD.one',
+  article: {
+    title: 'Investment scams: If it seems too good to be true, it probably is',
+    body: 'Have you seen an advert for an investment opportunity promising high returns with little or no risk? Beware: investment scams are fraudulent schemes designed to deceive you and can lead to significant financial loss.',
+    link: 'Read more',
+    image: '[PLACEHOLDER: article image]',
+    slides: 3,
+  },
+  alerts: {
+    title: 'Alerts & tasks',
+    count: '5',
+    items: ['2 Payment(s) to be signed', '3 New message(s)'],
+  },
+};
+
 export type Article = {
   title: string;
   slug: string;

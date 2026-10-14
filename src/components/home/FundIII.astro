@@ -2,6 +2,7 @@
 import { fundIII } from '@content/home';
 import Button from '@components/ui/Button.astro';
 import Sentences from '@components/ui/Sentences.astro';
+import PortalPreview from '@components/home/PortalPreview.astro';
 ---
 
 <section class="section">
@@ -11,6 +12,10 @@ import Sentences from '@components/ui/Sentences.astro';
     <p class="body body--wide fund__body">{fundIII.body}</p>
     <div class="section-cta">
       <Button href={fundIII.cta.href}>{fundIII.cta.label}</Button>
+    </div>
+    <!-- Investor portal preview: 10 of 12 columns, full width below 880px. -->
+    <div class="grid fund__portal">
+      <PortalPreview class="col-10" />
     </div>
   </div>
 </section>
@@ -24,5 +29,13 @@ import Sentences from '@components/ui/Sentences.astro';
   }
   .section-cta {
     margin-top: var(--gap-double);
+  }
+  .fund__portal {
+    margin-top: var(--gap-double);
+  }
+  @media (max-width: 880px) {
+    .fund__portal > :global(*) {
+      grid-column: 1 / -1;
+    }
   }
 </style>
