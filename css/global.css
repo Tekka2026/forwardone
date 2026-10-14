@@ -188,10 +188,11 @@
   --btn-lh-small: 20px;
   --btn-fs: 16px;
   --btn-lh: 24px;
-  /* Hover overlays measured from vercel.com, applied to the site's colours:
-     filled #161616 → #313131 (12% white), outlined #fff → #f0f0f0 (6% black). */
-  --btn-hover-lighten: 12%;
-  --btn-hover-mix: #ffffff;        /* overlay colour on filled buttons */
+  /* Hover: filled buttons turn brand teal (owner, 2026-10-14) with dark
+     text (white on #11CCBD fails contrast); outlined buttons keep the
+     vercel.com overlay, #fff → #f0f0f0 (6% black). */
+  --btn-hover-bg: #11ccbd;
+  --btn-hover-fg: #111111;
   --btn-hover-shade: rgba(0, 0, 0, 0.06);
 }
 
@@ -524,9 +525,9 @@ code, kbd, samp, pre {
 
 .btn:hover,
 .btn:focus-visible {
-  --btn-hover-fill: color-mix(in srgb, var(--accent), var(--btn-hover-mix) var(--btn-hover-lighten));
-  background: var(--btn-hover-fill);
-  border-color: var(--btn-hover-fill); /* no dark rim around the lighter fill */
+  background: var(--btn-hover-bg);
+  border-color: var(--btn-hover-bg); /* no rim around the fill */
+  color: var(--btn-hover-fg);
 }
 
 .btn:focus-visible {
@@ -550,6 +551,7 @@ code, kbd, samp, pre {
 .btn--ghost:focus-visible {
   background: var(--btn-hover-shade);
   border-color: var(--fg);
+  color: var(--fg);
 }
 
 .btn--small {
@@ -617,7 +619,6 @@ code, kbd, samp, pre {
   --muted: #a1a1a1;
   --hairline: rgba(255, 255, 255, 0.2);
   --bg-tint: rgba(255, 255, 255, 0.04);
-  --btn-hover-mix: #000000;                    /* 12% black over white */
   --btn-hover-shade: rgba(255, 255, 255, 0.08);
   color: var(--fg);
 }
