@@ -98,7 +98,7 @@ export const navGreeting = {
 
 /** Utility links, shown inside the navigation panel. */
 export const utilityNav = {
-  lpLogin: { label: 'LP Login', href: LP_LOGIN_URL, external: true },
+  lpLogin: { label: 'LP login', href: LP_LOGIN_URL, external: true },
   pitch: { label: 'Pitch us', href: '/founders' },
 };
 

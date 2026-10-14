@@ -204,7 +204,8 @@ the hero: eyebrow → figure 12px, figure → title 16px; the number's line
 height is `(--lh-display + 0.7) / 2` so the room around the digits equals
 the H1's (an H1 line height at twice the size would double it) on one line (an exception to the
 break-after-each-sentence rule; it wraps only where it does not fit),
-with centred body copy 16px below it.
+with centred body copy 16px below it, at the hero's lede size
+(`.lede`, `--fs-lede`, like the copy under the H1).
 The figure is painted by a black → `--brand-cyan` gradient whose cyan slides
 out to the right. Desktop (mouse): the cursor drives it; far away the full
 gradient shows, within 480px it fades as the cursor approaches, on the
@@ -372,9 +373,11 @@ font's default underline is too heavy.
 ## 8. Navigation
 
 The primary navigation is a bar that floats at the bottom of the viewport
-(`src/components/Nav.astro`), not a top header. The logo and the Pitch us
-button sit in a plain strip at the top of the page
-(`src/components/Header.astro`).
+(`src/components/Nav.astro`), not a top header. The logo and two small
+buttons sit in a plain strip at the top of the page
+(`src/components/Header.astro`): Pitch us (solid: white with black text on
+the dark intro, black with white text on light pages) and, to its right,
+LP login (outlined, opens the LP portal in a new tab, ↗).
 
 - Hidden on load. It slides in from the bottom on the visitor's first scroll
   (or at once when the page cannot scroll, or on the first Tab press).
@@ -395,9 +398,8 @@ button sit in a plain strip at the top of the page
   centred on the first letter. The `_` cursor shows only while text is being
   typed or erased. Copy lives in `src/content/nav.ts` (`navGreeting`).
 - Open: the panel expands upward from the bar in `--nav-bg-open` (#000000)
-  with the section columns (accordions on mobile). LP Login is reached via
-  the Investors column; Pitch us is a button in the top strip beside the
-  logo. The
+  with the section columns (accordions on mobile). LP login is also reached via
+  the Investors column; Pitch us and LP login are buttons in the top strip. The
   page behind is pushed back 3% (scale 0.97) from the centre of the visible
   viewport, covered by an 80% white layer and made inert. Opening and closing
   use the same fluid, snappy motion (420ms, ease-out). The panel never fades:
