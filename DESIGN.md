@@ -295,8 +295,8 @@ gauge and tooltips, shared) and `portal/icons.ts`; copy in `fundIII` and
 Built like the "Follow the battery." section on vikka.io
 (`src/components/home/CaseStudies.astro`):
 
-- Heading row: eyebrow and H2 in 6 columns, intro (body copy, like What we do) in 5
-  columns from column 8.
+- Heading row: eyebrow and H2 in 6 columns, intro (body copy) in 4 columns
+  from column 9 (owner, 2026-10-14).
 - One dark card (`#111111`, dark theme) per company in a horizontal
   scroll-snap track. Cards are 10 of 12 columns wide (`--card-cols`; 1328px at full width);
   in the single-column grid (≤880px) the content width minus a 48px peek.
@@ -498,6 +498,7 @@ redefine any token or class from this file elsewhere.
 |---|---|
 | Global stylesheet | `css/global.css`, imported once in `src/layouts/Base.astro` |
 | Page shell, skip link, font loading | `src/layouts/Base.astro` |
+| Logo | `src/assets/brand/forwardone.svg` (supplied 2026-10-14), inlined by `src/components/ui/Logo.astro` in `currentColor`: 20px high (15px at ≤420px so the header row fits); also in the portal preview's top bar (16px desktop, 14px mobile) |
 | Top strip (logo), floating nav, footer | `src/components/Header.astro`, `src/components/Nav.astro`, `src/components/Footer.astro` |
 | Footer partner logos (Invest Europe, EIF, EU) | `src/assets/partners/*.svg`: single-colour SVGs inlined in `currentColor` (black on the light footer), all 44px high. No hairline above. Desktop: one left-aligned row, "Member of:" (Inter, `.small`) 12px before the Invest Europe logo, 64px between logos. Phones (≤640px): "Member of:" centred with the three logos centred in one row 16px under it, 32px high; label and names in `footer.partnersLabel` / `footer.partners` (nav.ts) |
 | Shared UI | `src/components/ui/` (Button, Logo, Footnote, Placeholder) |

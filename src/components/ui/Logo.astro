@@ -1,26 +1,35 @@
 ---
 /**
- * Wordmark. The SVG logo from the current site is not in the repo yet
- * (see PLACEHOLDERS.md); until then the name renders as text.
+ * Wordmark: the supplied FORWARD.one SVG (src/assets/brand/forwardone.svg),
+ * inlined in currentColor so it follows the theme (white on the dark intro,
+ * black on light pages). The link carries the accessible name.
  */
 import { href } from '@lib/href';
 import { site } from '@content/nav';
+import wordmark from '../../assets/brand/forwardone.svg?raw';
+
+const mark = wordmark.replace('<svg ', '<svg class="logo__mark" aria-hidden="true" focusable="false" ');
 ---
 
-<a class="logo" href={href('/')} aria-label={`${site.name} home`}>
-  <span class="logo__mark" aria-hidden="true">{site.name}</span>
-</a>
+<a class="logo" href={href('/')} aria-label={`${site.name} home`} set:html={mark} />
 
 <style>
   .logo {
     display: inline-flex;
     align-items: center;
+    color: inherit;
     text-decoration-line: none;
-    font-family: var(--font-display);
-    font-size: var(--fs-card-title);
-    font-weight: 600;
-    letter-spacing: var(--ls-card-title);
-    line-height: 1;
-    white-space: nowrap;
+  }
+  /* 199 × 20 artwork: 20px high on desktop, smaller on phones so the logo
+     and both header buttons fit on one row. */
+  .logo :global(.logo__mark) {
+    display: block;
+    height: 20px;
+    width: auto;
+  }
+  @media (max-width: 420px) {
+    .logo :global(.logo__mark) {
+      height: 15px;
+    }
   }
 </style>

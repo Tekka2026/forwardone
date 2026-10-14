@@ -278,7 +278,6 @@ export type PortalTone = 'cyan' | 'ink' | 'lilac' | 'grey';
 
 export const portal = {
   label: 'Illustration of the FORWARD.one investor portal dashboard',
-  brand: 'FORWARD.one',
   nav: [
     { label: 'Home', active: true },
     { label: 'Wealth', menu: true },

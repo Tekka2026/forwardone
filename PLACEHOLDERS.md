@@ -37,7 +37,6 @@ invented; replace the value in the file named and the marker disappears.
 
 | Where | Needed |
 |---|---|
-| `src/components/ui/Logo.astro` | SVG wordmark from the current site. Renders as text until supplied. |
 | `css/global.css` colour tokens | Brand colours. Current values are neutral placeholders. |
 
 ## Stub pages (`src/content/pages.ts`)

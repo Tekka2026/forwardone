@@ -17,6 +17,10 @@ import Placeholder from '@components/ui/Placeholder.astro';
 import AssetsChart from '@components/home/portal/AssetsChart.astro';
 import { svg } from '@components/home/portal/icons';
 import { href } from '@lib/href';
+import wordmark from '../../assets/brand/forwardone.svg?raw';
+
+// The site wordmark, sized by .pp-bar__logo; the figure's label names it.
+const logoSvg = wordmark.replace('<svg ', '<svg aria-hidden="true" ');
 
 interface Props {
   class?: string;
@@ -30,7 +34,7 @@ const { class: cls } = Astro.props;
     <div class="pp__screen">
       <!-- Top bar: logo, tabs, icons -->
       <div class="pp-bar">
-        <span class="pp-bar__logo">{portal.brand}</span>
+        <span class="pp-bar__logo" set:html={logoSvg} />
         <ul class="pp-bar__tabs">
           {
             portal.nav.map((n) => (
@@ -130,7 +134,7 @@ const { class: cls } = Astro.props;
     <div class="pp__screen">
       <div class="pp-bar pp-bar--mobile">
         <Fragment set:html={svg('menu', 20)} />
-        <span class="pp-bar__logo">{portal.brand}</span>
+        <span class="pp-bar__logo" set:html={logoSvg} />
         <Fragment set:html={svg('logOut', 18)} />
       </div>
 
@@ -327,10 +331,12 @@ const { class: cls } = Astro.props;
     box-shadow: inset 0 -1px 0 var(--pp-line);
   }
   .pp-bar__logo {
-    font-family: var(--font-display);
-    font-size: 20px;
-    font-weight: 600;
-    letter-spacing: 0;
+    display: flex;
+  }
+  .pp-bar__logo :global(svg) {
+    display: block;
+    height: 16px;
+    width: auto;
   }
   .pp-bar__tabs {
     display: flex;
@@ -494,8 +500,8 @@ const { class: cls } = Astro.props;
     height: 56px;
     padding: 0 20px;
   }
-  .pp-bar--mobile .pp-bar__logo {
-    font-size: 18px;
+  .pp-bar--mobile .pp-bar__logo :global(svg) {
+    height: 14px;
   }
   .pp-body--mobile {
     padding: 20px 16px 0;
