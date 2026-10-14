@@ -240,10 +240,9 @@ screens the list stacks under the CTA.
 gauge and tooltips, shared) and `portal/icons.ts`; copy in `fundIII` and
 `portal` (home.ts).
 
-- Fund III section background: a diagonal gradient, full width, from the
-  top-left corner (`#B6E3E5`) to `rgba(0, 0, 0, 0.04)` over the page white,
-  reached at 70% of the diagonal (where the dashboard begins), so the full
-  range shows above the dashboard and the headline sits near its midpoint.
+- Fund III section background: a diagonal gradient, full width, evenly from
+  `#B6E3E5` in the bottom-left corner to `rgba(0, 0, 0, 0.04)` over the page
+  white in the top-right corner.
 - Fund III head is centred: eyebrow, H2, body (balanced), CTA.
 - Under it, 48px below the CTA, a desktop dashboard drawn in HTML: the middle
   10 of 12 columns (full width at ≤880px). No device bezel: edged by a 1px line on
@@ -289,6 +288,13 @@ gauge and tooltips, shared) and `portal/icons.ts`; copy in `fundIII` and
   badge, a dark tooltip, 1.5px stroke icons, links in `--brand-purple`.
 - Chart tones: cyan, ink, lilac (purple 45% toward white), grey. Amounts use comma thousands separators (EUR 1,500,300).
 - An illustration: `role="img"` with a label; nothing inside is focusable.
+
+### Insights and closing
+
+- Insights (black band): on desktop the H2 runs at most 6 of the 12 grid
+  columns (fluid, from the wrap width); full width at ≤880px.
+- Closing ("Serious about performance? So are we."): title and buttons
+  centred.
 
 ### Proof slider ("From lab to exit.")
 

@@ -48,6 +48,12 @@ import Sentences from '@components/ui/Sentences.astro';
   .section-title {
     margin-top: var(--gap-half);
   }
+  /* Desktop: the title runs at most 6 of the 12 grid columns. */
+  @media (min-width: 880.02px) {
+    .section-title {
+      max-width: calc((100% - 11 * var(--gutter)) / 12 * 6 + 5 * var(--gutter));
+    }
+  }
   .articles {
     margin: var(--space-4x) 0 0;   /* heading → content: 16px */
     padding: 0;

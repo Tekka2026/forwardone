@@ -15,9 +15,17 @@ import Sentences from '@components/ui/Sentences.astro';
 </section>
 
 <style>
+  /* Centred: title and buttons. */
+  .closing {
+    text-align: center;
+  }
+  .closing__title {
+    margin-inline: auto;
+  }
   .closing__actions {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: var(--gap-half);
     margin-top: var(--gap-double);
   }
