@@ -11,7 +11,7 @@ const keys = ['size', 'companies', 'status'] as const;
   <div class="wrap">
     <div class="track__head">
       <p class="eyebrow">{trackRecord.eyebrow}</p>
-      <p class="track__figure">
+      <p class="track__figure" data-track-figure>
         <span class="track__unit">{trackRecord.figure.prefix}</span><span class="track__value">{trackRecord.figure.value}</span><span class="track__unit">{trackRecord.figure.suffix}</span>
       </p>
       <!-- One line here (exception to the break-after-each-sentence rule). -->
@@ -66,8 +66,25 @@ const keys = ['size', 'companies', 'status'] as const;
   }
   /* Same rhythm as the hero: eyebrow → figure 12px, figure → title 16px,
      figure line height as the H1. */
+  /* Glow: the figure is painted by a black → --brand-cyan gradient. As it
+     scrolls up into view, the script moves --figure-sweep from 0% to 100%,
+     pushing the cyan out to the right until the number is solid black.
+     Rests at 100% (solid) without JS or under reduced motion. The padding /
+     negative margin pair lets the painted box cover the large glyphs. */
   .track__figure {
-    margin: var(--gap-half) 0 0;
+    --figure-sweep: 100%;
+    --figure-bleed: calc(var(--fs-display) * 0.3);
+    background: linear-gradient(
+      90deg,
+      var(--fg) var(--figure-sweep),
+      var(--brand-cyan) calc(var(--figure-sweep) + 100%)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    padding-block: var(--figure-bleed);
+    margin: calc(var(--gap-half) - var(--figure-bleed)) 0 calc(-1 * var(--figure-bleed));
     font-family: var(--font-display);
     font-weight: var(--fw-figure);
     line-height: var(--lh-display);
@@ -215,3 +232,27 @@ const keys = ['size', 'companies', 'status'] as const;
     }
   }
 </style>
+
+<script>
+  // Scroll-linked glow on the headline figure: 0% when its top enters the
+  // bottom of the window, 100% (gradient gone) once its top reaches the
+  // middle of the window.
+  const figure = document.querySelector<HTMLElement>('[data-track-figure]');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (figure && !reduce.matches) {
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const top = figure.getBoundingClientRect().top;
+      const vh = window.innerHeight;
+      const progress = Math.min(1, Math.max(0, (vh - top) / (vh * 0.5)));
+      figure.style.setProperty('--figure-sweep', `${(progress * 100).toFixed(1)}%`);
+    };
+    const queue = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener('scroll', queue, { passive: true });
+    window.addEventListener('resize', queue);
+  }
+</script>

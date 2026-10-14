@@ -204,7 +204,11 @@ the hero: eyebrow → figure 12px, figure → title 16px; the number's line
 height is `(--lh-display + 0.7) / 2` so the room around the digits equals
 the H1's (an H1 line height at twice the size would double it) on one line (an exception to the
 break-after-each-sentence rule; it wraps only where it does not fit),
-with centred body copy 16px below it. The
+with centred body copy 16px below it.
+The figure is painted by a black → `--brand-cyan` gradient whose cyan slides
+out to the right as the figure scrolls up: gradient when its top enters the
+window, solid black once its top reaches the middle (scroll-linked, so it
+reverses on scroll back). Solid without JS or under reduced motion. The
 table follows 64px lower.
 
 Under the table one row: the "Funds & track record" link on the left, the
