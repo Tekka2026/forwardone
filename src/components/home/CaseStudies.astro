@@ -353,6 +353,13 @@ const dateParts = (d: string) => d.split(/(?<=\d)(st|nd|rd|th)\b/);
 
   /* Single-column grid (≤880px): a card is the content width minus a peek. */
   @media (max-width: 880px) {
+    /* Stacked: heading → intro is the usual 16px, not the grid's row gap. */
+    .cases__head {
+      row-gap: 0;
+    }
+    .cases__head .cases__intro {
+      margin-top: var(--space-4x);
+    }
     .cases__track {
       --card-w: calc(100cqw - var(--gap-double));
     }
@@ -387,9 +394,7 @@ const dateParts = (d: string) => d.split(/(?<=\d)(st|nd|rd|th)\b/);
     .case--video .case__text {
       grid-row: 3;
     }
-    .cases__head .cases__intro {
-      margin-top: var(--gap-half);
-    }
+
   }
 
   @media (prefers-reduced-motion: reduce) {
