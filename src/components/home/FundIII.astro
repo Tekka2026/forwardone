@@ -5,22 +5,39 @@ import Sentences from '@components/ui/Sentences.astro';
 import PortalPreview from '@components/home/PortalPreview.astro';
 ---
 
-<section class="section">
+<section class="section fund">
   <div class="wrap">
-    <p class="eyebrow">{fundIII.eyebrow}</p>
-    <h2 class="h-section section-title"><Sentences text={fundIII.title} /></h2>
-    <p class="body body--wide fund__body">{fundIII.body}</p>
-    <div class="section-cta">
-      <Button href={fundIII.cta.href}>{fundIII.cta.label}</Button>
+    <!-- Centred head: eyebrow, title, body, CTA. -->
+    <div class="fund__head">
+      <p class="eyebrow">{fundIII.eyebrow}</p>
+      <h2 class="h-section section-title"><Sentences text={fundIII.title} /></h2>
+      <p class="body body--wide fund__body">{fundIII.body}</p>
+      <div class="section-cta">
+        <Button href={fundIII.cta.href}>{fundIII.cta.label}</Button>
+      </div>
     </div>
-    <!-- Investor portal preview: 10 of 12 columns, full width below 880px. -->
+    <!-- Investor portal preview: the middle 10 of 12 columns (full width
+         below 880px), cut off by the section's bottom edge. -->
     <div class="grid fund__portal">
-      <PortalPreview class="col-10" />
+      <PortalPreview class="col-10 start-2" />
     </div>
   </div>
 </section>
 
 <style>
+  /* The preview runs into the section's bottom edge, so no bottom padding. */
+  .fund {
+    padding-bottom: 0;
+  }
+  .fund__head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .fund__body {
+    text-wrap: balance;
+  }
   .section-title {
     margin-top: var(--gap-half);
   }

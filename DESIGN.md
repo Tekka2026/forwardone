@@ -234,22 +234,29 @@ screens the list stacks under the CTA.
 
 ### Investor portal preview (under Fund III)
 
-`src/components/home/PortalPreview.astro`, copy in `portal` (home.ts).
+`src/components/home/FundIII.astro`, `src/components/home/PortalPreview.astro`,
+copy in `fundIII` and `portal` (home.ts).
 
-- A desktop dashboard drawn in HTML, no device bezel: the screen itself,
-  square, edged by a 1px line, 10 of 12 columns wide, 48px under the Fund III CTA;
-  full width at ≤880px.
-- Designed at a fixed 1328 × 840 stage (= `--col-10` at full width) and
-  scaled to the column width like an image (a ResizeObserver sets
-  `--pp-scale`), so the layout never reflows. The screen crops the content
-  at the bottom, as a screenshot would.
+- Fund III head is centred: eyebrow, H2, body (balanced), CTA.
+- Under it, 48px below the CTA, a desktop dashboard drawn in HTML: the middle
+  10 of 12 columns (full width at ≤880px). No device bezel: square, edged by a
+  1px line on three sides. The section has no bottom padding, so the
+  dashboard runs into the section's bottom edge and is cut off there: only
+  the top 75% of the 1328 × 840 screen is drawn (1328 × 630), and content
+  below the cut is left out of the markup, not hidden.
+- Designed at that fixed size and scaled to the column width like an image
+  (a ResizeObserver sets `--pp-scale`), so the layout never reflows.
+- Live bits: the greeting follows the viewer's local time (morning 05–12,
+  afternoon 12–18, evening otherwise) and the value date shows their current
+  date and time. The donut is interactive: hovering a segment or legend row
+  thickens that segment, dims the rest and shows its tooltip (label, value,
+  share) at the arc's midpoint; leaving the chart returns to Cash deposits.
 - Geist-style parts in the site's type and colours: black top bar with
   underlined active tab, square cards with Geist's shadow border on a
-  `#fafafa` canvas, the site's small ghost pill button (Filter), pill
-  badges (cyan on the mail icon, black for counts), a dark tooltip, mono
-  uppercase table heads, 1.5px stroke icons, links in `--brand-purple`.
+  `#fafafa` canvas, the site's small ghost pill button (Filter), a cyan pill
+  badge, a dark tooltip, 1.5px stroke icons, links in `--brand-purple`.
 - Chart tones: cyan, purple, ink, light grey, lilac (purple 45% toward
-  white), slate.
+  white), slate. Amounts use comma thousands separators (EUR 1,500,300).
 - An illustration: `role="img"` with a label; nothing inside is focusable.
 
 ### Proof slider ("From lab to exit.")

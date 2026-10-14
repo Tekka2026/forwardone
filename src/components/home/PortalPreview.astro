@@ -39,6 +39,7 @@ const svg = (name: keyof typeof icons, size = 16) =>
   `<svg class="pp-icon" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name]}</svg>`;
 
 // Donut: one circle per class, dash length = share, small gap between.
+// Each segment also gets the midpoint of its arc, where its tooltip anchors.
 const R = 54;
 const C = 2 * Math.PI * R;
 const GAP = 2; // px of circumference between segments
@@ -47,11 +48,17 @@ let offset = 0;
 const segments = portal.classes.donutOrder.map((label) => {
   const item = byLabel.get(label)!;
   const len = (item.share / 100) * C;
-  const seg = { tone: item.tone, dash: `${Math.max(len - GAP, 0)} ${C}`, offset: -offset };
+  const mid = ((offset + len / 2) / C) * 2 * Math.PI - Math.PI / 2; // clockwise from 12 o'clock
+  const seg = {
+    ...item,
+    dash: `${Math.max(len - GAP, 0)} ${C}`,
+    offset: -offset,
+    x: 70 + R * Math.cos(mid),
+    y: 70 + R * Math.sin(mid),
+  };
   offset += len;
   return seg;
 });
-const tip = portal.classes.tooltip;
 ---
 
 <figure class:list={['pp', cls]} role="img" aria-label={portal.label} data-portal>
@@ -84,8 +91,18 @@ const tip = portal.classes.tooltip;
         <!-- Greeting row (left column width) -->
         <div class="pp-head">
           <div>
-            <p class="pp-head__title">{portal.greeting}</p>
-            <p class="pp-head__date">{portal.valueDate}</p>
+            <p
+              class="pp-head__title"
+              data-pp-greeting
+              data-morning={portal.greeting.morning}
+              data-afternoon={portal.greeting.afternoon}
+              data-evening={portal.greeting.evening}
+            >
+              {portal.greeting.afternoon}
+            </p>
+            <p class="pp-head__date">
+              {portal.valueDate.label} <span data-pp-date>{portal.valueDate.fallback}</span>
+            </p>
           </div>
           <span class="btn btn--ghost btn--small pp-filter">
             {portal.filter}
@@ -105,7 +122,7 @@ const tip = portal.classes.tooltip;
               <ul class="pp-legend">
                 {
                   portal.classes.items.map((i) => (
-                    <li>
+                    <li data-pp-class={i.label}>
                       <span class={`pp-dot tone-${i.tone}`} />
                       {i.label}
                     </li>
@@ -118,13 +135,13 @@ const tip = portal.classes.tooltip;
                     {
                       segments.map((s) => (
                         <circle
-                          class={`tone-${s.tone}`}
+                          class={`pp-seg tone-${s.tone}`}
+                          data-pp-class={s.label}
                           cx="70"
                           cy="70"
                           r={R}
                           fill="none"
                           stroke="currentColor"
-                          stroke-width="20"
                           stroke-dasharray={s.dash}
                           stroke-dashoffset={s.offset}
                         />
@@ -132,19 +149,27 @@ const tip = portal.classes.tooltip;
                     }
                   </g>
                 </svg>
-                <div class="pp-tooltip">
-                  <p class="pp-tooltip__title">{tip.label}</p>
-                  <p class="pp-tooltip__row">
-                    <span class={`pp-dot tone-${tip.tone}`} />
-                    <span>{tip.value}</span>
-                    <span class="pp-tooltip__share">{tip.share}</span>
-                  </p>
-                </div>
+                {
+                  segments.map((s) => (
+                    <div
+                      class:list={['pp-tooltip', s.label === portal.classes.initial && 'is-active']}
+                      data-pp-tip={s.label}
+                      style={`--x: ${(s.x < 70 ? 140 : s.x).toFixed(1)}px; --y: ${s.y.toFixed(1)}px`}
+                    >
+                      <p class="pp-tooltip__title">{s.label}</p>
+                      <p class="pp-tooltip__row">
+                        <span class={`pp-dot tone-${s.tone}`} />
+                        <Placeholder value={s.value} />
+                        <span class="pp-tooltip__share">{s.share}%</span>
+                      </p>
+                    </div>
+                  ))
+                }
               </div>
             </div>
           </section>
 
-          <!-- Portfolios (cropped by the screen edge, as in the reference) -->
+          <!-- Portfolios (cut off by the section edge) -->
           <section class="pp-card pp-portfolios">
             <p class="pp-portfolios__head">
               <span class="pp-card__title">{portal.portfolios.title}</span>
@@ -154,43 +179,7 @@ const tip = portal.classes.tooltip;
               </span>
             </p>
             <p class="pp-card__title pp-portfolios__bank">{portal.portfolios.bank}</p>
-            <p class="pp-small">{portal.portfolios.holder}</p>
-            <div class="pp-account">
-              <p class="pp-account__head">
-                <span><strong>{portal.portfolios.account.number}</strong> {portal.portfolios.account.value}</span>
-                <span class="pp-account__toggle">
-                  {portal.portfolios.account.toggle}
-                  <Fragment set:html={svg('chevronUp', 14)} />
-                </span>
-              </p>
-              <table class="pp-table">
-                <thead>
-                  <tr>
-                    <th>{portal.portfolios.columns.asset}</th>
-                    <th>{portal.portfolios.columns.total}</th>
-                    <th>{portal.portfolios.columns.share}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {
-                    portal.portfolios.rows.map((r) => (
-                      <tr>
-                        <td>
-                          <span class="pp-table__asset">
-                            <span class={`pp-dot tone-${r.tone}`} />
-                            {r.label}
-                          </span>
-                        </td>
-                        <td>{r.total}</td>
-                        <td>{r.share}</td>
-                      </tr>
-                    ))
-                  }
-                </tbody>
-              </table>
-            </div>
           </section>
-
           </div>
 
           <div class="pp-col">
@@ -223,20 +212,6 @@ const tip = portal.classes.tooltip;
               <Fragment set:html={svg('pause', 16)} />
               <Fragment set:html={svg('chevronRight', 18)} />
             </div>
-            <div class="pp-article__dots">
-              {Array.from({ length: portal.article.slides }, (_, i) => <span class:list={['pp-article__dot', i === 0 && 'is-active']} />)}
-            </div>
-          </section>
-
-          <!-- Alerts & tasks -->
-          <section class="pp-card pp-alerts">
-            <p class="pp-alerts__head">
-              <span class="pp-card__title">{portal.alerts.title}</span>
-              <span class="pp-badge">{portal.alerts.count}</span>
-            </p>
-            <ul class="pp-alerts__list">
-              {portal.alerts.items.map((a) => <li>{a}</li>)}
-            </ul>
           </section>
           </div>
         </div>
@@ -246,26 +221,64 @@ const tip = portal.classes.tooltip;
 </figure>
 
 <script is:inline>
-  // Scale the fixed 1328px stage to the figure's width.
   (function () {
     var figs = document.querySelectorAll('[data-portal]');
-    if (!figs.length || !('ResizeObserver' in window)) return;
-    var ro = new ResizeObserver(function (entries) {
-      entries.forEach(function (e) {
-        e.target.style.setProperty('--pp-scale', String(e.contentRect.width / 1328));
+    if (!figs.length) return;
+
+    // Scale the fixed 1328px stage to the figure's width.
+    if ('ResizeObserver' in window) {
+      var ro = new ResizeObserver(function (entries) {
+        entries.forEach(function (e) {
+          e.target.style.setProperty('--pp-scale', String(e.contentRect.width / 1328));
+        });
       });
+      figs.forEach(function (f) { ro.observe(f); });
+    }
+
+    // Greeting and value date follow the viewer's local time.
+    var now = new Date();
+    var h = now.getHours();
+    var part = h >= 5 && h < 12 ? 'morning' : h >= 12 && h < 18 ? 'afternoon' : 'evening';
+    var pad = function (n) { return String(n).padStart(2, '0'); };
+    var date =
+      now.toLocaleDateString('en-GB', { weekday: 'long' }) + ', ' +
+      pad(now.getDate()) + '.' + pad(now.getMonth() + 1) + '.' + now.getFullYear() + ' ' +
+      pad(h) + ':' + pad(now.getMinutes());
+
+    figs.forEach(function (fig) {
+      var g = fig.querySelector('[data-pp-greeting]');
+      if (g && g.dataset[part]) g.textContent = g.dataset[part];
+      var d = fig.querySelector('[data-pp-date]');
+      if (d) d.textContent = date;
+
+      // Chart: hovering a segment or legend row shows that class's tooltip
+      // and dims the other segments; leaving the chart restores the default.
+      var chart = fig.querySelector('.pp-assets__chart');
+      if (!chart) return;
+      var initial = chart.querySelector('.pp-tooltip.is-active');
+      var show = function (name) {
+        chart.toggleAttribute('data-hover', !!name);
+        chart.querySelectorAll('[data-pp-class]').forEach(function (el) {
+          el.classList.toggle('is-hover', el.getAttribute('data-pp-class') === name);
+        });
+        chart.querySelectorAll('[data-pp-tip]').forEach(function (t) {
+          t.classList.toggle('is-active', name ? t.getAttribute('data-pp-tip') === name : t === initial);
+        });
+      };
+      chart.querySelectorAll('[data-pp-class]').forEach(function (el) {
+        el.addEventListener('pointerenter', function () { show(el.getAttribute('data-pp-class')); });
+      });
+      chart.addEventListener('pointerleave', function () { show(null); });
     });
-    figs.forEach(function (f) { ro.observe(f); });
   })();
 </script>
 
 <style>
   /* ---- Frame and scaling --------------------------------------------- */
   .pp {
-    --pp-w: 1328;
-    --pp-h: 840;
+    /* 75% of the full 1328 × 840 screen: the section edge cuts it off. */
     position: relative;
-    aspect-ratio: 1328 / 840;
+    aspect-ratio: 1328 / 630;
     margin: 0;
     overflow: hidden;
     /* Chart tones: the site's ink, greys and brand colours. */
@@ -285,7 +298,7 @@ const tip = portal.classes.tooltip;
     position: absolute;
     inset: 0 auto auto 0;
     width: 1328px;
-    height: 840px;
+    height: 630px;
     transform: scale(var(--pp-scale, 1));
     transform-origin: 0 0;
   }
@@ -295,6 +308,7 @@ const tip = portal.classes.tooltip;
     overflow: hidden;
     box-sizing: border-box;
     border: 1px solid var(--pp-line);
+    border-bottom: 0; /* cut off, no bottom edge */
     background: var(--pp-canvas);
     color: #111111;
     font-family: var(--font-sans);
@@ -410,8 +424,7 @@ const tip = portal.classes.tooltip;
     line-height: 1.3;
     font-weight: 450;
   }
-  .pp-head__date,
-  .pp-small {
+  .pp-head__date {
     font-size: 12px;
     color: var(--muted);
   }
@@ -487,17 +500,53 @@ const tip = portal.classes.tooltip;
   .pp-donut svg {
     display: block;
   }
-  /* Tooltip (Geist: dark, small type), anchored over the top-right arc */
+  /* Segments: hover thickens the hovered one, dims the rest. */
+  .pp-seg {
+    stroke-width: 20;
+    cursor: default;
+    transition: stroke-width 150ms ease, opacity 150ms ease;
+  }
+  .pp-assets__chart[data-hover] .pp-seg {
+    opacity: 0.3;
+  }
+  .pp-assets__chart[data-hover] .pp-seg.is-hover {
+    opacity: 1;
+    stroke-width: 26;
+  }
+  .pp-legend li {
+    cursor: default;
+    transition: opacity 150ms ease;
+  }
+  .pp-assets__chart[data-hover] .pp-legend li:not(.is-hover) {
+    opacity: 0.4;
+  }
+  /* Tooltip (Geist: dark, small type), one per class, anchored at the
+     midpoint of its segment's arc; for arcs on the left half, at the same
+     height on the donut's right edge, so it never covers the legend. */
   .pp-tooltip {
+    display: none;
     position: absolute;
-    top: -14px;
-    left: 70px;
+    top: var(--y);
+    left: var(--x);
+    transform: translate(10px, calc(-100% - 6px));
+    pointer-events: none;
+    z-index: 1;
     padding: 10px 12px;
     background: #111111;
     color: #ffffff;
     font-size: 12px;
     white-space: nowrap;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+  /* Light ring so dark tones (ink, purple) stay visible on the dark tooltip. */
+  .pp-tooltip .pp-dot {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5);
+  }
+  .pp-tooltip :global(.placeholder) {
+    white-space: nowrap;
+  }
+  .pp-tooltip.is-active {
+    display: block;
   }
   .pp-tooltip__title {
     font-weight: 600;
@@ -555,21 +604,6 @@ const tip = portal.classes.tooltip;
     margin-top: 16px;
     color: #111111;
   }
-  .pp-article__dots {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 10px;
-  }
-  .pp-article__dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    box-shadow: inset 0 0 0 1px #111111;
-  }
-  .pp-article__dot.is-active {
-    background: #111111;
-  }
 
   /* Portfolios */
   .pp-portfolios__head {
@@ -580,70 +614,5 @@ const tip = portal.classes.tooltip;
   .pp-portfolios__bank {
     margin-top: 20px;
     font-size: 13px;
-  }
-  .pp-account {
-    margin-top: 16px;
-    padding: 16px 20px;
-    box-shadow: var(--pp-ring);
-  }
-  .pp-account__head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 13px;
-  }
-  .pp-account__head strong {
-    margin-right: 6px;
-    font-weight: 600;
-  }
-  .pp-account__toggle {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .pp-table {
-    width: 100%;
-    margin-top: 20px;
-    border-collapse: collapse;
-    font-size: 13px;
-    font-variant-numeric: tabular-nums;
-  }
-  .pp-table th {
-    padding: 0 0 10px;
-    border-bottom: 1px solid var(--pp-line);
-    text-align: left;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: var(--ls-label);
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .pp-table td {
-    padding: 10px 0;
-    border-bottom: 1px solid var(--pp-line);
-  }
-  .pp-table__asset {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .pp-table th:last-child,
-  .pp-table td:last-child {
-    text-align: right;
-  }
-
-  /* Alerts */
-  .pp-alerts__head {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .pp-alerts__list {
-    margin-top: 12px;
-  }
-  .pp-alerts__list li {
-    padding: 10px 0;
-    border-top: 1px solid var(--pp-line);
   }
 </style>

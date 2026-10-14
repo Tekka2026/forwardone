@@ -265,9 +265,14 @@ export const fundIII = {
 /**
  * Investor portal preview under Fund III: a desktop dashboard illustration.
  * Copy follows the supplied reference screenshot, with the bank name set to
- * FORWARD.one and CHF set to EUR. `share` values on asset classes size the
- * donut segments only (traced from the reference drawing; only the 45% is
- * shown as text). `tone` picks the chart colour in PortalPreview.astro.
+ * FORWARD.one, CHF set to EUR and comma thousands separators. Only the top
+ * 75% of the reference is drawn (the section's bottom edge cuts it off), so
+ * the lower content (account breakdown, alerts) is left out on purpose.
+ *
+ * Asset classes: `share` sizes the donut segment (traced from the reference
+ * drawing) and is shown in the hover tooltip; `value` is shown there too.
+ * Only Cash deposits has a supplied value. `tone` picks the chart colour in
+ * PortalPreview.astro.
  */
 export type PortalTone = 'cyan' | 'purple' | 'ink' | 'grey' | 'lilac' | 'slate';
 
@@ -279,38 +284,33 @@ export const portal = {
     { label: 'Wealth', menu: true },
     { label: 'Transactions', menu: true },
     { label: 'Documents' },
-    { label: 'Mobile' },
   ],
   unread: '3',
-  greeting: 'Good afternoon',
-  valueDate: 'Value date Monday, 05.02.2030 13:52',
+  /** Picked from the viewer's local time: morning 05–12, afternoon 12–18, evening otherwise. */
+  greeting: { morning: 'Good morning', afternoon: 'Good afternoon', evening: 'Good evening' },
+  /** Followed by the viewer's current date and time, e.g. "Monday, 05.02.2030 13:52". */
+  valueDate: { label: 'Value date', fallback: 'Monday, 05.02.2030 13:52' },
   filter: 'Filter',
-  total: { label: 'Total Assets', value: 'EUR 1’500’300' },
+  total: { label: 'Total Assets', value: 'EUR 1,500,300' },
   classes: {
     title: 'Assets by class',
     // Legend order as in the reference; the donut draws clockwise from the top.
     items: [
-      { label: 'Cash deposits', tone: 'cyan', share: 45 },
-      { label: 'Other', tone: 'purple', share: 5 },
-      { label: 'Equity', tone: 'ink', share: 17 },
-      { label: 'Cash accounts', tone: 'grey', share: 8 },
-      { label: 'Fixed income', tone: 'lilac', share: 15 },
-      { label: 'Time deposits', tone: 'slate', share: 10 },
-    ] as { label: string; tone: PortalTone; share: number }[],
+      { label: 'Cash deposits', tone: 'cyan', share: 45, value: 'EUR 800,100' },
+      { label: 'Other', tone: 'purple', share: 5, value: '[PLACEHOLDER: value]' },
+      { label: 'Equity', tone: 'ink', share: 17, value: '[PLACEHOLDER: value]' },
+      { label: 'Cash accounts', tone: 'grey', share: 8, value: '[PLACEHOLDER: value]' },
+      { label: 'Fixed income', tone: 'lilac', share: 15, value: '[PLACEHOLDER: value]' },
+      { label: 'Time deposits', tone: 'slate', share: 10, value: '[PLACEHOLDER: value]' },
+    ] as { label: string; tone: PortalTone; share: number; value: string }[],
     donutOrder: ['Cash deposits', 'Time deposits', 'Cash accounts', 'Equity', 'Fixed income', 'Other'],
-    tooltip: { label: 'Cash deposits', tone: 'cyan' as PortalTone, value: 'EUR 800’100', share: '45%' },
+    /** Class shown in the tooltip when nothing is hovered. */
+    initial: 'Cash deposits',
   },
   portfolios: {
     title: '3 Portfolios',
     link: 'Investment structure',
     bank: 'FORWARD.one Bank AG | Zurich',
-    holder: '000000 - James B',
-    account: { number: '000000-1', value: 'EUR 650’000', toggle: 'Hide breakdown' },
-    columns: { asset: 'Assets', total: 'Total', share: '%' },
-    rows: [
-      { label: 'Cash deposits', tone: 'cyan', total: 'EUR 500’000', share: '73%' },
-      { label: 'Equity', tone: 'ink', total: 'EUR 100’000', share: '15%' },
-    ] as { label: string; tone: PortalTone; total: string; share: string }[],
   },
   team: 'Your team at FORWARD.one',
   article: {
@@ -318,12 +318,6 @@ export const portal = {
     body: 'Have you seen an advert for an investment opportunity promising high returns with little or no risk? Beware: investment scams are fraudulent schemes designed to deceive you and can lead to significant financial loss.',
     link: 'Read more',
     image: '[PLACEHOLDER: article image]',
-    slides: 3,
-  },
-  alerts: {
-    title: 'Alerts & tasks',
-    count: '5',
-    items: ['2 Payment(s) to be signed', '3 New message(s)'],
   },
 };
 
