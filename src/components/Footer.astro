@@ -60,7 +60,7 @@ const year = new Date().getFullYear();
       </div>
     </div>
 
-    <!-- Centred: the label, then the three logos in one row under it. -->
+    <!-- Desktop: label and logos in one row. Phones: centred, logos under the label. -->
     <div class="footer-partners">
       <p class="footer-partners__label small" id="footer-partners-label">{footer.partnersLabel}</p>
       <ul class="footer-partners__list" aria-labelledby="footer-partners-label">
@@ -141,11 +141,15 @@ const year = new Date().getFullYear();
     font-style: normal;
   }
 
-  /* No hairline above: the label and logos are centred, 64px under the
-     columns. */
+  /* Desktop (as before): hairline above, left-aligned row: "Member of:"
+     then the three logos, the label 12px before the first one. */
   .footer-partners {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-half);
     margin-top: var(--space-16x);
-    text-align: center;
+    padding-top: var(--space-8x);
+    border-top: var(--hairline-w) solid var(--hairline);
   }
 
   .footer-partners__label {
@@ -155,10 +159,9 @@ const year = new Date().getFullYear();
   .footer-partners__list {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
     align-items: center;
-    gap: var(--space-4x) var(--space-16x);
-    margin: var(--space-4x) 0 0;
+    gap: var(--space-8x) var(--space-16x);
+    margin: 0;
     padding: 0;
     list-style: none;
   }
@@ -173,10 +176,19 @@ const year = new Date().getFullYear();
     width: auto;
   }
 
-  /* Phones: smaller logos and gaps, so all three stay on one row. */
+  /* Phones: no hairline; "Member of:" centred, the three logos centred in
+     one row under it, smaller so they fit. */
   @media (max-width: 640px) {
+    .footer-partners {
+      display: block;
+      padding-top: 0;
+      border-top: 0;
+      text-align: center;
+    }
     .footer-partners__list {
+      justify-content: center;
       gap: var(--space-4x) var(--gap);
+      margin-top: var(--space-4x);
     }
     .footer-partner :global(.footer-partner__logo) {
       height: 32px;
