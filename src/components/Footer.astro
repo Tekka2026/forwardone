@@ -142,15 +142,13 @@ const year = new Date().getFullYear();
     font-style: normal;
   }
 
-  /* Desktop (as before): hairline above, left-aligned row: "Member of:"
-     then the three logos, the label 12px before the first one. */
+  /* Desktop: no hairline, left-aligned row: "Member of:" then the three
+     logos, the label 12px before the first one. */
   .footer-partners {
     display: flex;
     align-items: center;
     gap: var(--gap-half);
     margin-top: var(--space-16x);
-    padding-top: var(--space-8x);
-    border-top: var(--hairline-w) solid var(--hairline);
   }
 
   .footer-partners__label {
@@ -177,13 +175,11 @@ const year = new Date().getFullYear();
     width: auto;
   }
 
-  /* Phones: no hairline; "Member of:" centred, the three logos centred in
-     one row under it, smaller so they fit. */
+  /* Phones: "Member of:" centred, the three logos centred in one row
+     under it, smaller so they fit. */
   @media (max-width: 640px) {
     .footer-partners {
       display: block;
-      padding-top: 0;
-      border-top: 0;
       text-align: center;
     }
     .footer-partners__list {

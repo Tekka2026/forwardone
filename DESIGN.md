@@ -455,6 +455,8 @@ LP login (outlined, opens the LP portal in a new tab, ↗).
 
 ## 9. Colour (placeholders)
 
+- Dark sections: `.section--dark.theme-dark` (black band, tokens inverted;
+  `data-nav-dark` so the floating nav inverts over it). Used by Insights.
 - `.theme-dark` re-points the colour tokens (`--bg` #000, `--fg` #FFF,
   `--accent` #FFF, `--muted` #A1A1A1, white hairlines, button hover mix) so
   any component inside it inverts without its own dark styles.
@@ -495,7 +497,7 @@ redefine any token or class from this file elsewhere.
 | Global stylesheet | `css/global.css`, imported once in `src/layouts/Base.astro` |
 | Page shell, skip link, font loading | `src/layouts/Base.astro` |
 | Top strip (logo), floating nav, footer | `src/components/Header.astro`, `src/components/Nav.astro`, `src/components/Footer.astro` |
-| Footer partner logos (Invest Europe, EIF, EU) | `src/assets/partners/*.svg`: single-colour SVGs inlined in `currentColor` (black on the light footer), all 44px high. Desktop: hairline above, one left-aligned row, "Member of:" (Inter, `.small`) 12px before the Invest Europe logo, 64px between logos. Phones (≤640px): no hairline, "Member of:" centred with the three logos centred in one row 16px under it, 32px high; label and names in `footer.partnersLabel` / `footer.partners` (nav.ts) |
+| Footer partner logos (Invest Europe, EIF, EU) | `src/assets/partners/*.svg`: single-colour SVGs inlined in `currentColor` (black on the light footer), all 44px high. No hairline above. Desktop: one left-aligned row, "Member of:" (Inter, `.small`) 12px before the Invest Europe logo, 64px between logos. Phones (≤640px): "Member of:" centred with the three logos centred in one row 16px under it, 32px high; label and names in `footer.partnersLabel` / `footer.partners` (nav.ts) |
 | Shared UI | `src/components/ui/` (Button, Logo, Footnote, Placeholder) |
 | Homepage sections | `src/components/home/`, composed in `src/pages/index.astro` |
 | Copy and numbers | `src/content/home.ts`, `src/content/nav.ts`, `src/content/pages.ts` |

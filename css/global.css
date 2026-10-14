@@ -373,6 +373,12 @@ code, kbd, samp, pre {
   border-top: 0;                   /* e.g. the first section under the header */
 }
 
+/* Dark band: full-width black, with .theme-dark on the same element so the
+   tokens inside invert (e.g. the Insights section). */
+.section--dark {
+  background-color: var(--bg);
+}
+
 /* Tinted band: full-width background, e.g. the Track record (funds) section */
 .section--tint {
   background-color: var(--bg-tint);
