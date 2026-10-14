@@ -39,8 +39,9 @@ const svg = (name: keyof typeof icons, size = 16) =>
   `<svg class="pp-icon" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name]}</svg>`;
 
 // Gauge: a 270° arc open at the bottom, drawn clockwise from its
-// bottom-left end. One rounded segment per class, sized by share of the
-// whole; whatever the classes leave stays an empty track. Drawn in a
+// bottom-left end. One rounded segment per class, sized by share; the
+// shares add up to 100, so the segments fill the arc (any shortfall would
+// show as an empty track). Drawn in a
 // 340-unit viewBox that scales to the right half of the card.
 const G = { w: 340, h: 298, cx: 170, cy: 170, r: 160, stroke: 14, start: -135, sweep: 270 };
 const pt = (deg: number, r = G.r) => {

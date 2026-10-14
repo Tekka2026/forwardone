@@ -24,7 +24,7 @@ invented; replace the value in the file named and the marker disappears.
 | Insights | `insights.articles[*].slug` | Slugs are derived from titles; match them to the CMS slugs when the news collection is migrated. |
 | Newsletter | `insights.newsletter.action` | Email service endpoint. The form currently prevents submission and shows a confirmation only. |
 | Investor portal preview | `portal.article.image` | Image for the article card in the dashboard illustration (the reference shows a photo of a man at a laptop). Drop a file in `public/portal/` and set the path. |
-| Investor portal preview | `portal.classes.items[*].value` | Amount per asset class shown in the gauge's hover tooltip, for Equity, Fixed income and Cash accounts (only Cash deposits, EUR 800,100, was in the reference; the gauge shows the four largest classes only). The tooltip percentages are traced from the reference chart; correct them in `share` if you have the real split. |
+| Investor portal preview | `portal.classes.items[*].value` | Amount per asset class shown in the gauge's hover tooltip, for Equity, Fixed income and Cash accounts (only Cash deposits, EUR 800,100, was in the reference; the gauge shows the four largest classes only). The percentages are traced from the reference chart and rescaled so the four add up to 100%; correct them in `share` (keeping a total of 100) if you have the real split. |
 
 ## Navigation and footer (`src/content/nav.ts`)
 

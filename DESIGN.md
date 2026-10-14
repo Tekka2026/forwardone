@@ -254,9 +254,9 @@ copy in `fundIII` and `portal` (home.ts).
 - Assets by class: legend in the left half of the card, a 270° gauge open
   at the bottom (after a fintech gauge reference) filling the right half
   (SVG viewBox scaled to the column). Only the four largest classes, largest
-  first, clockwise from the bottom-left end; segments sized by share of the
-  whole, 14-unit stroke, rounded ends, 6px gaps, the remainder an empty light
-  track. Share labels (mono) sit inside the arc; the centre shows the
+  first, clockwise from the bottom-left end; together they fill the whole
+  arc (shares of these four add up to 100%), 14-unit stroke, rounded ends,
+  6px gaps. Share labels (mono) sit inside the arc; the centre shows the
   viewer's current year in the display face, grey. The legend lists the same
   four. Segments rest at 85% opacity; hovering a segment or legend row
   brightens that one to full colour and fades the others (no change in
