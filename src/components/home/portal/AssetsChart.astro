@@ -1,0 +1,285 @@
+---
+/**
+ * "Assets by class" for the investor portal preview: legend and a 270°
+ * gauge, with one tooltip per class. Used by both the desktop and the
+ * mobile dashboard (PortalPreview.astro), which wires up hover / tap.
+ *
+ * Desktop (default): a row of two 300px columns, title and legend centred
+ * on the gauge. `stacked` (mobile): title, the gauge centred, then the
+ * legend in two columns.
+ */
+import { portal } from '@content/home';
+import Placeholder from '@components/ui/Placeholder.astro';
+
+interface Props {
+  stacked?: boolean;
+}
+const { stacked = false } = Astro.props;
+
+// Gauge: a 270° arc open at the bottom, drawn clockwise from its
+// bottom-left end. One rounded segment per class, sized by share; the
+// shares add up to 100, so the segments fill the arc (any shortfall would
+// show as an empty track). Drawn in a 340-unit viewBox cropped to the
+// arc's visible height (top of the arc to the bottom of its end caps), so
+// the legend centres on what is drawn.
+const G = { w: 340, h: 290, cx: 170, cy: 170, r: 160, stroke: 14, start: -135, sweep: 270 };
+const pt = (deg: number, r = G.r) => {
+  const a = (deg * Math.PI) / 180; // clockwise from 12 o'clock
+  return { x: G.cx + r * Math.sin(a), y: G.cy - r * Math.cos(a) };
+};
+const arc = (from: number, to: number) => {
+  const p1 = pt(from);
+  const p2 = pt(to);
+  return `M ${p1.x.toFixed(2)} ${p1.y.toFixed(2)} A ${G.r} ${G.r} 0 ${to - from > 180 ? 1 : 0} 1 ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
+};
+// Rounded caps reach past each end, so the gap covers the cap plus 6px.
+const GAP = ((G.stroke + 6) / G.r) * (180 / Math.PI);
+let at = G.start;
+const segments = portal.classes.items.map((item) => {
+  const span = (item.share / 100) * G.sweep;
+  const mid = at + span / 2;
+  const tip = pt(mid);
+  const label = pt(mid, G.r - 40);
+  const seg = {
+    ...item,
+    d: arc(at + GAP / 2, at + span - GAP / 2),
+    // Tooltip anchors at the arc's midpoint (as % of the viewBox) and opens
+    // toward the inside of the ring, so it never covers the legend.
+    x: (tip.x / G.w) * 100,
+    y: (tip.y / G.h) * 100,
+    inward: tip.x < G.cx ? 'right' : 'left',
+    lx: label.x,
+    ly: label.y,
+  };
+  at += span;
+  return seg;
+});
+const track = at + GAP / 2 < G.start + G.sweep - GAP / 2 ? arc(at + GAP / 2, G.start + G.sweep) : '';
+---
+
+<div class:list={['pp-assets__chart', stacked && 'pp-assets__chart--stacked']} data-pp-chart>
+  <div class="pp-assets__key">
+    <p class="pp-assets__sub">{portal.classes.title}</p>
+    <ul class="pp-legend">
+      {
+        portal.classes.items.map((i) => (
+          <li data-pp-class={i.label}>
+            <span class={`pp-dot tone-${i.tone}`} />
+            {i.label}
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+  <div class="pp-gauge">
+    <svg viewBox={`0 0 ${G.w} ${G.h}`} aria-hidden="true">
+      {track && <path class="pp-track" d={track} />}
+      {segments.map((s) => <path class={`pp-seg tone-${s.tone}`} data-pp-class={s.label} d={s.d} />)}
+      {
+        segments.map((s) => (
+          <text class="pp-gauge__share" x={s.lx.toFixed(1)} y={s.ly.toFixed(1)}>
+            {s.share}%
+          </text>
+        ))
+      }
+      <text class="pp-gauge__year" x={G.cx} y={G.cy} data-pp-year>
+        {portal.classes.yearFallback}
+      </text>
+    </svg>
+    {
+      segments.map((s) => (
+        <div
+          class={`pp-tooltip pp-tooltip--${s.inward}`}
+          data-pp-tip={s.label}
+          style={`--x: ${s.x.toFixed(2)}%; --y: ${s.y.toFixed(2)}%`}
+        >
+          <p class="pp-tooltip__title">{s.label}</p>
+          <p class="pp-tooltip__row">
+            <span class={`pp-dot tone-${s.tone}`} />
+            <Placeholder value={s.value} />
+            <span class="pp-tooltip__share">{s.share}%</span>
+          </p>
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  /* Desktop: a row 24px under the total, "Assets by class" and the legend
+     in a 300px column, centred on the gauge's visible height; the 300px
+     gauge next to it, leaving the rest of the card's width empty. */
+  .pp-assets__chart {
+    display: grid;
+    grid-template-columns: 300px 300px;
+    align-items: center;
+    margin-top: 24px;
+    padding-bottom: 8px;
+  }
+  .pp-assets__sub {
+    color: var(--muted);
+  }
+  .pp-legend {
+    display: grid;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .pp-legend li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: default;
+    transition: opacity 150ms ease;
+  }
+
+  /* Mobile: title, gauge centred, legend in two columns under it. */
+  .pp-assets__chart--stacked {
+    grid-template-columns: 1fr;
+    grid-template-areas: 'sub' 'gauge' 'legend';
+    margin-top: 16px;
+    padding-bottom: 0;
+  }
+  .pp-assets__chart--stacked .pp-assets__key {
+    display: contents;
+  }
+  .pp-assets__chart--stacked .pp-assets__sub {
+    grid-area: sub;
+  }
+  .pp-assets__chart--stacked .pp-gauge {
+    grid-area: gauge;
+    justify-self: center;
+    width: 264px;
+    margin-top: 16px;
+  }
+  .pp-assets__chart--stacked .pp-legend {
+    grid-area: legend;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 16px;
+    margin-top: 20px;
+  }
+  .pp-assets__chart--stacked .pp-gauge__year {
+    font-size: 60px;
+  }
+  .pp-assets__chart--stacked .pp-gauge__share {
+    font-size: 16px;
+  }
+
+  .pp-dot {
+    flex: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .tone-cyan   { color: var(--tone-cyan); }
+  .tone-ink    { color: var(--tone-ink); }
+  .tone-lilac  { color: var(--tone-lilac); }
+  .tone-grey   { color: var(--tone-grey); }
+
+  .pp-gauge {
+    position: relative;
+  }
+  .pp-gauge svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .pp-track {
+    fill: none;
+    stroke: rgba(0, 0, 0, 0.06);
+    stroke-width: 14;
+    stroke-linecap: round;
+  }
+  .pp-gauge__share {
+    fill: #111111;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    font-variant-numeric: tabular-nums;
+  }
+  .pp-gauge__year {
+    fill: #a1a1a1;
+    font-family: var(--font-display);
+    font-size: 56px;
+    font-weight: 450;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+  /* Segments rest slightly muted; hover (tap on touch) brightens the one
+     picked to full colour and fades the others. No change in size. */
+  .pp-seg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 14;
+    stroke-linecap: round;
+    opacity: 0.85;
+    cursor: default;
+    transition: opacity 200ms ease, filter 200ms ease;
+  }
+  .pp-assets__chart[data-hover] .pp-seg {
+    opacity: 0.2;
+  }
+  .pp-assets__chart[data-hover] .pp-seg.is-hover {
+    opacity: 1;
+    filter: brightness(1.12) saturate(1.3);
+  }
+  .pp-assets__chart[data-hover] .pp-legend li:not(.is-hover) {
+    opacity: 0.4;
+  }
+
+  /* Tooltip (Geist: dark, small type), one per class, anchored at the
+     midpoint of its segment's arc and opening toward the inside of the
+     ring (right for arcs on the left half, left otherwise). */
+  .pp-tooltip {
+    display: none;
+    position: absolute;
+    top: var(--y);
+    left: var(--x);
+    transform: translate(16px, -50%);
+    pointer-events: none;
+    z-index: 1;
+    padding: 10px 12px;
+    background: #111111;
+    color: #ffffff;
+    font-size: 12px;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+  /* Light ring so dark tones (ink) stay visible on the dark tooltip. */
+  .pp-tooltip .pp-dot {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5);
+  }
+  .pp-tooltip--left {
+    transform: translate(calc(-100% - 16px), -50%);
+  }
+  .pp-tooltip :global(.placeholder) {
+    white-space: nowrap;
+  }
+  .pp-tooltip.is-active {
+    display: block;
+  }
+  /* Mobile: the ring is too narrow for an off-centre tooltip, so it sits
+     in the middle of the gauge, over the year, while a class is picked. */
+  .pp-assets__chart--stacked .pp-tooltip {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .pp-tooltip__title {
+    font-weight: 600;
+  }
+  .pp-tooltip__row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+    color: #ffffff;
+    font-variant-numeric: tabular-nums;
+  }
+  .pp-tooltip__share {
+    margin-left: 16px;
+    color: #a1a1a1;
+  }
+</style>

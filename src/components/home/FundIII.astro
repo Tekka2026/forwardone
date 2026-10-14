@@ -16,8 +16,9 @@ import PortalPreview from '@components/home/PortalPreview.astro';
         <Button href={fundIII.cta.href}>{fundIII.cta.label}</Button>
       </div>
     </div>
-    <!-- Investor portal preview: the middle 10 of 12 columns (full width
-         below 880px), cut off by the section's bottom edge. -->
+    <!-- Investor portal preview: the middle 10 of 12 columns; at 880px and
+         below the phone version, full width up to 390px. Cut off by the
+         section's bottom edge. -->
     <div class="grid fund__portal">
       <PortalPreview class="col-10 start-2" />
     </div>

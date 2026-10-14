@@ -235,8 +235,10 @@ screens the list stacks under the CTA.
 
 ### Investor portal preview (under Fund III)
 
-`src/components/home/FundIII.astro`, `src/components/home/PortalPreview.astro`,
-copy in `fundIII` and `portal` (home.ts).
+`src/components/home/FundIII.astro`, `src/components/home/PortalPreview.astro`
+(both screens), `src/components/home/portal/AssetsChart.astro` (legend,
+gauge and tooltips, shared) and `portal/icons.ts`; copy in `fundIII` and
+`portal` (home.ts).
 
 - Fund III head is centred: eyebrow, H2, body (balanced), CTA.
 - Under it, 48px below the CTA, a desktop dashboard drawn in HTML: the middle
@@ -248,6 +250,15 @@ copy in `fundIII` and `portal` (home.ts).
   below the cut is left out of the markup, not hidden.
 - Designed at that fixed size and scaled to the column width like an image
   (a ResizeObserver sets `--pp-scale`), so the layout never reflows.
+- Mobile (≤880px): instead of the shrunken desktop screen, a phone version
+  of the same dashboard, a 390 × 633 stage (75% of 390 × 844), at most 390px
+  wide and centred, scaled the same way. Black bar with menu icon, logo
+  centred and log-out icon; greeting and value date; the Total Assets card
+  with title, a 264px gauge centred and the legend in two columns under it;
+  the "Your team" card, which runs into the cut. The article card falls
+  below the cut on mobile, so it is left out. Chart interaction: hover with
+  a mouse, tap on touch (tap again or elsewhere in the chart to clear); on
+  mobile the tooltip sits in the middle of the gauge.
 - Live bits: the greeting follows the viewer's local time (morning 05–12,
   afternoon 12–18, evening otherwise) and the value date shows their current
   date and time.
