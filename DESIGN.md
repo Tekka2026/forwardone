@@ -205,7 +205,7 @@ height is `(--lh-display + 0.7) / 2` so the room around the digits equals
 the H1's (an H1 line height at twice the size would double it) on one line (an exception to the
 break-after-each-sentence rule; it wraps only where it does not fit),
 with centred body copy 16px below it.
-The figure is painted by a black → `--brand-purple` (#26175A) gradient whose purple slides
+The figure is painted by a black → `--brand-cyan` gradient whose cyan slides
 out to the right. Desktop (mouse): the cursor drives it; far away the full
 gradient shows, within 480px it fades as the cursor approaches, on the
 number it is solid black (eased). Touch: scroll-linked; gradient when the
