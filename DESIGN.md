@@ -381,8 +381,8 @@ CLAUDE.md action A0005).
    - `.btn`: `--accent` fill, 1px `--fg` border. `.btn--ghost`: transparent
      with a 1px `--fg` border. Focus: 2px `--fg` outline, 2px offset.
      Disabled: 40% opacity.
-   - Hover (and focus): filled (primary) buttons turn `#11CCBD`
-     (`--btn-hover-bg`, owner 2026-10-14) with `#111111` text
+   - Hover (and focus): filled (primary) buttons turn `#78F6FB`
+     (`--btn-hover-bg` = `--brand-cyan`, owner 2026-10-14) with `#111111` text
      (`--btn-hover-fg`; white text on it fails contrast), on light and dark
      backgrounds alike. Outlined buttons keep the vercel.com 6% overlay
      (`--btn-hover-shade`, 8% white in the dark theme) and their text colour.

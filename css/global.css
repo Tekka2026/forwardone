@@ -188,10 +188,10 @@
   --btn-lh-small: 20px;
   --btn-fs: 16px;
   --btn-lh: 24px;
-  /* Hover: filled buttons turn brand teal (owner, 2026-10-14) with dark
-     text (white on #11CCBD fails contrast); outlined buttons keep the
+  /* Hover: filled buttons turn brand cyan #78F6FB (owner, 2026-10-14) with
+     dark text (white on it fails contrast); outlined buttons keep the
      vercel.com overlay, #fff → #f0f0f0 (6% black). */
-  --btn-hover-bg: #11ccbd;
+  --btn-hover-bg: var(--brand-cyan);
   --btn-hover-fg: #111111;
   --btn-hover-shade: rgba(0, 0, 0, 0.06);
 }
