@@ -182,6 +182,8 @@ export const trackRecord = {
    */
   figure: { prefix: '€', value: '383', suffix: 'M' },
   title: 'Three funds. One discipline.',
+  /** Body copy, centred under the title. */
+  body: 'Every fund has been more ambitious than the last. The strategy hasn’t changed: invest early in European industrial tech, then put most of the capital behind the companies that deliver.',
   /** Column headings, in table order. Also the labels on mobile cards. */
   columns: { fund: 'Fund', size: 'Size', companies: 'Companies', status: 'Status' },
   caption: 'FORWARD.one funds by size, number of companies and status',

@@ -16,6 +16,7 @@ const keys = ['size', 'companies', 'status'] as const;
       </p>
       <!-- One line here (exception to the break-after-each-sentence rule). -->
       <h2 class="h-section track__title">{trackRecord.title}</h2>
+      <p class="body track__body">{trackRecord.body}</p>
     </div>
 
     <!-- A real table; below 760px each row restacks into a card (no scroll). -->
@@ -91,6 +92,11 @@ const keys = ['size', 'companies', 'status'] as const;
   }
   .track__title {
     margin: var(--space-4x) auto 0;
+  }
+  /* Heading → body: 16px, centred, body measure. */
+  .track__body {
+    margin: var(--space-4x) auto 0;
+    text-wrap: balance;
   }
   .funds {
     width: 100%;
