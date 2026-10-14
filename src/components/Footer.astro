@@ -60,16 +60,11 @@ const year = new Date().getFullYear();
       </div>
     </div>
 
+    <!-- Centred: the label, then the three logos in one row under it. -->
     <div class="footer-partners">
-      <ul class="footer-partners__list" aria-label="Partners">
-        {
-          footer.partners.map((p) => (
-            <li class="footer-partner">
-              {p.prefix && <span class="footer-partner__prefix small">{p.prefix}</span>}
-              <Fragment set:html={labelled(logo(p.logo), p.name)} />
-            </li>
-          ))
-        }
+      <p class="footer-partners__label small" id="footer-partners-label">{footer.partnersLabel}</p>
+      <ul class="footer-partners__list" aria-labelledby="footer-partners-label">
+        {footer.partners.map((p) => <li class="footer-partner" set:html={labelled(logo(p.logo), p.name)} />)}
       </ul>
     </div>
 
@@ -146,18 +141,24 @@ const year = new Date().getFullYear();
     font-style: normal;
   }
 
+  /* No hairline above: the label and logos are centred, 64px under the
+     columns. */
   .footer-partners {
     margin-top: var(--space-16x);
-    padding-top: var(--space-8x);
-    border-top: var(--hairline-w) solid var(--hairline);
+    text-align: center;
+  }
+
+  .footer-partners__label {
+    margin: 0;
   }
 
   .footer-partners__list {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     align-items: center;
-    gap: var(--space-8x) var(--space-16x);
-    margin: 0;
+    gap: var(--space-4x) var(--space-16x);
+    margin: var(--space-4x) 0 0;
     padding: 0;
     list-style: none;
   }
@@ -165,13 +166,21 @@ const year = new Date().getFullYear();
   /* One height for all logos; widths follow each logo's proportions. */
   .footer-partner {
     display: flex;
-    align-items: center;
-    gap: var(--gap-half);
   }
   .footer-partner :global(.footer-partner__logo) {
     display: block;
     height: 44px;
     width: auto;
+  }
+
+  /* Phones: smaller logos and gaps, so all three stay on one row. */
+  @media (max-width: 640px) {
+    .footer-partners__list {
+      gap: var(--space-4x) var(--gap);
+    }
+    .footer-partner :global(.footer-partner__logo) {
+      height: 32px;
+    }
   }
 
   .footer-bottom {
