@@ -433,14 +433,13 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
 - The AI mark (#78F6FB) sits left of the line from the start. Pressing the
   bar (open or close) plays a swap: the mark shrinks and is pushed up and to
   the right while a second mark grows in from the bottom left into its place
-  (420ms; off under reduced motion). On opening the line is retyped as
+  (840ms; off under reduced motion). On opening the line is retyped as
   "How can we help you?", which stays. (A grey "Type your question" step
   after 2 s exists but is switched off: `navGreeting.ask.placeholderEnabled`.)
   Clicking the line, or typing anywhere once it has been typed, opens a text
   field (no backend yet). Closing types the welcome line back.
-- The first six typed characters carry a circular #78F6FB-to-white gradient
-  centred on the first letter; on the white (inverse) bar the same gradient
-  runs from #78F6FB into the bar's dark text colour. The `_` cursor shows only while text is being
+- The greeting is plain text, no gradient. The AI mark is #78F6FB on the dark
+  bar and the bar's dark text colour on the white (inverse) bar. The `_` cursor shows only while text is being
   typed or erased. Copy lives in `src/content/nav.ts` (`navGreeting`).
 - Open: the panel expands upward from the bar in `--nav-bg-open` (#000000)
   with the section columns (accordions on mobile). LP login is also reached via

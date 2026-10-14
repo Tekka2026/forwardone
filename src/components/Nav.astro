@@ -267,13 +267,9 @@ const current = Astro.url.pathname;
   .nav[data-inverse]:not([data-open]) .nav__bar {
     color: var(--nav-fg-inverse);
   }
-  /* White bar: the same cyan gradient on the first characters, fading into
-     the bar's dark text instead of into white. */
-  .nav[data-inverse]:not([data-open]) .nav__typed-head {
-    background: radial-gradient(circle at 0% 50%, #78f6fb 0%, var(--nav-fg-inverse) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+  /* White bar: the AI mark in the bar's dark text colour instead of cyan. */
+  .nav[data-inverse]:not([data-open]) .nav__ai {
+    color: var(--nav-fg-inverse);
   }
   .nav[data-inverse]:not([data-open]) .nav__menu:focus-visible {
     background: rgba(0, 0, 0, 0.08);
@@ -322,10 +318,10 @@ const current = Astro.url.pathname;
     opacity: 0;
   }
   .nav__ai.is-swap .nav__ai-current {
-    animation: nav-ai-out 420ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation: nav-ai-out 840ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
   .nav__ai.is-swap .nav__ai-next {
-    animation: nav-ai-in 420ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+    animation: nav-ai-in 840ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
   }
   @keyframes nav-ai-out {
     from { transform: none; }
@@ -362,20 +358,7 @@ const current = Astro.url.pathname;
   .nav__prompt.is-placeholder .nav__typed {
     color: rgba(255, 255, 255, 0.5);
   }
-  .nav__prompt.is-placeholder .nav__typed-head {
-    background: none;
-    -webkit-background-clip: initial;
-    background-clip: initial;
-    color: inherit;
-  }
 
-  /* First six characters: #78F6FB to white, circular gradient */
-  .nav__typed-head {
-    background: radial-gradient(circle at 0% 50%, #78f6fb 0%, #ffffff 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
 
   .nav__prompt[hidden] {
     display: none;
