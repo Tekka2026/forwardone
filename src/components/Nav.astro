@@ -262,11 +262,13 @@ const current = Astro.url.pathname;
   .nav[data-inverse]:not([data-open]) .nav__bar {
     color: var(--nav-fg-inverse);
   }
+  /* White bar: the same cyan gradient on the first characters, fading into
+     the bar's dark text instead of into white. */
   .nav[data-inverse]:not([data-open]) .nav__typed-head {
-    background: none;
-    -webkit-background-clip: initial;
-    background-clip: initial;
-    color: inherit; /* the cyan gradient is for the dark bar only */
+    background: radial-gradient(circle at 0% 50%, #78f6fb 0%, var(--nav-fg-inverse) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
   .nav[data-inverse]:not([data-open]) .nav__menu:focus-visible {
     background: rgba(0, 0, 0, 0.08);

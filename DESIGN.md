@@ -436,7 +436,8 @@ LP login (outlined, opens the LP portal in a new tab, ↗).
   Clicking the line, or typing anywhere once it has been typed, opens a text
   field (no backend yet). Closing types the welcome line back.
 - The first six typed characters carry a circular #78F6FB-to-white gradient
-  centred on the first letter. The `_` cursor shows only while text is being
+  centred on the first letter; on the white (inverse) bar the same gradient
+  runs from #78F6FB into the bar's dark text colour. The `_` cursor shows only while text is being
   typed or erased. Copy lives in `src/content/nav.ts` (`navGreeting`).
 - Open: the panel expands upward from the bar in `--nav-bg-open` (#000000)
   with the section columns (accordions on mobile). LP login is also reached via
