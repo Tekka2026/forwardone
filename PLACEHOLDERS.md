@@ -21,6 +21,7 @@ invented; replace the value in the file named and the marker disappears.
 | The team | `partners.people[3].quote` | Quote from Paul Pruijmboom. |
 | Insights | `insights.articles[*].category` | Category of each featured article. The repo has no news collection to pull it from. |
 | Insights | `insights.articles[*].date` | Publication date (ISO) of each featured article. |
+| Insights | `insights.articles[*].image` | Visual per featured article, 5:7 portrait. Drop files in `public/insights/` and set the path; until then a flat grey (#262626) box. |
 | Insights | `insights.articles[*].slug` | Slugs are derived from titles; match them to the CMS slugs when the news collection is migrated. |
 | Investor portal preview | `portal.article.image` | Image for the article card in the dashboard illustration (the reference shows a photo of a man at a laptop). Drop a file in `public/portal/` and set the path. |
 | Investor portal preview | `portal.classes.items[*].value` | Amount per asset class shown in the gauge's hover tooltip, for Equity, Fixed income and Other (only Cash deposits, EUR 800,100, was in the reference; the gauge shows the three largest classes plus Other). The percentages are traced from the reference chart and rescaled so the four add up to 100%; correct them in `share` (keeping a total of 100) if you have the real split. |

@@ -322,6 +322,8 @@ export type Article = {
   category: string;
   /** ISO date, or a placeholder. */
   date: string;
+  /** Visual above the article (5:7, portrait). Path under public/, or a placeholder. */
+  image: string;
 };
 
 export const insights = {
@@ -339,18 +341,21 @@ export const insights = {
       slug: 'what-the-exit-of-sensorfact-taught-us-about-early-stage-investing',
       category: '[PLACEHOLDER: category]',
       date: '[PLACEHOLDER: date]',
+      image: '[PLACEHOLDER: image]',
     },
     {
       title: 'Why Munich matters for Europe’s next generation of industrial tech',
       slug: 'why-munich-matters-for-europes-next-generation-of-industrial-tech',
       category: '[PLACEHOLDER: category]',
       date: '[PLACEHOLDER: date]',
+      image: '[PLACEHOLDER: image]',
     },
     {
       title: 'Fund III: doubling down on Europe’s industrial technology winners',
       slug: 'fund-iii-doubling-down-on-europes-industrial-technology-winners',
       category: '[PLACEHOLDER: category]',
       date: '[PLACEHOLDER: date]',
+      image: '[PLACEHOLDER: image]',
     },
   ] as Article[],
   allLink: { label: 'All insights', href: '/insights' } as Cta,

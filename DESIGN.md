@@ -241,7 +241,7 @@ gauge and tooltips, shared) and `portal/icons.ts`; copy in `fundIII` and
 `portal` (home.ts).
 
 - Fund III section background: a diagonal gradient, full width, from the
-  top-right corner (`#B6E3E5`) to `rgba(0, 0, 0, 0.04)` over the page white,
+  top-left corner (`#B6E3E5`) to `rgba(0, 0, 0, 0.04)` over the page white,
   reached at 70% of the diagonal (where the dashboard begins), so the full
   range shows above the dashboard and the headline sits near its midpoint.
 - Fund III head is centred: eyebrow, H2, body (balanced), CTA.
@@ -256,7 +256,7 @@ gauge and tooltips, shared) and `portal/icons.ts`; copy in `fundIII` and
   (a ResizeObserver sets `--pp-scale`), so the layout never reflows.
 - Mobile (≤880px): instead of the shrunken desktop screen, a phone version
   of the same dashboard, a 390 × 633 stage (75% of 390 × 844), at most 390px
-  wide and centred, scaled the same way. Black bar with menu icon, logo
+  wide and centred, scaled the same way. White bar with menu icon, logo
   centred and log-out icon; greeting and value date; the Total Assets card
   with title, a 264px gauge centred and the legend in two columns under it;
   the "Your team" card, which runs into the cut. The article card falls
@@ -283,8 +283,8 @@ gauge and tooltips, shared) and `portal/icons.ts`; copy in `fundIII` and
   the chart. The Portfolios card is left out (it fell below the cut); the
   Total Assets card stretches to the column height, so it runs into the
   cut like the right-hand cards instead of ending above it.
-- Geist-style parts in the site's type and colours: black top bar with
-  underlined active tab, square cards with Geist's shadow border on a
+- Geist-style parts in the site's type and colours: white top bar (1px line
+  under it, muted tabs, black underlined active tab), square cards with Geist's shadow border on a
   `#fafafa` canvas, the site's small ghost pill button (Filter), a cyan pill
   badge, a dark tooltip, 1.5px stroke icons, links in `--brand-purple`.
 - Chart tones: cyan, ink, lilac (purple 45% toward white), grey. Amounts use comma thousands separators (EUR 1,500,300).

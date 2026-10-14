@@ -27,13 +27,13 @@ import PortalPreview from '@components/home/PortalPreview.astro';
 
 <style>
   /* The preview runs into the section's bottom edge, so no bottom padding.
-     Background: diagonal gradient from the top-right corner (#B6E3E5) to
+     Background: diagonal gradient from the top-left corner (#B6E3E5) to
      4% black over the page white (owner, 2026-10-14). It reaches the grey at
      70% of the diagonal, where the dashboard begins, so the whole range
      shows above the dashboard instead of only its blue half. */
   .fund {
     padding-bottom: 0;
-    background-image: linear-gradient(to bottom left, #b6e3e5 0%, rgba(0, 0, 0, 0.04) 70%);
+    background-image: linear-gradient(to bottom right, #b6e3e5 0%, rgba(0, 0, 0, 0.04) 70%);
   }
   .fund__head {
     display: flex;
