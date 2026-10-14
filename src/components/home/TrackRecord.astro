@@ -212,9 +212,12 @@ const keys = ['size', 'companies', 'status'] as const;
     .funds tbody th {
       margin-bottom: var(--gap-half);
     }
+    /* Label and value share a baseline, so the smaller mono label lines up
+       with the value text (and with its first line when it wraps). */
     .funds tbody td[data-label] {
       display: grid;
       grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+      align-items: baseline;
       gap: var(--gap-half);
       padding-block: var(--space-2x);
       font-size: var(--fs-small);
