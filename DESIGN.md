@@ -213,8 +213,8 @@ figure enters, solid once its top reaches the middle of the window. Solid
 without JS or under reduced motion. The
 table follows 16px lower.
 
-Under the table one row: the "Funds & track record" link on the left, the
-exits line on the right (right-aligned with the table); stacked, link
+Under the table one row: the exits line on the left, the "Funds & track
+record" link on the right (right-aligned with the table); stacked, exits
 first, at ≤760px.
 
 ### Playbook list

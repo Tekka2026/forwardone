@@ -44,13 +44,13 @@ const keys = ['size', 'companies', 'status'] as const;
       </tbody>
     </table>
 
-    <!-- One row under the table: link left, exits right (stacks when narrow). -->
+    <!-- One row under the table: exits left, link right (stacks when narrow). -->
     <div class="funds__foot">
-      <p class="funds__link">
-        <a class="arrow-link" href={href(trackRecord.link.href)}>{trackRecord.link.label}</a>
-      </p>
       <p class="small funds__exits">
         <strong>{trackRecord.exits.label}</strong> {trackRecord.exits.items.join(', ')}.
+      </p>
+      <p class="funds__link">
+        <a class="arrow-link" href={href(trackRecord.link.href)}>{trackRecord.link.label}</a>
       </p>
     </div>
   </div>
@@ -164,14 +164,14 @@ const keys = ['size', 'companies', 'status'] as const;
   .funds__exits {
     margin: 0;
   }
-  .funds__exits {
+  .funds__link {
     text-align: right;
   }
   @media (max-width: 760px) {
     .funds__foot {
       flex-direction: column;
     }
-    .funds__exits {
+    .funds__link {
       text-align: left;
     }
   }
