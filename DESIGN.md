@@ -292,6 +292,8 @@ Fixed uses:
 - Heading block (eyebrow, heading, intro/body) to the section's content
   (cards, slider, table, list): `--space-4x` (16px).
 - Section content to its closing link or button: `--gap-double` (48px).
+  Exception: the Track record exits/link row is an annotation of the table
+  above it and sits `--gap` (24px) below it.
 - Inside a component, step with `--space-2x` / `--space-4x` / `--space-8x`;
   between blocks within a section, `--gap`, `--space-8x`, `--gap-double`,
   `--space-16x` in ascending order of separation.
