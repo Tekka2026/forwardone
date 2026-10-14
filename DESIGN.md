@@ -191,8 +191,8 @@ Rules:
 - A card's `metric` is its most prominent line when filled and is not rendered
   while it is empty or a placeholder.
 - Data tables are real `<table>` elements with `scope`d headers. At ≤760px
-  each row restacks into a hairline card with mono labels taken from
-  `data-label`; tables never scroll horizontally.
+  each row restacks into a block between hairlines (no box) with mono
+  labels taken from `data-label`; tables never scroll horizontally.
 
 ### Track record head
 

@@ -176,7 +176,7 @@ const keys = ['size', 'companies', 'status'] as const;
     }
   }
 
-  /* Mobile: each fund becomes a stacked card with its own labels. */
+  /* Mobile: each fund becomes a stacked block with its own labels, between hairlines. */
   @media (max-width: 760px) {
     .funds,
     .funds tbody,
@@ -193,13 +193,13 @@ const keys = ['size', 'companies', 'status'] as const;
       clip-path: inset(50%);
       white-space: nowrap;
     }
-    .funds tbody {
-      display: grid;
-      gap: var(--gap-half);
-    }
+    /* No boxes: each fund sits between hairlines, like the desktop rows. */
     .funds tbody tr {
-      padding: var(--gap);
-      border: var(--hairline-w) solid var(--hairline);
+      padding: var(--space-4x) 0;
+      border-top: var(--hairline-w) solid var(--hairline);
+    }
+    .funds tbody tr:last-child {
+      border-bottom: var(--hairline-w) solid var(--hairline);
     }
     .funds tbody th,
     .funds td {
