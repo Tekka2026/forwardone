@@ -215,7 +215,8 @@ table follows 16px lower.
 
 The whole section sits on a tinted band, `.section--tint`
 (`--bg-tint`: `rgba(0, 0, 0, 0.04)`, white 4% inside `.theme-dark`),
-full window width.
+full window width, with no hairline at its top (the colour change marks
+the edge).
 
 Under the table one row: the exits line on the left, the "Funds & track
 record" link on the right (right-aligned with the table); stacked, exits

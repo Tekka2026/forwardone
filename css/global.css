@@ -373,6 +373,7 @@ code, kbd, samp, pre {
 /* Tinted band: full-width background, e.g. the Track record (funds) section */
 .section--tint {
   background-color: var(--bg-tint);
+  border-top: 0;                   /* the colour change marks the edge */
 }
 
 /* Feature sections: body copy steps up to the fluid feature size */
