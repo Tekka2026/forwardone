@@ -188,11 +188,12 @@
   --btn-lh-small: 20px;
   --btn-fs: 16px;
   --btn-lh: 24px;
-  /* Hover: filled buttons turn brand cyan #78F6FB (owner, 2026-10-14) with
-     dark text (white on it fails contrast); outlined buttons keep the
+  /* Hover: filled buttons mix 20% of the opposite colour into their fill
+     (owner, 2026-10-14): black button + 20% white, white button (dark
+     theme) + 20% black; text colour unchanged. Outlined buttons keep the
      vercel.com overlay, #fff → #f0f0f0 (6% black). */
-  --btn-hover-bg: var(--brand-cyan);
-  --btn-hover-fg: #111111;
+  --btn-hover-amount: 20%;
+  --btn-hover-mix: #ffffff;        /* overlay colour on filled buttons */
   --btn-hover-shade: rgba(0, 0, 0, 0.06);
 }
 
@@ -525,9 +526,9 @@ code, kbd, samp, pre {
 
 .btn:hover,
 .btn:focus-visible {
-  background: var(--btn-hover-bg);
-  border-color: var(--btn-hover-bg); /* no rim around the fill */
-  color: var(--btn-hover-fg);
+  --btn-hover-fill: color-mix(in srgb, var(--accent), var(--btn-hover-mix) var(--btn-hover-amount));
+  background: var(--btn-hover-fill);
+  border-color: var(--btn-hover-fill); /* no rim around the changed fill */
 }
 
 .btn:focus-visible {
@@ -619,6 +620,7 @@ code, kbd, samp, pre {
   --muted: #a1a1a1;
   --hairline: rgba(255, 255, 255, 0.2);
   --bg-tint: rgba(255, 255, 255, 0.04);
+  --btn-hover-mix: #000000;                    /* 20% black over white */
   --btn-hover-shade: rgba(255, 255, 255, 0.08);
   color: var(--fg);
 }

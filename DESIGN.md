@@ -381,11 +381,12 @@ CLAUDE.md action A0005).
    - `.btn`: `--accent` fill, 1px `--fg` border. `.btn--ghost`: transparent
      with a 1px `--fg` border. Focus: 2px `--fg` outline, 2px offset.
      Disabled: 40% opacity.
-   - Hover (and focus): filled (primary) buttons turn `#78F6FB`
-     (`--btn-hover-bg` = `--brand-cyan`, owner 2026-10-14) with `#111111` text
-     (`--btn-hover-fg`; white text on it fails contrast), on light and dark
-     backgrounds alike. Outlined buttons keep the vercel.com 6% overlay
-     (`--btn-hover-shade`, 8% white in the dark theme) and their text colour.
+   - Hover (and focus): filled (primary) buttons mix 20% of the opposite
+     colour into their fill (`--btn-hover-mix`, `--btn-hover-amount`; owner
+     2026-10-14): the black button gets 20% white (#111 → #414141), the
+     white button on dark backgrounds 20% black (#fff → #ccc). Text colour
+     does not change. Outlined buttons keep the vercel.com 6% overlay
+     (`--btn-hover-shade`, 8% white in the dark theme).
    Set them with `<Button variant size>`. Never style a link to look like a
    button any other way.
 3. **No arbitrary widths.** Widths come from the column table (section 2).
