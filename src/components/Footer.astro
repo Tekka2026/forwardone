@@ -70,7 +70,8 @@ const year = new Date().getFullYear();
 
     <div class="footer-bottom">
       <p class="footer-tagline small">
-        <span class="footer-copy">&copy; {footer.company} {year}.</span> {footer.tagline}
+        <span class="footer-copy">&copy; {footer.company} {year}.</span>{' '}
+        <span class="footer-slogan">{footer.tagline}</span>
       </p>
       <ul class="footer-legal">
         {
@@ -209,7 +210,8 @@ const year = new Date().getFullYear();
     margin: 0;
   }
 
-  .footer-copy {
+  /* Copyright in the text colour, the tagline after it muted. */
+  .footer-slogan {
     color: var(--muted);
   }
 
