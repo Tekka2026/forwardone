@@ -38,27 +38,41 @@ const icons = {
 const svg = (name: keyof typeof icons, size = 16) =>
   `<svg class="pp-icon" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name]}</svg>`;
 
-// Donut: one circle per class, dash length = share, small gap between.
-// Each segment also gets the midpoint of its arc, where its tooltip anchors.
-const R = 54;
-const C = 2 * Math.PI * R;
-const GAP = 2; // px of circumference between segments
-const byLabel = new Map(portal.classes.items.map((i) => [i.label, i]));
-let offset = 0;
-const segments = portal.classes.donutOrder.map((label) => {
-  const item = byLabel.get(label)!;
-  const len = (item.share / 100) * C;
-  const mid = ((offset + len / 2) / C) * 2 * Math.PI - Math.PI / 2; // clockwise from 12 o'clock
+// Gauge: a 270° arc open at the bottom, drawn clockwise from its
+// bottom-left end. One rounded segment per class, sized by share of the
+// whole; whatever the three classes leave stays an empty track.
+const G = { w: 240, h: 212, cx: 120, cy: 112, r: 100, stroke: 10, start: -135, sweep: 270 };
+const pt = (deg: number, r = G.r) => {
+  const a = (deg * Math.PI) / 180; // clockwise from 12 o'clock
+  return { x: G.cx + r * Math.sin(a), y: G.cy - r * Math.cos(a) };
+};
+const arc = (from: number, to: number) => {
+  const p1 = pt(from);
+  const p2 = pt(to);
+  return `M ${p1.x.toFixed(2)} ${p1.y.toFixed(2)} A ${G.r} ${G.r} 0 ${to - from > 180 ? 1 : 0} 1 ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
+};
+// Rounded caps reach past each end, so the gap covers the cap plus 6px.
+const GAP = ((G.stroke + 6) / G.r) * (180 / Math.PI);
+let at = G.start;
+const segments = portal.classes.items.map((item) => {
+  const span = (item.share / 100) * G.sweep;
+  const mid = at + span / 2;
+  const tip = pt(mid);
+  const label = pt(mid, G.r - 30);
   const seg = {
     ...item,
-    dash: `${Math.max(len - GAP, 0)} ${C}`,
-    offset: -offset,
-    x: 70 + R * Math.cos(mid),
-    y: 70 + R * Math.sin(mid),
+    d: arc(at + GAP / 2, at + span - GAP / 2),
+    // Tooltip anchors at the arc's midpoint; on the left half it moves to
+    // the gauge's right edge at the same height, clear of the legend.
+    x: tip.x < G.cx ? G.w : tip.x,
+    y: tip.y,
+    lx: label.x,
+    ly: label.y,
   };
-  offset += len;
+  at += span;
   return seg;
 });
+const track = at + GAP / 2 < G.start + G.sweep - GAP / 2 ? arc(at + GAP / 2, G.start + G.sweep) : '';
 ---
 
 <figure class:list={['pp', cls]} role="img" aria-label={portal.label} data-portal>
@@ -116,7 +130,6 @@ const segments = portal.classes.donutOrder.map((label) => {
           <section class="pp-card pp-assets">
             <p class="pp-card__title">{portal.total.label}</p>
             <p class="pp-assets__total">{portal.total.value}</p>
-            <hr class="pp-rule" />
             <p class="pp-assets__sub">{portal.classes.title}</p>
             <div class="pp-assets__chart">
               <ul class="pp-legend">
@@ -129,33 +142,28 @@ const segments = portal.classes.donutOrder.map((label) => {
                   ))
                 }
               </ul>
-              <div class="pp-donut">
-                <svg width="140" height="140" viewBox="0 0 140 140" aria-hidden="true">
-                  <g transform="rotate(-90 70 70)">
-                    {
-                      segments.map((s) => (
-                        <circle
-                          class={`pp-seg tone-${s.tone}`}
-                          data-pp-class={s.label}
-                          cx="70"
-                          cy="70"
-                          r={R}
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-dasharray={s.dash}
-                          stroke-dashoffset={s.offset}
-                        />
-                      ))
-                    }
-                  </g>
+              <div class="pp-gauge">
+                <svg width={G.w} height={G.h} viewBox={`0 0 ${G.w} ${G.h}`} aria-hidden="true">
+                  {track && <path class="pp-track" d={track} />}
+                  {
+                    segments.map((s) => (
+                      <path class={`pp-seg tone-${s.tone}`} data-pp-class={s.label} d={s.d} />
+                    ))
+                  }
+                  {
+                    segments.map((s) => (
+                      <text class="pp-gauge__share" x={s.lx.toFixed(1)} y={s.ly.toFixed(1)}>
+                        {s.share}%
+                      </text>
+                    ))
+                  }
+                  <text class="pp-gauge__year" x={G.cx} y={G.cy} data-pp-year>
+                    {portal.classes.yearFallback}
+                  </text>
                 </svg>
                 {
                   segments.map((s) => (
-                    <div
-                      class:list={['pp-tooltip', s.label === portal.classes.initial && 'is-active']}
-                      data-pp-tip={s.label}
-                      style={`--x: ${(s.x < 70 ? 140 : s.x).toFixed(1)}px; --y: ${s.y.toFixed(1)}px`}
-                    >
+                    <div class="pp-tooltip" data-pp-tip={s.label} style={`--x: ${s.x.toFixed(1)}px; --y: ${s.y.toFixed(1)}px`}>
                       <p class="pp-tooltip__title">{s.label}</p>
                       <p class="pp-tooltip__row">
                         <span class={`pp-dot tone-${s.tone}`} />
@@ -178,7 +186,6 @@ const segments = portal.classes.donutOrder.map((label) => {
                 <Fragment set:html={svg('arrowRight', 14)} />
               </span>
             </p>
-            <p class="pp-card__title pp-portfolios__bank">{portal.portfolios.bank}</p>
           </section>
           </div>
 
@@ -250,19 +257,20 @@ const segments = portal.classes.donutOrder.map((label) => {
       if (g && g.dataset[part]) g.textContent = g.dataset[part];
       var d = fig.querySelector('[data-pp-date]');
       if (d) d.textContent = date;
+      var y = fig.querySelector('[data-pp-year]');
+      if (y) y.textContent = String(now.getFullYear());
 
       // Chart: hovering a segment or legend row shows that class's tooltip
-      // and dims the other segments; leaving the chart restores the default.
+      // and dims the other segments; leaving the chart clears it.
       var chart = fig.querySelector('.pp-assets__chart');
       if (!chart) return;
-      var initial = chart.querySelector('.pp-tooltip.is-active');
       var show = function (name) {
         chart.toggleAttribute('data-hover', !!name);
         chart.querySelectorAll('[data-pp-class]').forEach(function (el) {
           el.classList.toggle('is-hover', el.getAttribute('data-pp-class') === name);
         });
         chart.querySelectorAll('[data-pp-tip]').forEach(function (t) {
-          t.classList.toggle('is-active', name ? t.getAttribute('data-pp-tip') === name : t === initial);
+          t.classList.toggle('is-active', t.getAttribute('data-pp-tip') === name);
         });
       };
       chart.querySelectorAll('[data-pp-class]').forEach(function (el) {
@@ -283,11 +291,8 @@ const segments = portal.classes.donutOrder.map((label) => {
     overflow: hidden;
     /* Chart tones: the site's ink, greys and brand colours. */
     --tone-cyan: var(--brand-cyan);
-    --tone-purple: var(--brand-purple);
     --tone-ink: #111111;
-    --tone-grey: #d4d4d4;
     --tone-lilac: color-mix(in srgb, var(--brand-purple), #ffffff 55%);
-    --tone-slate: #666666;
     /* Geist-style surfaces */
     --pp-canvas: #fafafa;
     --pp-card: #ffffff;
@@ -442,11 +447,6 @@ const segments = portal.classes.donutOrder.map((label) => {
     font-size: 14px;
     font-weight: 600;
   }
-  .pp-rule {
-    border: 0;
-    border-top: 1px solid var(--pp-line);
-    margin: 20px 0;
-  }
   .pp-link {
     display: inline-flex;
     align-items: center;
@@ -463,6 +463,7 @@ const segments = portal.classes.donutOrder.map((label) => {
     font-variant-numeric: tabular-nums;
   }
   .pp-assets__sub {
+    margin-top: 24px;
     color: var(--muted);
   }
   .pp-assets__chart {
@@ -489,20 +490,43 @@ const segments = portal.classes.donutOrder.map((label) => {
     background: currentColor;
   }
   .tone-cyan   { color: var(--tone-cyan); }
-  .tone-purple { color: var(--tone-purple); }
   .tone-ink    { color: var(--tone-ink); }
-  .tone-grey   { color: var(--tone-grey); }
   .tone-lilac  { color: var(--tone-lilac); }
-  .tone-slate  { color: var(--tone-slate); }
-  .pp-donut {
+  .pp-gauge {
     position: relative;
   }
-  .pp-donut svg {
+  .pp-gauge svg {
     display: block;
+    overflow: visible;
+  }
+  .pp-track {
+    fill: none;
+    stroke: rgba(0, 0, 0, 0.06);
+    stroke-width: 10;
+    stroke-linecap: round;
+  }
+  .pp-gauge__share {
+    fill: #111111;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    font-variant-numeric: tabular-nums;
+  }
+  .pp-gauge__year {
+    fill: #a1a1a1;
+    font-family: var(--font-display);
+    font-size: 36px;
+    font-weight: 450;
+    text-anchor: middle;
+    dominant-baseline: central;
   }
   /* Segments: hover thickens the hovered one, dims the rest. */
   .pp-seg {
-    stroke-width: 20;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 10;
+    stroke-linecap: round;
     cursor: default;
     transition: stroke-width 150ms ease, opacity 150ms ease;
   }
@@ -511,7 +535,7 @@ const segments = portal.classes.donutOrder.map((label) => {
   }
   .pp-assets__chart[data-hover] .pp-seg.is-hover {
     opacity: 1;
-    stroke-width: 26;
+    stroke-width: 14;
   }
   .pp-legend li {
     cursor: default;
@@ -520,9 +544,9 @@ const segments = portal.classes.donutOrder.map((label) => {
   .pp-assets__chart[data-hover] .pp-legend li:not(.is-hover) {
     opacity: 0.4;
   }
-  /* Tooltip (Geist: dark, small type), one per class, anchored at the
-     midpoint of its segment's arc; for arcs on the left half, at the same
-     height on the donut's right edge, so it never covers the legend. */
+  /* Tooltip (Geist: dark, small type), one per class, shown on hover,
+     anchored at the midpoint of its segment's arc; for arcs on the left
+     half, at the same height on the gauge's right edge, clear of the legend. */
   .pp-tooltip {
     display: none;
     position: absolute;
@@ -610,9 +634,5 @@ const segments = portal.classes.donutOrder.map((label) => {
     display: flex;
     align-items: center;
     gap: 16px;
-  }
-  .pp-portfolios__bank {
-    margin-top: 20px;
-    font-size: 13px;
   }
 </style>
