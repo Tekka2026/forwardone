@@ -296,15 +296,15 @@ export const portal = {
     title: 'Assets by class',
     /** Centre of the gauge: the viewer's current year (this is the fallback). */
     yearFallback: String(new Date().getFullYear()),
-    // The four largest classes only, largest first, drawn clockwise from the
-    // gauge's bottom-left end and together filling it: `share` is each
-    // class's part of these four (traced 45/17/15/8 rescaled to 100; Cash
-    // deposits' 53% matches EUR 800,100 of EUR 1,500,300).
+    // Three largest classes plus Other, drawn clockwise from the gauge's
+    // bottom-left end and together filling it: `share` is each part of the
+    // whole (traced 45/17/15/8 rescaled to 100; Cash deposits' 53% matches
+    // EUR 800,100 of EUR 1,500,300).
     items: [
       { label: 'Cash deposits', tone: 'cyan', share: 53, value: 'EUR 800,100' },
       { label: 'Equity', tone: 'ink', share: 20, value: '[PLACEHOLDER: value]' },
       { label: 'Fixed income', tone: 'lilac', share: 18, value: '[PLACEHOLDER: value]' },
-      { label: 'Cash accounts', tone: 'grey', share: 9, value: '[PLACEHOLDER: value]' },
+      { label: 'Other', tone: 'grey', share: 9, value: '[PLACEHOLDER: value]' },
     ] as { label: string; tone: PortalTone; share: number; value: string }[],
   },
   team: 'Your team at FORWARD.one',

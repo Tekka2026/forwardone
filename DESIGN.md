@@ -252,9 +252,11 @@ copy in `fundIII` and `portal` (home.ts).
   afternoon 12–18, evening otherwise) and the value date shows their current
   date and time.
 - Assets by class: legend in the left half of the card, a 270° gauge open
-  at the bottom (after a fintech gauge reference) filling the right half
-  (SVG viewBox scaled to the column). Only the four largest classes, largest
-  first, clockwise from the bottom-left end; together they fill the whole
+  at the bottom (after a fintech gauge reference) in the right half, 48px
+  clear of the card's right edge (SVG viewBox scaled to the column; the
+  viewBox is the full circle's square, so the gauge centres vertically on
+  the legend as if it were a circle). The three largest classes plus Other,
+  largest first, clockwise from the bottom-left end; together they fill the whole
   arc (shares of these four add up to 100%), 14-unit stroke, rounded ends,
   6px gaps. Share labels (mono) sit inside the arc; the centre shows the
   viewer's current year in the display face, grey. The legend lists the same

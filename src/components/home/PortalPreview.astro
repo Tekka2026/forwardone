@@ -42,8 +42,9 @@ const svg = (name: keyof typeof icons, size = 16) =>
 // bottom-left end. One rounded segment per class, sized by share; the
 // shares add up to 100, so the segments fill the arc (any shortfall would
 // show as an empty track). Drawn in a
-// 340-unit viewBox that scales to the right half of the card.
-const G = { w: 340, h: 298, cx: 170, cy: 170, r: 160, stroke: 14, start: -135, sweep: 270 };
+// square 340-unit viewBox (the full circle's box, so the gauge centres
+// vertically as if it were a circle) that scales to the right half of the card.
+const G = { w: 340, h: 340, cx: 170, cy: 170, r: 160, stroke: 14, start: -135, sweep: 270 };
 const pt = (deg: number, r = G.r) => {
   const a = (deg * Math.PI) / 180; // clockwise from 12 o'clock
   return { x: G.cx + r * Math.sin(a), y: G.cy - r * Math.cos(a) };
@@ -496,8 +497,10 @@ const track = at + GAP / 2 < G.start + G.sweep - GAP / 2 ? arc(at + GAP / 2, G.s
   .tone-ink    { color: var(--tone-ink); }
   .tone-lilac  { color: var(--tone-lilac); }
   .tone-grey   { color: var(--tone-grey); }
+  /* Room between the gauge and the card's right edge. */
   .pp-gauge {
     position: relative;
+    margin-right: 48px;
   }
   .pp-gauge svg {
     display: block;
