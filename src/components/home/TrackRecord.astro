@@ -66,9 +66,9 @@ const keys = ['size', 'companies', 'status'] as const;
   }
   /* Same rhythm as the hero: eyebrow → figure 12px, figure → title 16px,
      figure line height as the H1. */
-  /* Glow: the figure is painted by a black → --brand-cyan gradient. As it
+  /* Glow: the figure is painted by a black → --brand-purple gradient. As it
      scrolls up into view, the script moves --figure-sweep from 0% to 100%,
-     pushing the cyan out to the right until the number is solid black.
+     pushing the purple out to the right until the number is solid black.
      Rests at 100% (solid) without JS or under reduced motion. The padding /
      negative margin pair lets the painted box cover the large glyphs. */
   .track__figure {
@@ -77,7 +77,7 @@ const keys = ['size', 'companies', 'status'] as const;
     background: linear-gradient(
       90deg,
       var(--fg) var(--figure-sweep),
-      var(--brand-cyan) calc(var(--figure-sweep) + 100%)
+      var(--brand-purple) calc(var(--figure-sweep) + 100%)
     );
     -webkit-background-clip: text;
     background-clip: text;
@@ -234,7 +234,7 @@ const keys = ['size', 'companies', 'status'] as const;
 </style>
 
 <script>
-  // Glow on the headline figure (black → cyan, the cyan pushed out to the
+  // Glow on the headline figure (black → purple, the purple pushed out to the
   // right as --figure-sweep goes 0% → 100%).
   // - Mouse (hover-capable, fine pointer): the cursor drives it. Far from the
   //   number the full gradient shows; within REACH px it fades out as the
