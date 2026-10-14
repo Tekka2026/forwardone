@@ -240,8 +240,9 @@ screens the list stacks under the CTA.
 gauge and tooltips, shared) and `portal/icons.ts`; copy in `fundIII` and
 `portal` (home.ts).
 
-- Fund III section background: a vertical gradient `#75F6FB` → `#4F83F1` →
-  `#5747F2` (top to bottom, full width).
+- Fund III section background: a diagonal gradient, full width, from the
+  top-right corner (`#B6E3E5`) to the bottom-left corner
+  (`rgba(0, 0, 0, 0.04)` over the page white).
 - Fund III head is centred: eyebrow, H2, body (balanced), CTA.
 - Under it, 48px below the CTA, a desktop dashboard drawn in HTML: the middle
   10 of 12 columns (full width at ≤880px). No device bezel: edged by a 1px line on

@@ -27,10 +27,11 @@ import PortalPreview from '@components/home/PortalPreview.astro';
 
 <style>
   /* The preview runs into the section's bottom edge, so no bottom padding.
-     Background: vertical gradient, cyan → blue → violet (owner, 2026-10-14). */
+     Background: diagonal gradient from the top-right corner (#B6E3E5) to the
+     bottom-left corner (4% black over the page white), owner 2026-10-14. */
   .fund {
     padding-bottom: 0;
-    background-image: linear-gradient(180deg, #75f6fb 0%, #4f83f1 50%, #5747f2 100%);
+    background-image: linear-gradient(to bottom left, #b6e3e5, rgba(0, 0, 0, 0.04));
   }
   .fund__head {
     display: flex;
