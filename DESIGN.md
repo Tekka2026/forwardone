@@ -251,11 +251,12 @@ copy in `fundIII` and `portal` (home.ts).
 - Live bits: the greeting follows the viewer's local time (morning 05–12,
   afternoon 12–18, evening otherwise) and the value date shows their current
   date and time.
-- Assets by class: legend in the left half of the card, a 270° gauge open
-  at the bottom (after a fintech gauge reference) in the right half, 48px
-  clear of the card's right edge (SVG viewBox scaled to the column; the
-  viewBox is the full circle's square, so the gauge centres vertically on
-  the legend as if it were a circle). The three largest classes plus Other,
+- Assets by class (layout per the owner's reference, 2026-10-14): 24px under
+  the total, a row of two 300px columns: "Assets by class" with the legend
+  under it (12px), vertically centred on the gauge's visible height, then a
+  270° gauge open at the bottom (after a fintech gauge reference); the rest
+  of the card's width stays empty on the right. The SVG viewBox is cropped
+  to the drawn arc, top of the arc to the bottom of its end caps. The three largest classes plus Other,
   largest first, clockwise from the bottom-left end; together they fill the whole
   arc (shares of these four add up to 100%), 14-unit stroke, rounded ends,
   6px gaps. Share labels (mono) sit inside the arc; the centre shows the
