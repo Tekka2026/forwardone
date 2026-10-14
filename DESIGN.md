@@ -429,7 +429,9 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   (`--col-12`), centred, `--gap` above the viewport bottom. Left:
   "Welcome to FORWARD.one", typed once and kept until the bar is pressed.
   Right: a hamburger button. The whole bar opens the panel; the hamburger is
-  the keyboard control.
+  the keyboard control. Insets are symmetric: the AI mark sits 16px from the
+  bar's left edge, the hamburger glyph 16px from its right edge. Closed bar
+  and open panel share one width (the page column, 24px from each side).
 - The AI mark (#78F6FB) sits left of the line from the start. Pressing the
   bar (open or close) plays a swap: the mark shrinks and is pushed up and to
   the right while a second mark grows in from the bottom left into its place

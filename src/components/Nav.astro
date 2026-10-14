@@ -212,7 +212,9 @@ const current = Astro.url.pathname;
     justify-content: space-between;
     gap: var(--gap);
     min-height: var(--nav-height);
-    padding: 0 var(--gap-half) 0 var(--gap);
+    /* Left 16px: the AI mark sits as far in as the hamburger glyph on the
+       right (12px padding + the button's 4px inset). */
+    padding: 0 var(--gap-half) 0 var(--space-4x);
     background-color: var(--nav-bg);
     /* Entrance glow: transparent to --brand-cyan across the bar, sliding out
        to the right like the H1's last word (see .nav[data-visible] below).
