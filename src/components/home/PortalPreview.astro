@@ -411,12 +411,14 @@ const track = at + GAP / 2 < G.start + G.sweep - GAP / 2 ? arc(at + GAP / 2, G.s
   .pp-body {
     padding: 32px 80px 0;
   }
-  /* Two columns: main 1fr, side 360px. The greeting row spans the main one. */
+  /* Two columns: main 1fr, side 360px. The greeting row spans the main one.
+     Columns stretch to the taller one, so the Total Assets card runs into
+     the cut at the bottom like the cards on the right (no empty strip). */
   .pp-main {
     display: grid;
     grid-template-columns: 1fr 360px;
     column-gap: 32px;
-    align-items: start;
+    align-items: stretch;
   }
   .pp-col {
     display: grid;

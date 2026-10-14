@@ -265,8 +265,9 @@ copy in `fundIII` and `portal` (home.ts).
   brightens that one to full colour and fades the others (no change in
   size), and shows its tooltip (label, value, share) at the arc's midpoint,
   opening toward the inside of the ring. No divider between the total and
-  the chart. The taller card pushes the Portfolios card below the cut, so
-  it is left out.
+  the chart. The Portfolios card is left out (it fell below the cut); the
+  Total Assets card stretches to the column height, so it runs into the
+  cut like the right-hand cards instead of ending above it.
 - Geist-style parts in the site's type and colours: black top bar with
   underlined active tab, square cards with Geist's shadow border on a
   `#fafafa` canvas, the site's small ghost pill button (Filter), a cyan pill
