@@ -209,8 +209,8 @@ with centred body copy 16px below it, at the hero's lede size
 The figure is painted by a black → `--brand-cyan` gradient whose cyan slides
 out to the right. Desktop (mouse): the cursor drives it; far away the full
 gradient shows, within 480px it fades as the cursor approaches, on the
-number it is solid black (eased). Touch: scroll-linked; gradient when the
-figure enters, solid once its top reaches the middle of the window. Solid
+number it is solid black (eased). Touch (no cursor): the full gradient
+stays. Solid
 without JS or under reduced motion. The
 table follows 16px lower.
 
@@ -418,7 +418,8 @@ The primary navigation is a bar that floats at the bottom of the viewport
 buttons sit in a plain strip at the top of the page
 (`src/components/Header.astro`): Pitch us (solid: white with black text on
 the dark intro, black with white text on light pages) and, to its right,
-LP login (outlined, opens the LP portal in a new tab, ↗).
+LP login (outlined, opens the LP portal in a new tab, ↗). On phones
+(≤640px) Pitch us is hidden; founders reach it from the closing section.
 
 - Hidden on load. It slides in from the bottom on the visitor's first scroll
   (or at once when the page cannot scroll, or on the first Tab press).
@@ -506,7 +507,7 @@ redefine any token or class from this file elsewhere.
 |---|---|
 | Global stylesheet | `css/global.css`, imported once in `src/layouts/Base.astro` |
 | Page shell, skip link, font loading | `src/layouts/Base.astro` |
-| Logo | `src/assets/brand/forwardone.svg` (supplied 2026-10-14), inlined by `src/components/ui/Logo.astro` in `currentColor`: 20px high (15px at ≤420px so the header row fits); also in the portal preview's top bar (16px desktop, 14px mobile) |
+| Logo | `src/assets/brand/forwardone.svg` (supplied 2026-10-14), inlined by `src/components/ui/Logo.astro` in `currentColor`: 20px high (15px at ≤420px so logo and LP login fit down to 320px); also in the portal preview's top bar (16px desktop, 14px mobile) |
 | Top strip (logo), floating nav, footer | `src/components/Header.astro`, `src/components/Nav.astro`, `src/components/Footer.astro` |
 | Footer partner logos (Invest Europe, EIF, EU) | `src/assets/partners/*.svg`: single-colour SVGs inlined in `currentColor` (black on the light footer), all 44px high. No hairline above. Desktop: one left-aligned row, "Member of:" (Inter, `.small`) 12px before the Invest Europe logo, 64px between logos. Phones (≤640px): "Member of:" centred with the three logos centred in one row 16px under it, 32px high; label and names in `footer.partnersLabel` / `footer.partners` (nav.ts) |
 | Shared UI | `src/components/ui/` (Button, Logo, Footnote, Placeholder) |

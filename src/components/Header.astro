@@ -21,7 +21,7 @@ const { dark = false } = Astro.props;
   <div class="wrap site-top__row">
     <Logo />
     <div class="site-top__actions">
-      <Button href={utilityNav.pitch.href} size="small">{utilityNav.pitch.label}</Button>
+      <Button href={utilityNav.pitch.href} size="small" class="site-top__pitch">{utilityNav.pitch.label}</Button>
       <Button href={utilityNav.lpLogin.href} variant="ghost" size="small" external={utilityNav.lpLogin.external}>
         {utilityNav.lpLogin.label}
       </Button>
@@ -50,10 +50,10 @@ const { dark = false } = Astro.props;
     display: flex;
     gap: var(--gap-half);
   }
-  /* Narrow phones: drop the ↗ marker so logo and both buttons fit
-     (the "opens in a new tab" text for screen readers stays). */
-  @media (max-width: 420px) {
-    .site-top__actions :global(.btn > span[aria-hidden="true"]) {
+  /* Phones: no Pitch us in the top strip (owner, 2026-10-14); founders
+     still reach it from the closing section ("Founders: pitch us"). */
+  @media (max-width: 640px) {
+    .site-top__actions :global(.site-top__pitch) {
       display: none;
     }
   }

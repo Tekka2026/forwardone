@@ -242,8 +242,8 @@ const keys = ['size', 'companies', 'status'] as const;
   // - Mouse (hover-capable, fine pointer): the cursor drives it. Far from the
   //   number the full gradient shows; within REACH px it fades out as the
   //   cursor approaches; on the number it is solid black. Eased.
-  // - Touch: scroll-linked, gradient when the figure enters at the bottom,
-  //   solid once its top reaches the middle of the window.
+  // - Touch (no cursor): the full gradient stays (owner, 2026-10-14; it
+  //   used to fade to solid as the figure scrolled to the middle).
   // - Reduced motion: solid (CSS default).
   const figure = document.querySelector<HTMLElement>('[data-track-figure]');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -278,19 +278,7 @@ const keys = ['size', 'companies', 'status'] as const;
       );
       document.documentElement.addEventListener('pointerleave', () => aim(0));
     } else {
-      let frame = 0;
-      const update = () => {
-        frame = 0;
-        const top = figure.getBoundingClientRect().top;
-        const vh = window.innerHeight;
-        set(Math.min(1, Math.max(0, (vh - top) / (vh * 0.5))));
-      };
-      const queue = () => {
-        if (!frame) frame = requestAnimationFrame(update);
-      };
-      update();
-      window.addEventListener('scroll', queue, { passive: true });
-      window.addEventListener('resize', queue);
+      set(0);
     }
   }
 </script>
