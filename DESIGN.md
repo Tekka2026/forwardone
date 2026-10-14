@@ -211,7 +211,7 @@ gradient shows, within 480px it fades as the cursor approaches, on the
 number it is solid black (eased). Touch: scroll-linked; gradient when the
 figure enters, solid once its top reaches the middle of the window. Solid
 without JS or under reduced motion. The
-table follows 64px lower.
+table follows 16px lower.
 
 Under the table one row: the "Funds & track record" link on the left, the
 exits line on the right (right-aligned with the table); stacked, link
@@ -289,6 +289,9 @@ Fixed uses:
 - Between titled groups: `--gap-double`.
 - Eyebrow to the heading under it: `--gap-half` (12px).
 - Heading to the body copy or lede that follows it: `--space-4x` (16px).
+- Heading block (eyebrow, heading, intro/body) to the section's content
+  (cards, slider, table, list): `--space-4x` (16px).
+- Section content to its closing link or button: `--gap-double` (48px).
 - Inside a component, step with `--space-2x` / `--space-4x` / `--space-8x`;
   between blocks within a section, `--gap`, `--space-8x`, `--gap-double`,
   `--space-16x` in ascending order of separation.
