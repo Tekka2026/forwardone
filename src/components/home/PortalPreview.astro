@@ -1,7 +1,7 @@
 ---
 /**
  * Investor portal preview: a desktop dashboard drawn in HTML, inside a
- * square frame. Built from Geist-style parts (top bar with tabs, cards with
+ * frame with 4px top corners. Built from Geist-style parts (top bar with tabs, cards with
  * a shadow border, small pill button, badges, collapsible rows, tooltip) in
  * the site's own type and colours. Copy lives in `portal` (src/content/home.ts).
  *
@@ -289,6 +289,12 @@ const track = at + GAP / 2 < G.start + G.sweep - GAP / 2 ? arc(at + GAP / 2, G.s
     aspect-ratio: 1328 / 630;
     margin: 0;
     overflow: hidden;
+    /* Edge and corners on the unscaled frame, so they stay 1px / 4px at any
+       width. Top corners rounded like the nav bar (--radius); the bottom is
+       cut off, so square and without an edge. */
+    border: 1px solid var(--pp-line);
+    border-bottom: 0;
+    border-radius: var(--radius) var(--radius) 0 0;
     /* Chart tones: the site's ink, greys and brand colours. */
     --tone-cyan: var(--brand-cyan);
     --tone-ink: #111111;
@@ -311,9 +317,6 @@ const track = at + GAP / 2 < G.start + G.sweep - GAP / 2 ? arc(at + GAP / 2, G.s
   .pp__screen {
     height: 100%;
     overflow: hidden;
-    box-sizing: border-box;
-    border: 1px solid var(--pp-line);
-    border-bottom: 0; /* cut off, no bottom edge */
     background: var(--pp-canvas);
     color: #111111;
     font-family: var(--font-sans);

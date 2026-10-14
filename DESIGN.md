@@ -124,7 +124,7 @@ Three families, all loaded in `src/layouts/Base.astro`:
 | Feature/H3  | `.h-feature`  | `clamp(34px, 5vw, 72px)`               | 1.04 | 0        | 450    | max-width 1056px (8 cols). |
 | Card title  | `.card-title` | 19px                                   | 1.3  | −0.01em  | 550    | |
 | Metric      | `--fs-metric` | `clamp(24px, 2.4vw, 32px)`             | 1.15 | 0        | 450    | Headline figure on a card (Proof). Also stat values at ≤640px. |
-| Lede        | `.lede`       | `clamp(18px, 1.6vw, 21px)`             | 1.5  | 0        | 400    | max-width 784px (6 cols). |
+| Lede        | `.lede`       | `clamp(18px, 1.6vw, 21px)`             | 1.5  | 0        | 400    | max-width 784px (6 cols). Homepage section body copy uses it too: hero, Track record, What we do blocks, Playbook, Fund III. |
 | Body        | `.body`       | 17px; `clamp(17px, 1.4vw, 19px)` inside `.section--feature` | 1.55 | 0 | 400 | max-width 648px (5 cols); `.body--wide` allows 784px, never more. |
 | Small       | `.small`      | 15px (`.small--tight` = 14.5px)        | 1.55 | 0        | 400    | Card body, list items. |
 | Eyebrow     | `.eyebrow`    | 12px mono                              | 1.4  | +0.14em  | 500    | UPPERCASE. **Opens every section.** |
@@ -240,8 +240,9 @@ copy in `fundIII` and `portal` (home.ts).
 
 - Fund III head is centred: eyebrow, H2, body (balanced), CTA.
 - Under it, 48px below the CTA, a desktop dashboard drawn in HTML: the middle
-  10 of 12 columns (full width at ≤880px). No device bezel: square, edged by a
-  1px line on three sides. The section has no bottom padding, so the
+  10 of 12 columns (full width at ≤880px). No device bezel: edged by a 1px line on
+  three sides, top corners rounded `--radius` (4px, as the nav bar), on the
+  unscaled frame so they stay 1px / 4px at any width. The section has no bottom padding, so the
   dashboard runs into the section's bottom edge and is cut off there: only
   the top 75% of the 1328 × 840 screen is drawn (1328 × 630), and content
   below the cut is left out of the markup, not hidden.
@@ -345,9 +346,10 @@ CLAUDE.md action A0005).
 
 ## 7. Hard rules
 
-1. **Square corners everywhere, except buttons and the navigation bar.**
-   Buttons are pills (`--btn-radius`, as on vercel.com); the navigation bar
-   uses `--radius` (4px). The reset applies `border-radius: 0` to every other
+1. **Square corners everywhere, except buttons, the navigation bar and the
+   portal preview.** Buttons are pills (`--btn-radius`, as on vercel.com); the
+   navigation bar and the portal preview's top corners use `--radius` (4px).
+   The reset applies `border-radius: 0` to every other
    element and pseudo-element.
 2. **Links and buttons share ONE `.btn` component** and must render identically.
    `<a class="btn">` and `<button class="btn">` get the same reset, box, type and
