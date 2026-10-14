@@ -1,7 +1,7 @@
 ---
 /**
  * Investor portal preview: a desktop dashboard drawn in HTML, inside a
- * device bezel. Built from Geist-style parts (top bar with tabs, cards with
+ * square frame. Built from Geist-style parts (top bar with tabs, cards with
  * a shadow border, small pill button, badges, collapsible rows, tooltip) in
  * the site's own type and colours. Copy lives in `portal` (src/content/home.ts).
  *
@@ -288,16 +288,13 @@ const tip = portal.classes.tooltip;
     height: 840px;
     transform: scale(var(--pp-scale, 1));
     transform-origin: 0 0;
-    /* Device bezel (a device, not UI: the square-corner rule does not apply) */
-    box-sizing: border-box;
-    padding: 14px;
-    background: #111111;
-    border-radius: 36px;
   }
+  /* No device bezel: the screen itself, square, edged by a 1px ring. */
   .pp__screen {
     height: 100%;
     overflow: hidden;
-    border-radius: 22px;
+    box-sizing: border-box;
+    border: 1px solid var(--pp-line);
     background: var(--pp-canvas);
     color: #111111;
     font-family: var(--font-sans);

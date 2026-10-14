@@ -236,8 +236,8 @@ screens the list stacks under the CTA.
 
 `src/components/home/PortalPreview.astro`, copy in `portal` (home.ts).
 
-- A desktop dashboard drawn in HTML inside a dark device bezel (rounded: it
-  is a device, not UI), 10 of 12 columns wide, 48px under the Fund III CTA;
+- A desktop dashboard drawn in HTML, no device bezel: the screen itself,
+  square, edged by a 1px line, 10 of 12 columns wide, 48px under the Fund III CTA;
   full width at ≤880px.
 - Designed at a fixed 1328 × 840 stage (= `--col-10` at full width) and
   scaled to the column width like an image (a ResizeObserver sets
