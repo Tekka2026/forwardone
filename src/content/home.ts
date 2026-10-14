@@ -354,15 +354,6 @@ export const insights = {
     },
   ] as Article[],
   allLink: { label: 'All insights', href: '/insights' } as Cta,
-  newsletter: {
-    title: 'The Playbook, quarterly. No fluff.',
-    emailLabel: 'Email address',
-    emailPlaceholder: 'name@company.com',
-    button: 'Subscribe',
-    /** No real submission. Replace with the ESP endpoint. */
-    action: '[PLACEHOLDER: newsletter handler]',
-    confirmation: 'Thanks. Subscription handling is not connected yet.',
-  },
 };
 
 export const closing = {

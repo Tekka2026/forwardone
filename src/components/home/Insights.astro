@@ -1,11 +1,8 @@
 ---
 import { insights } from '@content/home';
 import { href, isPlaceholder } from '@lib/href';
-import Button from '@components/ui/Button.astro';
 import Placeholder from '@components/ui/Placeholder.astro';
 import Sentences from '@components/ui/Sentences.astro';
-
-const { newsletter } = insights;
 ---
 
 <section class="section section--dark theme-dark" data-nav-dark>
@@ -37,37 +34,6 @@ const { newsletter } = insights;
       <a class="arrow-link" href={href(insights.allLink.href)}>{insights.allLink.label}</a>
     </p>
 
-    <div class="newsletter">
-      <div class="grid">
-        <div class="col-6">
-          <h3 class="h-section newsletter__title"><Sentences text={newsletter.title} /></h3>
-        </div>
-        <form
-          class="col-5 start-8 newsletter__form"
-          action={newsletter.action}
-          method="post"
-          data-newsletter
-          data-confirmation={newsletter.confirmation}
-          novalidate
-        >
-          <label class="label newsletter__label" for="newsletter-email">{newsletter.emailLabel}</label>
-          <div class="newsletter__row">
-            <input
-              class="newsletter__input"
-              id="newsletter-email"
-              name="email"
-              type="email"
-              autocomplete="email"
-              required
-              placeholder={newsletter.emailPlaceholder}
-            />
-            <Button type="submit">{newsletter.button}</Button>
-          </div>
-          <p class="small newsletter__status" role="status" aria-live="polite" data-newsletter-status></p>
-          <p class="newsletter__note"><Placeholder value={newsletter.action} /></p>
-        </form>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -111,63 +77,4 @@ const { newsletter } = insights;
   .section-link {
     margin-top: var(--gap-double);
   }
-
-  .newsletter {
-    margin-top: var(--space-16x);
-    padding: var(--gap-double) 0 0;
-    border-top: var(--hairline-w) solid var(--hairline);
-  }
-  .newsletter__title {
-    margin: 0;
-  }
-  .newsletter__form {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-half);
-  }
-  .newsletter__row {
-    display: flex;
-    gap: var(--gap-half);
-  }
-  .newsletter__input {
-    flex: 1 1 auto;
-    min-width: 0;
-    min-height: var(--form-height);
-    padding: 0 var(--gap-half);
-    border: 1px solid var(--fg);
-    background: var(--bg);
-    font-size: var(--fs-small);
-  }
-  .newsletter__status {
-    margin: 0;
-    min-height: 1.55em;
-  }
-  .newsletter__note {
-    margin: 0;
-  }
-
-  @media (max-width: 640px) {
-    .newsletter__row {
-      flex-direction: column;
-    }
-  }
 </style>
-
-<script>
-  const form = document.querySelector<HTMLFormElement>('[data-newsletter]');
-  if (form) {
-    const status = form.querySelector<HTMLElement>('[data-newsletter-status]')!;
-    const email = form.querySelector<HTMLInputElement>('input[type="email"]')!;
-    form.addEventListener('submit', (e) => {
-      // [PLACEHOLDER] handler: no real submission until the ESP endpoint exists.
-      e.preventDefault();
-      if (!email.checkValidity()) {
-        status.textContent = 'Enter a valid email address.';
-        email.focus();
-        return;
-      }
-      status.textContent = form.dataset.confirmation || 'Thanks.';
-      form.reset();
-    });
-  }
-</script>
