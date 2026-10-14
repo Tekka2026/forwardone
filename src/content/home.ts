@@ -271,7 +271,7 @@ export const fundIII = {
  *
  * Asset classes: `share` sizes the gauge segment (traced from the reference
  * drawing) and is shown as its label and in the hover tooltip; `value` is
- * shown in the tooltip too. Only Cash deposits has a supplied value. `tone` picks the chart colour in
+ * shown in the tooltip too (share × total). `tone` picks the chart colour in
  * PortalPreview.astro.
  */
 export type PortalTone = 'cyan' | 'ink' | 'lilac' | 'grey';
@@ -297,13 +297,14 @@ export const portal = {
     yearFallback: String(new Date().getFullYear()),
     // Three largest classes plus Other, drawn clockwise from the gauge's
     // bottom-left end and together filling it: `share` is each part of the
-    // whole (traced 45/17/15/8 rescaled to 100; Cash deposits' 53% matches
-    // EUR 800,100 of EUR 1,500,300).
+    // whole (traced 45/17/15/8 rescaled to 100). `value` = share × the total
+    // EUR 1,500,300, calculated at the owner's request (2026-10-14); the four
+    // add up to the total exactly.
     items: [
-      { label: 'Cash deposits', tone: 'cyan', share: 53, value: 'EUR 800,100' },
-      { label: 'Equity', tone: 'ink', share: 20, value: '[PLACEHOLDER: value]' },
-      { label: 'Fixed income', tone: 'lilac', share: 18, value: '[PLACEHOLDER: value]' },
-      { label: 'Other', tone: 'grey', share: 9, value: '[PLACEHOLDER: value]' },
+      { label: 'Cash deposits', tone: 'cyan', share: 53, value: 'EUR 795,159' },
+      { label: 'Equity', tone: 'ink', share: 20, value: 'EUR 300,060' },
+      { label: 'Fixed income', tone: 'lilac', share: 18, value: 'EUR 270,054' },
+      { label: 'Other', tone: 'grey', share: 9, value: 'EUR 135,027' },
     ] as { label: string; tone: PortalTone; share: number; value: string }[],
   },
   team: 'Your team at FORWARD.one',
