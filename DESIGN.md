@@ -251,20 +251,24 @@ copy in `fundIII` and `portal` (home.ts).
 - Live bits: the greeting follows the viewer's local time (morning 05–12,
   afternoon 12–18, evening otherwise) and the value date shows their current
   date and time.
-- Assets by class: a 270° gauge open at the bottom (after a fintech gauge
-  reference), only the three largest classes, largest first, clockwise from
-  the bottom-left end; segments sized by share of the whole, rounded ends,
-  6px gaps, the remainder an empty light track. Share labels (mono) sit
-  inside the arc; the centre shows the viewer's current year in the display
-  face, grey. The legend lists the same three. Hovering a segment or legend
-  row thickens it, dims the rest and shows its tooltip (label, value, share)
-  at the arc's midpoint (on the left half: at the gauge's right edge).
-  No divider between the total and the chart.
+- Assets by class: legend in the left half of the card, a 270° gauge open
+  at the bottom (after a fintech gauge reference) filling the right half
+  (SVG viewBox scaled to the column). Only the four largest classes, largest
+  first, clockwise from the bottom-left end; segments sized by share of the
+  whole, 14-unit stroke, rounded ends, 6px gaps, the remainder an empty light
+  track. Share labels (mono) sit inside the arc; the centre shows the
+  viewer's current year in the display face, grey. The legend lists the same
+  four. Segments rest at 85% opacity; hovering a segment or legend row
+  brightens that one to full colour and fades the others (no change in
+  size), and shows its tooltip (label, value, share) at the arc's midpoint,
+  opening toward the inside of the ring. No divider between the total and
+  the chart. The taller card pushes the Portfolios card below the cut, so
+  it is left out.
 - Geist-style parts in the site's type and colours: black top bar with
   underlined active tab, square cards with Geist's shadow border on a
   `#fafafa` canvas, the site's small ghost pill button (Filter), a cyan pill
   badge, a dark tooltip, 1.5px stroke icons, links in `--brand-purple`.
-- Chart tones: cyan, ink, lilac (purple 45% toward white). Amounts use comma thousands separators (EUR 1,500,300).
+- Chart tones: cyan, ink, lilac (purple 45% toward white), grey. Amounts use comma thousands separators (EUR 1,500,300).
 - An illustration: `role="img"` with a label; nothing inside is focusable.
 
 ### Proof slider ("From lab to exit.")

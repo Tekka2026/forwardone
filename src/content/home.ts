@@ -267,14 +267,14 @@ export const fundIII = {
  * Copy follows the supplied reference screenshot, with the bank name set to
  * FORWARD.one, CHF set to EUR and comma thousands separators. Only the top
  * 75% of the reference is drawn (the section's bottom edge cuts it off), so
- * the lower content (bank and account breakdown, alerts) is left out on purpose.
+ * the lower content (portfolios, account breakdown, alerts) is left out on purpose.
  *
  * Asset classes: `share` sizes the gauge segment (traced from the reference
  * drawing) and is shown as its label and in the hover tooltip; `value` is
  * shown in the tooltip too. Only Cash deposits has a supplied value. `tone` picks the chart colour in
  * PortalPreview.astro.
  */
-export type PortalTone = 'cyan' | 'ink' | 'lilac';
+export type PortalTone = 'cyan' | 'ink' | 'lilac' | 'grey';
 
 export const portal = {
   label: 'Illustration of the FORWARD.one investor portal dashboard',
@@ -296,18 +296,15 @@ export const portal = {
     title: 'Assets by class',
     /** Centre of the gauge: the viewer's current year (this is the fallback). */
     yearFallback: String(new Date().getFullYear()),
-    // The three largest classes only, largest first; the gauge draws them
+    // The four largest classes only, largest first; the gauge draws them
     // clockwise from its bottom-left end, the remainder (other classes)
     // stays an empty track.
     items: [
       { label: 'Cash deposits', tone: 'cyan', share: 45, value: 'EUR 800,100' },
       { label: 'Equity', tone: 'ink', share: 17, value: '[PLACEHOLDER: value]' },
       { label: 'Fixed income', tone: 'lilac', share: 15, value: '[PLACEHOLDER: value]' },
+      { label: 'Cash accounts', tone: 'grey', share: 8, value: '[PLACEHOLDER: value]' },
     ] as { label: string; tone: PortalTone; share: number; value: string }[],
-  },
-  portfolios: {
-    title: '3 Portfolios',
-    link: 'Investment structure',
   },
   team: 'Your team at FORWARD.one',
   article: {

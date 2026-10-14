@@ -40,8 +40,9 @@ const svg = (name: keyof typeof icons, size = 16) =>
 
 // Gauge: a 270° arc open at the bottom, drawn clockwise from its
 // bottom-left end. One rounded segment per class, sized by share of the
-// whole; whatever the three classes leave stays an empty track.
-const G = { w: 240, h: 212, cx: 120, cy: 112, r: 100, stroke: 10, start: -135, sweep: 270 };
+// whole; whatever the classes leave stays an empty track. Drawn in a
+// 340-unit viewBox that scales to the right half of the card.
+const G = { w: 340, h: 298, cx: 170, cy: 170, r: 160, stroke: 14, start: -135, sweep: 270 };
 const pt = (deg: number, r = G.r) => {
   const a = (deg * Math.PI) / 180; // clockwise from 12 o'clock
   return { x: G.cx + r * Math.sin(a), y: G.cy - r * Math.cos(a) };
@@ -58,14 +59,15 @@ const segments = portal.classes.items.map((item) => {
   const span = (item.share / 100) * G.sweep;
   const mid = at + span / 2;
   const tip = pt(mid);
-  const label = pt(mid, G.r - 30);
+  const label = pt(mid, G.r - 40);
   const seg = {
     ...item,
     d: arc(at + GAP / 2, at + span - GAP / 2),
-    // Tooltip anchors at the arc's midpoint; on the left half it moves to
-    // the gauge's right edge at the same height, clear of the legend.
-    x: tip.x < G.cx ? G.w : tip.x,
-    y: tip.y,
+    // Tooltip anchors at the arc's midpoint (as % of the viewBox) and opens
+    // toward the inside of the ring, so it never covers the legend.
+    x: (tip.x / G.w) * 100,
+    y: (tip.y / G.h) * 100,
+    inward: tip.x < G.cx ? 'right' : 'left',
     lx: label.x,
     ly: label.y,
   };
@@ -143,7 +145,7 @@ const track = at + GAP / 2 < G.start + G.sweep - GAP / 2 ? arc(at + GAP / 2, G.s
                 }
               </ul>
               <div class="pp-gauge">
-                <svg width={G.w} height={G.h} viewBox={`0 0 ${G.w} ${G.h}`} aria-hidden="true">
+                <svg viewBox={`0 0 ${G.w} ${G.h}`} aria-hidden="true">
                   {track && <path class="pp-track" d={track} />}
                   {
                     segments.map((s) => (
@@ -163,7 +165,11 @@ const track = at + GAP / 2 < G.start + G.sweep - GAP / 2 ? arc(at + GAP / 2, G.s
                 </svg>
                 {
                   segments.map((s) => (
-                    <div class="pp-tooltip" data-pp-tip={s.label} style={`--x: ${s.x.toFixed(1)}px; --y: ${s.y.toFixed(1)}px`}>
+                    <div
+                      class={`pp-tooltip pp-tooltip--${s.inward}`}
+                      data-pp-tip={s.label}
+                      style={`--x: ${s.x.toFixed(2)}%; --y: ${s.y.toFixed(2)}%`}
+                    >
                       <p class="pp-tooltip__title">{s.label}</p>
                       <p class="pp-tooltip__row">
                         <span class={`pp-dot tone-${s.tone}`} />
@@ -177,16 +183,6 @@ const track = at + GAP / 2 < G.start + G.sweep - GAP / 2 ? arc(at + GAP / 2, G.s
             </div>
           </section>
 
-          <!-- Portfolios (cut off by the section edge) -->
-          <section class="pp-card pp-portfolios">
-            <p class="pp-portfolios__head">
-              <span class="pp-card__title">{portal.portfolios.title}</span>
-              <span class="pp-link">
-                {portal.portfolios.link}
-                <Fragment set:html={svg('arrowRight', 14)} />
-              </span>
-            </p>
-          </section>
           </div>
 
           <div class="pp-col">
@@ -299,6 +295,7 @@ const track = at + GAP / 2 < G.start + G.sweep - GAP / 2 ? arc(at + GAP / 2, G.s
     --tone-cyan: var(--brand-cyan);
     --tone-ink: #111111;
     --tone-lilac: color-mix(in srgb, var(--brand-purple), #ffffff 55%);
+    --tone-grey: #bdbdbd;
     /* Geist-style surfaces */
     --pp-canvas: #fafafa;
     --pp-card: #ffffff;
@@ -469,10 +466,12 @@ const track = at + GAP / 2 < G.start + G.sweep - GAP / 2 ? arc(at + GAP / 2, G.s
     margin-top: 24px;
     color: var(--muted);
   }
+  /* Legend in the left half, gauge filling the right half. */
   .pp-assets__chart {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     align-items: center;
-    gap: 64px;
+    gap: 24px;
     margin-top: 16px;
     padding-bottom: 8px;
   }
@@ -495,23 +494,26 @@ const track = at + GAP / 2 < G.start + G.sweep - GAP / 2 ? arc(at + GAP / 2, G.s
   .tone-cyan   { color: var(--tone-cyan); }
   .tone-ink    { color: var(--tone-ink); }
   .tone-lilac  { color: var(--tone-lilac); }
+  .tone-grey   { color: var(--tone-grey); }
   .pp-gauge {
     position: relative;
   }
   .pp-gauge svg {
     display: block;
+    width: 100%;
+    height: auto;
     overflow: visible;
   }
   .pp-track {
     fill: none;
     stroke: rgba(0, 0, 0, 0.06);
-    stroke-width: 10;
+    stroke-width: 14;
     stroke-linecap: round;
   }
   .pp-gauge__share {
     fill: #111111;
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: 14px;
     text-anchor: middle;
     dominant-baseline: middle;
     font-variant-numeric: tabular-nums;
@@ -519,26 +521,28 @@ const track = at + GAP / 2 < G.start + G.sweep - GAP / 2 ? arc(at + GAP / 2, G.s
   .pp-gauge__year {
     fill: #a1a1a1;
     font-family: var(--font-display);
-    font-size: 36px;
+    font-size: 56px;
     font-weight: 450;
     text-anchor: middle;
     dominant-baseline: central;
   }
-  /* Segments: hover thickens the hovered one, dims the rest. */
+  /* Segments rest slightly muted; hover brightens the hovered one to full
+     colour and fades the others. No change in size. */
   .pp-seg {
     fill: none;
     stroke: currentColor;
-    stroke-width: 10;
+    stroke-width: 14;
     stroke-linecap: round;
+    opacity: 0.85;
     cursor: default;
-    transition: stroke-width 150ms ease, opacity 150ms ease;
+    transition: opacity 200ms ease, filter 200ms ease;
   }
   .pp-assets__chart[data-hover] .pp-seg {
-    opacity: 0.3;
+    opacity: 0.2;
   }
   .pp-assets__chart[data-hover] .pp-seg.is-hover {
     opacity: 1;
-    stroke-width: 14;
+    filter: brightness(1.12) saturate(1.3);
   }
   .pp-legend li {
     cursor: default;
@@ -548,14 +552,14 @@ const track = at + GAP / 2 < G.start + G.sweep - GAP / 2 ? arc(at + GAP / 2, G.s
     opacity: 0.4;
   }
   /* Tooltip (Geist: dark, small type), one per class, shown on hover,
-     anchored at the midpoint of its segment's arc; for arcs on the left
-     half, at the same height on the gauge's right edge, clear of the legend. */
+     anchored at the midpoint of its segment's arc and opening toward the
+     inside of the ring (right for arcs on the left half, left otherwise). */
   .pp-tooltip {
     display: none;
     position: absolute;
     top: var(--y);
     left: var(--x);
-    transform: translate(10px, calc(-100% - 6px));
+    transform: translate(16px, -50%);
     pointer-events: none;
     z-index: 1;
     padding: 10px 12px;
@@ -568,6 +572,9 @@ const track = at + GAP / 2 < G.start + G.sweep - GAP / 2 ? arc(at + GAP / 2, G.s
   /* Light ring so dark tones (ink, purple) stay visible on the dark tooltip. */
   .pp-tooltip .pp-dot {
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5);
+  }
+  .pp-tooltip--left {
+    transform: translate(calc(-100% - 16px), -50%);
   }
   .pp-tooltip :global(.placeholder) {
     white-space: nowrap;
@@ -630,12 +637,5 @@ const track = at + GAP / 2 < G.start + G.sweep - GAP / 2 ? arc(at + GAP / 2, G.s
     justify-content: space-between;
     margin-top: 16px;
     color: #111111;
-  }
-
-  /* Portfolios */
-  .pp-portfolios__head {
-    display: flex;
-    align-items: center;
-    gap: 16px;
   }
 </style>
