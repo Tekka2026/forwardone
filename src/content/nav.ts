@@ -120,13 +120,14 @@ export const footer = {
     { label: 'Disclaimer', href: '/disclaimer' },
   ],
   /**
-   * Partner logos from the current site. Files are not in this repo yet:
-   * drop them in public/partners/ and set `src`. Listed in PLACEHOLDERS.md.
+   * Partner logos, supplied as single-colour SVGs. `logo` names a file in
+   * src/assets/partners/ (inlined, drawn in currentColor); `name` is the
+   * accessible label.
    */
   partners: [
-    { name: 'Invest Europe', src: '[PLACEHOLDER: /partners/invest-europe.svg]' },
-    { name: 'European Union', src: '[PLACEHOLDER: /partners/eu.svg]' },
-    { name: 'European Investment Fund', src: '[PLACEHOLDER: /partners/eif.svg]' },
+    { name: 'Member of Invest Europe', logo: 'invest-europe' },
+    { name: 'European Investment Fund', logo: 'eif' },
+    { name: 'Funded by the European Union', logo: 'eu' },
   ],
   tagline: 'Performance-engineered venture capital.',
   company: 'FORWARD.one',

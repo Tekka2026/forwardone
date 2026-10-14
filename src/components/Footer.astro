@@ -1,7 +1,12 @@
 ---
 import { footer } from '@content/nav';
 import { href } from '@lib/href';
-import Placeholder from '@components/ui/Placeholder.astro';
+
+// Partner logos: single-colour SVGs, inlined so they take the text colour.
+const logos = import.meta.glob<string>('../assets/partners/*.svg', { query: '?raw', import: 'default', eager: true });
+const logo = (name: string) => logos[`../assets/partners/${name}.svg`] ?? '';
+const labelled = (svg: string, label: string) =>
+  svg.replace('<svg ', `<svg role="img" aria-label="${label}" class="footer-partner__logo" `);
 
 const year = new Date().getFullYear();
 ---
@@ -59,16 +64,7 @@ const year = new Date().getFullYear();
       <ul class="footer-partners__list" aria-label="Partners">
         {
           footer.partners.map((p) => (
-            <li class="footer-partner">
-              {p.src.startsWith('[PLACEHOLDER') ? (
-                <span class="footer-partner__box">
-                  <span class="visually-hidden">{p.name} logo: </span>
-                  <Placeholder value={p.src} />
-                </span>
-              ) : (
-                <img src={href(p.src)} alt={p.name} height="40" loading="lazy" />
-              )}
-            </li>
+            <li class="footer-partner" data-logo={p.logo} set:html={labelled(logo(p.logo), p.name)} />
           ))
         }
       </ul>
@@ -157,16 +153,25 @@ const year = new Date().getFullYear();
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-8x);
+    gap: var(--space-8x) var(--space-16x);
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  .footer-partner__box {
-    display: inline-flex;
-    align-items: center;
-    min-height: 40px;
+  /* One height for the wide logos; widths follow each logo's proportions. */
+  .footer-partner {
+    display: flex;
+  }
+  .footer-partner :global(.footer-partner__logo) {
+    display: block;
+    height: 44px;
+    width: auto;
+  }
+  /* The EIF mark is nearly square with small lettering: taller, so it
+     reads at the same optical size as the two wide logos. */
+  .footer-partner[data-logo='eif'] :global(.footer-partner__logo) {
+    height: 60px;
   }
 
   .footer-bottom {
