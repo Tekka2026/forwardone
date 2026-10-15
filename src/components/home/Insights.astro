@@ -6,7 +6,7 @@ import Sentences from '@components/ui/Sentences.astro';
 import RobotArm from '@components/visuals/RobotArm.astro';
 ---
 
-<section class="section section--dark theme-dark" data-nav-dark>
+<section class="section section--tint">
   <div class="wrap">
     <p class="eyebrow">{insights.eyebrow}</p>
     <h2 class="h-section section-title"><Sentences text={insights.title} /></h2>
@@ -68,15 +68,15 @@ import RobotArm from '@components/visuals/RobotArm.astro';
     flex-direction: column;
     gap: var(--gap-half);
   }
-  /* Visual: 5:7 portrait (7:5 landscape on phones), a flat grey until the
-     image is supplied. */
+  /* Visual: 5:7 portrait (7:5 landscape on phones), a flat light grey
+     (4% black, as the robot arm's own box) until the image is supplied. */
   .article__visual {
     display: flex;
     align-items: center;
     justify-content: center;
     aspect-ratio: 5 / 7;
     margin-bottom: var(--gap-half);
-    background: #262626;
+    background: rgba(0, 0, 0, 0.04);
     overflow: hidden;
   }
   .article__visual img {
@@ -91,6 +91,7 @@ import RobotArm from '@components/visuals/RobotArm.astro';
     position: relative;
     z-index: 1;
     display: block;
+    background: none; /* the visual brings its own 4% grey box */
   }
   /* Phones (one column): landscape 7:5, so three stacked visuals don't
      run to ~1,400px. */

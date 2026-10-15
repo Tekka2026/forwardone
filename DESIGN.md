@@ -293,14 +293,16 @@ gauge and tooltips, shared) and `portal/icons.ts`; copy in `fundIII` and
 
 ### Insights and closing
 
-- Insights article visuals: flat grey (#262626) until supplied, 5:7 portrait;
+- Insights section: light grey band (`.section--tint`, 4% black, as Track
+  record; owner 2026-10-15, was black).
+- Insights article visuals: flat light grey (4% black) until supplied, 5:7 portrait;
   on phones (≤640px, one column) 7:5 landscape. An article can instead set
   `visual` to a coded visual from `src/components/visuals/`: the first one
   (Sensorfact) uses `RobotArm.astro`, the owner's interactive canvas robot
   arm (inverted version; it fits itself to the box, follows the mouse, drag
   turns the view). Coded visuals sit above the card's full-size link, so
   dragging works; the title still links.
-- Insights (black band): on desktop the H2 runs at most 6 of the 12 grid
+- Insights: on desktop the H2 runs at most 6 of the 12 grid
   columns (fluid, from the wrap width); full width at ≤880px.
 - Closing ("Serious about performance? So are we."): title and buttons
   centred.
@@ -478,7 +480,8 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
 ## 9. Colour (placeholders)
 
 - Dark sections: `.section--dark.theme-dark` (black band, tokens inverted;
-  `data-nav-dark` so the floating nav inverts over it). Used by Insights.
+  `data-nav-dark` so the floating nav inverts over it). Not used at the
+  moment (Insights was the black band until 2026-10-15).
 - `.theme-dark` re-points the colour tokens (`--bg` #000, `--fg` #FFF,
   `--accent` #FFF, `--muted` #A1A1A1, white hairlines, button hover mix) so
   any component inside it inverts without its own dark styles.
