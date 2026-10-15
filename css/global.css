@@ -10,7 +10,7 @@
    -------------------------------------------------------------------------- */
 :root {
   /* Canvas & container */
-  --canvas: 1984px;                 /* whole site caps here, centred */
+  --canvas: 1984px;                 /* reference design width (not a cap) */
   --max: 1600px;                    /* content container (.wrap)     */
   --pad: var(--page-margin);        /* the only horizontal padding   */
 
@@ -232,10 +232,11 @@ html {
   overflow-x: clip;               /* .bleed (100vw) must not add a horizontal scrollbar */
 }
 
+/* No width cap on body: section bands (dark, tinted, gradient) and
+   hairlines run to the window edges at any width; content is held to
+   --max by .wrap. */
 body {
   margin: 0;
-  max-width: var(--canvas);        /* site caps at the canvas, centred */
-  margin-inline: auto;
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-sans);

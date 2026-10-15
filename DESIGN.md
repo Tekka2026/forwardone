@@ -17,7 +17,7 @@ Load the stylesheet first on every page:
 
 | Token      | Value                     | Meaning |
 |------------|---------------------------|---------|
-| `--canvas` | `1984px`                  | The entire site caps here, centred on wider viewports (applied on `body`). |
+| `--canvas` | `1984px`                  | Reference design width. Not a cap: section backgrounds and hairlines run to the window edges at any width (no max-width on `body`, owner 2026-10-15); content stays within `--max`. |
 | `--max`    | `1600px`                  | The content container width (`.wrap`). |
 | `--pad`    | `var(--page-margin)` = 24px | The **only** horizontal page padding (Geist page margin). |
 
@@ -495,7 +495,7 @@ touching anything above.
 | Section | Contents |
 |---------|----------|
 | 1 | All tokens on `:root`. |
-| 2 | Reset: box-sizing, `border-radius: 0`, body capped at `--canvas`, element defaults for headings and code. |
+| 2 | Reset: box-sizing, `border-radius: 0`, body full width (no cap), element defaults for headings and code. |
 | 3 | `.wrap`, `.grid`, `.col-*`, `.start-*`, `.w-*`, `.bleed`. |
 | 4 | `.section`, `.section--flush`, `.section--feature`. |
 | 5 | Type classes. |
