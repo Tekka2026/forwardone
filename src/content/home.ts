@@ -101,17 +101,6 @@ export const caseStudies = {
       label: 'Exit',
       items: [
         {
-          name: 'Sensorfact',
-          slug: 'sensorfact',
-          date: 'January 2025',
-          outcome: 'Energy intelligence for SMEs. Acquired by ABB.',
-          metric: '[PLACEHOLDER: outcome figure]',
-          logo: '[PLACEHOLDER: /logos/sensorfact.svg]',
-          visual: '',
-          video: { webm: '/cases/sensorfact.webm', mp4: '/cases/sensorfact.mp4', poster: '/cases/sensorfact.jpg' },
-          facts: [],
-        },
-        {
           name: 'Mayht',
           slug: 'mayht',
           date: 'April 2022',
@@ -120,6 +109,17 @@ export const caseStudies = {
           logo: '[PLACEHOLDER: /logos/mayht.svg]',
           visual: '',
           video: { webm: '/cases/mayht.webm', mp4: '/cases/mayht.mp4', poster: '/cases/mayht.jpg' },
+          facts: [],
+        },
+        {
+          name: 'Sensorfact',
+          slug: 'sensorfact',
+          date: 'January 2025',
+          outcome: 'Energy intelligence for SMEs. Acquired by ABB.',
+          metric: '[PLACEHOLDER: outcome figure]',
+          logo: '[PLACEHOLDER: /logos/sensorfact.svg]',
+          visual: '',
+          video: { webm: '/cases/sensorfact.webm', mp4: '/cases/sensorfact.mp4', poster: '/cases/sensorfact.jpg' },
           facts: [],
         },
         {
