@@ -325,7 +325,7 @@ export type Article = {
   /** Visual above the article (5:7, portrait). Path under public/, or a placeholder. */
   image: string;
   /** Instead of an image: a coded visual from src/components/visuals/. */
-  visual?: 'robot-arm';
+  visual?: 'robot-arm' | 'munich-map';
 };
 
 export const insights = {
@@ -351,7 +351,8 @@ export const insights = {
       slug: 'why-munich-matters-for-europes-next-generation-of-industrial-tech',
       category: '[PLACEHOLDER: category]',
       date: '[PLACEHOLDER: date]',
-      image: '[PLACEHOLDER: image]',
+      image: '',
+      visual: 'munich-map',
     },
     {
       title: 'Fund III: doubling down on Europe’s industrial technology winners',

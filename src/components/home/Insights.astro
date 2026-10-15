@@ -4,6 +4,7 @@ import { href, isPlaceholder } from '@lib/href';
 import Placeholder from '@components/ui/Placeholder.astro';
 import Sentences from '@components/ui/Sentences.astro';
 import RobotArm from '@components/visuals/RobotArm.astro';
+import MunichMap from '@components/visuals/MunichMap.astro';
 ---
 
 <section class="section section--dark theme-dark" data-nav-dark>
@@ -15,9 +16,11 @@ import RobotArm from '@components/visuals/RobotArm.astro';
       {
         insights.articles.map((a) => (
           <li class="article">
-            <div class:list={['article__visual', a.visual && 'article__visual--live']}>
+            <div class:list={['article__visual', a.visual === 'robot-arm' && 'article__visual--live']}>
               {a.visual === 'robot-arm' ? (
                 <RobotArm />
+              ) : a.visual === 'munich-map' ? (
+                <MunichMap />
               ) : isPlaceholder(a.image) ? (
                 <Placeholder value={a.image} />
               ) : (
@@ -84,7 +87,7 @@ import RobotArm from '@components/visuals/RobotArm.astro';
     height: 100%;
     object-fit: cover;
   }
-  /* Coded visuals (e.g. the robot arm) stay interactive: they sit above
+  /* Interactive coded visuals (the robot arm) stay interactive: they sit above
      the card's full-size link, so dragging turns the model instead of
      opening the article (the title still links). */
   .article__visual--live {

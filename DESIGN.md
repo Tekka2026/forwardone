@@ -303,7 +303,12 @@ gauge and tooltips, shared) and `portal/icons.ts`; copy in `fundIII` and
   (turning with the slowly orbiting view); it follows the mouse while the
   pointer is over the box and eases back to facing the viewer when it leaves,
   drag turns the view; the SENSORFACT label sits behind the arm). Coded visuals sit above the card's full-size link, so
-  dragging works; the title still links.
+  dragging works; the title still links. The second (Munich) uses
+  `MunichMap.astro`: a static SVG built at build time in the robot's style
+  (same camera, plus grid floor, dashed teal ring with ticks = Mittlerer
+  Ring, white solids with outlines = Olympiaturm and the Altstadtring, blue
+  accent = Marienplatz; Isar, Englischer Garten, Theresienwiese, motorway
+  spurs; label MÜNCHEN with coordinates). It does not move.
 - Insights: on desktop the H2 runs at most 6 of the 12 grid
   columns (fluid, from the wrap width); full width at ≤880px.
 - Closing ("Serious about performance? So are we."): title and buttons
