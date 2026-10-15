@@ -293,6 +293,8 @@ gauge and tooltips, shared) and `portal/icons.ts`; copy in `fundIII` and
 
 ### Insights and closing
 
+- Insights article visuals: flat grey (#262626) until supplied, 5:7 portrait;
+  on phones (≤640px, one column) 7:5 landscape.
 - Insights (black band): on desktop the H2 runs at most 6 of the 12 grid
   columns (fluid, from the wrap width); full width at ≤880px.
 - Closing ("Serious about performance? So are we."): title and buttons

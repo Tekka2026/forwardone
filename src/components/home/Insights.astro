@@ -65,7 +65,8 @@ import Sentences from '@components/ui/Sentences.astro';
     flex-direction: column;
     gap: var(--gap-half);
   }
-  /* Visual: 5:7 portrait, a flat grey until the image is supplied. */
+  /* Visual: 5:7 portrait (7:5 landscape on phones), a flat grey until the
+     image is supplied. */
   .article__visual {
     display: flex;
     align-items: center;
@@ -79,6 +80,13 @@ import Sentences from '@components/ui/Sentences.astro';
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+  /* Phones (one column): landscape 7:5, so three stacked visuals don't
+     run to ~1,400px. */
+  @media (max-width: 640px) {
+    .article__visual {
+      aspect-ratio: 7 / 5;
+    }
   }
   .article__meta {
     margin: 0;
