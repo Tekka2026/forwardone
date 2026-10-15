@@ -178,19 +178,27 @@ export const trackRecord = {
   eyebrow: 'Track record',
   /**
    * Headline figure, centred above the title: the number at twice the H1
-   * size, prefix and suffix at H1 size. The sum of the fund sizes below.
+   * size, prefix and suffix at H1 size. The sum of the three fund sizes
+   * below: €31,951,000 + €139,082,800 + €217,250,000 = €388,283,800.
+   * (Excludes the six co-investment SPVs, €114,499,762.04 together.)
    */
-  figure: { prefix: '€', value: '383', suffix: 'M' },
+  figure: { prefix: '€', value: '388', suffix: 'M' },
   title: 'Three funds. One discipline.',
   /** Body copy, centred under the title. */
   body: 'Every fund has been more ambitious than the last. The strategy hasn’t changed: invest early in European industrial tech, then put most of the capital behind the companies that deliver.',
   /** Column headings, in table order. Also the labels on mobile cards. */
   columns: { fund: 'Fund', size: 'Size', companies: 'Companies', status: 'Status' },
   caption: 'FORWARD.one funds by size, number of companies and status',
+  /**
+   * Size = total commitments at the last closing, from the owner's fund
+   * overview (2026-10-15), rounded to whole millions:
+   * Fund I (vintage 2018) €31,951,000; Fund II (2021) €139,082,800;
+   * Fund III (2025) €217,250,000.
+   */
   funds: [
-    { fund: 'Fund III', size: '€200M (hard cap €250M)', companies: '~30 (target)', status: 'Investing' },
-    { fund: 'Fund II', size: '€145M', companies: '20', status: '[PLACEHOLDER: status]' },
-    { fund: 'Fund I', size: '€38M', companies: '12', status: '[PLACEHOLDER: status]' },
+    { fund: 'Fund III', size: '€217M (hard cap €250M)', companies: '~30 (target)', status: 'Investing' },
+    { fund: 'Fund II', size: '€139M', companies: '20', status: '[PLACEHOLDER: status]' },
+    { fund: 'Fund I', size: '€32M', companies: '12', status: '[PLACEHOLDER: status]' },
   ] as FundRow[],
   exits: {
     label: 'Exits:',
@@ -258,7 +266,7 @@ export const partners = {
 export const fundIII = {
   eyebrow: 'Fund III',
   title: 'More capital. Same discipline.',
-  body: 'Fund III has reached €200M of a €250M hard cap, backed by investors including ABN AMRO Corporate Investments and the European Investment Fund.',
+  body: 'Fund III has reached €217M of a €250M hard cap, backed by investors including ABN AMRO Corporate Investments and the European Investment Fund.',
   cta: { label: 'Talk to investor relations', href: '/investors/contact' } as Cta,
 };
 

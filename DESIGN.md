@@ -196,7 +196,7 @@ Rules:
 
 ### Track record head
 
-Centred: eyebrow, then the headline figure (`€383M`) with the number at
+Centred: eyebrow, then the headline figure (`€388M`, the three funds' total commitments) with the number at
 twice the H1 size (`calc(var(--fs-display) * 2)`) and the € and M at H1
 size (`--fs-display`) on one baseline, weight `--fw-figure` (= `--fw-heading`, 450, like the H1) and
 tracking `--ls-figure` (0), then the H2 centred below it. Same rhythm as
