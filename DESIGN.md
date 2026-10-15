@@ -293,14 +293,15 @@ gauge and tooltips, shared) and `portal/icons.ts`; copy in `fundIII` and
 
 ### Insights and closing
 
-- Insights section: light grey band (`.section--tint`, 4% black, as Track
-  record; owner 2026-10-15, was black).
+- Insights section: white (owner 2026-10-15; earlier black, then grey);
+  only the 5:7 visual boxes are light grey (4% black).
 - Insights article visuals: flat light grey (4% black) until supplied, 5:7 portrait;
   on phones (≤640px, one column) 7:5 landscape. An article can instead set
   `visual` to a coded visual from `src/components/visuals/`: the first one
   (Sensorfact) uses `RobotArm.astro`, the owner's interactive canvas robot
-  arm (second version, WebGL2 with a depth buffer; inverted version; it fits itself to the box, follows the mouse, drag
-  turns the view). Coded visuals sit above the card's full-size link, so
+  arm (second version, WebGL2 with a depth buffer; inverted version; it fits itself to the box, follows the mouse while the
+  pointer is over the box and eases back to its pose loop when it leaves,
+  drag turns the view). Coded visuals sit above the card's full-size link, so
   dragging works; the title still links.
 - Insights: on desktop the H2 runs at most 6 of the 12 grid
   columns (fluid, from the wrap width); full width at ≤880px.
