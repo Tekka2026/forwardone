@@ -299,8 +299,9 @@ gauge and tooltips, shared) and `portal/icons.ts`; copy in `fundIII` and
   on phones (≤640px, one column) 7:5 landscape. An article can instead set
   `visual` to a coded visual from `src/components/visuals/`: the first one
   (Sensorfact) uses `RobotArm.astro`, the owner's interactive canvas robot
-  arm (second version, WebGL2 with a depth buffer; inverted version; it fits itself to the box, follows the mouse while the
-  pointer is over the box and eases back to its pose loop when it leaves,
+  arm (second version, WebGL2 with a depth buffer; inverted version; it fits itself to the box, idle, its cap faces the viewer
+  (turning with the slowly orbiting view); it follows the mouse while the
+  pointer is over the box and eases back to facing the viewer when it leaves,
   drag turns the view; the SENSORFACT label sits behind the arm). Coded visuals sit above the card's full-size link, so
   dragging works; the title still links.
 - Insights: on desktop the H2 runs at most 6 of the 12 grid

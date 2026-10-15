@@ -6,8 +6,9 @@
  * be dragged to turn. Inverted (light) version. It fills its container; the
  * drawing fits itself to the box (5:7 on desktop, 7:5 on phones).
  * The script is inlined as supplied (it finds its box via currentScript),
- * with two changes (owner, 2026-10-15): the arm follows the mouse only
- * while the pointer is over the box (leaving eases it back to the loop), and
+ * with three changes (owner, 2026-10-15): idle, the cap faces the viewer
+ * (instead of looping through poses); the arm follows the mouse only while
+ * the pointer is over the box (leaving eases it back to facing the viewer);
  * the SENSORFACT label is drawn behind the arm instead of on top of it.
  */
 ---
@@ -584,19 +585,15 @@ function frame(now) {
   cyaw = Math.cos(yaw); syaw = Math.sin(yaw); cpit = Math.cos(pitch); spit = Math.sin(pitch);
   zoom = fit; ox = W / 2 - midX; oy = H / 2 - midY;
 
-  const qLoop = pose(motionT);
-  const active = follow && haveLast && !pointers.size && !reduced;
-  if (active) target = pointerTarget(lastX, lastY);
-  if (active || (follow && pointers.size && target)) {
-    const want = solve(target);
-    qFollow = qFollow || qLoop.slice();
-    const k = Math.min(1, dt * 5);                         // a little lag, so it moves like a machine
-    qFollow = qFollow.map((v, i) => angLerp(v, want[i], k));
-  }
-  followW = lerp(followW, (active || (follow && pointers.size && target)) ? 1 : 0, Math.min(1, dt * 3));
-  if (followW < .001) qFollow = null;
-  const q = qFollow ? qLoop.map((v, i) => angLerp(v, qFollow[i], followW)) : qLoop;
-  const frames = linkFrames(q); frames[7] = mI();
+  // Idle (owner, 2026-10-15): the cap faces the viewer, aimed at a point in the upper middle of the box on the plane
+  // in front of the arm, so it keeps turning towards you as the view turns. With the mouse over the box it follows
+  // the mouse instead; leaving the box eases it back to facing the viewer.
+  const active = follow && haveLast && !pointers.size;
+  const want = solve(active ? pointerTarget(lastX, lastY) : pointerTarget(W * .5, H * .38));
+  qFollow = qFollow || want.slice();
+  const k = reduced ? 1 : Math.min(1, dt * (active ? 5 : 2.5));   // a little lag, so it moves like a machine
+  qFollow = qFollow.map((v, i) => angLerp(v, want[i], k));
+  const frames = linkFrames(qFollow); frames[7] = mI();
 
   drawScene(frames);                  // the 3D scene on the GPU …
   ctx.setTransform(1, 0, 0, 1, 0, 0);
