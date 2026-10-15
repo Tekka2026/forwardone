@@ -3,6 +3,7 @@ import { insights } from '@content/home';
 import { href, isPlaceholder } from '@lib/href';
 import Placeholder from '@components/ui/Placeholder.astro';
 import Sentences from '@components/ui/Sentences.astro';
+import RobotArm from '@components/visuals/RobotArm.astro';
 ---
 
 <section class="section section--dark theme-dark" data-nav-dark>
@@ -14,8 +15,10 @@ import Sentences from '@components/ui/Sentences.astro';
       {
         insights.articles.map((a) => (
           <li class="article">
-            <div class="article__visual">
-              {isPlaceholder(a.image) ? (
+            <div class:list={['article__visual', a.visual && 'article__visual--live']}>
+              {a.visual === 'robot-arm' ? (
+                <RobotArm />
+              ) : isPlaceholder(a.image) ? (
                 <Placeholder value={a.image} />
               ) : (
                 <img src={href(a.image)} alt="" loading="lazy" decoding="async" />
@@ -80,6 +83,14 @@ import Sentences from '@components/ui/Sentences.astro';
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+  /* Coded visuals (e.g. the robot arm) stay interactive: they sit above
+     the card's full-size link, so dragging turns the model instead of
+     opening the article (the title still links). */
+  .article__visual--live {
+    position: relative;
+    z-index: 1;
+    display: block;
   }
   /* Phones (one column): landscape 7:5, so three stacked visuals don't
      run to ~1,400px. */

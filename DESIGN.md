@@ -294,7 +294,12 @@ gauge and tooltips, shared) and `portal/icons.ts`; copy in `fundIII` and
 ### Insights and closing
 
 - Insights article visuals: flat grey (#262626) until supplied, 5:7 portrait;
-  on phones (≤640px, one column) 7:5 landscape.
+  on phones (≤640px, one column) 7:5 landscape. An article can instead set
+  `visual` to a coded visual from `src/components/visuals/`: the first one
+  (Sensorfact) uses `RobotArm.astro`, the owner's interactive canvas robot
+  arm (inverted version; it fits itself to the box, follows the mouse, drag
+  turns the view). Coded visuals sit above the card's full-size link, so
+  dragging works; the title still links.
 - Insights (black band): on desktop the H2 runs at most 6 of the 12 grid
   columns (fluid, from the wrap width); full width at ≤880px.
 - Closing ("Serious about performance? So are we."): title and buttons

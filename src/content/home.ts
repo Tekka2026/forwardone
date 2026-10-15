@@ -324,6 +324,8 @@ export type Article = {
   date: string;
   /** Visual above the article (5:7, portrait). Path under public/, or a placeholder. */
   image: string;
+  /** Instead of an image: a coded visual from src/components/visuals/. */
+  visual?: 'robot-arm';
 };
 
 export const insights = {
@@ -341,7 +343,8 @@ export const insights = {
       slug: 'what-the-exit-of-sensorfact-taught-us-about-early-stage-investing',
       category: '[PLACEHOLDER: category]',
       date: '[PLACEHOLDER: date]',
-      image: '[PLACEHOLDER: image]',
+      image: '',
+      visual: 'robot-arm',
     },
     {
       title: 'Why Munich matters for Europe’s next generation of industrial tech',

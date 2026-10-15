@@ -1,0 +1,548 @@
+---
+/**
+ * Robot arm visual (supplied by the owner, 2026-10-15): an interactive 3D
+ * line model of a six-axis arm holding a Sensorfact sensor, drawn on a
+ * canvas. The arm loops through poses, follows the mouse, and the view can
+ * be dragged to turn. Inverted (light) version. It fills its container; the
+ * drawing fits itself to the box (5:7 on desktop, 7:5 on phones).
+ * The script is inlined as supplied (it finds its box via currentScript).
+ */
+---
+
+<div class="fo-robot" data-theme="light">
+  <canvas role="img" aria-label="3D line model of a six-axis robot arm holding a sensor"></canvas>
+<script is:inline>
+(() => {
+'use strict';
+
+/* ───────────── Settings (all sizes in mm) ───────────── */
+const CFG = {
+  seg: 28,          // facets around a round part
+  reach: 475,       // radius of the work envelope ring on the floor
+  grid: 80,         // floor grid cell
+  gridExtent: 8,    // cells from the middle to the edge of the floor grid
+  gridPlus: 6,      // arm length of the pluses on the floor grid
+  gridGap: 8,       // gap between a plus and the line next to it
+  ringOpacity: .09, // faint contour rings around round parts
+  edgeOpacity: .85, // outlines and silhouettes
+  hold: 1.4,        // seconds the arm rests at a pose …
+  move: 2.6,        // … and takes to move to the next one
+};
+// joint angles in degrees: J1 base turn, J2 shoulder, J3 elbow, J4 forearm roll, J5 wrist bend, J6 flange turn
+const POSES = [
+  [70, 22, -4, 0, -16, 0],
+  [35, 38, 22, -20, 48, 90],
+  [-70, 8, -28, 25, -10, -40],
+  [10, 52, 34, 0, 40, 0],
+];
+
+// Theme: dark by default; add data-theme="light" to the .fo-robot box for the inverted version.
+const INV = document.currentScript.closest('.fo-robot').dataset.theme === 'light';
+const COL = INV
+  ? { line: '17,17,17', accent: '20,170,180', cap: [45, 117, 217] }     // accent darkened from #78F6FB so it reads on white
+  : { line: '232,236,238', accent: '120,246,251', cap: [45, 117, 217] }; // accent = #78F6FB · cap = #2D75D9
+const rgba = (c, a) => `rgba(${c},${a})`;
+const FONT = '10px ui-monospace,"SF Mono",Menlo,Consolas,monospace';
+const D2R = Math.PI / 180;
+
+const root = document.currentScript.closest('.fo-robot');
+const canvas = root.querySelector('canvas');
+const ctx = canvas.getContext('2d');
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ───────────── State ───────────── */
+const HOME = { yaw: -0.6, pitch: 16 * D2R };
+const RETURN_TIME = 4.5;                 // seconds the view takes to turn back after a drag
+let back = null;
+let autoYaw = HOME.yaw, dYaw = 0, dPitch = 0;   // view = auto-rotate track + drag offset
+let yaw = HOME.yaw, pitch = HOME.pitch, auto = !reduced, motion = !reduced;
+let W = 0, H = 0, dpr = 1, fit = 1, midX = 0, midY = 0;
+const yc = 330;                       // height the camera orbits around
+
+/* ───────────── Projection (orbit camera, mild perspective) ───────────── */
+const F = 2400;
+let cyaw = 1, syaw = 0, cpit = 1, spit = 0, zoom = 1, ox = 0, oy = 0;
+let PX = 0, PY = 0, PS = 1, PD = 0;   // projected point, scale there (screen px per mm), depth
+function P(x, y, z) {
+  const x1 = x * cyaw - z * syaw, z1 = x * syaw + z * cyaw, yy = y - yc;
+  PD = z1 * cpit - yy * spit;
+  const s = PS = F / (F + PD) * zoom;
+  PX = ox + x1 * s;
+  PY = oy - (yy * cpit + z1 * spit) * s;
+}
+
+/* ───────────── Matrices (3×4, row-major) ───────────── */
+const mI = () => [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0];
+function mMul(a, b) {
+  const r = new Array(12);
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 4; j++) {
+      r[i * 4 + j] = a[i * 4] * b[j] + a[i * 4 + 1] * b[4 + j] + a[i * 4 + 2] * b[8 + j] + (j === 3 ? a[i * 4 + 3] : 0);
+    }
+  }
+  return r;
+}
+const mT = (x, y, z) => [1, 0, 0, x, 0, 1, 0, y, 0, 0, 1, z];
+const mRy = a => { const c = Math.cos(a), s = Math.sin(a); return [c, 0, s, 0, 0, 1, 0, 0, -s, 0, c, 0]; };
+const mRz = a => { const c = Math.cos(a), s = Math.sin(a); return [c, -s, 0, 0, s, c, 0, 0, 0, 0, 1, 0]; };
+const mRx = a => { const c = Math.cos(a), s = Math.sin(a); return [1, 0, 0, 0, 0, c, -s, 0, 0, s, c, 0]; };
+const apply = (m, x, y, z) => [m[0] * x + m[1] * y + m[2] * z + m[3], m[4] * x + m[5] * y + m[6] * z + m[7], m[8] * x + m[9] * y + m[10] * z + m[11]];
+const applyDir = (m, x, y, z) => [m[0] * x + m[1] * y + m[2] * z, m[4] * x + m[5] * y + m[6] * z, m[8] * x + m[9] * y + m[10] * z];
+
+/* ───────────── Parts: convex solids built by extruding a 2D profile ─────────────
+   Every part is convex, so each face's outward normal points away from the part's centre. Edges come in three
+   kinds: CREASE (always drawn), SOFT (drawn only where it is a silhouette) and RING (faint contour line). */
+const SOFT = 0, CREASE = 1, RING = 2;
+const circle = (r, n = CFG.seg, cx = 0, cy = 0, a0 = 0) => Array.from({ length: n }, (_, i) => [cx + r * Math.cos(a0 + i * 2 * Math.PI / n), cy + r * Math.sin(a0 + i * 2 * Math.PI / n)]);
+const rect = (w, h, cx = 0, cy = 0) => [[cx - w / 2, cy - h / 2], [cx + w / 2, cy - h / 2], [cx + w / 2, cy + h / 2], [cx - w / 2, cy + h / 2]];
+function hull(pts) {                  // convex hull, counter-clockwise (monotone chain)
+  pts = pts.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  const cross = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+  const lo = [], up = [];
+  for (const p of pts) { while (lo.length > 1 && cross(lo[lo.length - 2], lo[lo.length - 1], p) <= 1e-9) lo.pop(); lo.push(p); }
+  for (const p of pts.reverse()) { while (up.length > 1 && cross(up[up.length - 2], up[up.length - 1], p) <= 1e-9) up.pop(); up.push(p); }
+  return lo.slice(0, -1).concat(up.slice(0, -1));
+}
+const stadium = (c1, r1, c2, r2, n = CFG.seg) => hull(circle(r1, n, c1[0], c1[1]).concat(circle(r2, n, c2[0], c2[1])));
+
+// axis 'x' | 'y' | 'z': the extrusion direction; the profile lies in the other two axes, in order (y,z) · (z,x) · (x,y)
+function extrude(profile, axis, w0, w1, opt = {}) {
+  const rings = opt.rings || 1, s0 = opt.s0 || 1, s1 = opt.s1 || 1;
+  const map = axis === 'x' ? (u, v, w) => [w, u, v] : axis === 'y' ? (u, v, w) => [v, w, u] : (u, v, w) => [u, v, w];
+  const n = profile.length, verts = [];
+  for (let k = 0; k <= rings; k++) {
+    const t = k / rings, w = w0 + (w1 - w0) * t, s = s0 + (s1 - s0) * t;
+    for (const [u, v] of profile) verts.push(map(u * s, v * s, w));
+  }
+  const sharp = profile.map((p, i) => {   // does the outline turn sharply at this corner?
+    const a = profile[(i + n - 1) % n], b = profile[(i + 1) % n];
+    const d1 = Math.atan2(p[1] - a[1], p[0] - a[0]), d2 = Math.atan2(b[1] - p[1], b[0] - p[0]);
+    let d = Math.abs(d2 - d1); if (d > Math.PI) d = 2 * Math.PI - d;
+    return d > 32 * D2R;
+  });
+  const faces = [];
+  for (let k = 0; k < rings; k++) {
+    for (let i = 0; i < n; i++) {
+      const j = (i + 1) % n, a = k * n + i, b = k * n + j, c = (k + 1) * n + j, d = (k + 1) * n + i;
+      faces.push({ idx: [a, b, c, d], kind: [k === 0 ? CREASE : RING, sharp[j] ? CREASE : SOFT, k === rings - 1 ? CREASE : RING, sharp[i] ? CREASE : SOFT] });
+    }
+  }
+  faces.push({ idx: profile.map((_, i) => i), kind: profile.map(() => CREASE) });
+  faces.push({ idx: profile.map((_, i) => rings * n + i), kind: profile.map(() => CREASE) });
+  return finish({ verts, faces, accent: !!opt.accent, dim: opt.dim || 1, key: opt.key });
+}
+function finish(part) {               // normals, centre, and which face sits across each soft edge
+  const { verts, faces } = part;
+  const c = [0, 0, 0];
+  for (const v of verts) { c[0] += v[0]; c[1] += v[1]; c[2] += v[2]; }
+  c[0] /= verts.length; c[1] /= verts.length; c[2] /= verts.length;
+  part.center = c;
+  const edgeMap = new Map();
+  faces.forEach((f, fi) => {
+    let nx = 0, ny = 0, nz = 0, fx = 0, fy = 0, fz = 0;
+    const L = f.idx.length;
+    for (let i = 0; i < L; i++) {      // Newell's method
+      const p = verts[f.idx[i]], q = verts[f.idx[(i + 1) % L]];
+      nx += (p[1] - q[1]) * (p[2] + q[2]); ny += (p[2] - q[2]) * (p[0] + q[0]); nz += (p[0] - q[0]) * (p[1] + q[1]);
+      fx += p[0]; fy += p[1]; fz += p[2];
+    }
+    fx /= L; fy /= L; fz /= L;
+    const len = Math.hypot(nx, ny, nz) || 1;
+    nx /= len; ny /= len; nz /= len;
+    if (nx * (fx - c[0]) + ny * (fy - c[1]) + nz * (fz - c[2]) < 0) { nx = -nx; ny = -ny; nz = -nz; }
+    f.n = [nx, ny, nz]; f.c = [fx, fy, fz];
+    f.across = new Array(L).fill(-1);
+    for (let i = 0; i < L; i++) {
+      const a = f.idx[i], b = f.idx[(i + 1) % L], k = a < b ? a + ',' + b : b + ',' + a;
+      const other = edgeMap.get(k);
+      if (other) { f.across[i] = other[0]; faces[other[0]].across[other[1]] = fi; }
+      else edgeMap.set(k, [fi, i]);
+    }
+  });
+  return part;
+}
+
+/* ───────────── The arm: a chain of links, each a set of parts in its own frame ─────────────
+   Link frames: 0 base · 1 turns about Y (J1) · 2 upper arm about Z at the shoulder (J2) · 3 forearm about Z at
+   the elbow (J3) · 4 forearm roll about X (J4) · 5 wrist bend about Z (J5) · 6 flange turn about X (J6). */
+const D1 = 327, A2 = 280, D4a = 120, D4b = 180, D6 = 52;   // shoulder height, upper arm, forearm split, wrist, flange
+const LINKS = [
+  [ // 0 · base
+    extrude(circle(98), 'y', 0, 14, { key: 'base' }),
+    extrude(circle(84), 'y', 14, 92, { rings: 3, key: 'base' }),
+    extrude(rect(40, 50, 52, 0), 'x', -122, -78, { key: 'base' }),   // cable connector at the back
+  ],
+  [ // 1 · waist and shoulder housing
+    extrude(circle(80), 'y', 94, 200, { rings: 2, key: 'shoulder' }),
+    extrude(circle(78), 'y', 200, 280, { s1: .84, rings: 2, key: 'shoulder' }),
+    extrude(circle(70), 'z', -64, 74, { rings: 3, key: 'shoulder' }),
+  ],
+  [ // 2 · upper arm, offset to the side of the shoulder
+    extrude(stadium([0, 0], 64, [0, A2], 52), 'z', 76, 142, { key: 'upper' }),
+    extrude(circle(46), 'z', 142, 162, { key: 'upper' }),                  // J2 motor cover
+    extrude(circle(38, CFG.seg, 0, A2), 'z', 142, 156, { key: 'upper' }),  // J3 cover
+  ],
+  [ // 3 · elbow and rear of the forearm
+    extrude(circle(56), 'z', -58, 74, { rings: 3, key: 'elbow' }),
+    extrude(circle(54), 'x', -78, D4a, { rings: 4, key: 'forearm' }),
+  ],
+  [ // 4 · forearm tube and wrist fork
+    extrude(circle(48), 'x', 0, 112, { s1: .86, rings: 3, key: 'forearm' }),
+    extrude(stadium([104, 0], 40, [D4b, 0], 35), 'z', -38, 38, { key: 'wrist' }),
+  ],
+  [ // 5 · wrist
+    extrude(circle(33), 'z', -44, 44, { rings: 2, key: 'wrist' }),
+    extrude(circle(29), 'x', 0, D6, { rings: 2, key: 'wrist' }),
+  ],
+  [ // 6 · flange, tool changer, gripper, sensor
+    extrude(circle(31), 'x', 0, 9, { key: 'changer' }),
+    extrude(circle(37), 'x', 9, 32, { rings: 2, key: 'changer' }),
+    extrude(rect(26, 16, 0, 40), 'x', 12, 28, { key: 'changer' }),          // locking lever
+    extrude(rect(76, 60), 'x', 32, 86, { key: 'gripper' }),
+    // the two fingers grip the cap from above and below: a block out of the gripper, then a jaw along the rim
+    extrude(rect(48, 36, 54, 0), 'x', 62, 86, { key: 'gripper', dim: .55 }),
+    extrude(rect(48, 36, -54, 0), 'x', 62, 86, { key: 'gripper', dim: .55 }),
+    extrude(rect(14, 36, 69, 0), 'x', 86, 128, { key: 'gripper', dim: .55 }),
+    extrude(rect(14, 36, -69, 0), 'x', 86, 128, { key: 'gripper', dim: .55 }),
+    extrude(circle(60, 36), 'x', 92, 132, { rings: 2, key: 'sensor', accent: true }),
+    ...[45, 135, 225, 315].map(a => extrude(circle(12, 14, 60 * Math.cos(a * D2R), 60 * Math.sin(a * D2R)), 'x', 92, 112, { key: 'sensor', accent: true })),
+    extrude(stadium([0, -8], 15, [0, 40], 15), 'x', 132, 136, { key: 'sensor', accent: true }),   // name plate
+  ],
+];
+// shoulder housing sits at shoulder height: shift that one part up
+(() => {
+  const p = LINKS[1][2];
+  for (const v of p.verts) v[1] += D1;
+  for (const f of p.faces) f.c[1] += D1;
+  p.center[1] += D1;
+})();
+
+function linkFrames(q) {              // q in radians → world matrix per link
+  const m = [mI()];
+  m[1] = mRy(q[0]);
+  m[2] = mMul(m[1], mMul(mT(0, D1, 0), mRz(-q[1])));
+  m[3] = mMul(m[2], mMul(mT(0, A2, 0), mRz(-q[2])));
+  m[4] = mMul(m[3], mMul(mT(D4a, 0, 0), mRx(q[3])));
+  m[5] = mMul(m[4], mMul(mT(D4b, 0, 0), mRz(-q[4])));
+  m[6] = mMul(m[5], mMul(mT(D6, 0, 0), mRx(q[5])));
+  return m;
+}
+
+/* ───────────── Motion ───────────── */
+let motionT = 0;
+
+/* ───────────── Follow the cursor ─────────────
+   The pointer is placed on a plane facing the camera, a little in front of the arm. J1 turns the arm towards it,
+   J2/J3 bring the wrist within reach (two-link IK, elbow up) and J5 points the sensor straight at it. */
+const LOOK_AHEAD = 380;               // mm the target plane sits in front of the arm, towards the viewer
+const TOOL = D6 + 136;                // wrist centre → face of the sensor
+let follow = !reduced, followW = 0, aim = null, qFollow = null, target = null;
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+function pointerTarget(mx, my) {      // screen point → world point on the plane
+  P(0, 380, 0);
+  const dz = PD - LOOK_AHEAD, s = F / (F + dz) * zoom;
+  const x1 = (mx - ox) / s, yv = (oy - my) / s;
+  const yy = yv * cpit - dz * spit, z1 = yv * spit + dz * cpit;
+  return [x1 * cyaw + z1 * syaw, Math.max(40, yy + yc), -x1 * syaw + z1 * cyaw];
+}
+function solve(T) {                   // world target → joint angles (radians)
+  const q1 = Math.atan2(-T[2], T[0]);
+  const r = Math.hypot(T[0], T[2]), h = T[1] - D1;          // target in the arm's plane, from the shoulder
+  const dist = Math.hypot(r, h), ux = r / (dist || 1), uy = h / (dist || 1);
+  const L1 = A2, L2 = D4a + D4b;
+  const reachW = clamp(dist - TOOL - 40, 140, L1 + L2 - 20); // keep a little distance from the target
+  const wx = ux * reachW, wy = uy * reachW;
+  const d = Math.hypot(wx, wy), phi = Math.atan2(wy, wx);
+  const alpha = phi + Math.acos(clamp((L1 * L1 + d * d - L2 * L2) / (2 * L1 * d), -1, 1));
+  const q2 = clamp(Math.PI / 2 - alpha, -60 * D2R, 110 * D2R);
+  const ex = L1 * Math.sin(q2), ey = L1 * Math.cos(q2);
+  const q3 = clamp(-Math.atan2(wy - ey, wx - ex) - q2, -120 * D2R, 80 * D2R);
+  const fx = ex + L2 * Math.cos(-(q2 + q3)), fy = ey + L2 * Math.sin(-(q2 + q3));   // where the wrist really ends up
+  const q5 = clamp(-Math.atan2(h - fy, r - fx) - q2 - q3, -115 * D2R, 115 * D2R);
+  return [q1, q2, q3, 0, q5, 0];
+}
+const angLerp = (a, b, t) => { let d = (b - a) % (2 * Math.PI); if (d > Math.PI) d -= 2 * Math.PI; else if (d < -Math.PI) d += 2 * Math.PI; return a + d * t; };
+const sstep = t => t * t * (3 - 2 * t);
+function pose(t) {                    // loop through the poses: rest, then move
+  const leg = CFG.hold + CFG.move, n = POSES.length;
+  const k = Math.floor(t / leg) % n, u = Math.max(0, (t % leg) - CFG.hold) / CFG.move;
+  const a = POSES[k], b = POSES[(k + 1) % n], e = sstep(Math.min(1, u));
+  return a.map((v, i) => (v + (b[i] - v) * e) * D2R);
+}
+
+/* ───────────── Floor ───────────── */
+const floorSegs = [[], [], []], floorPlus = [[], [], []];
+(() => {
+  const g = CFG.grid, E = CFG.gridExtent, gap = CFG.gridGap, pl = CFG.gridPlus;
+  const band = (i, j) => Math.min(2, Math.floor(Math.max(Math.abs(i), Math.abs(j)) / (E / 3 + .01)));
+  for (let i = -E; i <= E; i++) for (let j = -E; j <= E; j++) {
+    const x = i * g, z = j * g, b = band(i, j);
+    floorPlus[b].push(x - pl, z, x + pl, z, x, z - pl, x, z + pl);
+    if (i < E) floorSegs[band(i + .5, j)].push(x + pl + gap, z, x + g - pl - gap, z);
+    if (j < E) floorSegs[band(i, j + .5)].push(x, z + pl + gap, x, z + g - pl - gap);
+  }
+})();
+function strokeXZ(arr) {
+  ctx.beginPath();
+  for (let i = 0; i < arr.length; i += 4) {
+    P(arr[i], 0, arr[i + 1]); ctx.moveTo(PX, PY);
+    P(arr[i + 2], 0, arr[i + 3]); ctx.lineTo(PX, PY);
+  }
+  ctx.stroke();
+}
+function drawFloor() {
+  ctx.lineWidth = 1;
+  [.05, .033, .016].forEach((a, i) => {
+    ctx.strokeStyle = rgba(COL.line, a); strokeXZ(floorSegs[i]);
+    ctx.strokeStyle = rgba(COL.line, a * 2.5); strokeXZ(floorPlus[i]);
+  });
+  // work envelope: dashed ring at full reach, ticks every 30°
+  ctx.strokeStyle = rgba(COL.accent, .32); ctx.setLineDash([3, 5]);
+  ctx.beginPath();
+  for (let i = 0; i <= 120; i++) { const a = i * Math.PI / 60; P(CFG.reach * Math.cos(a), 0, CFG.reach * Math.sin(a)); i ? ctx.lineTo(PX, PY) : ctx.moveTo(PX, PY); }
+  ctx.stroke(); ctx.setLineDash([]);
+  ctx.strokeStyle = rgba(COL.accent, .5); ctx.beginPath();
+  for (let i = 0; i < 12; i++) {
+    const a = i * Math.PI / 6, c = Math.cos(a), s = Math.sin(a);
+    P(c * (CFG.reach - 10), 0, s * (CFG.reach - 10)); ctx.moveTo(PX, PY);
+    P(c * (CFG.reach + 10), 0, s * (CFG.reach + 10)); ctx.lineTo(PX, PY);
+  }
+  ctx.stroke();
+  let best = null;                    // the label sits under the ring tick nearest the viewer
+  for (let i = 0; i < 12; i++) {
+    const a = i * Math.PI / 6; P(CFG.reach * Math.cos(a), 0, CFG.reach * Math.sin(a));
+    if (!best || PD < best.d) best = { x: PX, y: PY, d: PD };
+  }
+  envLabel = best;
+}
+let envLabel = null;
+
+/* ───────────── Draw the arm: faces far → near, each fills (hiding what is behind) then draws its edges ───────────── */
+const LIGHT = (() => { const l = [-.45, .8, .4], n = Math.hypot(...l); return l.map(v => v / n); })();
+let hoverKey = null;
+const faceList = [];
+let armX0 = 0, armX1 = 0;
+function drawArm(frames) {
+  faceList.length = 0;
+  armX0 = Infinity; armX1 = -Infinity;
+  for (let li = 0; li < LINKS.length; li++) {
+    const m = frames[li];
+    for (const part of LINKS[li]) {
+      // project every vertex once
+      const n = part.verts.length;
+      if (!part.sx) { part.sx = new Float32Array(n); part.sy = new Float32Array(n); part.front = new Uint8Array(part.faces.length); }
+      for (let i = 0; i < n; i++) {
+        const v = part.verts[i], w = apply(m, v[0], v[1], v[2]);
+        P(w[0], w[1], w[2]); part.sx[i] = PX; part.sy[i] = PY;
+        if (PX < armX0) armX0 = PX; if (PX > armX1) armX1 = PX;
+      }
+      part.faces.forEach((f, fi) => {
+        const c = apply(m, f.c[0], f.c[1], f.c[2]), nn = applyDir(m, f.n[0], f.n[1], f.n[2]);
+        // camera space of centre and normal (same rotation as P)
+        const cx = c[0] * cyaw - c[2] * syaw, cz1 = c[0] * syaw + c[2] * cyaw, cy = c[1] - yc;
+        const cv = cy * cpit + cz1 * spit, cd = cz1 * cpit - cy * spit;
+        const nx = nn[0] * cyaw - nn[2] * syaw, nz1 = nn[0] * syaw + nn[2] * cyaw;
+        const nv = nn[1] * cpit + nz1 * spit, nd = nz1 * cpit - nn[1] * spit;
+        const facing = nx * cx + nv * cv + nd * (cd + F) < 0;
+        part.front[fi] = facing ? 1 : 0;
+        if (facing) faceList.push({ part, f, d: cd, lit: Math.max(0, nn[0] * LIGHT[0] + nn[1] * LIGHT[1] + nn[2] * LIGHT[2]) });
+      });
+    }
+  }
+  faceList.sort((a, b) => b.d - a.d);
+
+  ctx.lineWidth = 1;
+  for (const { part, f, lit } of faceList) {
+    const sx = part.sx, sy = part.sy, idx = f.idx, L = idx.length;
+    ctx.beginPath();
+    ctx.moveTo(sx[idx[0]], sy[idx[0]]);
+    for (let i = 1; i < L; i++) ctx.lineTo(sx[idx[i]], sy[idx[i]]);
+    ctx.closePath();
+    if (part.accent) {                // the sensor cap: #2D75D9, shaded by the light
+      const k = .62 + lit * .45, [r, gg, b] = COL.cap;
+      ctx.fillStyle = `rgb(${Math.min(255, r * k) | 0},${Math.min(255, gg * k) | 0},${Math.min(255, b * k) | 0})`;
+    } else {
+      const g = 7 + lit * 13;
+      ctx.fillStyle = INV ? '#fff' : `rgb(${g | 0},${(g + 1) | 0},${(g + 2) | 0})`;   // inverted: a white arm, drawn by its lines
+    }
+    ctx.fill();
+    ctx.strokeStyle = ctx.fillStyle; ctx.stroke();             // closes the hairline seams between neighbouring facets
+
+    const hot = hoverKey && part.key === hoverKey;
+    const col = part.accent ? (INV ? '0,0,0' : COL.accent) : COL.line;
+    const strong = (hot ? 1 : CFG.edgeOpacity) * (part.accent ? 1 : part.dim);
+    let ring = false;
+    ctx.beginPath();
+    for (let i = 0; i < L; i++) {
+      const k = f.kind[i];
+      if (k === RING) { ring = true; continue; }
+      if (k === SOFT) { const o = f.across[i]; if (o < 0 || part.front[o]) continue; }   // only where the surface turns away
+      const a = idx[i], b = idx[(i + 1) % L];
+      ctx.moveTo(sx[a], sy[a]); ctx.lineTo(sx[b], sy[b]);
+    }
+    ctx.strokeStyle = rgba(col, strong); ctx.stroke();
+    if (ring) {
+      ctx.beginPath();
+      for (let i = 0; i < L; i++) {
+        if (f.kind[i] !== RING) continue;
+        const a = idx[i], b = idx[(i + 1) % L];
+        ctx.moveTo(sx[a], sy[a]); ctx.lineTo(sx[b], sy[b]);
+      }
+      ctx.strokeStyle = rgba(col, CFG.ringOpacity * (hot || part.accent ? 2.5 : 1)); ctx.stroke();
+    }
+  }
+}
+
+/* ───────────── Glow: downscaled copies added back ───────────── */
+const blur = [0, 1, 2].map(() => { const c = document.createElement('canvas'); return { c, g: c.getContext('2d') }; });
+function bloom() {
+  if (INV) return;
+  let src = canvas;
+  for (const b of blur) {
+    b.g.clearRect(0, 0, b.c.width, b.c.height);
+    b.g.drawImage(src, 0, 0, b.c.width, b.c.height);
+    src = b.c;
+  }
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.globalCompositeOperation = 'lighter';
+  ctx.globalAlpha = .25; ctx.drawImage(blur[1].c, 0, 0, canvas.width, canvas.height);
+  ctx.globalAlpha = .4; ctx.drawImage(blur[2].c, 0, 0, canvas.width, canvas.height);
+  ctx.globalAlpha = 1;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+let lastX = 0, lastY = 0, haveLast = false;
+const lerp = (a, b, t) => a + (b - a) * t;
+const fmtDeg = r => { const d = r / D2R; return (d < -.05 ? '−' : '+') + Math.abs(d).toFixed(1) + '°'; };
+
+/* ───────────── Loop ───────────── */
+function resize() {
+  dpr = Math.min(devicePixelRatio || 1, 2);
+  W = root.clientWidth; H = root.clientHeight;
+  canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+  blur.forEach((b, i) => { b.c.width = Math.max(1, canvas.width >> (i + 1)); b.c.height = Math.max(1, canvas.height >> (i + 1)); });
+  cyaw = Math.cos(HOME.yaw); syaw = Math.sin(HOME.yaw); cpit = Math.cos(HOME.pitch); spit = Math.sin(HOME.pitch);
+  zoom = 1; ox = oy = 0;
+  let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+  for (const [x, z] of [[-1, -1], [1, -1], [1, 1], [-1, 1]]) for (const y of [0, 860]) {
+    P(x * 360, y, z * 360);
+    x0 = Math.min(x0, PX); x1 = Math.max(x1, PX); y0 = Math.min(y0, PY); y1 = Math.max(y1, PY);
+  }
+  fit = Math.min(W * .9 / (x1 - x0), H * .82 / (y1 - y0));
+  midX = (x0 + x1) / 2 * fit; midY = (y0 + y1) / 2 * fit;
+}
+new ResizeObserver(resize).observe(root);
+resize();
+let onScreen = true;                  // stop drawing while the visual is scrolled out of view
+new IntersectionObserver(([e]) => { onScreen = e.isIntersecting; }).observe(root);
+
+let last = performance.now();
+
+function frame(now) {
+  requestAnimationFrame(frame);
+  if (!canvas.width || !canvas.height || !onScreen) { last = now; return; }
+  const dt = Math.min(.1, Math.max(0, (now - last) / 1000)), t = now / 1000;
+  last = now;
+  if (auto) autoYaw += dt * .07;                 // the turntable keeps turning, also while you drag
+  if (!pointers.size && back) {                  // let go: the view eases back to where it belongs
+    const u = Math.min(1, (now - back.t0) / (RETURN_TIME * 1000));
+    const e = u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;   // ease in and out
+    dYaw = back.yaw * (1 - e); dPitch = back.pitch * (1 - e);
+    if (u >= 1) back = null;
+  }
+  yaw = autoYaw + dYaw; pitch = HOME.pitch + dPitch;
+  if (motion) motionT += dt;
+
+  cyaw = Math.cos(yaw); syaw = Math.sin(yaw); cpit = Math.cos(pitch); spit = Math.sin(pitch);
+  zoom = fit; ox = W / 2 - midX; oy = H / 2 - midY;
+
+  const qLoop = pose(motionT);
+  const active = follow && haveLast && !pointers.size && !reduced;
+  if (active) target = pointerTarget(lastX, lastY);
+  if (active || (follow && pointers.size && target)) {
+    const want = solve(target);
+    qFollow = qFollow || qLoop.slice();
+    const k = Math.min(1, dt * 5);                         // a little lag, so it moves like a machine
+    qFollow = qFollow.map((v, i) => angLerp(v, want[i], k));
+  }
+  followW = lerp(followW, (active || (follow && pointers.size && target)) ? 1 : 0, Math.min(1, dt * 3));
+  if (followW < .001) qFollow = null;
+  const q = qFollow ? qLoop.map((v, i) => angLerp(v, qFollow[i], followW)) : qLoop;
+  const frames = linkFrames(q);
+
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.lineJoin = ctx.lineCap = 'round';
+
+  ctx.globalCompositeOperation = 'lighter';     // floor lines add up to a glow
+  drawFloor();
+  ctx.globalCompositeOperation = 'source-over'; // the arm is solid
+  drawArm(frames);
+  ctx.globalCompositeOperation = 'lighter';
+  bloom();
+  ctx.globalCompositeOperation = 'source-over';
+  if (envLabel) {
+    ctx.font = FONT; ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
+    if ('letterSpacing' in ctx) ctx.letterSpacing = '1.5px';
+    ctx.fillStyle = rgba(COL.accent, .75); ctx.fillText('SENSORFACT', envLabel.x, envLabel.y + 16);
+  }
+}
+
+/* ───────────── Interaction ───────────── */
+const pointers = new Map();
+addEventListener('pointermove', e => {   // the sensor follows the mouse anywhere on the page
+  if (e.pointerType === 'touch') return;
+  const r = canvas.getBoundingClientRect();
+  lastX = Math.min(W * .92, Math.max(W * .08, e.clientX - r.left));   // outside the box it aims at the nearest edge
+  lastY = Math.min(H * .9, Math.max(H * .1, e.clientY - r.top));
+  haveLast = true;
+}, { passive: true });
+document.documentElement.addEventListener('mouseleave', () => { haveLast = false; });
+
+canvas.addEventListener('pointerdown', e => {
+  canvas.setPointerCapture(e.pointerId);
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  canvas.classList.add('drag');
+  back = null;
+});
+canvas.addEventListener('pointermove', e => {
+  const p = pointers.get(e.pointerId);
+  if (!p || pointers.size > 1) return;
+  const dx = e.clientX - p.x, dy = e.clientY - p.y;
+  p.x = e.clientX; p.y = e.clientY;
+  dYaw += dx * .006;
+  dPitch = Math.min(1.45, Math.max(-.05, HOME.pitch + dPitch + dy * .005)) - HOME.pitch;
+});
+const release = e => {
+  pointers.delete(e.pointerId);
+  if (pointers.size) return;
+  dYaw = Math.atan2(Math.sin(dYaw), Math.cos(dYaw));        // turn back the short way
+  back = { t0: performance.now(), yaw: dYaw, pitch: dPitch };
+  canvas.classList.remove('drag');
+};
+canvas.addEventListener('pointerup', release);
+canvas.addEventListener('pointercancel', release);
+
+requestAnimationFrame(frame);
+})();
+</script>
+</div>
+
+<style>
+  /* Forward One · robot arm visual. The box is 5 × 7; set its width and the height follows.
+     Inverted version: <div class="fo-robot" data-theme="light">. */
+  .fo-robot {
+    position: relative; width: 100%; aspect-ratio: 5 / 7; overflow: hidden;
+    background: radial-gradient(ellipse 90% 80% at 55% 50%, #131517 0%, #08090a 55%, #030304 100%);
+  }
+  .fo-robot[data-theme="light"] { background: rgba(0, 0, 0, .04); }
+  .fo-robot canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; touch-action: pan-y; }
+  .fo-robot canvas.drag { cursor: grabbing; }
+
+  /* On the site: fill the container instead of setting its own 5:7 box. */
+  .fo-robot {
+    aspect-ratio: auto;
+    height: 100%;
+  }
+</style>
