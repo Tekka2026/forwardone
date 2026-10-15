@@ -299,16 +299,24 @@ gauge and tooltips, shared) and `portal/icons.ts`; copy in `fundIII` and
   on phones (≤640px, one column) 7:5 landscape. An article can instead set
   `visual` to a coded visual from `src/components/visuals/`: the first one
   (Sensorfact) uses `RobotArm.astro`, the owner's interactive canvas robot
-  arm (second version, WebGL2 with a depth buffer; inverted version; it fits itself to the box, idle, its cap faces the viewer
-  (turning with the slowly orbiting view); it follows the mouse while the
-  pointer is over the box and eases back to facing the viewer when it leaves,
-  drag turns the view; the SENSORFACT label sits behind the arm). Coded visuals sit above the card's full-size link, so
+  arm (second version, WebGL2 with a depth buffer; inverted version). It
+  fits itself to the box. Idle, its cap faces the viewer (turning with the
+  slowly orbiting view) and keeps moving slightly: every 1.4–3.2 s it picks
+  another spot near the camera to look at, eased so it moves like a machine.
+  It follows the mouse while the pointer is over the box and eases back to
+  the viewer when it leaves; drag turns the view; the SENSORFACT label sits
+  behind the arm. Coded visuals sit above the card's full-size link, so
   dragging works; the title still links. The second (Munich) uses
-  `MunichMap.astro`: a static SVG built at build time in the robot's style
-  (same camera, plus grid floor, dashed teal ring with ticks = Mittlerer
-  Ring, white solids with outlines = Olympiaturm and the Altstadtring, blue
-  accent = Marienplatz; Isar, Englischer Garten, Theresienwiese, motorway
-  spurs; label MÜNCHEN with coordinates). It does not move.
+  `MunichMap.astro`: a static, top-down street map of central Munich, laid
+  out like Google Maps, in the robot's style: plus grid as the ground,
+  streets as white bands with thin dark outlines (main roads wider), the
+  Mittlerer Ring with the dashed teal line, the Isar as a pale blue river,
+  parks as faint teal with dashed edges (Englischer Garten, Olympiapark,
+  Hofgarten, Theresienwiese, Alter Südfriedhof), rail into the Hauptbahnhof
+  dashed, the Olympiaturm from above, one blue pin on Marienplatz with
+  MÜNCHEN and its coordinates, mono place labels with a grey halo, a 1 km
+  scale bar and N ↑. Built at build time from real coordinates, simplified
+  (main streets only). It does not move.
 - Insights: on desktop the H2 runs at most 6 of the 12 grid
   columns (fluid, from the wrap width); full width at ≤880px.
 - Closing ("Serious about performance? So are we."): title and buttons

@@ -1,54 +1,36 @@
 ---
 /**
- * Munich map visual (owner, 2026-10-15): a static, stylised map of Munich
- * in the style of the robot arm visual (RobotArm.astro, inverted version):
- * the same orbit camera and perspective, the plus grid on the floor, a
- * dashed teal ring with ticks, white solids drawn by their outlines and one
- * blue accent. It does not move. Rendered at build time to an SVG.
+ * Munich map visual (owner, 2026-10-15): a static, top-down map of central
+ * Munich, laid out like Google Maps but drawn in the style of the robot arm
+ * visual (RobotArm.astro, inverted): the plus grid as ground texture, roads
+ * as white bands with thin dark outlines, the dashed teal ring
+ * (Mittlerer Ring), one blue accent (Marienplatz), mono labels in teal and
+ * grey with a halo in the tile's grey so they read over streets. It does not
+ * move. Rendered at build time to an SVG.
  *
- * Geography is simplified from real coordinates, in km from Marienplatz
- * (48.1374 N, 11.5755 E; x east, y north): the Isar, the Altstadtring, the
- * Mittlerer Ring (dashed), Englischer Garten, Theresienwiese, the motorway
- * spurs, the Olympiaturm (white tower, height exaggerated) and Marienplatz
- * (blue marker). 1 km = 80 units, the robot floor's grid cell.
+ * Geography is simplified and drawn from real coordinates, in km from
+ * Marienplatz (48.1374 N, 11.5755 E; e = east, n = north). Minor streets are
+ * not drawn; the plus grid stands in for them. OpenStreetMap data was not
+ * reachable from the build environment, so nothing here is traced from a
+ * map service.
  */
 
 const VB = { w: 500, h: 700 };
-const KM = 80;
 const COL = { line: '17,17,17', accent: '20,170,180', cap: [45, 117, 217] };
 const rgba = (c: string, a: number) => `rgba(${c},${a})`;
 
-// Camera: as the robot's orbit camera, looking down a little more.
-const F = 2400;
-const yaw = -0.42, pitch = (52 * Math.PI) / 180;
-const cy = Math.cos(yaw), sy = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
-const raw = (x: number, h: number, z: number) => {
-  const x1 = x * cy - z * sy, z1 = x * sy + z * cy;
-  const d = z1 * cp - h * sp, s = F / (F + d);
-  return { x: x1 * s, y: -(h * cp + z1 * sp) * s, d };
-};
-// Fit the city (±4.5 km) into the box; the grid runs on past the edges,
-// as the robot's floor does.
-let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
-for (const [a, b] of [[-1, -1], [1, -1], [1, 1], [-1, 1]]) {
-  const p = raw(a * 4.5 * KM, 0, b * 4.5 * KM);
-  x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y);
-}
-const fit = Math.min((VB.w * 1.0) / (x1 - x0), (VB.h * 0.7) / (y1 - y0));
-const ox = VB.w / 2 - ((x0 + x1) / 2) * fit, oy = VB.h * 0.58 - ((y0 + y1) / 2) * fit;
-// km (east, north) and height (units) → screen
-const P = (e: number, n: number, h = 0) => {
-  const p = raw(e * KM, h, n * KM);
-  return { x: ox + p.x * fit, y: oy + p.y * fit, d: p.d };
-};
+// Top-down projection: 6.4 km across the 500-wide box, centred a little
+// north of Marienplatz so the Olympiapark fits in the portrait tile.
+const S = VB.w / 6.4;
+const C = { e: 0.15, n: 0.55 };
+const X = (e: number) => VB.w / 2 + (e - C.e) * S;
+const Y = (n: number) => VB.h / 2 - (n - C.n) * S;
 const f = (v: number) => v.toFixed(1);
-const path = (pts: [number, number][], close = false) =>
-  pts.map(([e, n], i) => { const p = P(e, n); return `${i ? 'L' : 'M'}${f(p.x)} ${f(p.y)}`; }).join('') + (close ? 'Z' : '');
-// smooth a polyline (Chaikin), for rivers and roads
-const smooth = (pts: [number, number][], it = 3, closed = false): [number, number][] => {
+type K = [number, number];
+const smooth = (pts: K[], it = 3, closed = false): K[] => {
   let p = pts;
   for (let k = 0; k < it; k++) {
-    const q: [number, number][] = closed ? [] : [p[0]];
+    const q: K[] = closed ? [] : [p[0]];
     const n = closed ? p.length : p.length - 1;
     for (let i = 0; i < n; i++) {
       const a = p[i], b = p[(i + 1) % p.length];
@@ -59,118 +41,110 @@ const smooth = (pts: [number, number][], it = 3, closed = false): [number, numbe
   }
   return p;
 };
-const ring = (ce: number, cn: number, re: number, rn: number, n = 96, pw = 2.6): [number, number][] =>
-  Array.from({ length: n }, (_, i) => {
-    const a = (i / n) * 2 * Math.PI, c = Math.cos(a), s = Math.sin(a);
-    return [ce + re * Math.sign(c) * Math.abs(c) ** (2 / pw), cn + rn * Math.sign(s) * Math.abs(s) ** (2 / pw)];
+const d = (pts: K[], close = false) => pts.map(([e, n], i) => `${i ? 'L' : 'M'}${f(X(e))} ${f(Y(n))}`).join('') + (close ? 'Z' : '');
+const offset = (pts: K[], km: number): K[] =>
+  pts.map(([e, n], i) => {
+    const a = pts[Math.max(0, i - 1)], b = pts[Math.min(pts.length - 1, i + 1)];
+    const de = b[0] - a[0], dn = b[1] - a[1], l = Math.hypot(de, dn) || 1;
+    return [e - (dn / l) * km, n + (de / l) * km];
   });
 
-// ---- Floor: plus grid and the lines between, three opacity bands (as the robot floor)
-const E = 8, gap = 0.1, pl = 0.075;
-const band = (i: number, j: number) => Math.min(2, Math.floor(Math.max(Math.abs(i), Math.abs(j)) / (E / 3 + 0.01)));
-const gridSegs: string[][] = [[], [], []], gridPlus: string[][] = [[], [], []];
-for (let i = -E; i <= E; i++) for (let j = -E; j <= E; j++) {
-  const b = band(i, j);
-  gridPlus[b].push(path([[i - pl, j], [i + pl, j]]), path([[i, j - pl], [i, j + pl]]));
-  if (i < E) gridSegs[band(i + 0.5, j)].push(path([[i + pl + gap, j], [i + 1 - pl - gap, j]]));
-  if (j < E) gridSegs[band(i, j + 0.5)].push(path([[i, j + pl + gap], [i, j + 1 - pl - gap]]));
+// ---- Ground: plus grid (as the robot's floor), 0.4 km cells, fading out from the centre
+const g = 0.4, pl = 0.03, gap = 0.04;
+const plus: string[][] = [[], [], []], segs: string[][] = [[], [], []];
+const bandOf = (e: number, n: number) => Math.min(2, Math.floor(Math.hypot(e - C.e, (n - C.n) * 0.75) / 1.6));
+for (let i = -10; i <= 10; i++) for (let j = -12; j <= 12; j++) {
+  const e = C.e + i * g, n = C.n + j * g, b = bandOf(e, n);
+  plus[b].push(d([[e - pl, n], [e + pl, n]]), d([[e, n - pl], [e, n + pl]]));
+  segs[b].push(d([[e + pl + gap, n], [e + g - pl - gap, n]]), d([[e, n + pl + gap], [e, n + g - pl - gap]]));
 }
 
-// ---- Isar (two banks), south-west to north-east, east of the old town
-const isar = smooth([[-3.6, -8], [-3.0, -6.9], [-2.2, -4.1], [-0.6, -2.0], [0.2, -0.9], [0.8, -0.4], [1.0, 0.0], [1.4, 0.9], [2.3, 2.0], [3.2, 3.1], [4.0, 5.8], [4.6, 8]]);
-const bank = (side: number) => isar.map(([e, n], i): [number, number] => {
-  const a = isar[Math.max(0, i - 1)], b = isar[Math.min(isar.length - 1, i + 1)];
-  const dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy) || 1;
-  return [e - (dy / l) * 0.09 * side, n + (dx / l) * 0.09 * side];
-});
+// ---- Water: the Isar, south-west to north-east
+const isar = smooth([[-2.6, -4.6], [-2.2, -4.1], [-1.5, -2.7], [-0.58, -1.42], [0.21, -0.91], [0.62, -0.62], [0.8, -0.42], [1.03, 0.02], [1.41, 0.49], [1.75, 1.27], [2.19, 1.85], [2.7, 2.6], [3.2, 3.6], [3.6, 5.2]]);
+const river = d([...offset(isar, 0.07), ...offset(isar, -0.07).reverse()], true);
 
-// ---- Rings, parks, roads
-const mittlererRing = ring(-0.4, 0.7, 2.6, 3.7);
-const altstadt = ring(-0.1, 0.05, 0.78, 0.7, 48, 2.2);
-const englischerGarten = smooth([[0.5, 0.7], [1.2, 1.2], [1.6, 2.4], [2.4, 3.6], [2.9, 5.0], [2.3, 5.1], [1.6, 3.9], [0.9, 2.6], [0.3, 1.3]], 2, true);
-const theresienwiese = ring(-1.9, -0.6, 0.55, 0.42, 48, 2);
-const motorways: [number, number][][] = [
-  [[0.9, 4.4], [1.4, 6.0], [2.1, 8.0]],      // A9, north
-  [[-3.0, 1.8], [-5.0, 2.4], [-8.0, 3.2]],   // A8, west
-  [[-2.8, -1.5], [-5.0, -2.2], [-8.0, -3.4]], // A96, south-west
-  [[-1.0, -3.0], [-1.8, -5.5], [-2.6, -8.0]], // A95, south
-  [[2.0, -2.5], [4.0, -4.4], [6.4, -8.0]],   // A8, south-east
-  [[2.2, 0.3], [5.0, 0.4], [8.0, 0.7]],      // A94, east
+// ---- Green: parks (faint fill, dashed edge)
+const parks = [
+  smooth([[0.62, 0.68], [0.95, 0.72], [1.35, 1.2], [1.55, 1.9], [1.85, 2.5], [2.25, 3.4], [2.6, 4.9], [2.0, 4.9], [1.55, 3.3], [1.15, 2.4], [0.85, 1.6], [0.62, 1.0]], 2, true), // Englischer Garten
+  smooth([[-2.25, 3.55], [-1.05, 3.6], [-0.95, 4.55], [-2.2, 4.6]], 2, true),        // Olympiapark
+  smooth([[-0.15, 0.62], [0.32, 0.66], [0.3, 0.85], [-0.12, 0.84]], 1, true),         // Hofgarten
+  smooth([[-1.62, -0.25], [-2.12, -0.42], [-2.25, -0.95], [-1.75, -0.9]], 2, true),   // Theresienwiese
+  smooth([[-0.5, -0.35], [-0.05, -0.5], [0.0, -0.75], [-0.55, -0.6]], 1, true),      // Alter Südfriedhof
 ];
-const ringTicks = Array.from({ length: 12 }, (_, i) => {
-  const k = Math.round((i / 12) * mittlererRing.length) % mittlererRing.length;
-  const [e, n] = mittlererRing[k], de = e + 0.4, dn = n - 0.7;
-  const l = Math.hypot(de, dn) || 1;
-  return path([[e - (de / l) * 0.13, n - (dn / l) * 0.13], [e + (de / l) * 0.13, n + (dn / l) * 0.13]]);
-});
 
-// ---- Solids: cylinders drawn as white (or blue) hulls with outlines
-type Pt = { x: number; y: number };
-const hull = (pts: Pt[]) => {
-  const p = pts.slice().sort((a, b) => a.x - b.x || a.y - b.y);
-  const cr = (o: Pt, a: Pt, b: Pt) => (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
-  const lo: Pt[] = [], up: Pt[] = [];
-  for (const q of p) { while (lo.length > 1 && cr(lo[lo.length - 2], lo[lo.length - 1], q) <= 0) lo.pop(); lo.push(q); }
-  for (const q of p.reverse()) { while (up.length > 1 && cr(up[up.length - 2], up[up.length - 1], q) <= 0) up.pop(); up.push(q); }
-  return lo.slice(0, -1).concat(up.slice(0, -1));
-};
-const poly = (pts: Pt[]) => pts.map((p, i) => `${i ? 'L' : 'M'}${f(p.x)} ${f(p.y)}`).join('') + 'Z';
-const circ = (e: number, n: number, r: number, h: number, seg = 28) =>
-  Array.from({ length: seg }, (_, i) => P(e + r * Math.cos((i / seg) * 2 * Math.PI), n + r * Math.sin((i / seg) * 2 * Math.PI), h));
-const cylinder = (e: number, n: number, r: number, h0: number, h1: number, rings = 0) => ({
-  body: poly(hull([...circ(e, n, r, h0), ...circ(e, n, r, h1)])),
-  top: poly(circ(e, n, r, h1)),
-  rings: Array.from({ length: rings }, (_, k) => poly(circ(e, n, r, h0 + ((h1 - h0) * (k + 1)) / (rings + 1)))),
-  d: P(e, n, 0).d,
-});
-// Olympiaturm (291 m, height exaggerated): shaft, the two-storey head, the antenna
-const tower = { e: -1.6, n: 4.1 };
-const towerParts = [
-  cylinder(tower.e, tower.n, 0.16, 0, 5, 0),         // foot
-  cylinder(tower.e, tower.n, 0.06, 5, 88, 4),        // shaft
-  cylinder(tower.e, tower.n, 0.17, 88, 100, 1),      // head
-  cylinder(tower.e, tower.n, 0.02, 100, 122, 0),     // antenna
+// ---- Rail: the tracks into the Hauptbahnhof from the west
+const tracks = [-0.05, 0, 0.05].map((o) => d(offset([[-3.4, 0.38], [-2.2, 0.36], [-1.4, 0.32], [-1.12, 0.31]], o)));
+
+// ---- Roads: major (wide), secondary (narrow); white bands with a dark outline
+const major: K[][] = [
+  smooth([[-0.62, -0.42], [-0.74, 0.12], [-0.45, 0.45], [0.08, 0.68], [0.45, 0.56], [0.56, 0.15], [0.5, -0.24], [0.05, -0.56], [-0.62, -0.42]], 2), // Altstadtring
+  [[0.14, 0.62], [0.36, 1.4], [0.48, 1.67], [0.8, 2.7], [1.0, 3.6], [1.2, 5.2]],    // Ludwig- / Leopoldstraße
+  [[0.55, 0.62], [0.75, 0.7], [1.67, 0.58], [2.6, 0.46], [3.6, 0.5]],               // Prinzregentenstraße
+  [[-1.12, 0.31], [-2.2, 0.18], [-3.6, 0.05]],                                      // Landsberger Straße
+  [[-0.62, -0.42], [-1.34, -1.01], [-2.3, -2.0], [-2.9, -2.8]],                      // Lindwurmstraße
+  [[0.5, -0.24], [0.8, -0.42], [1.34, -0.93], [2.0, -1.4], [2.9, -2.0]],            // Ludwigsbrücke, Rosenheimer Straße
+  smooth([[-2.85, -0.6], [-2.95, 0.6], [-2.85, 2.2], [-2.3, 3.3], [-0.6, 3.75], [1.2, 3.85], [2.4, 3.3], [2.45, 1.0], [2.3, -1.4], [1.6, -2.65], [-0.3, -2.95], [-1.8, -2.6], [-2.6, -1.8], [-2.85, -0.6]], 3, true), // Mittlerer Ring
 ];
-// Marienplatz: the blue accent, a low disc like the sensor cap
-const marker = cylinder(0, 0, 0.32, 0, 9, 1);
-const shade = (k: number) => `rgb(${COL.cap.map((c) => Math.min(255, Math.round(c * k))).join(',')})`;
+const secondary: K[][] = [
+  [[0.05, 0.12], [0.56, 0.08], [1.03, 0.02], [1.43, -0.11]],                       // Maximilianstraße
+  [[0.14, 0.57], [-0.74, 0.9], [-1.1, 1.0], [-2.2, 1.6], [-3.4, 2.2]],              // Brienner / Nymphenburger Str.
+  [[-1.1, 0.5], [-2.0, 1.6], [-2.8, 2.6], [-3.4, 3.4]],                             // Dachauer Straße
+  [[-0.6, 1.0], [-0.7, 2.0], [-0.8, 3.0], [-0.9, 4.0], [-1.0, 5.2]],                // Schleißheimer Straße
+  [[0.0, 0.0], [0.5, -0.24]],                                                       // Tal
+  [[0.21, -0.91], [-0.2, -1.6], [-0.6, -2.6], [-1.0, -3.6]],                        // Fraunhofer- / Wittelsbacher Str.
+  [[1.41, 0.49], [1.9, 0.1], [2.19, -1.12]],                                        // to the Ostbahnhof
+  [[0.8, 2.7], [1.8, 3.2], [2.8, 3.9]],                                             // Ungererstraße
+];
+const mittlererRing = major[major.length - 1];
 
-// ---- Labels: under the Mittlerer Ring tick nearest the viewer (as SENSORFACT)
-const nearest = mittlererRing.reduce((best, [e, n]) => (P(e, n).d < P(best[0], best[1]).d ? [e, n] : best), mittlererRing[0]);
-const label = P(nearest[0], nearest[1]);
+// ---- Landmarks and labels
+const olympiaturm = { x: X(-1.6), y: Y(4.1) };
+const marien = { x: X(0), y: Y(0) };
+const labels: { t: string; e: number; n: number }[] = [
+  { t: 'ISAR', e: 2.0, n: 0.95 },
+  { t: 'ENGLISCHER GARTEN', e: 1.65, n: 3.05 },
+  { t: 'OLYMPIAPARK', e: -1.6, n: 3.32 },
+  { t: 'HAUPTBAHNHOF', e: -1.75, n: 0.55 },
+  { t: 'THERESIENWIESE', e: -1.95, n: -1.15 },
+];
+// scale bar: 1 km, bottom left
+const bar = { x: 28, y: VB.h - 34, w: S };
 ---
 
-<svg class="munich" viewBox={`0 0 ${VB.w} ${VB.h}`} preserveAspectRatio="xMidYMid slice" role="img" aria-label="Stylised map of Munich: the Isar, the old town ring, the Mittlerer Ring, Englischer Garten, the Olympic tower and Marienplatz">
+<svg class="munich" viewBox={`0 0 ${VB.w} ${VB.h}`} preserveAspectRatio="xMidYMid slice" role="img" aria-label="Stylised map of central Munich: the Isar, the old town ring, the main streets, the Mittlerer Ring, Englischer Garten, Olympiapark and Marienplatz">
   <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
-    {[0.05, 0.033, 0.016].map((a, i) => <path d={gridSegs[i].join('')} stroke={rgba(COL.line, a)} />)}
-    {[0.125, 0.083, 0.04].map((a, i) => <path d={gridPlus[i].join('')} stroke={rgba(COL.line, a)} />)}
-    {motorways.map((m) => <path d={path(smooth(m, 2))} stroke={rgba(COL.line, 0.22)} />)}
-    <path d={path(englischerGarten, true)} stroke={rgba(COL.line, 0.35)} stroke-dasharray="2 3" />
-    <path d={path(theresienwiese, true)} stroke={rgba(COL.line, 0.35)} stroke-dasharray="2 3" />
-    <path d={path(bank(1))} stroke={rgba(COL.line, 0.85)} />
-    <path d={path(bank(-1))} stroke={rgba(COL.line, 0.85)} />
-    <path d={path(mittlererRing, true)} stroke={rgba(COL.accent, 0.32)} stroke-dasharray="3 5" />
-    <path d={ringTicks.join('')} stroke={rgba(COL.accent, 0.5)} />
-    <path d={path(altstadt, true)} fill="#ffffff" stroke={rgba(COL.line, 0.85)} />
+    {[0.05, 0.033, 0.016].map((a, i) => <path d={segs[i].join('')} stroke={rgba(COL.line, a)} />)}
+    {[0.125, 0.083, 0.04].map((a, i) => <path d={plus[i].join('')} stroke={rgba(COL.line, a)} />)}
+    {parks.map((p) => <path d={d(p, true)} fill={rgba(COL.accent, 0.06)} stroke={rgba(COL.line, 0.3)} stroke-dasharray="2 3" />)}
+    <path d={river} fill={rgba('45,117,217', 0.14)} stroke={rgba(COL.line, 0.85)} />
+    {tracks.map((t) => <path d={t} stroke={rgba(COL.line, 0.45)} stroke-dasharray="4 3" />)}
+    {secondary.map((r) => <path d={d(smooth(r, 2))} stroke={rgba(COL.line, 0.45)} stroke-width="4" />)}
+    {major.map((r, i) => <path d={d(i === major.length - 1 ? r : smooth(r, 2), i === major.length - 1)} stroke={rgba(COL.line, 0.7)} stroke-width="6.5" />)}
+    {secondary.map((r) => <path d={d(smooth(r, 2))} stroke="#ffffff" stroke-width="2.4" />)}
+    {major.map((r, i) => <path d={d(i === major.length - 1 ? r : smooth(r, 2), i === major.length - 1)} stroke="#ffffff" stroke-width="4.5" />)}
+    <path d={d(mittlererRing, true)} stroke={rgba(COL.accent, 0.6)} stroke-dasharray="3 5" />
   </g>
-  <g font-family='ui-monospace, "SF Mono", Menlo, Consolas, monospace' font-size="10" letter-spacing="1.5" text-anchor="middle">
-    <text x={f(label.x)} y={f(label.y + 18)} fill={rgba(COL.accent, 0.75)}>MÜNCHEN</text>
-    <text x={f(label.x)} y={f(label.y + 32)} fill={rgba(COL.line, 0.4)} font-size="8" letter-spacing="1">48.137° N · 11.575° E</text>
+
+  <g stroke={rgba(COL.line, 0.85)} stroke-width="1" fill="#ffffff">
+    <circle cx={f(olympiaturm.x)} cy={f(olympiaturm.y)} r="6.5" />
+    <circle cx={f(olympiaturm.x)} cy={f(olympiaturm.y)} r="3.6" />
+    <circle cx={f(olympiaturm.x)} cy={f(olympiaturm.y)} r="1" fill={rgba(COL.line, 0.85)} />
   </g>
-  <g stroke-linejoin="round" stroke-width="1">
-    {
-      towerParts.map((c) => (
-        <>
-          <path d={c.body} fill="#ffffff" stroke={rgba(COL.line, 0.85)} />
-          <path d={c.top} fill="#ffffff" stroke={rgba(COL.line, 0.85)} />
-          {c.rings.map((r) => <path d={r} fill="none" stroke={rgba(COL.line, 0.09)} />)}
-        </>
-      ))
-    }
-    <!-- Marienplatz is nearer the viewer than the tower, so it is drawn last. -->
-    <path d={marker.body} fill={shade(0.95)} stroke="rgba(0,0,0,1)" />
-    <path d={marker.top} fill={shade(1.07)} stroke="rgba(0,0,0,1)" />
-    {marker.rings.map((r) => <path d={r} fill="none" stroke="rgba(0,0,0,0.22)" />)}
+
+  <g stroke="#000000" stroke-width="1">
+    <circle cx={f(marien.x)} cy={f(marien.y)} r="11" fill="rgba(45,117,217,0.16)" stroke="rgba(45,117,217,0.6)" />
+    <circle cx={f(marien.x)} cy={f(marien.y)} r="5.5" fill="rgb(45,117,217)" />
+  </g>
+
+  <g font-family='ui-monospace, "SF Mono", Menlo, Consolas, monospace' text-anchor="middle" paint-order="stroke" stroke="#f5f5f5" stroke-width="4" stroke-linejoin="round">
+    {labels.map((l) => <text x={f(X(l.e))} y={f(Y(l.n))} font-size="7.5" letter-spacing="1.2" fill={rgba(COL.line, 0.5)}>{l.t}</text>)}
+    <text x={f(marien.x)} y={f(marien.y - 29)} font-size="10" letter-spacing="1.5" fill={rgba(COL.accent, 0.85)}>MÜNCHEN</text>
+    <text x={f(marien.x)} y={f(marien.y - 18)} font-size="7.5" letter-spacing="1" fill={rgba(COL.line, 0.45)}>48.137° N · 11.575° E</text>
+    <g text-anchor="start" font-size="7.5" letter-spacing="1" fill={rgba(COL.line, 0.55)}>
+      <path paint-order="normal" stroke-width="1" d={`M${f(bar.x)} ${f(bar.y)}h${f(bar.w)}M${f(bar.x)} ${f(bar.y - 4)}v8M${f(bar.x + bar.w)} ${f(bar.y - 4)}v8`} stroke={rgba(COL.line, 0.6)} fill="none" />
+      <text x={f(bar.x)} y={f(bar.y - 9)}>1 KM</text>
+      <text x={VB.w - 28} y={f(bar.y - 9)} text-anchor="end">N ↑</text>
+    </g>
   </g>
 </svg>
 

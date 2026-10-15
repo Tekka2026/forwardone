@@ -2,14 +2,16 @@
 /**
  * Robot arm visual (supplied by the owner, 2026-10-15; second version,
  * rendered with WebGL2 and a depth buffer): an interactive 3D line model of
- * a six-axis arm holding a Sensorfact sensor, drawn on a canvas. The arm loops through poses, follows the mouse, and the view can
- * be dragged to turn. Inverted (light) version. It fills its container; the
- * drawing fits itself to the box (5:7 on desktop, 7:5 on phones).
+ * a six-axis arm holding a Sensorfact sensor, drawn on a canvas. The arm
+ * follows the mouse, and the view can be dragged to turn. Inverted (light)
+ * version. It fills its container; the drawing fits itself to the box (5:7
+ * on desktop, 7:5 on phones).
  * The script is inlined as supplied (it finds its box via currentScript),
  * with three changes (owner, 2026-10-15): idle, the cap faces the viewer
- * (instead of looping through poses); the arm follows the mouse only while
- * the pointer is over the box (leaving eases it back to facing the viewer);
- * the SENSORFACT label is drawn behind the arm instead of on top of it.
+ * and keeps glancing at spots around the camera (instead of looping through
+ * poses); the arm follows the mouse only while the pointer is over the box
+ * (leaving eases it back to facing the viewer); the SENSORFACT label is
+ * drawn behind the arm instead of on top of it.
  */
 ---
 
@@ -265,6 +267,7 @@ function solve(T) {                   // world target → joint angles (radians)
   const q5 = clamp(-Math.atan2(h - fy, r - fx) - q2 - q3, -115 * D2R, 115 * D2R);
   return [q1, q2, q3, 0, q5, 0];
 }
+const glance = { x: .5, y: .38, next: 0 };   // idle look point (fraction of the box), and when to move it
 const angLerp = (a, b, t) => { let d = (b - a) % (2 * Math.PI); if (d > Math.PI) d -= 2 * Math.PI; else if (d < -Math.PI) d += 2 * Math.PI; return a + d * t; };
 const sstep = t => t * t * (3 - 2 * t);
 function pose(t) {                    // loop through the poses: rest, then move
@@ -585,11 +588,16 @@ function frame(now) {
   cyaw = Math.cos(yaw); syaw = Math.sin(yaw); cpit = Math.cos(pitch); spit = Math.sin(pitch);
   zoom = fit; ox = W / 2 - midX; oy = H / 2 - midY;
 
-  // Idle (owner, 2026-10-15): the cap faces the viewer, aimed at a point in the upper middle of the box on the plane
-  // in front of the arm, so it keeps turning towards you as the view turns. With the mouse over the box it follows
+  // Idle (owner, 2026-10-15): the cap faces the viewer, aimed at a point near the upper middle of the box on the plane
+  // in front of the arm, so it keeps turning towards you as the view turns; every 1.4–3.2 s it glances at another
+  // spot close by, as if looking around near the camera. With the mouse over the box it follows
   // the mouse instead; leaving the box eases it back to facing the viewer.
   const active = follow && haveLast && !pointers.size;
-  const want = solve(active ? pointerTarget(lastX, lastY) : pointerTarget(W * .5, H * .38));
+  if (!active && !reduced && now > glance.next) {                // idle: glance at another spot near the viewer
+    glance.x = .5 + (Math.random() - .5) * .34; glance.y = .38 + (Math.random() - .5) * .22;
+    glance.next = now + 1400 + Math.random() * 1800;
+  }
+  const want = solve(active ? pointerTarget(lastX, lastY) : pointerTarget(W * glance.x, H * glance.y));
   qFollow = qFollow || want.slice();
   const k = reduced ? 1 : Math.min(1, dt * (active ? 5 : 2.5));   // a little lag, so it moves like a machine
   qFollow = qFollow.map((v, i) => angLerp(v, want[i], k));
