@@ -301,7 +301,7 @@ gauge and tooltips, shared) and `portal/icons.ts`; copy in `fundIII` and
   (Sensorfact) uses `RobotArm.astro`, the owner's interactive canvas robot
   arm (second version, WebGL2 with a depth buffer; inverted version; it fits itself to the box, follows the mouse while the
   pointer is over the box and eases back to its pose loop when it leaves,
-  drag turns the view). Coded visuals sit above the card's full-size link, so
+  drag turns the view; the SENSORFACT label sits behind the arm). Coded visuals sit above the card's full-size link, so
   dragging works; the title still links.
 - Insights: on desktop the H2 runs at most 6 of the 12 grid
   columns (fluid, from the wrap width); full width at ≤880px.

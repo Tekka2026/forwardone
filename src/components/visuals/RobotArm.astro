@@ -6,8 +6,9 @@
  * be dragged to turn. Inverted (light) version. It fills its container; the
  * drawing fits itself to the box (5:7 on desktop, 7:5 on phones).
  * The script is inlined as supplied (it finds its box via currentScript),
- * with one change (owner, 2026-10-15): the arm follows the mouse only while
- * the pointer is over the box; leaving the box eases it back to the loop.
+ * with two changes (owner, 2026-10-15): the arm follows the mouse only
+ * while the pointer is over the box (leaving eases it back to the loop), and
+ * the SENSORFACT label is drawn behind the arm instead of on top of it.
  */
 ---
 
@@ -601,16 +602,18 @@ function frame(now) {
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.globalCompositeOperation = 'source-over';
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(glc, 0, 0);           // … copied onto the visible canvas, then the glow and the label on top
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  bloom();
-  ctx.globalCompositeOperation = 'source-over';
-  placeLabel();
+  placeLabel();                       // the label first, so the arm passes in front of it
   if (envLabel) {
     ctx.font = FONT; ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
     if ('letterSpacing' in ctx) ctx.letterSpacing = '1.5px';
     ctx.fillStyle = rgba(COL.accent, .75); ctx.fillText('SENSORFACT', envLabel.x, envLabel.y + 16);
   }
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.drawImage(glc, 0, 0);           // … copied onto the visible canvas over the label, then the glow
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  bloom();
+  ctx.globalCompositeOperation = 'source-over';
 }
 
 /* ───────────── Interaction ───────────── */
