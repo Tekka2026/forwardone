@@ -1,8 +1,8 @@
 ---
 /**
- * Robot arm visual (supplied by the owner, 2026-10-15): an interactive 3D
- * line model of a six-axis arm holding a Sensorfact sensor, drawn on a
- * canvas. The arm loops through poses, follows the mouse, and the view can
+ * Robot arm visual (supplied by the owner, 2026-10-15; second version,
+ * rendered with WebGL2 and a depth buffer): an interactive 3D line model of
+ * a six-axis arm holding a Sensorfact sensor, drawn on a canvas. The arm loops through poses, follows the mouse, and the view can
  * be dragged to turn. Inverted (light) version. It fills its container; the
  * drawing fits itself to the box (5:7 on desktop, 7:5 on phones).
  * The script is inlined as supplied (it finds its box via currentScript).
@@ -270,127 +270,253 @@ function pose(t) {                    // loop through the poses: rest, then move
   return a.map((v, i) => (v + (b[i] - v) * e) * D2R);
 }
 
-/* ───────────── Floor ───────────── */
-const floorSegs = [[], [], []], floorPlus = [[], [], []];
+/* ───────────── Floor (world segments at y = 0) ───────────── */
+// line styles: colour + opacity per kind of line, looked up by index in the shader
+const STYLE = (() => {
+  const c = s => s.split(',').map(v => v / 255);
+  const L = c(COL.line), A = c(COL.accent), CAP = INV ? [0, 0, 0] : A;
+  return [
+    [...L, CFG.edgeOpacity],              // 0 arm outline
+    [...L, CFG.ringOpacity],              // 1 arm contour ring
+    [...CAP, 1],                          // 2 cap outline
+    [...CAP, CFG.ringOpacity * 2.5],      // 3 cap contour ring
+    [...L, CFG.edgeOpacity * .55],        // 4 gripper fingers
+    [...L, .05], [...L, .033], [...L, .016],                  // 5–7 floor lines, three bands
+    [...L, .125], [...L, .083], [...L, .04],                  // 8–10 floor pluses
+    [...A, .32],                          // 11 reach ring (dashed)
+    [...A, .5],                           // 12 reach ticks
+  ];
+})();
+const FLOOR = [];                         // [x1, z1, x2, z2, style]
 (() => {
   const g = CFG.grid, E = CFG.gridExtent, gap = CFG.gridGap, pl = CFG.gridPlus;
   const band = (i, j) => Math.min(2, Math.floor(Math.max(Math.abs(i), Math.abs(j)) / (E / 3 + .01)));
   for (let i = -E; i <= E; i++) for (let j = -E; j <= E; j++) {
     const x = i * g, z = j * g, b = band(i, j);
-    floorPlus[b].push(x - pl, z, x + pl, z, x, z - pl, x, z + pl);
-    if (i < E) floorSegs[band(i + .5, j)].push(x + pl + gap, z, x + g - pl - gap, z);
-    if (j < E) floorSegs[band(i, j + .5)].push(x, z + pl + gap, x, z + g - pl - gap);
+    FLOOR.push([x - pl, z, x + pl, z, 8 + b], [x, z - pl, x, z + pl, 8 + b]);
+    if (i < E) FLOOR.push([x + pl + gap, z, x + g - pl - gap, z, 5 + band(i + .5, j)]);
+    if (j < E) FLOOR.push([x, z + pl + gap, x, z + g - pl - gap, 5 + band(i, j + .5)]);
   }
-})();
-function strokeXZ(arr) {
-  ctx.beginPath();
-  for (let i = 0; i < arr.length; i += 4) {
-    P(arr[i], 0, arr[i + 1]); ctx.moveTo(PX, PY);
-    P(arr[i + 2], 0, arr[i + 3]); ctx.lineTo(PX, PY);
+  const R = CFG.reach, n = 160;           // dashed ring: dash, gap, dash …
+  for (let i = 0; i < n; i += 2) {
+    const a = i * 2 * Math.PI / n, b = (i + .8) * 2 * Math.PI / n;
+    FLOOR.push([R * Math.cos(a), R * Math.sin(a), R * Math.cos(b), R * Math.sin(b), 11]);
   }
-  ctx.stroke();
-}
-function drawFloor() {
-  ctx.lineWidth = 1;
-  [.05, .033, .016].forEach((a, i) => {
-    ctx.strokeStyle = rgba(COL.line, a); strokeXZ(floorSegs[i]);
-    ctx.strokeStyle = rgba(COL.line, a * 2.5); strokeXZ(floorPlus[i]);
-  });
-  // work envelope: dashed ring at full reach, ticks every 30°
-  ctx.strokeStyle = rgba(COL.accent, .32); ctx.setLineDash([3, 5]);
-  ctx.beginPath();
-  for (let i = 0; i <= 120; i++) { const a = i * Math.PI / 60; P(CFG.reach * Math.cos(a), 0, CFG.reach * Math.sin(a)); i ? ctx.lineTo(PX, PY) : ctx.moveTo(PX, PY); }
-  ctx.stroke(); ctx.setLineDash([]);
-  ctx.strokeStyle = rgba(COL.accent, .5); ctx.beginPath();
   for (let i = 0; i < 12; i++) {
     const a = i * Math.PI / 6, c = Math.cos(a), s = Math.sin(a);
-    P(c * (CFG.reach - 10), 0, s * (CFG.reach - 10)); ctx.moveTo(PX, PY);
-    P(c * (CFG.reach + 10), 0, s * (CFG.reach + 10)); ctx.lineTo(PX, PY);
+    FLOOR.push([c * (R - 10), s * (R - 10), c * (R + 10), s * (R + 10), 12]);
   }
-  ctx.stroke();
-  let best = null;                    // the label sits under the ring tick nearest the viewer
-  for (let i = 0; i < 12; i++) {
-    const a = i * Math.PI / 6; P(CFG.reach * Math.cos(a), 0, CFG.reach * Math.sin(a));
-    if (!best || PD < best.d) best = { x: PX, y: PY, d: PD };
+})();
+let envLabel = null, labelAngle = null;
+function placeLabel() {                   // the label keeps one spot on the ring: the tick facing the viewer at the start
+  if (labelAngle === null) {
+    let best = null;
+    for (let i = 0; i < 12; i++) {
+      const a = i * Math.PI / 6; P(CFG.reach * Math.cos(a), 0, CFG.reach * Math.sin(a));
+      if (!best || PD < best.d) best = { a, d: PD };
+    }
+    labelAngle = best.a;
   }
-  envLabel = best;
+  P(CFG.reach * Math.cos(labelAngle), 0, CFG.reach * Math.sin(labelAngle));
+  envLabel = { x: PX, y: PY };
 }
-let envLabel = null;
 
-/* ───────────── Draw the arm: faces far → near, each fills (hiding what is behind) then draws its edges ───────────── */
+/* ───────────── GPU renderer ─────────────
+   Faces and lines are drawn with a depth buffer, so whatever is behind something else is hidden exactly, pixel by
+   pixel, also where parts pass through each other. Outlines are thin screen-space quads of a fixed width. */
 const LIGHT = (() => { const l = [-.45, .8, .4], n = Math.hypot(...l); return l.map(v => v / n); })();
-let hoverKey = null;
-const faceList = [];
-let armX0 = 0, armX1 = 0;
-function drawArm(frames) {
-  faceList.length = 0;
-  armX0 = Infinity; armX1 = -Infinity;
+const glc = document.createElement('canvas');
+const gl = glc.getContext('webgl2', { antialias: true, alpha: true, premultipliedAlpha: true });
+const PROJ = `
+uniform vec4 u_cam;     // cos yaw, sin yaw, cos pitch, sin pitch
+uniform vec4 u_view;    // zoom, ox, oy, orbit height
+uniform vec2 u_size;    // css px
+uniform mat4 u_link[8];
+const float F = 2400.0;
+float project(vec3 w, out vec2 px) {    // same orbit camera as the 2D projection; returns the perspective w
+  float x1 = w.x * u_cam.x - w.z * u_cam.y, z1 = w.x * u_cam.y + w.z * u_cam.x, yy = w.y - u_view.w;
+  float d = z1 * u_cam.z - yy * u_cam.w, s = F / (F + d) * u_view.x;
+  px = vec2(u_view.y + x1 * s, u_view.z - (yy * u_cam.z + z1 * u_cam.w) * s);
+  return F + d;
+}
+vec4 clip(vec2 px, float w, float bias) {
+  float z = 1.2222 - 1333.33 / w - bias;               // depth from the perspective w, nearer is smaller
+  return vec4((px.x / u_size.x * 2.0 - 1.0) * w, (1.0 - px.y / u_size.y * 2.0) * w, z * w, w);
+}`;
+const VS_FILL = `#version 300 es
+${PROJ}
+in vec3 a_pos; in vec3 a_nrm; in float a_link; in float a_mat;
+uniform vec3 u_light; uniform vec3 u_cap; uniform float u_inv;
+out vec4 v_col;
+void main() {
+  mat4 m = u_link[int(a_link)];
+  vec3 n = normalize(mat3(m) * a_nrm);
+  float lit = max(0.0, dot(n, u_light));
+  vec3 c;
+  if (a_mat > 0.5) c = min(vec3(1.0), u_cap * (0.62 + lit * 0.45));          // the sensor cap
+  else if (u_inv > 0.5) c = vec3(1.0);                                        // inverted: a white arm
+  else { float g = (7.0 + lit * 13.0) / 255.0; c = vec3(g, g + 1.0 / 255.0, g + 2.0 / 255.0); }
+  v_col = vec4(c, 1.0);
+  vec2 px; float w = project((m * vec4(a_pos, 1.0)).xyz, px);
+  gl_Position = clip(px, w, 0.0);
+}`;
+const VS_LINE = `#version 300 es
+${PROJ}
+in vec3 a_a; in vec3 a_b; in vec2 a_c; in float a_link; in float a_style;
+uniform vec4 u_style[16]; uniform float u_hw;
+out vec4 v_col;
+void main() {
+  mat4 m = u_link[int(a_link)];
+  vec2 pa, pb;
+  float wa = project((m * vec4(a_a, 1.0)).xyz, pa), wb = project((m * vec4(a_b, 1.0)).xyz, pb);
+  vec2 d = pb - pa; float len = length(d);
+  d = len > 1e-4 ? d / len : vec2(1.0, 0.0);
+  vec2 n = vec2(-d.y, d.x);
+  float t = a_c.x;
+  vec2 p = mix(pa, pb, t) + n * a_c.y * u_hw + d * (t * 2.0 - 1.0) * u_hw;
+  gl_Position = clip(p, mix(wa, wb, t), 0.0006);         // a hair in front of the surface it lies on
+  vec4 s = u_style[int(a_style)];
+  v_col = vec4(s.rgb * s.a, s.a);
+}`;
+const FS = `#version 300 es
+precision mediump float;
+in vec4 v_col; out vec4 o;
+void main() { o = v_col; }`;
+function program(vs, fs) {
+  const p = gl.createProgram();
+  for (const [type, src] of [[gl.VERTEX_SHADER, vs], [gl.FRAGMENT_SHADER, fs]]) {
+    const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+    gl.attachShader(p, s);
+  }
+  gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+  return p;
+}
+const progFill = program(VS_FILL, FS), progLine = program(VS_LINE, FS);
+function vao(prog, buf, layout) {         // layout: [[name, size], …] interleaved floats
+  const v = gl.createVertexArray(); gl.bindVertexArray(v); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  const stride = layout.reduce((s, [, n]) => s + n, 0) * 4;
+  let off = 0;
+  for (const [name, n] of layout) {
+    const loc = gl.getAttribLocation(prog, name);
+    if (loc >= 0) { gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, n, gl.FLOAT, false, stride, off); }
+    off += n * 4;
+  }
+  return v;
+}
+const LINE_LAYOUT = [['a_a', 3], ['a_b', 3], ['a_c', 2], ['a_link', 1], ['a_style', 1]];
+const CORNERS = [[0, -1], [0, 1], [1, -1], [1, 1]];
+function pushLine(out, a, b, link, style) {
+  for (const [t, s] of CORNERS) out.push(a[0], a[1], a[2], b[0], b[1], b[2], t, s, link, style);
+}
+
+// static geometry: faces, outlines and contour rings of every part (in its link's own frame), and the floor
+const fillData = [], lineData = [], softEdges = [];
+LINKS.forEach((parts, li) => parts.forEach(part => {
+  const mat = part.accent ? 1 : 0;
+  part.front = new Uint8Array(part.faces.length);
+  for (const f of part.faces) {
+    for (let i = 1; i < f.idx.length - 1; i++) {
+      for (const k of [f.idx[0], f.idx[i], f.idx[i + 1]]) fillData.push(...part.verts[k], ...f.n, li, mat);
+    }
+  }
+  const seen = new Map();                 // one entry per edge, with its strongest kind
+  part.faces.forEach((f, fi) => f.idx.forEach((a, i) => {
+    const b = f.idx[(i + 1) % f.idx.length], key = a < b ? a + ',' + b : b + ',' + a;
+    const e = seen.get(key) || { a, b, kind: SOFT, faces: [] };
+    if (f.kind[i] === CREASE || (f.kind[i] === RING && e.kind !== CREASE)) e.kind = f.kind[i];
+    e.faces.push(fi); seen.set(key, e);
+  }));
+  for (const e of seen.values()) {
+    const A = part.verts[e.a], B = part.verts[e.b];
+    if (e.kind === CREASE) pushLine(lineData, A, B, li, part.accent ? 2 : part.dim < 1 ? 4 : 0);
+    else if (e.kind === RING) pushLine(lineData, A, B, li, part.accent ? 3 : 1);
+    else softEdges.push({ part, A, B, f1: e.faces[0], f2: e.faces[1], li, style: part.accent ? 2 : part.dim < 1 ? 4 : 0 });
+  }
+}));
+for (const [x1, z1, x2, z2, s] of FLOOR) pushLine(lineData, [x1, 0, z1], [x2, 0, z2], 7, s);
+
+const fillBuf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, fillBuf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(fillData), gl.STATIC_DRAW);
+const fillVao = vao(progFill, fillBuf, [['a_pos', 3], ['a_nrm', 3], ['a_link', 1], ['a_mat', 1]]);
+const fillCount = fillData.length / 8;
+const lineBuf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, lineBuf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(lineData), gl.STATIC_DRAW);
+const lineVao = vao(progLine, lineBuf, LINE_LAYOUT);
+const lineQuads = lineData.length / 40;
+const silData = new Float32Array(softEdges.length * 40);   // silhouettes change every frame
+const silBuf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, silBuf); gl.bufferData(gl.ARRAY_BUFFER, silData.byteLength, gl.DYNAMIC_DRAW);
+const silVao = vao(progLine, silBuf, LINE_LAYOUT);
+const maxQuads = Math.max(lineQuads, softEdges.length);
+const quadIdx = new Uint32Array(maxQuads * 6);
+for (let i = 0; i < maxQuads; i++) quadIdx.set([i * 4, i * 4 + 1, i * 4 + 2, i * 4 + 2, i * 4 + 1, i * 4 + 3], i * 6);
+const idxBuf = gl.createBuffer();
+for (const v of [lineVao, silVao]) { gl.bindVertexArray(v); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxBuf); }
+gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, quadIdx, gl.STATIC_DRAW);
+gl.bindVertexArray(null);
+
+const U = {};
+for (const [name, prog] of [['fill', progFill], ['line', progLine]]) {
+  U[name] = {};
+  for (const u of ['u_cam', 'u_view', 'u_size', 'u_link', 'u_light', 'u_cap', 'u_inv', 'u_style', 'u_hw']) U[name][u] = gl.getUniformLocation(prog, u);
+}
+const linkMat = new Float32Array(8 * 16);
+function setCommon(u) {
+  gl.uniform4f(u.u_cam, cyaw, syaw, cpit, spit);
+  gl.uniform4f(u.u_view, zoom, ox, oy, yc);
+  gl.uniform2f(u.u_size, W, H);
+  gl.uniformMatrix4fv(u.u_link, false, linkMat);
+}
+
+function drawScene(frames) {
+  // link matrices (3×4 row-major) → column-major mat4; slot 7 is the floor
+  for (let i = 0; i < 8; i++) {
+    const m = frames[i] || mI(), o = i * 16;
+    linkMat.set([m[0], m[4], m[8], 0, m[1], m[5], m[9], 0, m[2], m[6], m[10], 0, m[3], m[7], m[11], 1], o);
+  }
+  // which faces look at the camera, for the silhouettes of round parts
   for (let li = 0; li < LINKS.length; li++) {
     const m = frames[li];
-    for (const part of LINKS[li]) {
-      // project every vertex once
-      const n = part.verts.length;
-      if (!part.sx) { part.sx = new Float32Array(n); part.sy = new Float32Array(n); part.front = new Uint8Array(part.faces.length); }
-      for (let i = 0; i < n; i++) {
-        const v = part.verts[i], w = apply(m, v[0], v[1], v[2]);
-        P(w[0], w[1], w[2]); part.sx[i] = PX; part.sy[i] = PY;
-        if (PX < armX0) armX0 = PX; if (PX > armX1) armX1 = PX;
-      }
-      part.faces.forEach((f, fi) => {
-        const c = apply(m, f.c[0], f.c[1], f.c[2]), nn = applyDir(m, f.n[0], f.n[1], f.n[2]);
-        // camera space of centre and normal (same rotation as P)
-        const cx = c[0] * cyaw - c[2] * syaw, cz1 = c[0] * syaw + c[2] * cyaw, cy = c[1] - yc;
-        const cv = cy * cpit + cz1 * spit, cd = cz1 * cpit - cy * spit;
-        const nx = nn[0] * cyaw - nn[2] * syaw, nz1 = nn[0] * syaw + nn[2] * cyaw;
-        const nv = nn[1] * cpit + nz1 * spit, nd = nz1 * cpit - nn[1] * spit;
-        const facing = nx * cx + nv * cv + nd * (cd + F) < 0;
-        part.front[fi] = facing ? 1 : 0;
-        if (facing) faceList.push({ part, f, d: cd, lit: Math.max(0, nn[0] * LIGHT[0] + nn[1] * LIGHT[1] + nn[2] * LIGHT[2]) });
-      });
-    }
+    for (const part of LINKS[li]) part.faces.forEach((f, fi) => {
+      const c = apply(m, f.c[0], f.c[1], f.c[2]), nn = applyDir(m, f.n[0], f.n[1], f.n[2]);
+      const cx = c[0] * cyaw - c[2] * syaw, cz1 = c[0] * syaw + c[2] * cyaw, cy = c[1] - yc;
+      const cv = cy * cpit + cz1 * spit, cd = cz1 * cpit - cy * spit;
+      const nx = nn[0] * cyaw - nn[2] * syaw, nz1 = nn[0] * syaw + nn[2] * cyaw;
+      const nv = nn[1] * cpit + nz1 * spit, nd = nz1 * cpit - nn[1] * spit;
+      part.front[fi] = nx * cx + nv * cv + nd * (cd + F) < 0 ? 1 : 0;
+    });
   }
-  faceList.sort((a, b) => b.d - a.d);
-
-  ctx.lineWidth = 1;
-  for (const { part, f, lit } of faceList) {
-    const sx = part.sx, sy = part.sy, idx = f.idx, L = idx.length;
-    ctx.beginPath();
-    ctx.moveTo(sx[idx[0]], sy[idx[0]]);
-    for (let i = 1; i < L; i++) ctx.lineTo(sx[idx[i]], sy[idx[i]]);
-    ctx.closePath();
-    if (part.accent) {                // the sensor cap: #2D75D9, shaded by the light
-      const k = .62 + lit * .45, [r, gg, b] = COL.cap;
-      ctx.fillStyle = `rgb(${Math.min(255, r * k) | 0},${Math.min(255, gg * k) | 0},${Math.min(255, b * k) | 0})`;
-    } else {
-      const g = 7 + lit * 13;
-      ctx.fillStyle = INV ? '#fff' : `rgb(${g | 0},${(g + 1) | 0},${(g + 2) | 0})`;   // inverted: a white arm, drawn by its lines
-    }
-    ctx.fill();
-    ctx.strokeStyle = ctx.fillStyle; ctx.stroke();             // closes the hairline seams between neighbouring facets
-
-    const hot = hoverKey && part.key === hoverKey;
-    const col = part.accent ? (INV ? '0,0,0' : COL.accent) : COL.line;
-    const strong = (hot ? 1 : CFG.edgeOpacity) * (part.accent ? 1 : part.dim);
-    let ring = false;
-    ctx.beginPath();
-    for (let i = 0; i < L; i++) {
-      const k = f.kind[i];
-      if (k === RING) { ring = true; continue; }
-      if (k === SOFT) { const o = f.across[i]; if (o < 0 || part.front[o]) continue; }   // only where the surface turns away
-      const a = idx[i], b = idx[(i + 1) % L];
-      ctx.moveTo(sx[a], sy[a]); ctx.lineTo(sx[b], sy[b]);
-    }
-    ctx.strokeStyle = rgba(col, strong); ctx.stroke();
-    if (ring) {
-      ctx.beginPath();
-      for (let i = 0; i < L; i++) {
-        if (f.kind[i] !== RING) continue;
-        const a = idx[i], b = idx[(i + 1) % L];
-        ctx.moveTo(sx[a], sy[a]); ctx.lineTo(sx[b], sy[b]);
-      }
-      ctx.strokeStyle = rgba(col, CFG.ringOpacity * (hot || part.accent ? 2.5 : 1)); ctx.stroke();
-    }
+  let n = 0;
+  for (const e of softEdges) {
+    if (e.part.front[e.f1] === e.part.front[e.f2]) continue;   // only where the surface turns away
+    for (const [t, s] of CORNERS) { silData.set([e.A[0], e.A[1], e.A[2], e.B[0], e.B[1], e.B[2], t, s, e.li, e.style], n * 10); n++; }
   }
+  const silQuads = n / 4;
+
+  gl.viewport(0, 0, glc.width, glc.height);
+  gl.depthMask(true);                 // the depth buffer only clears while writing to it is allowed
+  gl.clearColor(0, 0, 0, 0); gl.clearDepth(1);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  gl.enable(gl.DEPTH_TEST); gl.depthFunc(gl.LEQUAL);
+
+  gl.useProgram(progFill); setCommon(U.fill);
+  gl.uniform3f(U.fill.u_light, LIGHT[0], LIGHT[1], LIGHT[2]);
+  gl.uniform3f(U.fill.u_cap, COL.cap[0] / 255, COL.cap[1] / 255, COL.cap[2] / 255);
+  gl.uniform1f(U.fill.u_inv, INV ? 1 : 0);
+  gl.disable(gl.BLEND); gl.depthMask(true);
+  gl.enable(gl.POLYGON_OFFSET_FILL); gl.polygonOffset(1, 1);
+  gl.bindVertexArray(fillVao); gl.drawArrays(gl.TRIANGLES, 0, fillCount);
+  gl.disable(gl.POLYGON_OFFSET_FILL);
+
+  gl.useProgram(progLine); setCommon(U.line);
+  gl.uniform4fv(U.line.u_style, new Float32Array(16 * 4).fill(0).map((_, i) => (STYLE[i >> 2] || [0, 0, 0, 0])[i & 3]));
+  gl.uniform1f(U.line.u_hw, .55);
+  gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false);
+  gl.bindVertexArray(lineVao); gl.drawElements(gl.TRIANGLES, lineQuads * 6, gl.UNSIGNED_INT, 0);
+  if (silQuads) {
+    gl.bindBuffer(gl.ARRAY_BUFFER, silBuf); gl.bufferSubData(gl.ARRAY_BUFFER, 0, silData, 0, n * 10);
+    gl.bindVertexArray(silVao); gl.drawElements(gl.TRIANGLES, silQuads * 6, gl.UNSIGNED_INT, 0);
+  }
+  gl.bindVertexArray(null);
 }
 
 /* ───────────── Glow: downscaled copies added back ───────────── */
@@ -413,13 +539,12 @@ function bloom() {
 
 let lastX = 0, lastY = 0, haveLast = false;
 const lerp = (a, b, t) => a + (b - a) * t;
-const fmtDeg = r => { const d = r / D2R; return (d < -.05 ? '−' : '+') + Math.abs(d).toFixed(1) + '°'; };
 
 /* ───────────── Loop ───────────── */
 function resize() {
   dpr = Math.min(devicePixelRatio || 1, 2);
   W = root.clientWidth; H = root.clientHeight;
-  canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+  canvas.width = glc.width = Math.round(W * dpr); canvas.height = glc.height = Math.round(H * dpr);
   blur.forEach((b, i) => { b.c.width = Math.max(1, canvas.width >> (i + 1)); b.c.height = Math.max(1, canvas.height >> (i + 1)); });
   cyaw = Math.cos(HOME.yaw); syaw = Math.sin(HOME.yaw); cpit = Math.cos(HOME.pitch); spit = Math.sin(HOME.pitch);
   zoom = 1; ox = oy = 0;
@@ -468,20 +593,17 @@ function frame(now) {
   followW = lerp(followW, (active || (follow && pointers.size && target)) ? 1 : 0, Math.min(1, dt * 3));
   if (followW < .001) qFollow = null;
   const q = qFollow ? qLoop.map((v, i) => angLerp(v, qFollow[i], followW)) : qLoop;
-  const frames = linkFrames(q);
+  const frames = linkFrames(q); frames[7] = mI();
 
+  drawScene(frames);                  // the 3D scene on the GPU …
   ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.globalCompositeOperation = 'source-over';
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(glc, 0, 0);           // … copied onto the visible canvas, then the glow and the label on top
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  ctx.lineJoin = ctx.lineCap = 'round';
-
-  ctx.globalCompositeOperation = 'lighter';     // floor lines add up to a glow
-  drawFloor();
-  ctx.globalCompositeOperation = 'source-over'; // the arm is solid
-  drawArm(frames);
-  ctx.globalCompositeOperation = 'lighter';
   bloom();
   ctx.globalCompositeOperation = 'source-over';
+  placeLabel();
   if (envLabel) {
     ctx.font = FONT; ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
     if ('letterSpacing' in ctx) ctx.letterSpacing = '1.5px';
@@ -539,7 +661,6 @@ requestAnimationFrame(frame);
   .fo-robot[data-theme="light"] { background: rgba(0, 0, 0, .04); }
   .fo-robot canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; touch-action: pan-y; }
   .fo-robot canvas.drag { cursor: grabbing; }
-
   /* On the site: fill the container instead of setting its own 5:7 box. */
   .fo-robot {
     aspect-ratio: auto;
