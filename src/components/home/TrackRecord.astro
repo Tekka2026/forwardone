@@ -67,9 +67,11 @@ const keys = ['size', 'companies', 'status'] as const;
   /* Same rhythm as the hero: eyebrow → figure 12px, figure → title 16px,
      figure line height as the H1. */
   /* Glow: the figure is painted by a --figure-base → --figure-glow gradient
-     (#820400 deep red → #DB8E00 amber, owner 2026-10-17). As it scrolls up
-     into view, the script moves --figure-sweep from 0% to 100%, pushing the
-     amber out to the right until the number is solid deep red.
+     (#820400 deep red → #DB8E00 amber, owner 2026-10-17). As
+     --figure-sweep goes from 0% to 100% (the script: closer to the cursor,
+     or higher up the screen on touch), the amber slides out to the right and
+     both colours darken towards the heading colour, until the number is
+     solid black.
      Rests at 100% (solid) without JS or under reduced motion. The padding /
      negative margin pair lets the painted box cover the large glyphs. */
   .track__figure {
@@ -79,8 +81,8 @@ const keys = ['size', 'companies', 'status'] as const;
     --figure-bleed: calc(var(--fs-display) * 0.3);
     background: linear-gradient(
       90deg,
-      var(--figure-base) var(--figure-sweep),
-      var(--figure-glow) calc(var(--figure-sweep) + 100%)
+      color-mix(in srgb, var(--figure-base), var(--fg) var(--figure-sweep)) var(--figure-sweep),
+      color-mix(in srgb, var(--figure-glow), var(--fg) var(--figure-sweep)) calc(var(--figure-sweep) + 100%)
     );
     -webkit-background-clip: text;
     background-clip: text;
@@ -240,14 +242,14 @@ const keys = ['size', 'companies', 'status'] as const;
 </style>
 
 <script>
-  // Glow on the headline figure (deep red → amber, the amber pushed out to the
-  // right as --figure-sweep goes 0% → 100%).
+  // Glow on the headline figure (deep red → amber; as --figure-sweep goes
+  // 0% → 100% the amber is pushed out to the right and both turn black).
   // - Mouse (hover-capable, fine pointer): the cursor drives it. Far from the
   //   number the full gradient shows; within REACH px it fades out as the
-  //   cursor approaches; on the number it is solid deep red. Eased.
+  //   cursor approaches; on the number it is solid black. Eased.
   // - Touch (no cursor): scroll-linked (owner, 2026-10-14): full gradient
   //   as the figure enters at the bottom, the amber slides out to the right
-  //   as it rises, solid deep red only once its top reaches the top of the
+  //   as it rises, solid black only once its top reaches the top of the
   //   window (over the whole height, not half, so it lasts longer).
   // - Reduced motion: solid (CSS default).
   const figure = document.querySelector<HTMLElement>('[data-track-figure]');
