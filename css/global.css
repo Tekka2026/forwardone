@@ -104,13 +104,14 @@
   --nav-hairline: rgba(255, 255, 255, 0.18);
 
   /* Type: families, loaded in src/layouts/Base.astro.
-     --font-display: Clash Display (Fontshare) for Display (H1), Section (H2)
-                     and Feature headings, stat values and the wordmark.
+     --font-display: KMR Apparat (self-hosted, src/assets/fonts/kmr-apparat;
+                     Clash Display from Fontshare as fallback) for Display
+                     (H1), Section (H2) and Feature headings and stat values.
      --font-sans:    Inter (Google Fonts) for H3 and below, body copy and
                      all UI text.
      --font-mono:    Geist Mono (self-hosted, src/assets/fonts/geist-mono) for
                      eyebrows, labels and code. */
-  --font-display: "Clash Display", "Inter", system-ui, -apple-system,
+  --font-display: "KMR Apparat", "Clash Display", "Inter", system-ui, -apple-system,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
@@ -214,6 +215,59 @@
   font-weight: 500;
   font-display: swap;
   src: url("../src/assets/fonts/geist-mono/GeistMono-Medium.woff2") format("woff2");
+}
+
+/* KMR Apparat (owner, 2026-10-17) for headings. Commercial font, used for the
+   MVP; buy a licence before the site goes public (A0010). The CSS weights
+   follow the cut names (the files' own weight classes are non-standard). */
+@font-face {
+  font-family: "KMR Apparat";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("../src/assets/fonts/kmr-apparat/KMR-Apparat-Light.woff2") format("woff2");
+}
+@font-face {
+  font-family: "KMR Apparat";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../src/assets/fonts/kmr-apparat/KMR-Apparat-Regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "KMR Apparat";
+  font-style: normal;
+  font-weight: 450;
+  font-display: swap;
+  src: url("../src/assets/fonts/kmr-apparat/KMR-Apparat-Book.woff2") format("woff2");
+}
+@font-face {
+  font-family: "KMR Apparat";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../src/assets/fonts/kmr-apparat/KMR-Apparat-Medium.woff2") format("woff2");
+}
+@font-face {
+  font-family: "KMR Apparat";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../src/assets/fonts/kmr-apparat/KMR-Apparat-Bold.woff2") format("woff2");
+}
+@font-face {
+  font-family: "KMR Apparat";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("../src/assets/fonts/kmr-apparat/KMR-Apparat-Heavy.woff2") format("woff2");
+}
+@font-face {
+  font-family: "KMR Apparat";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("../src/assets/fonts/kmr-apparat/KMR-Apparat-Black.woff2") format("woff2");
 }
 
 /* --------------------------------------------------------------------------

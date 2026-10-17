@@ -55,3 +55,4 @@
 | A0007 | done   | Button reference supplied by the owner on 2026-10-13 (vercel.com screenshot). Buttons take Geist's shape only (pill, sizes, type size); colours stay the site's own. |
 | A0008 | done   | Pages source switched to GitHub Actions by the owner on 2026-10-13. |
 | A0009 | open   | Run https://pagespeed.web.dev on the live homepage (mobile) and share the LCP. The H1 is the LCP element and its intro animation waits `--reveal-start` (800ms), which adds to LCP; local mobile emulation measured 2.6s (good is 2.5s or less). Decide whether to shorten the delay. |
+| A0010 | open   | Buy a web licence for KMR Apparat (headings, since 2026-10-17) before the site goes public. The owner OK'd using it for the MVP; the font files are in the public repo. |
