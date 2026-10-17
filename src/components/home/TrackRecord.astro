@@ -66,18 +66,20 @@ const keys = ['size', 'companies', 'status'] as const;
   }
   /* Same rhythm as the hero: eyebrow → figure 12px, figure → title 16px,
      figure line height as the H1. */
-  /* Glow: the figure is painted by a black → --figure-glow (#820400, owner
-     2026-10-17) gradient. As it scrolls up into view, the script moves
-     --figure-sweep from 0% to 100%, pushing the red out to the right until the number is solid black.
+  /* Glow: the figure is painted by a --figure-base → --figure-glow gradient
+     (#DB8E00 amber → #820400 deep red, owner 2026-10-17). As it scrolls up
+     into view, the script moves --figure-sweep from 0% to 100%, pushing the
+     red out to the right until the number is solid amber.
      Rests at 100% (solid) without JS or under reduced motion. The padding /
      negative margin pair lets the painted box cover the large glyphs. */
   .track__figure {
     --figure-sweep: 100%;
+    --figure-base: #db8e00;
     --figure-glow: #820400;
     --figure-bleed: calc(var(--fs-display) * 0.3);
     background: linear-gradient(
       90deg,
-      var(--fg) var(--figure-sweep),
+      var(--figure-base) var(--figure-sweep),
       var(--figure-glow) calc(var(--figure-sweep) + 100%)
     );
     -webkit-background-clip: text;
@@ -238,14 +240,14 @@ const keys = ['size', 'companies', 'status'] as const;
 </style>
 
 <script>
-  // Glow on the headline figure (black → red, the red pushed out to the
+  // Glow on the headline figure (amber → red, the red pushed out to the
   // right as --figure-sweep goes 0% → 100%).
   // - Mouse (hover-capable, fine pointer): the cursor drives it. Far from the
   //   number the full gradient shows; within REACH px it fades out as the
-  //   cursor approaches; on the number it is solid black. Eased.
+  //   cursor approaches; on the number it is solid amber. Eased.
   // - Touch (no cursor): scroll-linked (owner, 2026-10-14): full gradient
   //   as the figure enters at the bottom, the red slides out to the right
-  //   as it rises, solid black only once its top reaches the top of the
+  //   as it rises, solid amber only once its top reaches the top of the
   //   window (over the whole height, not half, so it lasts longer).
   // - Reduced motion: solid (CSS default).
   const figure = document.querySelector<HTMLElement>('[data-track-figure]');
