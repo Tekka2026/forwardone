@@ -147,7 +147,9 @@ Rules:
 - H1 words enter from the bottom one by one in discrete frames (invisible,
   then 2 steps down, 1 step, rest; the last word rises smoothly from 7
   steps down over the span of 8 frames, appearing as a left-to-right
-  gradient from the heading colour to `--reveal-tint` #FFEA6D; the yellow
+  gradient from the heading colour to `--reveal-tint` (#DB8E00 amber where
+  headings are black, #FFEA6D yellow in `.theme-dark` where they are white,
+  e.g. the homepage hero; owner 2026-10-17); the tint
   then slides out to the right over `--reveal-tint-duration`, 32 frames,
   from the moment it appears). Tokens
   `--reveal-frame` (80ms), `--reveal-step` (0.02em), `--reveal-stagger`
