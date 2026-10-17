@@ -206,11 +206,11 @@ the H1's (an H1 line height at twice the size would double it) on one line (an e
 break-after-each-sentence rule; it wraps only where it does not fit),
 with centred body copy 16px below it, at the hero's lede size
 (`.lede`, `--fs-lede`, like the copy under the H1).
-The figure is painted by a black → `--brand-yellow` gradient whose yellow slides
+The figure is painted by a black → `--figure-glow` (#820400, deep red; owner 2026-10-17) gradient whose red slides
 out to the right. Desktop (mouse): the cursor drives it; far away the full
 gradient shows, within 480px it fades as the cursor approaches, on the
 number it is solid black (eased). Touch (no cursor): scroll-linked, full
-gradient as the figure enters at the bottom, the yellow slides out as it
+gradient as the figure enters at the bottom, the red slides out as it
 rises, solid black once its top reaches the top of the window. Solid
 without JS or under reduced motion. The
 table follows 16px lower.
@@ -495,9 +495,8 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
 ## 9. Colour (placeholders)
 
 - Accent: `--brand-yellow` #FFEA6D (owner, 2026-10-17; replaced the cyan
-  #78F6FB and the blue #2D75D9). Used for the H1 last-word tint, the €388M
-  glow, the nav AI mark and entrance glow, Proof card dates, the Fund III
-  gradient corner, the portal's first chart tone and badge, and the robot's
+  #78F6FB and the blue #2D75D9). Used for the H1 last-word tint, the nav
+  AI mark and entrance glow, Proof card dates, the Fund III gradient corner, the portal's first chart tone and badge, and the robot's
   cap and the Munich pin. Where it must read on light grey (robot ring and
   label, map ring and labels) it is darkened to ochre rgb(196,160,20).
 - Dark sections: `.section--dark.theme-dark` (black band, tokens inverted;
