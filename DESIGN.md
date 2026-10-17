@@ -104,15 +104,10 @@ All queries are `max-width`, desktop-first.
 
 Three families, all loaded in `src/layouts/Base.astro`:
 
-- `--font-display`: **KMR Apparat** (owner, 2026-10-17; supplied as
-  WOFF2, self-hosted from `src/assets/fonts/kmr-apparat`, declared in
-  `css/global.css` as Light 300, Regular 400, Book 450, Medium 500, Bold
-  700, Heavy 800, Black 900). Used for Display (H1), Section (H2) and
-  Feature headings, stat values and card metrics only (the wordmark is an
-  SVG). The heading weight 450 picks the Book cut. Commercial font, used for
-  the MVP; the owner buys a licence if the site goes public. Clash Display
-  (Fontshare) stays loaded as the fallback, so going back is a one-line
-  change in `--font-display`.
+- `--font-display`: **Clash Display** (Fontshare; variable font, weight axis
+  200–700, plus static 400/500/600 as fallback). Used for Display (H1),
+  Section (H2) and Feature headings, stat values, card metrics and the
+  wordmark only.
 - `--font-sans`: **Inter** (Google Fonts, variable 400–600). H3 and below
   (card titles, the Playbook list) and all body and UI text: lede, body,
   small, buttons, navigation, forms, footer.
@@ -185,7 +180,8 @@ Rules:
 - Every size, line height, tracking and heading weight value exists as a token
   (`--fs-*`, `--lh-*`, `--ls-*`, `--fw-heading`, `--fw-card-title`). New
   components reference tokens, never literal values. Heading weights are
-  450 (display, KMR Apparat Book) / 550 (card titles, Inter variable).
+  450 / 550 (set 2026-10-12), which requires the Clash Display variable font
+  loaded in `src/layouts/Base.astro`; without it they snap to 500 / 600.
 
 ### Figures and tables
 
