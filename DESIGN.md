@@ -206,13 +206,13 @@ the H1's (an H1 line height at twice the size would double it) on one line (an e
 break-after-each-sentence rule; it wraps only where it does not fit),
 with centred body copy 16px below it, at the hero's lede size
 (`.lede`, `--fs-lede`, like the copy under the H1).
-The figure is painted by a `--figure-base` → `--figure-glow` gradient (#DB8E00
-amber → #820400 deep red; owner 2026-10-17) whose red slides
+The figure is painted by a `--figure-base` → `--figure-glow` gradient (#820400
+deep red → #DB8E00 amber; owner 2026-10-17) whose amber slides
 out to the right. Desktop (mouse): the cursor drives it; far away the full
 gradient shows, within 480px it fades as the cursor approaches, on the
-number it is solid amber (eased). Touch (no cursor): scroll-linked, full
-gradient as the figure enters at the bottom, the red slides out as it
-rises, solid amber once its top reaches the top of the window. Solid
+number it is solid deep red (eased). Touch (no cursor): scroll-linked, full
+gradient as the figure enters at the bottom, the amber slides out as it
+rises, solid deep red once its top reaches the top of the window. Solid
 without JS or under reduced motion. The
 table follows 16px lower.
 
