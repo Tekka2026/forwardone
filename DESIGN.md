@@ -491,7 +491,8 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   and resize. The panel takes the same colour while closed, so opening and
   folding away animate bar and panel together (white to #000 and back).
 
-- Entrance glow: as the bar slides in, a transparent → `--brand-yellow`
+- Entrance glow: as the bar slides in, a transparent → `--nav-glow-color`
+  (#DB8E00 on the black bar, #FFEA6D on the white bar; owner 2026-10-17)
   gradient across the whole bar slides out to the right over
   `--reveal-tint-duration` with `--reveal-gentle-ease`, the same as the H1's
   last word. Off under reduced motion.
