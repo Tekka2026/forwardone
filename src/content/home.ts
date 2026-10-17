@@ -282,7 +282,7 @@ export const fundIII = {
  * shown in the tooltip too (share × total). `tone` picks the chart colour in
  * PortalPreview.astro.
  */
-export type PortalTone = 'cyan' | 'ink' | 'lilac' | 'grey';
+export type PortalTone = 'yellow' | 'ink' | 'lilac' | 'grey';
 
 export const portal = {
   label: 'Illustration of the FORWARD.one investor portal dashboard',
@@ -309,7 +309,7 @@ export const portal = {
     // EUR 1,500,300, calculated at the owner's request (2026-10-14); the four
     // add up to the total exactly.
     items: [
-      { label: 'Cash deposits', tone: 'cyan', share: 53, value: 'EUR 795,159' },
+      { label: 'Cash deposits', tone: 'yellow', share: 53, value: 'EUR 795,159' },
       { label: 'Equity', tone: 'ink', share: 20, value: 'EUR 300,060' },
       { label: 'Fixed income', tone: 'lilac', share: 18, value: 'EUR 270,054' },
       { label: 'Other', tone: 'grey', share: 9, value: 'EUR 135,027' },

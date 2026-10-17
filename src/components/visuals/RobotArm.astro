@@ -11,7 +11,8 @@
  * and keeps glancing at spots around the camera (instead of looping through
  * poses); the arm follows the mouse only while the pointer is over the box
  * (leaving eases it back to facing the viewer); the SENSORFACT label is
- * drawn behind the arm instead of on top of it.
+ * drawn behind the arm instead of on top of it. Colours (owner, 2026-10-17):
+ * the cap and accent are yellow #FFEA6D instead of blue / cyan.
  */
 ---
 
@@ -45,8 +46,8 @@ const POSES = [
 // Theme: dark by default; add data-theme="light" to the .fo-robot box for the inverted version.
 const INV = document.currentScript.closest('.fo-robot').dataset.theme === 'light';
 const COL = INV
-  ? { line: '17,17,17', accent: '20,170,180', cap: [45, 117, 217] }     // accent darkened from #78F6FB so it reads on white
-  : { line: '232,236,238', accent: '120,246,251', cap: [45, 117, 217] }; // accent = #78F6FB · cap = #2D75D9
+  ? { line: '17,17,17', accent: '196,160,20', cap: [255, 234, 109] }    // accent darkened from #FFEA6D so it reads on light grey
+  : { line: '232,236,238', accent: '255,234,109', cap: [255, 234, 109] }; // accent = cap = #FFEA6D (owner, 2026-10-17; was cyan / blue)
 const rgba = (c, a) => `rgba(${c},${a})`;
 const FONT = '10px ui-monospace,"SF Mono",Menlo,Consolas,monospace';
 const D2R = Math.PI / 180;
@@ -360,7 +361,7 @@ void main() {
   vec3 n = normalize(mat3(m) * a_nrm);
   float lit = max(0.0, dot(n, u_light));
   vec3 c;
-  if (a_mat > 0.5) c = min(vec3(1.0), u_cap * (0.62 + lit * 0.45));          // the sensor cap
+  if (a_mat > 0.5) c = min(vec3(1.0), u_cap * (0.86 + lit * 0.22));          // the sensor cap (shading lifted so the yellow stays yellow)
   else if (u_inv > 0.5) c = vec3(1.0);                                        // inverted: a white arm
   else { float g = (7.0 + lit * 13.0) / 255.0; c = vec3(g, g + 1.0 / 255.0, g + 2.0 / 255.0); }
   v_col = vec4(c, 1.0);

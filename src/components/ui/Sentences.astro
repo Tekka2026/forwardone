@@ -14,7 +14,7 @@
  * The last word appears the same way (invisible for one frame, then fully
  * visible) but rises smoothly from 7 steps down over the span of 8 frames.
  * It appears as a left-to-right gradient, heading colour to --reveal-tint
- * (#78F6FB); from the moment it is visible the blue slides out to the right
+ * (#FFEA6D); from the moment it is visible the yellow slides out to the right
  * over --reveal-tint-duration (32 frames), leaving the heading colour.
  * With `tick`, every word (the last one too) uses the stepped motion; used
  * for the eyebrow above the H1, which ticks in alongside it.
@@ -104,7 +104,7 @@ let index = 0;
   .rw--last {
     /* Text painted by a gradient: heading colour (left) to --reveal-tint
        (right), spanning the word. --rw-sweep moves the gradient right; at
-       rest (100%) the blue sits past the word's right edge. */
+       rest (100%) the yellow sits past the word's right edge. */
     --rw-sweep: 100%;
     background: linear-gradient(
       90deg,
@@ -124,7 +124,7 @@ let index = 0;
       rw-rise calc(var(--reveal-frame) * 9) cubic-bezier(0.2, 0.7, 0.2, 1) forwards,
       rw-tint var(--reveal-tint-duration) var(--reveal-gentle-ease) both;
     /* The tint waits out the invisible first frame, so the word is fully
-       #78F6FB the moment it appears. */
+       #FFEA6D the moment it appears. */
     animation-delay:
       calc(var(--reveal-start) + var(--i) * var(--reveal-stagger)),
       calc(var(--reveal-start) + var(--i) * var(--reveal-stagger)),
@@ -153,7 +153,7 @@ let index = 0;
     100% { transform: translateY(0); }
   }
 
-  /* The blue leaves on the right: the gradient slides from spanning the
+  /* The yellow leaves on the right: the gradient slides from spanning the
      word (0%) to past its right edge (100%, the resting value). */
   @property --rw-sweep {
     syntax: '<percentage>';

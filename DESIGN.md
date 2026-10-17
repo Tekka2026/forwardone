@@ -147,7 +147,7 @@ Rules:
 - H1 words enter from the bottom one by one in discrete frames (invisible,
   then 2 steps down, 1 step, rest; the last word rises smoothly from 7
   steps down over the span of 8 frames, appearing as a left-to-right
-  gradient from the heading colour to `--reveal-tint` #78F6FB; the blue
+  gradient from the heading colour to `--reveal-tint` #FFEA6D; the yellow
   then slides out to the right over `--reveal-tint-duration`, 32 frames,
   from the moment it appears). Tokens
   `--reveal-frame` (80ms), `--reveal-step` (0.02em), `--reveal-stagger`
@@ -206,11 +206,11 @@ the H1's (an H1 line height at twice the size would double it) on one line (an e
 break-after-each-sentence rule; it wraps only where it does not fit),
 with centred body copy 16px below it, at the hero's lede size
 (`.lede`, `--fs-lede`, like the copy under the H1).
-The figure is painted by a black → `--brand-cyan` gradient whose cyan slides
+The figure is painted by a black → `--brand-yellow` gradient whose yellow slides
 out to the right. Desktop (mouse): the cursor drives it; far away the full
 gradient shows, within 480px it fades as the cursor approaches, on the
 number it is solid black (eased). Touch (no cursor): scroll-linked, full
-gradient as the figure enters at the bottom, the cyan slides out as it
+gradient as the figure enters at the bottom, the yellow slides out as it
 rises, solid black once its top reaches the top of the window. Solid
 without JS or under reduced motion. The
 table follows 16px lower.
@@ -242,7 +242,7 @@ gauge and tooltips, shared) and `portal/icons.ts`; copy in `fundIII` and
 `portal` (home.ts).
 
 - Fund III section background: a diagonal gradient, full width, evenly from
-  `#B6E3E5` in the bottom-left corner to `rgba(0, 0, 0, 0.04)` over the page
+  `#FFEA6D` in the bottom-left corner to `rgba(0, 0, 0, 0.04)` over the page
   white in the top-right corner. `background-clip: padding-box`, so the
   top hairline keeps the standard grey instead of tinting over the gradient.
 - Fund III head is centred: eyebrow, H2, body (balanced), CTA.
@@ -286,9 +286,9 @@ gauge and tooltips, shared) and `portal/icons.ts`; copy in `fundIII` and
   cut like the right-hand cards instead of ending above it.
 - Geist-style parts in the site's type and colours: white top bar (1px line
   under it, muted tabs, black underlined active tab), square cards with Geist's shadow border on a
-  `#fafafa` canvas, the site's small ghost pill button (Filter), a cyan pill
+  `#fafafa` canvas, the site's small ghost pill button (Filter), a yellow pill
   badge, a dark tooltip, 1.5px stroke icons, links in `--brand-purple`.
-- Chart tones: cyan, ink, lilac (purple 45% toward white), grey. Amounts use comma thousands separators (EUR 1,500,300).
+- Chart tones: yellow, ink, lilac (purple 45% toward white), grey. Amounts use comma thousands separators (EUR 1,500,300).
 - An illustration: `role="img"` with a label; nothing inside is focusable.
 
 ### Insights and closing
@@ -310,10 +310,10 @@ gauge and tooltips, shared) and `portal/icons.ts`; copy in `fundIII` and
   `MunichMap.astro`: a static, top-down street map of central Munich, laid
   out like Google Maps, in the robot's style: plus grid as the ground,
   streets as white bands with thin dark outlines (main roads wider), the
-  Mittlerer Ring with the dashed teal line, the Isar as a pale blue river,
-  parks as faint teal with dashed edges (Englischer Garten, Olympiapark,
+  Mittlerer Ring with the dashed ochre line, the Isar as a light grey river,
+  parks as faint ochre with dashed edges (Englischer Garten, Olympiapark,
   Hofgarten, Theresienwiese, Alter Südfriedhof), rail into the Hauptbahnhof
-  dashed, the Olympiaturm from above, one blue pin on Marienplatz with
+  dashed, the Olympiaturm from above, one yellow pin on Marienplatz with
   MÜNCHEN and its coordinates, mono place labels with a grey halo, a 1 km
   scale bar and N ↑. Built at build time from real coordinates, simplified
   (main streets only). It does not move.
@@ -337,7 +337,7 @@ Built like the "Follow the battery." section on vikka.io
   at the end, with its right edge), earlier and later
   cards are cut off by the browser on either side. The root clips
   horizontal overflow, so there is no page scroll.
-- Card: date in `--brand-cyan` (group label and month + year, e.g. "EXIT: APRIL
+- Card: date in `--brand-yellow` (group label and month + year, e.g. "EXIT: APRIL
   2022"), visual centred in the right half, or a background video filling
   the card (WebM first, MP4 fallback, poster frame; under one flat overlay (`--video-overlay`, 45% black); plays only while on screen, never under reduced motion), then along the bottom, across the whole card, the company name at Feature size (no
   hover underline; focus shows an outline), the outcome line and optional
@@ -457,7 +457,7 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   the keyboard control. Insets are symmetric: the AI mark sits 16px from the
   bar's left edge, the hamburger glyph 16px from its right edge. Closed bar
   and open panel share one width (the page column, 24px from each side).
-- The AI mark (#78F6FB) sits left of the line from the start. Pressing the
+- The AI mark (#FFEA6D) sits left of the line from the start. Pressing the
   bar (open or close) plays a swap: the mark shrinks and is pushed up and to
   the right while a second mark grows in from the bottom left into its place
   (840ms; off under reduced motion). On opening the line is retyped as
@@ -465,7 +465,7 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   after 2 s exists but is switched off: `navGreeting.ask.placeholderEnabled`.)
   Clicking the line, or typing anywhere once it has been typed, opens a text
   field (no backend yet). Closing types the welcome line back.
-- The greeting is plain text, no gradient. The AI mark is #78F6FB on the dark
+- The greeting is plain text, no gradient. The AI mark is #FFEA6D on the dark
   bar and the bar's dark text colour on the white (inverse) bar. The `_` cursor shows only while text is being
   typed or erased. Copy lives in `src/content/nav.ts` (`navGreeting`).
 - Open: the panel expands upward from the bar in `--nav-bg-open` (#000000)
@@ -482,18 +482,24 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
 
 - Inverse: while closed and over an element marked `data-nav-dark` (the
   homepage intro), the bar turns `--nav-bg-inverse` (#FFFFFF) with
-  `--nav-fg-inverse` (#1A1A1A) text, and the greeting drops its cyan
+  `--nav-fg-inverse` (#1A1A1A) text, and the greeting drops its yellow
   gradient. The check uses the bar's resting centre line and runs on scroll
   and resize. The panel takes the same colour while closed, so opening and
   folding away animate bar and panel together (white to #000 and back).
 
-- Entrance glow: as the bar slides in, a transparent → `--brand-cyan`
+- Entrance glow: as the bar slides in, a transparent → `--brand-yellow`
   gradient across the whole bar slides out to the right over
   `--reveal-tint-duration` with `--reveal-gentle-ease`, the same as the H1's
   last word. Off under reduced motion.
 
 ## 9. Colour (placeholders)
 
+- Accent: `--brand-yellow` #FFEA6D (owner, 2026-10-17; replaced the cyan
+  #78F6FB and the blue #2D75D9). Used for the H1 last-word tint, the €388M
+  glow, the nav AI mark and entrance glow, Proof card dates, the Fund III
+  gradient corner, the portal's first chart tone and badge, and the robot's
+  cap and the Munich pin. Where it must read on light grey (robot ring and
+  label, map ring and labels) it is darkened to ochre rgb(196,160,20).
 - Dark sections: `.section--dark.theme-dark` (black band, tokens inverted;
   `data-nav-dark` so the floating nav inverts over it). Used by Insights.
 - `.theme-dark` re-points the colour tokens (`--bg` #000, `--fg` #FFF,

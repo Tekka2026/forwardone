@@ -216,13 +216,13 @@ const current = Astro.url.pathname;
        right (12px padding + the button's 4px inset). */
     padding: 0 var(--gap-half) 0 var(--space-4x);
     background-color: var(--nav-bg);
-    /* Entrance glow: transparent to --brand-cyan across the bar, sliding out
+    /* Entrance glow: transparent to --brand-yellow across the bar, sliding out
        to the right like the H1's last word (see .nav[data-visible] below).
-       At rest (--nav-glow: 100%) the cyan sits past the right edge. */
+       At rest (--nav-glow: 100%) the yellow sits past the right edge. */
     background-image: linear-gradient(
       90deg,
       transparent var(--nav-glow),
-      var(--brand-cyan) calc(var(--nav-glow) + 100%)
+      var(--brand-yellow) calc(var(--nav-glow) + 100%)
     );
     border-radius: var(--radius);
     /* closing: colour changes together with the panel above it */
@@ -269,7 +269,7 @@ const current = Astro.url.pathname;
   .nav[data-inverse]:not([data-open]) .nav__bar {
     color: var(--nav-fg-inverse);
   }
-  /* White bar: the AI mark in the bar's dark text colour instead of cyan. */
+  /* White bar: the AI mark in the bar's dark text colour instead of yellow. */
   .nav[data-inverse]:not([data-open]) .nav__ai {
     color: var(--nav-fg-inverse);
   }
@@ -309,7 +309,7 @@ const current = Astro.url.pathname;
     align-self: center;
     width: 16px;
     height: 16px;
-    color: #78f6fb;
+    color: var(--brand-yellow);
   }
   .nav__ai svg {
     position: absolute;
