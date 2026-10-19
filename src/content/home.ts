@@ -199,7 +199,7 @@ export type FounderEntry = {
   /** Company card: one line under the name. */
   blurb: string;
 };
-export type FounderClip = { video: string; poster: string; person: string; caption: string };
+export type FounderClip = { video: string; webm?: string; poster: string; person: string; caption: string };
 
 const PH = {
   name: '[PLACEHOLDER: founder name]',
@@ -239,9 +239,13 @@ export const founders = {
   ] as FounderEntry[],
   /** A clip after every `clipEvery` founder cards. */
   clipEvery: 4,
-  clips: [1, 2, 3, 4, 5].map((i) => ({
-    video: `[PLACEHOLDER: /founders/clip-${i}.mp4]`,
-    poster: '',
+  // Until the team videos are supplied every clip plays the same neutral
+  // placeholder video (owner, 2026-10-19: generated, dark drifting light
+  // with "PLACEHOLDER VIDEO" written on it), each from a different moment.
+  clips: [1, 2, 3, 4, 5].map(() => ({
+    video: '/founders/placeholder.mp4',
+    webm: '/founders/placeholder.webm',
+    poster: '/founders/placeholder.jpg',
     person: '[PLACEHOLDER: team member, role]',
     caption: '[PLACEHOLDER: one-line caption]',
   })) as FounderClip[],

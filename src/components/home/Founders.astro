@@ -4,10 +4,10 @@
  * record: a big horizontal scroll of 5:7 cards, three grid columns wide.
  *
  * A plain horizontal scroller (owner, 2026-10-19: the page's own scrolling is
- * never taken over): swipe, trackpad or shift + wheel, with snap points, and
- * a progress line with previous / next buttons (one screenful of cards per
- * press), as in the Proof slider. Each card eases up into place the first
- * time it comes into view, so more cards come in as you scroll sideways.
+ * never taken over): swipe, trackpad or shift + wheel, with snap points; no
+ * arrows or progress line (owner, 2026-10-19). Each card eases up into
+ * place the first time it comes into view, so more cards come in as you
+ * scroll sideways.
  *
  * Card types: founder (photo, name, "CEO, company"), company (brand colour,
  * name, one line), and a TikTok-style clip of a FORWARD.one team member with
@@ -65,7 +65,10 @@ const isPh = (v: string) => isPlaceholder(v);
                           <Placeholder value={v.video} />
                         </div>
                       ) : (
-                        <video class="fc__video" src={href(v.video)} poster={v.poster ? href(v.poster) : undefined} muted loop playsinline preload="none" data-fc-video />
+                        <video class="fc__video" poster={v.poster ? href(v.poster) : undefined} muted loop playsinline preload="metadata" data-fc-video>
+                          {v.webm && <source src={href(v.webm)} type="video/webm" />}
+                          <source src={href(v.video)} type="video/mp4" />
+                        </video>
                       )}
                       <span class="fc__progress" aria-hidden="true"><span data-fc-progress /></span>
                       <div class="fc__rail">
@@ -119,19 +122,8 @@ const isPh = (v: string) => isPlaceholder(v);
               })
             }
           </ul>
-          <div class="founders__controls">
-            <div class="founders__progress" aria-hidden="true"><span data-founders-fill /></div>
-            <div class="founders__buttons">
-              <button class="founders__btn" type="button" data-founders-prev aria-label="Previous founders" disabled>
-                <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M13 8H3M7 4 3 8l4 4" fill="none" stroke="currentColor" stroke-width="1.5" /></svg>
-              </button>
-              <button class="founders__btn" type="button" data-founders-next aria-label="Next founders">
-                <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" /></svg>
-              </button>
-            </div>
-          </div>
         </div>
-  </div>
+      </div>
 </section>
 
 <script is:inline>
@@ -141,31 +133,6 @@ const isPh = (v: string) => isPlaceholder(v);
     var track = sec.querySelector('[data-founders-track]');
     var cards = [].slice.call(track.querySelectorAll('[data-fc]'));
     var reduce = matchMedia('(prefers-reduced-motion: reduce)');
-
-    // ---- Progress line and previous / next ----------------------------
-    var prev = sec.querySelector('[data-founders-prev]');
-    var next = sec.querySelector('[data-founders-next]');
-    var fill = sec.querySelector('[data-founders-fill]');
-    var max = function () { return track.scrollWidth - track.clientWidth; };
-    var raf = 0;
-    var update = function () {
-      raf = 0;
-      var m = max();
-      fill.style.transform = 'scaleX(' + (m > 0 ? (track.scrollLeft + track.clientWidth) / track.scrollWidth : 1).toFixed(3) + ')';
-      prev.disabled = track.scrollLeft <= 2;
-      next.disabled = track.scrollLeft >= m - 2;
-    };
-    // one press = as many whole cards as fit in view
-    var page = function (dir) {
-      var step = cards[1].offsetLeft - cards[0].offsetLeft;
-      var n = Math.max(1, Math.floor((track.clientWidth + 1) / step));
-      track.scrollBy({ left: dir * n * step, behavior: reduce.matches ? 'auto' : 'smooth' });
-    };
-    prev.addEventListener('click', function () { page(-1); });
-    next.addEventListener('click', function () { page(1); });
-    track.addEventListener('scroll', function () { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
-    window.addEventListener('resize', update);
-    update();
 
     // ---- Cards ease in the first time they come into view ----------------
     if ('IntersectionObserver' in window && !reduce.matches) {
@@ -190,8 +157,12 @@ const isPh = (v: string) => isPlaceholder(v);
           else v.pause();
         });
       }, { threshold: 0.5 });
-      videos.forEach(function (v) {
+      videos.forEach(function (v, i) {
         vio.observe(v);
+        // each clip starts at a different moment, so shared footage never plays in step
+        v.addEventListener('loadedmetadata', function () {
+          if (v.duration) v.currentTime = (i * 1.7) % v.duration;
+        }, { once: true });
         var bar = v.parentNode.querySelector('[data-fc-progress]');
         v.addEventListener('timeupdate', function () {
           if (v.duration) bar.style.transform = 'scaleX(' + (v.currentTime / v.duration).toFixed(3) + ')';
@@ -257,58 +228,6 @@ const isPh = (v: string) => isPlaceholder(v);
   }
   .founders__track::-webkit-scrollbar {
     display: none;
-  }
-
-  /* Controls: as the Proof slider (progress line across the content width,
-     buttons at its right). */
-  .founders__controls {
-    display: flex;
-    align-items: center;
-    gap: var(--gap);
-    margin-top: var(--gap);
-  }
-  .founders__progress {
-    position: relative;
-    flex: 1 1 auto;
-    height: 1px;
-    background: var(--hairline);
-  }
-  .founders__progress span {
-    position: absolute;
-    inset: -0.5px 0;
-    background: var(--fg);
-    transform: scaleX(0.2);
-    transform-origin: left center;
-    transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .founders__buttons {
-    display: flex;
-    gap: var(--space-2x);
-  }
-  .founders__btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: var(--form-height);
-    height: var(--form-height);
-    padding: 0;
-    border: 1px solid var(--fg);
-    border-radius: var(--btn-radius);
-    background: transparent;
-    color: var(--fg);
-    cursor: pointer;
-    transition: background-color 120ms ease, opacity 120ms ease;
-  }
-  .founders__btn:hover {
-    background: var(--btn-hover-shade);
-  }
-  .founders__btn:focus-visible {
-    outline: 2px solid var(--fg);
-    outline-offset: 2px;
-  }
-  .founders__btn:disabled {
-    opacity: 0.3;
-    cursor: default;
   }
 
   /* ---- Card (shared) ---------------------------------------------------- */
