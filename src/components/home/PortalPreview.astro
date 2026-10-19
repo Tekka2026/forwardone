@@ -382,6 +382,8 @@ const { class: cls } = Astro.props;
     font-family: var(--font-mono);
     font-size: 10px;
     font-weight: 400;
+    /* line-height 1: with the screen's 1.45 the mono caps sat 2.5px high. */
+    line-height: 1;
     letter-spacing: 0.04em;
   }
   .pp-badge--alert {
