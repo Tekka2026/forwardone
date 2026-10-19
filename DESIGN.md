@@ -204,14 +204,14 @@ Rules:
 - White section: eyebrow "Founders", H2, then a row of 5:7 cards, each three
   of the twelve columns wide, 32px apart, starting at the content's left
   edge and running on past the window's right edge.
-- Desktop (above 880px, motion allowed): the section pins. A tall runway
-  (100vh + the track's overflow ÷ 1.25) holds a sticky, window-high stage;
-  scrolling down moves the track sideways (1px down = 1.25px sideways)
-  until the last card ends at the content's right edge. Cards shrink if the
-  window is too short for a three-column 5:7 card (height ≤ 100svh − 300px).
-  Keyboard focus on a card scrolls the page to where it is in view.
-- Phones (880px and below) and reduced motion: a plain horizontal scroller
-  with snap points; cards min(72vw, 340px) wide.
+- Never takes over the page's scrolling (owner, 2026-10-19): a plain
+  horizontal scroller (swipe, trackpad, shift + wheel) with snap points,
+  window edge to window edge like the Proof slider, the first card at the
+  content's left edge. The track never scrolls vertically, so the wheel
+  always moves the page. Under it, as in the Proof slider, a progress line
+  across the content width and previous / next buttons; one press moves by
+  as many whole cards as fit in view.
+- Phones (880px and below): cards min(72vw, 340px) wide.
 - Each card eases up 32px and fades in (700ms) the first time it comes into
   view.
 - Sequence: the 20 founders in order, the card type alternating founder /
