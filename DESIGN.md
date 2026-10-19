@@ -268,7 +268,8 @@ screens the list stacks under the CTA.
   (a ResizeObserver sets `--pp-scale`), so the layout never reflows.
 - Content (owner, 2026-10-19): the LP's investor-report overview, after the
   owner's portal screenshot. The top bar (logo, Home / Wealth / Transactions /
-  Documents, mail with badge, settings, log out) and the greeting row
+  Documents, then the Fundrbird mark (the owner's SVG redrawn as a 1.5-stroke
+  line icon at 18px, 2026-10-19), mail with badge, settings, log out) and the greeting row
   (greeting, value date, Filter) stay as before; no email address or user
   name is shown. Under them one card with a table:
   - a head row of mono column labels, right-aligned: Commitment, Paid-in
