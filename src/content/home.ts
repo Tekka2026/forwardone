@@ -272,20 +272,46 @@ export const fundIII = {
 
 /**
  * Investor portal preview under Fund III: a desktop dashboard illustration.
- * Copy follows the supplied reference screenshot, with the bank name set to
- * FORWARD.one, CHF set to EUR and comma thousands separators. Only the top
- * 75% of the reference is drawn (the section's bottom edge cuts it off), so
- * the lower content (portfolios, account breakdown, alerts) is left out on purpose.
+ * The top bar (logo, tabs, icons) and the greeting row follow the earlier
+ * EFG-style reference; the body is the LP's investor-report overview, laid
+ * out after the owner's portal screenshot (2026-10-19): per fund the LP's
+ * commitment, paid-in capital, distributions, unfunded commitment, capital
+ * account at fair value, TVPI and net IRR, plus a link to the latest report.
  *
- * Asset classes: `share` sizes the gauge segment (traced from the reference
- * drawing) and is shown as its label and in the hover tooltip; `value` is
- * shown in the tooltip too (share × total). `tone` picks the chart colour in
- * PortalPreview.astro.
+ * ILLUSTRATIVE DATA (owner, 2026-10-19): the investor entity and the
+ * portfolio companies are invented names, and every amount is invented, of
+ * the same size as the real screenshot's. No email address is shown. The
+ * figures are internally consistent: unfunded = commitment − paid-in;
+ * TVPI = (distributed + capital account) ÷ paid-in; the total row adds up
+ * the fund rows (the look-through row under Fund III is not counted twice).
  */
-export type PortalTone = 'yellow' | 'ink' | 'lilac' | 'grey';
+export type PortalFigures = {
+  commitment: string;
+  paidIn: string;
+  distributed: string;
+  unfunded: string;
+  capitalAccount: string;
+  tvpi: string;
+  irr: string;
+};
+export type PortalHolding = {
+  name: string;
+  /** Look-through row: the LP's share held via another vehicle (shown indented and muted). */
+  via?: string;
+  figures: PortalFigures;
+};
+export type PortalFund = {
+  name: string;
+  currency: string;
+  /** Latest report, e.g. "Q3 2026"; none yet when omitted. */
+  report?: string;
+  holdings: PortalHolding[];
+};
+
+const LP = 'Corvane Investment Holding B.V.';
 
 export const portal = {
-  label: 'Illustration of the FORWARD.one investor portal dashboard',
+  label: 'Illustration of the FORWARD.one investor portal: an overview of investor reports per fund',
   nav: [
     { label: 'Home', active: true },
     { label: 'Wealth', menu: true },
@@ -298,29 +324,61 @@ export const portal = {
   /** Followed by the viewer's current date and time, e.g. "Monday, 05.02.2030 13:52". */
   valueDate: { label: 'Value date', fallback: 'Monday, 05.02.2030 13:52' },
   filter: 'Filter',
-  total: { label: 'Total Assets', value: 'EUR 1,500,300' },
-  classes: {
-    title: 'Assets by class',
-    /** Centre of the gauge: the viewer's current year (this is the fallback). */
-    yearFallback: String(new Date().getFullYear()),
-    // Three largest classes plus Other, drawn clockwise from the gauge's
-    // bottom-left end and together filling it: `share` is each part of the
-    // whole (traced 45/17/15/8 rescaled to 100). `value` = share × the total
-    // EUR 1,500,300, calculated at the owner's request (2026-10-14); the four
-    // add up to the total exactly.
-    items: [
-      { label: 'Cash deposits', tone: 'yellow', share: 53, value: 'EUR 795,159' },
-      { label: 'Equity', tone: 'ink', share: 20, value: 'EUR 300,060' },
-      { label: 'Fixed income', tone: 'lilac', share: 18, value: 'EUR 270,054' },
-      { label: 'Other', tone: 'grey', share: 9, value: 'EUR 135,027' },
-    ] as { label: string; tone: PortalTone; share: number; value: string }[],
-  },
-  team: 'Your team at FORWARD.one',
-  article: {
-    title: 'Investment scams: If it seems too good to be true, it probably is',
-    body: 'Have you seen an advert for an investment opportunity promising high returns with little or no risk? Beware: investment scams are fraudulent schemes designed to deceive you and can lead to significant financial loss.',
-    link: 'Read more',
-    image: '[PLACEHOLDER: article image]',
+  /** Column heads. The first four are cash flows; the last three (tinted) are valuation. */
+  columns: {
+    commitment: 'Commitment',
+    paidIn: 'Paid-in capital',
+    distributed: 'Distributed',
+    unfunded: 'Unfunded commitment',
+    capitalAccount: 'Capital account at fair value',
+    tvpi: 'Fund multiple TVPI',
+    irr: 'Fund net IRR',
+  } as Record<keyof PortalFigures, string>,
+  /** "View {report} report". */
+  reportLink: { before: 'View', after: 'report' },
+  funds: [
+    {
+      name: 'FORWARD.one Fund I',
+      currency: 'EUR',
+      report: 'Q3 2026',
+      holdings: [{ name: LP, figures: { commitment: '450,000', paidIn: '449,610', distributed: '(871,240)', unfunded: '390', capitalAccount: '152,310', tvpi: '2.28x', irr: '33.84%' } }],
+    },
+    {
+      name: 'FORWARD.one Fund II',
+      currency: 'EUR',
+      report: 'Q3 2026',
+      holdings: [{ name: LP, figures: { commitment: '800,000', paidIn: '663,420', distributed: '(27,350)', unfunded: '136,580', capitalAccount: '901,770', tvpi: '1.40x', irr: '15.92%' } }],
+    },
+    {
+      name: 'FORWARD.one Co-Investment II Ferrolis',
+      currency: 'EUR',
+      report: 'H1 2026',
+      holdings: [{ name: LP, figures: { commitment: '100,000', paidIn: '100,000', distributed: '–', unfunded: '–', capitalAccount: '92,415', tvpi: '0.92x', irr: '–' } }],
+    },
+    {
+      name: 'FORWARD.one Fund III',
+      currency: 'EUR',
+      report: 'Q3 2026',
+      holdings: [
+        { name: 'FORWARD.one GP Investments B.V.', figures: { commitment: '6,250,000', paidIn: '1,003,750', distributed: '–', unfunded: '5,246,250', capitalAccount: '893,340', tvpi: '0.89x', irr: '(28.45%)' } },
+        { name: LP, via: 'FORWARD.one GP Investments B.V.', figures: { commitment: '1,250,000', paidIn: '200,750', distributed: '–', unfunded: '1,049,250', capitalAccount: '178,670', tvpi: '0.89x', irr: '(28.45%)' } },
+      ],
+    },
+    {
+      name: 'FORWARD.one Co-Investment V Qubitra',
+      currency: 'EUR',
+      report: 'H1 2026',
+      holdings: [{ name: LP, figures: { commitment: '100,000', paidIn: '48,920', distributed: '–', unfunded: '51,080', capitalAccount: '49,310', tvpi: '1.01x', irr: '0.38%' } }],
+    },
+    {
+      name: 'FORWARD.one Co-Investment VI Lumenade',
+      currency: 'EUR',
+      holdings: [{ name: LP, figures: { commitment: '100,250', paidIn: '52,180', distributed: '–', unfunded: '48,070', capitalAccount: '–', tvpi: '–', irr: '–' } }],
+    },
+  ] as PortalFund[],
+  total: {
+    label: 'Total',
+    figures: { commitment: '7,800,250', paidIn: '2,317,880', distributed: '(898,590)', unfunded: '5,482,370', capitalAccount: '2,089,145', tvpi: '', irr: '' } as PortalFigures,
   },
 };
 

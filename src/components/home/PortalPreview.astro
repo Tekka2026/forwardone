@@ -4,23 +4,33 @@
  * Desktop (above 880px): a 1328 × 630 stage. Mobile (880px and below): a
  * 390 × 633 phone screen. Both are 75% of a full screen (the section's
  * bottom edge cuts them off), built from Geist-style parts (top bar, cards
- * with a shadow border, small pill button, badges, tooltip) in the site's
- * own type and colours. Copy lives in `portal` (src/content/home.ts).
+ * with a shadow border, small pill button, badges) in the site's own type
+ * and colours. Copy and the (illustrative) figures live in `portal`
+ * (src/content/home.ts).
+ *
+ * Body (owner, 2026-10-19): the LP's investor-report overview. Desktop: one
+ * card with a table, a row of column heads, then per fund a group row (name,
+ * currency badge, link to the latest report) and its holding rows, and a
+ * total row. The three valuation columns sit on a tinted band. Mobile: one
+ * card per fund with the figures in two columns.
  *
  * Each stage is designed at a fixed size and scaled to its frame's width
  * by the script below, like an image, so the layout never reflows. Without
  * JS it renders at full size, cropped. Each is an illustration: role="img"
  * with a label; the hidden version is display: none, so only one is read.
  */
-import { portal } from '@content/home';
-import Placeholder from '@components/ui/Placeholder.astro';
-import AssetsChart from '@components/home/portal/AssetsChart.astro';
+import { portal, type PortalFigures } from '@content/home';
 import { svg } from '@components/home/portal/icons';
-import { href } from '@lib/href';
 import wordmark from '../../assets/brand/forwardone.svg?raw';
 
 // The site wordmark, sized by .pp-bar__logo; the figure's label names it.
 const logoSvg = wordmark.replace('<svg ', '<svg aria-hidden="true" ');
+
+const flow: (keyof PortalFigures)[] = ['commitment', 'paidIn', 'distributed', 'unfunded'];
+const value: (keyof PortalFigures)[] = ['capitalAccount', 'tvpi', 'irr'];
+// Mobile cards: the figures that matter most to an LP, in reading order.
+const mobileKeys: (keyof PortalFigures)[] = ['commitment', 'paidIn', 'unfunded', 'capitalAccount', 'tvpi', 'irr'];
+const report = (r: string) => `${portal.reportLink.before} ${r} ${portal.reportLink.after}`;
 
 interface Props {
   class?: string;
@@ -78,50 +88,48 @@ const { class: cls } = Astro.props;
           </span>
         </div>
 
-        <div class="pp-main">
-          <div class="pp-col">
-          <!-- Total assets + assets by class -->
-          <section class="pp-card pp-assets">
-            <p class="pp-card__title">{portal.total.label}</p>
-            <p class="pp-assets__total">{portal.total.value}</p>
-            <AssetsChart />
-          </section>
-
+        <section class="pp-card pp-table">
+          <div class="pp-row pp-row--head">
+            <span />
+            {flow.map((k) => <span class="pp-th">{portal.columns[k]}</span>)}
+            {value.map((k) => <span class="pp-th pp-val">{portal.columns[k]}</span>)}
           </div>
-
-          <div class="pp-col">
-          <!-- Your team (collapsed) -->
-          <section class="pp-card pp-team">
-            <Fragment set:html={svg('handshake', 18)} />
-            <span class="pp-card__title">{portal.team}</span>
-            <Fragment set:html={svg('chevronDown', 16)} />
-          </section>
-
-          <!-- Article carousel -->
-          <section class="pp-card pp-article">
-            <p class="pp-card__title">{portal.article.title}</p>
-            <p class="pp-article__body">{portal.article.body}</p>
-            <p class="pp-link">
-              {portal.article.link}
-              <Fragment set:html={svg('arrowRight', 14)} />
-            </p>
-            <div class="pp-article__image">
-              {
-                portal.article.image.startsWith('[PLACEHOLDER') ? (
-                  <Placeholder value={portal.article.image} />
-                ) : (
-                  <img src={href(portal.article.image)} alt="" loading="lazy" decoding="async" />
-                )
-              }
-            </div>
-            <div class="pp-article__controls">
-              <Fragment set:html={svg('chevronLeft', 18)} />
-              <Fragment set:html={svg('pause', 16)} />
-              <Fragment set:html={svg('chevronRight', 18)} />
-            </div>
-          </section>
+          {
+            portal.funds.map((fund) => (
+              <>
+                <div class="pp-row pp-row--fund">
+                  <span class="pp-fund">
+                    {fund.name}
+                    <span class="pp-badge pp-badge--grey">{fund.currency}</span>
+                  </span>
+                  <span class="pp-val pp-report">
+                    {fund.report && (
+                      <span class="pp-link">
+                        {report(fund.report)}
+                        <Fragment set:html={svg('arrowUpRight', 13)} />
+                      </span>
+                    )}
+                  </span>
+                </div>
+                {fund.holdings.map((h) => (
+                  <div class:list={['pp-row', h.via && 'pp-row--via']}>
+                    <span class="pp-name">
+                      <span class="pp-name__text">{h.name}</span>
+                      {h.via && <span class="pp-name__via">{h.via}</span>}
+                    </span>
+                    {flow.map((k) => <span class="pp-num">{h.figures[k]}</span>)}
+                    {value.map((k) => <span class="pp-num pp-val">{h.figures[k]}</span>)}
+                  </div>
+                ))}
+              </>
+            ))
+          }
+          <div class="pp-row pp-row--total">
+            <span class="pp-name">{portal.total.label}</span>
+            {flow.map((k) => <span class="pp-num">{portal.total.figures[k]}</span>)}
+            {value.map((k) => <span class="pp-num pp-val">{portal.total.figures[k]}</span>)}
           </div>
-        </div>
+        </section>
       </div>
     </div>
   </div>
@@ -155,17 +163,33 @@ const { class: cls } = Astro.props;
         </div>
 
         <div class="pp-col">
-          <section class="pp-card pp-assets">
-            <p class="pp-card__title">{portal.total.label}</p>
-            <p class="pp-assets__total">{portal.total.value}</p>
-            <AssetsChart stacked />
-          </section>
-
-          <section class="pp-card pp-team">
-            <Fragment set:html={svg('handshake', 18)} />
-            <span class="pp-card__title">{portal.team}</span>
-            <Fragment set:html={svg('chevronDown', 16)} />
-          </section>
+          {
+            portal.funds.map((fund) => {
+              const h = fund.holdings.find((x) => !x.via) ?? fund.holdings[0];
+              return (
+                <section class="pp-card pp-mfund">
+                  <p class="pp-fund">
+                    {fund.name}
+                    <span class="pp-badge pp-badge--grey">{fund.currency}</span>
+                  </p>
+                  <dl class="pp-mfund__grid">
+                    {mobileKeys.map((k) => (
+                      <div>
+                        <dt class="pp-th">{portal.columns[k]}</dt>
+                        <dd class="pp-num">{h.figures[k]}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                  {fund.report && (
+                    <p class="pp-link">
+                      {report(fund.report)}
+                      <Fragment set:html={svg('arrowUpRight', 13)} />
+                    </p>
+                  )}
+                </section>
+              );
+            })
+          }
         </div>
       </div>
     </div>
@@ -205,38 +229,6 @@ const { class: cls } = Astro.props;
       if (g && g.dataset[part]) g.textContent = g.dataset[part];
       var d = fig.querySelector('[data-pp-date]');
       if (d) d.textContent = date;
-      var y = fig.querySelector('[data-pp-year]');
-      if (y) y.textContent = String(now.getFullYear());
-
-      // Chart: hovering a segment or legend row (mouse) or tapping it
-      // (touch) shows that class's tooltip and fades the other segments;
-      // leaving the chart (mouse) or tapping elsewhere in it clears it.
-      var chart = fig.querySelector('[data-pp-chart]');
-      if (!chart) return;
-      var show = function (name) {
-        chart.toggleAttribute('data-hover', !!name);
-        chart.querySelectorAll('[data-pp-class]').forEach(function (el) {
-          el.classList.toggle('is-hover', el.getAttribute('data-pp-class') === name);
-        });
-        chart.querySelectorAll('[data-pp-tip]').forEach(function (t) {
-          t.classList.toggle('is-active', t.getAttribute('data-pp-tip') === name);
-        });
-      };
-      var current = null;
-      var pick = function (name) { current = name; show(name); };
-      chart.querySelectorAll('[data-pp-class]').forEach(function (el) {
-        el.addEventListener('pointerenter', function (e) {
-          if (e.pointerType === 'mouse') pick(el.getAttribute('data-pp-class'));
-        });
-      });
-      chart.addEventListener('pointerleave', function (e) {
-        if (e.pointerType === 'mouse') pick(null);
-      });
-      chart.addEventListener('click', function (e) {
-        var el = e.target.closest('[data-pp-class]');
-        var name = el ? el.getAttribute('data-pp-class') : null;
-        pick(name === current ? null : name);
-      });
     });
   })();
 </script>
@@ -256,11 +248,6 @@ const { class: cls } = Astro.props;
     border: 1px solid var(--pp-line);
     border-bottom: 0;
     border-radius: var(--radius) var(--radius) 0 0;
-    /* Chart tones: the site's ink, greys and brand colours. */
-    --tone-yellow: var(--brand-yellow);
-    --tone-ink: #111111;
-    --tone-lilac: color-mix(in srgb, var(--brand-purple), #ffffff 55%);
-    --tone-grey: #bdbdbd;
     /* Geist-style surfaces */
     --pp-canvas: #fafafa;
     --pp-card: #ffffff;
@@ -386,6 +373,17 @@ const { class: cls } = Astro.props;
     font-weight: 600;
     font-variant-numeric: tabular-nums;
   }
+  .pp-badge--grey {
+    height: 18px;
+    padding: 0 6px;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.06);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+  }
   .pp-badge--alert {
     background: var(--brand-yellow);
     color: #111111;
@@ -395,15 +393,6 @@ const { class: cls } = Astro.props;
   .pp-body {
     padding: 32px 80px 0;
   }
-  /* Two columns: main 1fr, side 360px. The greeting row spans the main one.
-     Columns stretch to the taller one, so the Total Assets card runs into
-     the cut at the bottom like the cards on the right (no empty strip). */
-  .pp-main {
-    display: grid;
-    grid-template-columns: 1fr 360px;
-    column-gap: 32px;
-    align-items: stretch;
-  }
   .pp-col {
     display: grid;
     gap: 24px;
@@ -412,7 +401,7 @@ const { class: cls } = Astro.props;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 0 calc(360px + 32px) 24px 0;
+    margin: 0 0 24px;
   }
   .pp-head__title {
     font-size: 24px;
@@ -445,52 +434,129 @@ const { class: cls } = Astro.props;
     font-size: 14px;
   }
 
-  /* Total assets + chart */
-  .pp-assets__total {
-    margin-top: 6px;
-    font-size: 22px;
-    font-weight: 450;
-    font-variant-numeric: tabular-nums;
+  /* ---- Report table (desktop) ---------------------------------------- */
+  /* One card, no inner padding; every row is the same 8-column grid. The
+     three valuation columns (.pp-val) sit on a tinted band, edged on the
+     left by a line, as in the owner's portal. */
+  .pp-table {
+    padding: 0;
+    --pp-cols: minmax(0, 1fr) 120px 112px 112px 128px 156px 120px 112px;
+    --pp-band: rgba(0, 0, 0, 0.025);
   }
-  /* Your team */
-  .pp-team {
+  .pp-row {
+    display: grid;
+    grid-template-columns: var(--pp-cols);
+    align-items: center;
+    min-height: 34px;
+    box-shadow: inset 0 -1px 0 var(--pp-line);
+  }
+  .pp-row > * {
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    min-width: 0;
+  }
+  .pp-row > :first-child {
+    padding-left: 24px;
+  }
+  .pp-row > :last-child {
+    padding-right: 24px;
+  }
+  .pp-val {
+    background: var(--pp-band);
+  }
+  .pp-row > .pp-val:nth-child(6) {
+    box-shadow: inset 1px 0 0 var(--pp-line);
+  }
+  /* Column heads: the site's mono label style, two lines, right-aligned. */
+  .pp-th {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    line-height: 1.4;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .pp-row--head {
+    min-height: 56px;
+  }
+  .pp-row--head .pp-th {
+    justify-content: flex-end;
+    text-align: right;
+  }
+  /* Fund group row: name + currency badge; report link over the band. */
+  .pp-row--fund {
+    grid-template-columns: minmax(0, 1fr) calc(156px + 120px + 112px);
+    min-height: 48px;
+    margin-top: 0;
+  }
+  .pp-row--fund > .pp-val {
+    box-shadow: inset 1px 0 0 var(--pp-line);
+    justify-content: flex-end;
+  }
+  .pp-fund {
     display: flex;
     align-items: center;
     gap: 10px;
+    font-size: 15px;
+    font-weight: 450;
   }
-  .pp-team :global(.pp-icon:last-child) {
-    margin-left: auto;
+  .pp-num {
+    justify-content: flex-end;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
   }
-
-  /* Article */
-  .pp-article__body {
-    margin-top: 10px;
-    font-size: 12.5px;
+  .pp-name {
+    gap: 8px;
+    font-size: 13px;
+  }
+  .pp-name__text,
+  .pp-name__via {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /* Look-through row (held via another vehicle): indented under a corner
+     mark, muted. */
+  .pp-row--via {
     color: var(--muted);
   }
-  .pp-article .pp-link {
-    margin-top: 14px;
-  }
-  .pp-article__image {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 16px;
-    aspect-ratio: 2.6 / 1;
-    background: #f2f2f2;
-    overflow: hidden;
-  }
-  .pp-article__image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .pp-article__controls {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 16px;
+  .pp-row--via .pp-name {
+    padding-left: 44px;
+    position: relative;
     color: #111111;
+  }
+  .pp-row--via .pp-name::before {
+    content: '';
+    position: absolute;
+    left: 28px;
+    top: 9px;
+    width: 8px;
+    height: 7px;
+    border-left: 1px solid var(--muted);
+    border-bottom: 1px solid var(--muted);
+  }
+  .pp-name__via {
+    flex: 0 1 auto;
+    font-size: 11px;
+    color: var(--brand-purple);
+  }
+  .pp-row--total {
+    min-height: 40px;
+    font-weight: 600;
+    background: var(--pp-canvas);
+    box-shadow: inset 0 1px 0 var(--pp-line);
+  }
+  .pp-row--total .pp-name,
+  .pp-row--total .pp-num {
+    font-weight: 600;
+  }
+  .pp-report .pp-link,
+  .pp-mfund .pp-link {
+    gap: 4px;
+    font-size: 12.5px;
   }
 
   /* ---- Mobile screen -------------------------------------------------- */
@@ -521,6 +587,24 @@ const { class: cls } = Astro.props;
   }
   .pp-body--mobile .pp-card {
     padding: 16px;
+  }
+  .pp-mfund .pp-fund {
+    font-size: 14px;
+    justify-content: space-between;
+  }
+  .pp-mfund__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 16px;
+    margin: 14px 0 0;
+  }
+  .pp-mfund__grid dd {
+    margin: 4px 0 0;
+    justify-content: flex-start;
+    display: block;
+  }
+  .pp-mfund .pp-link {
+    margin-top: 14px;
   }
   .pp-body--mobile .pp-assets__total {
     font-size: 20px;

@@ -81,7 +81,7 @@
   --reveal-rise: 12px;
   --video-overlay: rgba(0, 0, 0, 0.45); /* flat overlay on card background videos */
   --brand-yellow: #ffea6d;          /* accent (owner, 2026-10-17; was cyan #78F6FB): AI mark, H1 gradient, stage labels */
-  --brand-purple: #26175a;          /* portal preview links and chart */
+  --brand-purple: #26175a;          /* portal preview links */
   --reveal-tint: #db8e00;           /* H1 last word starts in this colour: amber with
                                        black headings (owner, 2026-10-17); yellow in .theme-dark */
   --reveal-tint-duration: calc(var(--reveal-frame) * 32); /* tint to white */

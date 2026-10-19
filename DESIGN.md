@@ -241,9 +241,8 @@ screens the list stacks under the CTA.
 ### Investor portal preview (under Fund III)
 
 `src/components/home/FundIII.astro`, `src/components/home/PortalPreview.astro`
-(both screens), `src/components/home/portal/AssetsChart.astro` (legend,
-gauge and tooltips, shared) and `portal/icons.ts`; copy in `fundIII` and
-`portal` (home.ts).
+(both screens) and `portal/icons.ts`; copy and the illustrative figures in
+`fundIII` and `portal` (home.ts).
 
 - Fund III section background: a diagonal gradient, full width, evenly from
   `#FFEA6D` in the bottom-left corner to `rgba(0, 0, 0, 0.04)` over the page
@@ -259,40 +258,41 @@ gauge and tooltips, shared) and `portal/icons.ts`; copy in `fundIII` and
   below the cut is left out of the markup, not hidden.
 - Designed at that fixed size and scaled to the column width like an image
   (a ResizeObserver sets `--pp-scale`), so the layout never reflows.
-- Mobile (≤880px): instead of the shrunken desktop screen, a phone version
-  of the same dashboard, a 390 × 633 stage (75% of 390 × 844), at most 390px
-  wide and centred, scaled the same way. White bar with menu icon, logo
-  centred and log-out icon; greeting and value date; the Total Assets card
-  with title, a 264px gauge centred and the legend in two columns under it;
-  the "Your team" card, which runs into the cut. The article card falls
-  below the cut on mobile, so it is left out. Chart interaction: hover with
-  a mouse, tap on touch (tap again or elsewhere in the chart to clear); on
-  mobile the tooltip sits in the middle of the gauge.
+- Content (owner, 2026-10-19): the LP's investor-report overview, after the
+  owner's portal screenshot. The top bar (logo, Home / Wealth / Transactions /
+  Documents, mail with badge, settings, log out) and the greeting row
+  (greeting, value date, Filter) stay as before; no email address or user
+  name is shown. Under them one card with a table:
+  - a head row of mono column labels, right-aligned: Commitment, Paid-in
+    capital, Distributed, Unfunded commitment, then on a tinted band (2.5%
+    black, a 1px line on its left) Capital account at fair value, Fund
+    multiple TVPI, Fund net IRR;
+  - per fund a group row (name in 15px, a small grey mono currency badge,
+    "View Q3 2026 report ↗" in `--brand-purple` over the band; no link when
+    there is no report yet) and its holding rows (13px, tabular figures,
+    distributions and negative IRRs in parentheses, "–" for none);
+  - a look-through row (the LP's part held via another vehicle) indented
+    under a corner mark, figures muted, the vehicle's name in purple;
+  - a total row (600 weight, `#fafafa`), which falls under the cut.
+- Figures are ILLUSTRATIVE: invented names for the investor entity and the
+  co-investment companies, invented amounts of the same size as the real
+  screenshot's, kept consistent (unfunded = commitment − paid-in, TVPI =
+  (distributed + capital account) ÷ paid-in, totals add up).
+- Mobile (≤880px): instead of the shrunken desktop screen, a phone version,
+  a 390 × 633 stage (75% of 390 × 844), at most 390px wide and centred,
+  scaled the same way. White bar with menu icon, logo centred and log-out
+  icon; greeting and value date; then one card per fund: name and currency
+  badge, six figures in two columns (mono label over the value: commitment,
+  paid-in, unfunded, capital account, TVPI, net IRR) and the report link.
+  The cards run into the cut.
 - Live bits: the greeting follows the viewer's local time (morning 05–12,
   afternoon 12–18, evening otherwise) and the value date shows their current
   date and time.
-- Assets by class (layout per the owner's reference, 2026-10-14): 24px under
-  the total, a row of two 300px columns: "Assets by class" with the legend
-  under it (12px), vertically centred on the gauge's visible height, then a
-  270° gauge open at the bottom (after a fintech gauge reference); the rest
-  of the card's width stays empty on the right. The SVG viewBox is cropped
-  to the drawn arc, top of the arc to the bottom of its end caps. The three largest classes plus Other,
-  largest first, clockwise from the bottom-left end; together they fill the whole
-  arc (shares of these four add up to 100%), 14-unit stroke, rounded ends,
-  6px gaps. Share labels (mono) sit inside the arc; the centre shows the
-  viewer's current year in the display face, grey. The legend lists the same
-  four. Segments rest at 85% opacity; hovering a segment or legend row
-  brightens that one to full colour and fades the others (no change in
-  size), and shows its tooltip (label, value, share) at the arc's midpoint,
-  opening toward the inside of the ring. No divider between the total and
-  the chart. The Portfolios card is left out (it fell below the cut); the
-  Total Assets card stretches to the column height, so it runs into the
-  cut like the right-hand cards instead of ending above it.
 - Geist-style parts in the site's type and colours: white top bar (1px line
-  under it, muted tabs, black underlined active tab), square cards with Geist's shadow border on a
-  `#fafafa` canvas, the site's small ghost pill button (Filter), a yellow pill
-  badge, a dark tooltip, 1.5px stroke icons, links in `--brand-purple`.
-- Chart tones: yellow, ink, lilac (purple 45% toward white), grey. Amounts use comma thousands separators (EUR 1,500,300).
+  under it, muted tabs, black underlined active tab), square cards with
+  Geist's shadow border on a `#fafafa` canvas, the site's small ghost pill
+  button (Filter), a yellow pill badge on the mail icon, 1.5px stroke icons,
+  links in `--brand-purple`. Amounts use comma thousands separators.
 - An illustration: `role="img"` with a label; nothing inside is focusable.
 
 ### Insights and closing
@@ -501,7 +501,7 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
 
 - Accent: `--brand-yellow` #FFEA6D (owner, 2026-10-17; replaced the cyan
   #78F6FB and the blue #2D75D9). Used for the H1 last-word tint, the nav
-  AI mark and entrance glow, Proof card dates, the Fund III gradient corner, the portal's first chart tone and badge, and the robot's
+  AI mark and entrance glow, Proof card dates, the Fund III gradient corner, the portal's mail badge, and the robot's
   cap and the Munich pin. Where it must read on light grey (robot ring and
   label, map ring and labels) it is darkened to ochre rgb(196,160,20).
 - Dark sections: `.section--dark.theme-dark` (black band, tokens inverted;

@@ -23,7 +23,6 @@ invented; replace the value in the file named and the marker disappears.
 | Insights | `insights.articles[*].date` | Publication date (ISO) of each featured article. |
 | Insights | `insights.articles[2].image` | Visual for the third featured article (the first has the robot arm, the second the Munich map), 5:7 portrait (cropped to 7:5 landscape on phones, so keep the subject centred). Drop files in `public/insights/` and set the path; until then a flat light grey box. |
 | Insights | `insights.articles[*].slug` | Slugs are derived from titles; match them to the CMS slugs when the news collection is migrated. |
-| Investor portal preview | `portal.article.image` | Image for the article card in the dashboard illustration (the reference shows a photo of a man at a laptop). Drop a file in `public/portal/` and set the path. |
 
 ## Navigation and footer (`src/content/nav.ts`)
 
