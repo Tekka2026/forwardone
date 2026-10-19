@@ -231,7 +231,7 @@ export const founders = {
   people: [
     { ...founder('ROCSYS'), name: 'Crijn Bouman', role: 'CEO & Co-founder', photo: '/founders/rocsys.jpg' }, // owner, 2026-10-19
     company('Voltfang', 'Grid-scale storage from used EV batteries.', 'https://www.forward.one/portfolio-companies/voltfang'),
-    { ...founder('Qualinx'), name: 'Tom Trill' }, // owner, 2026-10-19
+    { ...founder('Qualinx'), name: 'Tom Trill', photo: '/founders/qualinx.jpg' }, // owner, 2026-10-19
     company('ORE Energy', 'Iron-air batteries for long-duration grid storage.', 'https://www.forward.one/portfolio/ore-energy'),
     founder('driveblocks'),
     company('QuiX Quantum', 'Photonic quantum computers.', 'https://www.forward.one/portfolio-companies/quix-quantum'),
