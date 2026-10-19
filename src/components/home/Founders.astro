@@ -90,10 +90,17 @@ const isPh = (v: string) => isPlaceholder(v);
                       )}
                       <span class="fc__progress" aria-hidden="true"><span data-fc-progress /></span>
                       <div class="fc__rail">
-                        <span class="fc__avatar" aria-hidden="true">
-                          {v.avatar ? <img src={href(v.avatar)} alt="" width="28" height="28" loading="lazy" decoding="async" /> : 'F.'}
-                          <span class="fc__follow">+</span>
-                        </span>
+                        {v.profile ? (
+                          <a class="fc__avatar" href={href(`/about/team/${v.profile}`)} aria-label={founders.clip.profile}>
+                            {v.avatar ? <img src={href(v.avatar)} alt="" width="28" height="28" loading="lazy" decoding="async" /> : 'F.'}
+                            <span class="fc__follow" aria-hidden="true">+</span>
+                          </a>
+                        ) : (
+                          <span class="fc__avatar" aria-hidden="true">
+                            {v.avatar ? <img src={href(v.avatar)} alt="" width="28" height="28" loading="lazy" decoding="async" /> : 'F.'}
+                            <span class="fc__follow">+</span>
+                          </span>
+                        )}
                         <button type="button" class="fc__action fc__like" aria-pressed="false" data-fc-like data-like={founders.clip.like} data-liked={founders.clip.liked}>
                           <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.3C1.6 7.8 3.8 4.5 7.2 4.5c2 0 3.6 1.1 4.8 2.8 1.2-1.7 2.8-2.8 4.8-2.8 3.4 0 5.6 3.3 4.4 6.7-1.7 4.7-9.2 9.3-9.2 9.3Z" /></svg>
                           <span data-fc-like-label>{founders.clip.like}</span>
@@ -423,6 +430,18 @@ const isPh = (v: string) => isPlaceholder(v);
     background: #111111;
     font-family: var(--font-display);
     font-size: 11px;
+  }
+  a.fc__avatar {
+    color: #ffffff;
+    text-decoration: none;
+    transition: transform 150ms ease;
+  }
+  a.fc__avatar:hover {
+    transform: scale(1.08);
+  }
+  a.fc__avatar:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 3px;
   }
   .fc__avatar img {
     width: 100%;

@@ -204,7 +204,7 @@ export type FounderEntry = {
   /** Company card: one line under the name. */
   blurb: string;
 };
-export type FounderClip = { video: string; webm?: string; poster: string; avatar?: string; person: string; caption: string };
+export type FounderClip = { video: string; webm?: string; poster: string; avatar?: string; /** slug of the presenter's team profile (/about/team/<slug>) */ profile?: string; person: string; caption: string };
 
 const PH = {
   name: '[PLACEHOLDER: founder name]',
@@ -222,7 +222,7 @@ export const founders = {
    * are based (forward.one/portfolio); regions and the 2,500 a year are the
    * site's own figures (What we do, stats). */
   title: 'We go where Europe’s builders are.',
-  intro: 'Labs and factory floors from Delft and Enschede to Copenhagen. Across the Benelux, DACH and the Nordics we meet 2,500 companies a year, and back the few who will lead.',
+  intro: 'From Delft to Copenhagen, we meet 2,500 companies a year and back the few who will lead.',
   role: 'CEO',
   /** 20 founders; the card type alternates. */
   people: [
@@ -258,12 +258,14 @@ export const founders = {
     poster: '/founders/clip-placeholder.jpg',
     /** Profile circle: the presenter's photo (owner, 2026-10-19, for the placeholder clip). */
     avatar: '/founders/clip-avatar.jpg',
+    profile: 'presenter',
     person: '[PLACEHOLDER: team member, role]',
     caption: '[PLACEHOLDER: one-line caption]',
   })) as FounderClip[],
   clip: {
     handle: '[PLACEHOLDER: social handle]',
     sound: 'original sound · FORWARD.one',
+    profile: 'View profile',
     like: 'Like',
     liked: 'Liked',
     share: 'Share',

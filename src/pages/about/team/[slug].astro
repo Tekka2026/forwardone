@@ -1,0 +1,316 @@
+---
+/**
+ * Team profile (owner, 2026-10-19), after the team pages of Index Ventures:
+ * - Hero: back link to the team, portrait (4:5, columns 1–5) and, beside it
+ *   (columns 7–12), role as eyebrow, name as H1, a one-line intro, key facts
+ *   (based in, focus, joined) and pill links (LinkedIn, email).
+ * - Then rows with a mono label in the first three columns and the content
+ *   from column 5: About (bio), Background (period, title, one line),
+ *   Works with (company chips), On the road (their clips, 5:7, muted loop),
+ *   Insights (article links).
+ * Copy and placeholders in src/content/team.ts.
+ */
+import Base from '@layouts/Base.astro';
+import Placeholder from '@components/ui/Placeholder.astro';
+import Sentences from '@components/ui/Sentences.astro';
+import { site } from '@content/nav';
+import { founders } from '@content/home';
+import { team, teamLabels as L, type TeamMember } from '@content/team';
+import { href, isPlaceholder } from '@lib/href';
+
+export function getStaticPaths() {
+  return team.map((m) => ({ params: { slug: m.slug }, props: { m } }));
+}
+
+const { m } = Astro.props as { m: TeamMember };
+const title = isPlaceholder(m.name) ? 'Team member' : m.name;
+const clips = m.clips.map((i) => founders.clips[i]).filter(Boolean);
+const linkHref = (h: string) => (h.includes('@') && !h.startsWith('mailto:') ? `mailto:${h}` : h);
+---
+
+<Base title={`${title} | ${site.name}`} description={isPlaceholder(m.intro) ? `${title} at ${site.name}.` : m.intro}>
+  <section class="section section--flush profile">
+    <div class="wrap">
+      <p class="profile__back"><a class="profile__backlink" href={href('/about/team')}>{L.back}</a></p>
+      <div class="grid profile__hero">
+        <div class="col-5 profile__photo">
+          {isPlaceholder(m.photo) ? <Placeholder value={m.photo} /> : <img src={href(m.photo)} alt="" width="1200" height="1500" decoding="async" />}
+        </div>
+        <div class="col-6 start-7 profile__head">
+          <p class="eyebrow"><Placeholder value={m.role} /></p>
+          <h1 class="h-section profile__name">
+            {isPlaceholder(m.name) ? <Placeholder value={m.name} /> : <Sentences text={m.name} reveal />}
+          </h1>
+          <p class="lede profile__intro"><Placeholder value={m.intro} /></p>
+          <dl class="profile__facts">
+            {
+              m.facts.map((f) => (
+                <div>
+                  <dt class="label">{f.label}</dt>
+                  <dd class="body"><Placeholder value={f.value} /></dd>
+                </div>
+              ))
+            }
+          </dl>
+          <ul class="profile__links">
+            {
+              m.links.map((l) => (
+                <li>
+                  {isPlaceholder(l.href) ? (
+                    <span class="btn btn--ghost btn--small">
+                      {l.label} <Placeholder value={l.href} />
+                    </span>
+                  ) : (
+                    <a class="btn btn--ghost btn--small" href={linkHref(l.href)} rel="noopener">
+                      {l.label}
+                    </a>
+                  )}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap grid profile__row">
+      <h2 class="col-3 eyebrow profile__label">{L.about}</h2>
+      <div class="col-7 start-5 profile__bio">
+        {m.bio.map((p) => <p class="body"><Placeholder value={p} /></p>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap grid profile__row">
+      <h2 class="col-3 eyebrow profile__label">{L.background}</h2>
+      <ol class="col-8 start-5 profile__timeline">
+        {
+          m.background.map((b) => (
+            <li>
+              <span class="label profile__period"><Placeholder value={b.period} /></span>
+              <span class="profile__entry">
+                <span class="card-title"><Placeholder value={b.title} /></span>
+                <span class="body profile__detail"><Placeholder value={b.detail} /></span>
+              </span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap grid profile__row">
+      <h2 class="col-3 eyebrow profile__label">{L.companies}</h2>
+      <ul class="col-8 start-5 profile__companies">
+        {m.companies.map((c) => <li class="profile__company"><Placeholder value={c} /></li>)}
+      </ul>
+    </div>
+  </section>
+
+  {
+    clips.length > 0 && (
+      <section class="section">
+        <div class="wrap grid profile__row">
+          <h2 class="col-3 eyebrow profile__label">{L.clips}</h2>
+          <ul class="col-8 start-5 profile__clips">
+            {clips.map((c) => (
+              <li class="profile__clip">
+                <video poster={c.poster ? href(c.poster) : undefined} muted loop playsinline autoplay preload="metadata" aria-hidden="true">
+                  {c.webm && <source src={href(c.webm)} type="video/webm" />}
+                  <source src={href(c.video)} type="video/mp4" />
+                </video>
+                <p class="body profile__clip-caption"><Placeholder value={c.caption} /></p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section">
+    <div class="wrap grid profile__row">
+      <h2 class="col-3 eyebrow profile__label">{L.insights}</h2>
+      <ul class="col-8 start-5 profile__insights">
+        {
+          m.insights.map((a) => (
+            <li>
+              {a.href ? (
+                <a class="card-title" href={href(a.href)}>{a.title}</a>
+              ) : (
+                <span class="card-title"><Placeholder value={a.title} /></span>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* ---- Hero ----------------------------------------------------------- */
+  .profile__back {
+    margin: 0 0 var(--gap-double);
+  }
+  .profile__backlink {
+    font-size: var(--fs-small);
+    font-weight: 500;
+    text-decoration-line: none;
+  }
+  .profile__backlink::before {
+    content: '\2190  ';
+  }
+  .profile__backlink:hover {
+    text-decoration-line: underline;
+    text-underline-offset: 4px;
+  }
+  .profile__hero {
+    align-items: end;
+  }
+  .profile__photo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: #ececea;
+  }
+  .profile__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .profile__name {
+    margin: var(--gap-half) 0 0;
+  }
+  .profile__intro {
+    margin: var(--space-4x) 0 0;
+  }
+  .profile__facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--gap);
+    margin: var(--gap-double) 0 0;
+    padding-top: var(--gap);
+    border-top: var(--hairline-w) solid var(--hairline);
+  }
+  .profile__facts dt {
+    color: var(--muted);
+  }
+  .profile__facts dd {
+    margin: var(--space-2x) 0 0;
+  }
+  .profile__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2x);
+    margin: var(--gap) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* ---- Rows: label left, content from column 5 ----------------------- */
+  .profile__row {
+    align-items: start;
+  }
+  .profile__label {
+    margin: 0;
+  }
+  .profile__bio p {
+    margin: 0;
+  }
+  .profile__bio p + p {
+    margin-top: var(--space-4x);
+  }
+  .profile__timeline,
+  .profile__companies,
+  .profile__clips,
+  .profile__insights {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .profile__timeline li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+    gap: var(--gap);
+    padding: var(--gap) 0;
+    border-top: var(--hairline-w) solid var(--hairline);
+  }
+  .profile__timeline li:last-child {
+    border-bottom: var(--hairline-w) solid var(--hairline);
+  }
+  .profile__period {
+    color: var(--muted);
+  }
+  .profile__entry {
+    display: grid;
+    gap: var(--space-2x);
+  }
+  .profile__detail {
+    color: var(--muted);
+  }
+  .profile__companies {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2x);
+  }
+  .profile__company {
+    padding: var(--space-2x) var(--space-4x);
+    background: var(--bg-tint);
+  }
+  .profile__clips {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--gutter);
+  }
+  .profile__clip {
+    max-width: 320px;
+  }
+  .profile__clip video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 5 / 7;
+    object-fit: cover;
+    background: #0b0b0b;
+  }
+  .profile__clip-caption {
+    margin: var(--space-4x) 0 0;
+    color: var(--muted);
+  }
+  .profile__insights li {
+    padding: var(--gap) 0;
+    border-top: var(--hairline-w) solid var(--hairline);
+  }
+  .profile__insights li:last-child {
+    border-bottom: var(--hairline-w) solid var(--hairline);
+  }
+
+  /* ---- Narrow: stacked -------------------------------------------------- */
+  @media (max-width: 880px) {
+    .profile__photo {
+      max-width: 480px;
+    }
+    .profile__head {
+      margin-top: var(--gap);
+    }
+    .profile__row {
+      row-gap: var(--gap);
+    }
+  }
+  @media (max-width: 640px) {
+    .profile__facts {
+      grid-template-columns: 1fr;
+      gap: var(--space-4x);
+    }
+    .profile__timeline li {
+      grid-template-columns: 1fr;
+      gap: var(--space-2x);
+    }
+  }
+</style>

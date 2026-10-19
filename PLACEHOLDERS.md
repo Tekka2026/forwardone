@@ -53,3 +53,9 @@ The `/founders` page needs a pitch email address or form URL.
 |---|---|
 | 301 redirects | GitHub Pages cannot send server redirects. The legacy URLs work via meta-refresh pages and the 404 fallback. For true 301s, deploy the map in `src/content/redirects.mjs` on Netlify, Vercel or Cloudflare Pages. |
 | Custom domain | When forward.one is attached, set `BASE_PATH=/` and `SITE_URL=https://forward.one` in `.github/workflows/deploy.yml`. |
+
+## Team profiles (`src/content/team.ts`)
+
+| Where | Key | Needed |
+|---|---|---|
+| Profile of the clip presenter (`/about/team/presenter`) | `team[0]` | Name (the URL changes to their name then), role, city, one-line intro, a three-paragraph bio, focus sectors, year joined, LinkedIn URL and email, background (roles and education with years), the portfolio companies they work with, their articles, and a portrait of at least 1200 × 1500 (the current photo is the 536 × 536 avatar). |

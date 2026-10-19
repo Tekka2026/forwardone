@@ -226,6 +226,7 @@ Rules:
   ink, purple, sand, amber, deep red, grey-blue); the name in the display
   face (28–44px), one line of small body copy under it; text dark or white
   by the colour's luminance.
+- The clip's profile circle links to the presenter's team profile.
 - Clip card (TikTok-style): a muted, looping vertical video that plays while
   in view (until the team videos arrive, all five play the owner's
   placeholder clip `public/founders/clip-placeholder.mp4`, 20s, each from a
@@ -416,6 +417,22 @@ Built like the "Follow the battery." section on vikka.io
 - Controls under the slider: a 1px progress line across the content width
   filling by slide in `--fg` (black), and round back/next buttons at the content's right edge
   (disabled at the ends). Swipe, trackpad and keyboard scroll the track too.
+
+### Team profile (`/about/team/:slug`)
+
+`src/pages/about/team/[slug].astro`; copy in `src/content/team.ts`. Owner,
+2026-10-19, after the team pages of Index Ventures.
+
+- Reached from the profile circle on a founders-strip clip (`profile` slug).
+- Hero: a back link "← Team"; the portrait (4:5, columns 1–5) and beside it
+  (columns 7–12, bottoms aligned) the role as eyebrow, the name as H1, a
+  one-line lede, three key facts over a hairline (based in, focus, joined;
+  mono labels) and small ghost pill links (LinkedIn, email).
+- Then one section per topic, mono label in columns 1–3 and content from
+  column 5: About (bio paragraphs), Background (period | role and one line,
+  hairline rows), Works with (company chips on the 4% tint), On the road
+  (their clips, 5:7, muted loop, max 320px wide), Insights (article links).
+- Stacks at 880px and below.
 
 ## 6. Spacing — Vercel Geist system
 
