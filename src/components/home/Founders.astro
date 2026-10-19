@@ -12,8 +12,8 @@
  * Card types: founder (photo, name, "CEO, company"), company (brand colour,
  * name, one line), and a TikTok-style clip of a FORWARD.one team member with
  * a progress bar, handle, caption, sound line and a Like / Share rail. Like
- * toggles (heart fills and pops); Share uses the Web Share API, else copies
- * the page link. Clips play muted when in view. Copy in `founders` (home.ts).
+ * toggles (heart fills and pops); Share opens LinkedIn's share dialog in a
+ * new tab, to post the site on the visitor's own feed. Clips play muted when in view. Copy in `founders` (home.ts).
  */
 import { founders, caseStudies, trackRecord } from '@content/home';
 import Placeholder from '@components/ui/Placeholder.astro';
@@ -58,6 +58,10 @@ const companyStyle = (colour: string) => {
   return `--fc-bg: ${bg}; --fc-fg: ${light ? '#111111' : '#ffffff'};`;
 };
 const isPh = (v: string) => isPlaceholder(v);
+// Share (owner, 2026-10-19): straight to LinkedIn's share dialog, to post the
+// site on the visitor's own feed.
+const pageUrl = new URL(import.meta.env.BASE_URL.replace(/\/?$/, '/'), Astro.site).href;
+const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(pageUrl)}`;
 ---
 
 <section class="section founders" data-founders aria-labelledby="founders-title">
@@ -105,10 +109,10 @@ const isPh = (v: string) => isPlaceholder(v);
                           <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.3C1.6 7.8 3.8 4.5 7.2 4.5c2 0 3.6 1.1 4.8 2.8 1.2-1.7 2.8-2.8 4.8-2.8 3.4 0 5.6 3.3 4.4 6.7-1.7 4.7-9.2 9.3-9.2 9.3Z" /></svg>
                           <span data-fc-like-label>{founders.clip.like}</span>
                         </button>
-                        <button type="button" class="fc__action fc__share" data-fc-share data-copied={founders.clip.copied}>
+                        <a class="fc__action fc__share" href={shareUrl} target="_blank" rel="noopener" aria-label={founders.clip.shareLabel}>
                           <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M13.5 4.5 21 11.5l-7.5 7v-4.2c-5 0-8.3 1.6-10.5 5.2.8-5.6 3.8-10 10.5-10.7V4.5Z" /></svg>
                           <span>{founders.clip.share}</span>
-                        </button>
+                        </a>
                       </div>
                       <div class="fc__caption">
                         <p class="fc__handle"><Placeholder value={founders.clip.handle} /></p>
@@ -119,7 +123,6 @@ const isPh = (v: string) => isPlaceholder(v);
                           <span>{founders.clip.sound}</span>
                         </p>
                       </div>
-                      <span class="fc__toast" role="status" aria-live="polite" data-fc-toast />
                     </li>
                   );
                 }
@@ -207,18 +210,6 @@ const isPh = (v: string) => isPlaceholder(v);
         like.querySelector('[data-fc-like-label]').textContent = on ? like.dataset.liked : like.dataset.like;
         return;
       }
-      var share = e.target.closest('[data-fc-share]');
-      if (!share) return;
-      var url = location.href.split('#')[0];
-      var toast = share.closest('[data-fc]').querySelector('[data-fc-toast]');
-      var say = function () {
-        toast.textContent = share.dataset.copied;
-        toast.classList.add('is-on');
-        clearTimeout(toast._t);
-        toast._t = setTimeout(function () { toast.classList.remove('is-on'); }, 1800);
-      };
-      if (navigator.share) navigator.share({ title: document.title, url: url }).catch(function () {});
-      else if (navigator.clipboard) navigator.clipboard.writeText(url).then(say, function () {});
     });
   })();
 </script>
@@ -473,6 +464,7 @@ const isPh = (v: string) => isPlaceholder(v);
     border: 0;
     background: none;
     color: #ffffff;
+    text-decoration: none;
     font: 600 9px/1.2 var(--font-sans);
     cursor: pointer;
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
@@ -526,24 +518,6 @@ const isPh = (v: string) => isPlaceholder(v);
     font-size: 11px;
     overflow: hidden;
     white-space: nowrap;
-  }
-  .fc__toast {
-    position: absolute;
-    left: 50%;
-    top: 44%;
-    z-index: 3;
-    padding: 8px 12px;
-    border-radius: 6px;
-    background: rgba(0, 0, 0, 0.75);
-    font-size: 13px;
-    opacity: 0;
-    transform: translate(-50%, 6px);
-    transition: opacity 200ms ease, transform 200ms ease;
-    pointer-events: none;
-  }
-  .fc__toast.is-on {
-    opacity: 1;
-    transform: translate(-50%, 0);
   }
   /* placeholders take the card's text colour on company cards */
   .fc--company :global(.placeholder) {

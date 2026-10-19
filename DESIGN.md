@@ -203,7 +203,7 @@ Rules:
 
 - White section. Head as in the Proof slider: eyebrow "On the road" and the
   H2 ("We go where Europe’s builders are.") left, a line of body copy right
-  (cities, regions, 2,500 a year; owner 2026-10-19). Then a row of 5:7 cards, each three
+  (all of Europe, 2,500 a year; owner 2026-10-19). Then a row of 5:7 cards, each three
   of the twelve columns wide, 32px apart, starting at the content's left
   edge and running on past the window's right edge.
 - Never takes over the page's scrolling (owner, 2026-10-19): a plain
@@ -234,8 +234,8 @@ Rules:
   rail (small: avatar 28px, icons 15px, labels 9px) with the FORWARD.one
   avatar (the presenter's photo, cropped round; "F." without one) and red
   follow "+", Like (heart, fills
-  red #FF3B5C and pops; "Like" → "Liked") and Share (Web Share API, else
-  copies the page link and shows "Link copied"); bottom left the handle,
+  red #FF3B5C and pops; "Like" → "Liked") and Share (opens LinkedIn's share
+  dialog in a new tab, to post the site on the visitor's own feed); bottom left the handle,
   the person and role, a caption and "♪ original sound · FORWARD.one" (11px, smaller than the caption). No
   like or share counts are shown (no invented numbers).
 

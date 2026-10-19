@@ -218,11 +218,10 @@ const company = (name = PH.company, blurb = PH.blurb): FounderEntry => ({ card: 
 export const founders = {
   eyebrow: 'On the road',
   /** Active, from FORWARD.one's side (owner, 2026-10-19): the people and
-   * companies we meet, the places we go. Cities are where portfolio companies
-   * are based (forward.one/portfolio); regions and the 2,500 a year are the
-   * site's own figures (What we do, stats). */
+   * companies we meet, the places we go: all of Europe, not one region. The
+   * 2,500 a year is the site's own figure (stats). */
   title: 'We go where Europe’s builders are.',
-  intro: 'From Delft to Copenhagen, we meet 2,500 companies a year and back the few who will lead.',
+  intro: 'Across Europe, we meet 2,500 companies a year and back the few who will lead.',
   role: 'CEO',
   /** 20 founders; the card type alternates. */
   people: [
@@ -269,7 +268,7 @@ export const founders = {
     like: 'Like',
     liked: 'Liked',
     share: 'Share',
-    copied: 'Link copied',
+    shareLabel: 'Share on LinkedIn',
   },
   /** Fallback colours for company cards without a brand colour: the site's own tones. */
   tones: ['#FFEA6D', '#111111', '#26175A', '#E9E4D6', '#DB8E00', '#820400', '#C3D3DE'],
