@@ -225,8 +225,9 @@ Rules:
   face (28–44px), one line of small body copy under it; text dark or white
   by the colour's luminance.
 - Clip card (TikTok-style): a muted, looping vertical video that plays while
-  in view (until the team videos arrive, all five play the generated
-  `public/founders/placeholder.mp4`, 8s, each from a different moment); a thin progress bar at the top that follows the video; right
+  in view (until the team videos arrive, all five play the owner's
+  placeholder clip `public/founders/clip-placeholder.mp4`, 20s, each from a
+  different moment); a thin progress bar at the top that follows the video; right
   rail (small: avatar 20px, icons 15px, labels 9px) with the FORWARD.one
   avatar and red follow "+", Like (heart, fills
   red #FF3B5C and pops; "Like" → "Liked") and Share (Web Share API, else
