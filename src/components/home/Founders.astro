@@ -62,8 +62,13 @@ const isPh = (v: string) => isPlaceholder(v);
 
 <section class="section founders" data-founders aria-labelledby="founders-title">
   <div class="wrap">
-        <p class="eyebrow">{founders.eyebrow}</p>
-        <h2 class="h-section founders__title" id="founders-title"><Sentences text={founders.title} /></h2>
+        <div class="grid founders__head">
+          <div class="col-6">
+            <p class="eyebrow">{founders.eyebrow}</p>
+            <h2 class="h-section founders__title" id="founders-title"><Sentences text={founders.title} /></h2>
+          </div>
+          <p class="col-4 start-9 body founders__intro">{founders.intro}</p>
+        </div>
         <div class="founders__rail">
           <ul class="founders__track" data-founders-track>
             {
@@ -213,8 +218,24 @@ const isPh = (v: string) => isPlaceholder(v);
 
 <style>
   /* ---- Section, pin and track ----------------------------------------- */
+  /* Head as in the Proof slider: eyebrow and title left, a line of body copy
+     right, bottoms aligned; stacked at 880px and below. */
+  .founders__head {
+    align-items: end;
+  }
   .founders__title {
-    margin-top: var(--gap-half);
+    margin: var(--gap-half) 0 0;
+  }
+  .founders__intro {
+    margin: 0;
+  }
+  @media (max-width: 880px) {
+    .founders__head {
+      row-gap: 0;
+    }
+    .founders__intro {
+      margin-top: var(--space-4x);
+    }
   }
   /* The rail is the content width (a size container, so 100cqw is exactly
      the .wrap content); the track runs from window edge to window edge, the

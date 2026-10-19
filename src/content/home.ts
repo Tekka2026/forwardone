@@ -216,8 +216,13 @@ const founder = (company = PH.company): FounderEntry => ({ card: 'founder', name
 const company = (name = PH.company, blurb = PH.blurb): FounderEntry => ({ card: 'company', name: PH.name, company: name, photo: '', colour: '', blurb });
 
 export const founders = {
-  eyebrow: 'Founders',
-  title: 'The founders we back.',
+  eyebrow: 'On the road',
+  /** Active, from FORWARD.one's side (owner, 2026-10-19): the people and
+   * companies we meet, the places we go. Cities are where portfolio companies
+   * are based (forward.one/portfolio); regions and the 2,500 a year are the
+   * site's own figures (What we do, stats). */
+  title: 'We go where Europe’s builders are.',
+  intro: 'Labs and factory floors from Delft and Enschede to Copenhagen. Across the Benelux, DACH and the Nordics we meet 2,500 companies a year, and back the few who will lead.',
   role: 'CEO',
   /** 20 founders; the card type alternates. */
   people: [

@@ -201,7 +201,9 @@ Rules:
 `src/components/home/Founders.astro`; copy in `founders` (home.ts). Owner,
 2026-10-19.
 
-- White section: eyebrow "Founders", H2, then a row of 5:7 cards, each three
+- White section. Head as in the Proof slider: eyebrow "On the road" and the
+  H2 ("We go where Europe’s builders are.") left, a line of body copy right
+  (cities, regions, 2,500 a year; owner 2026-10-19). Then a row of 5:7 cards, each three
   of the twelve columns wide, 32px apart, starting at the content's left
   edge and running on past the window's right edge.
 - Never takes over the page's scrolling (owner, 2026-10-19): a plain
