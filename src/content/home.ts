@@ -182,12 +182,11 @@ export type FundRow = {
  * - 'company': the company's brand colour, its name and a line of body copy;
  * - clips (every fifth card): a TikTok-style video of a FORWARD.one team
  *   member, with Like and Share.
- * RULE (owner, 2026-10-19): no company here may also be a Proof company
- * (`caseStudies`). Founders.astro fails the build if one is. So only Aito
- * and Nuventura (portfolio exits named in the track record, not in Proof)
- * are filled in; founder names, photos, the other companies, brand colours
- * (empty = a site tone is used), lines, the videos and their captions are
- * placeholders (see PLACEHOLDERS.md and A0012).
+ * RULE (owner, 2026-10-19): no company here may be a Proof company
+ * (`caseStudies`) or an exit (`trackRecord.exits`). Founders.astro fails the
+ * build if one is. So no company is filled in yet: founder names, photos,
+ * companies, brand colours (empty = a site tone is used), lines, the videos
+ * and their captions are placeholders (see PLACEHOLDERS.md and A0012).
  */
 export type FounderEntry = {
   card: 'founder' | 'company';
@@ -218,9 +217,9 @@ export const founders = {
   /** 20 founders; the card type alternates. */
   people: [
     founder(),
-    company('Aito'),
+    company(),
     founder(),
-    company('Nuventura'),
+    company(),
     founder(),
     company(),
     founder(),

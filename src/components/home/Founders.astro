@@ -15,17 +15,22 @@
  * toggles (heart fills and pops); Share uses the Web Share API, else copies
  * the page link. Clips play muted when in view. Copy in `founders` (home.ts).
  */
-import { founders, caseStudies } from '@content/home';
+import { founders, caseStudies, trackRecord } from '@content/home';
 import Placeholder from '@components/ui/Placeholder.astro';
 import Sentences from '@components/ui/Sentences.astro';
 import { href, isPlaceholder } from '@lib/href';
 
-// Rule (owner, 2026-10-19): the founders strip never shows a Proof company.
-// Fail the build if one slips in, rather than publish it.
-const proof = new Set(caseStudies.groups.flatMap((g) => g.items.map((c) => c.name.trim().toLowerCase())));
-const clash = founders.people.map((p) => p.company).filter((c) => !isPlaceholder(c) && proof.has(c.trim().toLowerCase()));
+// Rule (owner, 2026-10-19): the founders strip never shows a Proof company
+// or an exit. Fail the build if one slips in, rather than publish it.
+// Exits are listed as "Name (Buyer)": compare the name only.
+const norm = (s: string) => s.replace(/\(.*?\)/g, '').trim().toLowerCase();
+const taken = new Set([
+  ...caseStudies.groups.flatMap((g) => g.items.map((c) => norm(c.name))),
+  ...trackRecord.exits.items.map(norm),
+]);
+const clash = founders.people.map((p) => p.company).filter((c) => !isPlaceholder(c) && taken.has(norm(c)));
 if (clash.length) {
-  throw new Error(`Founders strip: ${[...new Set(clash)].join(', ')} also appear(s) in Proof (caseStudies). A company may only be in one of the two.`);
+  throw new Error(`Founders strip: ${[...new Set(clash)].join(', ')} is a Proof company or an exit (caseStudies / trackRecord.exits). The founders strip may show neither.`);
 }
 
 type Card =
