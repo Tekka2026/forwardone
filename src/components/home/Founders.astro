@@ -103,7 +103,7 @@ const isPh = (v: string) => isPlaceholder(v);
                         <p class="fc__person"><Placeholder value={v.person} /></p>
                         <p class="fc__text"><Placeholder value={v.caption} /></p>
                         <p class="fc__sound">
-                          <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M9 18V5l11-2v13" fill="none" stroke="currentColor" stroke-width="2" /><circle cx="6" cy="18" r="3" fill="currentColor" /><circle cx="17" cy="16" r="3" fill="currentColor" /></svg>
+                          <svg viewBox="0 0 24 24" width="9" height="9" aria-hidden="true"><path d="M9 18V5l11-2v13" fill="none" stroke="currentColor" stroke-width="2" /><circle cx="6" cy="18" r="3" fill="currentColor" /><circle cx="17" cy="16" r="3" fill="currentColor" /></svg>
                           <span>{founders.clip.sound}</span>
                         </p>
                       </div>
@@ -473,11 +473,13 @@ const isPh = (v: string) => isPlaceholder(v);
   .fc__person {
     color: rgba(255, 255, 255, 0.85);
   }
+  /* Sound line smaller than the caption (owner, 2026-10-19): 11px, 9px note. */
   .fc__sound {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     margin-top: 2px;
+    font-size: 11px;
     overflow: hidden;
     white-space: nowrap;
   }

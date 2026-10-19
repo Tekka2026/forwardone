@@ -233,7 +233,7 @@ Rules:
   follow "+", Like (heart, fills
   red #FF3B5C and pops; "Like" → "Liked") and Share (Web Share API, else
   copies the page link and shows "Link copied"); bottom left the handle,
-  the person and role, a caption and "♪ original sound · FORWARD.one". No
+  the person and role, a caption and "♪ original sound · FORWARD.one" (11px, smaller than the caption). No
   like or share counts are shown (no invented numbers).
 
 ### Track record head
