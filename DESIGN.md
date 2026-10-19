@@ -249,8 +249,8 @@ Rules:
   avatar (the presenter's photo, cropped round; "F." without one) and red
   follow "+", Like (heart, fills
   red #FF3B5C and pops; "Like" → "Liked") and Share (opens LinkedIn's share
-  dialog in a new tab, to post the site on the visitor's own feed); bottom left the handle,
-  the person and role, a caption and "♪ original sound · FORWARD.one" (11px, smaller than the caption). No
+  dialog in a new tab, to post the site on the visitor's own feed); bottom left a caption
+  (no handle or name/role line, owner 2026-10-19) and "♪ original sound · FORWARD.one" (11px, smaller than the caption). No
   like or share counts are shown (no invented numbers).
 
 ### Track record head

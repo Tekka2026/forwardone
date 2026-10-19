@@ -208,7 +208,7 @@ export type FounderEntry = {
   /** Company card: "Discover more about <company>" link. Empty = the portfolio overview. */
   href?: string;
 };
-export type FounderClip = { video: string; webm?: string; poster: string; avatar?: string; /** slug of the presenter's team profile (/about/team/<slug>) */ profile?: string; person: string; caption: string };
+export type FounderClip = { video: string; webm?: string; poster: string; avatar?: string; /** slug of the presenter's team profile (/about/team/<slug>) */ profile?: string; caption: string };
 
 const PH = {
   name: '[PLACEHOLDER: founder name]',
@@ -262,11 +262,9 @@ export const founders = {
     /** Profile circle: the presenter's photo (owner, 2026-10-19, for the placeholder clip). */
     avatar: '/founders/clip-avatar.jpg',
     profile: 'presenter',
-    person: '[PLACEHOLDER: team member, role]',
     caption: 'Shaping the future at Slush Finland! Innovation, connections, and endless possibilities. ❄️✨',
   })) as FounderClip[],
   clip: {
-    handle: '[PLACEHOLDER: social handle]',
     sound: 'original sound · FORWARD.one',
     profile: 'View profile',
     like: 'Like',

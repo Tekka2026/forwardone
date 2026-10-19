@@ -12,7 +12,7 @@
  *
  * Card types: founder (photo, name, "CEO, company"), company (brand colour,
  * name, one line), and a TikTok-style clip of a FORWARD.one team member with
- * a progress bar, handle, caption, sound line and a Like / Share rail. Like
+ * a progress bar, caption, sound line and a Like / Share rail. Like
  * toggles (heart fills and pops); Share opens LinkedIn's share dialog in a
  * new tab, to post the site on the visitor's own feed. Clips play muted when in view. Copy in `founders` (home.ts).
  */
@@ -123,8 +123,6 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
                         </a>
                       </div>
                       <div class="fc__caption">
-                        <p class="fc__handle"><Placeholder value={founders.clip.handle} /></p>
-                        <p class="fc__person"><Placeholder value={v.person} /></p>
                         <p class="fc__text"><Placeholder value={v.caption} /></p>
                         <p class="fc__sound">
                           <svg viewBox="0 0 24 24" width="9" height="9" aria-hidden="true"><path d="M9 18V5l11-2v13" fill="none" stroke="currentColor" stroke-width="2" /><circle cx="6" cy="18" r="3" fill="currentColor" /><circle cx="17" cy="16" r="3" fill="currentColor" /></svg>
@@ -619,13 +617,6 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
     font-size: 13px;
     line-height: 1.35;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
-  }
-  .fc__handle {
-    font-weight: 600;
-    font-size: 14px;
-  }
-  .fc__person {
-    color: rgba(255, 255, 255, 0.85);
   }
   /* Sound line smaller than the caption (owner, 2026-10-19): 11px, 9px note. */
   .fc__sound {
