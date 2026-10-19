@@ -252,9 +252,9 @@ export const founders = {
   ] as FounderEntry[],
   /** A clip after every `clipEvery` founder cards. */
   clipEvery: 4,
-  // Until the team videos are supplied every clip plays the same placeholder
-  // video, supplied by the owner on 2026-10-19 (a hand holding a sensor;
-  // 20s, portrait, sound removed), each from a different moment.
+  // Until the team videos are supplied every clip plays the same video,
+  // supplied by the owner on 2026-10-19: Slush, Finland (14s, 720 × 1280,
+  // sound removed), each from a different moment, with the owner's caption.
   clips: [1, 2, 3, 4, 5].map(() => ({
     video: '/founders/clip-placeholder.mp4',
     webm: '/founders/clip-placeholder.webm',
@@ -263,7 +263,7 @@ export const founders = {
     avatar: '/founders/clip-avatar.jpg',
     profile: 'presenter',
     person: '[PLACEHOLDER: team member, role]',
-    caption: '[PLACEHOLDER: one-line caption]',
+    caption: 'Shaping the future at Slush Finland! Innovation, connections, and endless possibilities. ❄️✨',
   })) as FounderClip[],
   clip: {
     handle: '[PLACEHOLDER: social handle]',

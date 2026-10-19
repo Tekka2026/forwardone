@@ -243,7 +243,7 @@ Rules:
   show it plainly; reduced motion shows it without motion.
 - Clip card (TikTok-style): a muted, looping vertical video that plays while
   in view (until the team videos arrive, all five play the owner's
-  placeholder clip `public/founders/clip-placeholder.mp4`, 20s, each from a
+  Slush Finland clip `public/founders/clip-placeholder.mp4`, 14s, each from a
   different moment); a thin progress bar at the top that follows the video; right
   rail (small: avatar 28px, icons 15px, labels 9px) with the FORWARD.one
   avatar (the presenter's photo, cropped round; "F." without one) and red
