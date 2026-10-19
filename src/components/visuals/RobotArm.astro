@@ -10,7 +10,9 @@
  * with three changes (owner, 2026-10-15): idle, the cap faces the viewer
  * and keeps glancing at spots around the camera (instead of looping through
  * poses); the arm follows the mouse only while the pointer is over the box
- * (leaving eases it back to facing the viewer); the SENSORFACT label is
+ * (leaving eases it back to facing the viewer); while the view is dragged
+ * the arm holds still, and a click or tap opens the card's article
+ * (owner, 2026-10-19); the SENSORFACT label is
  * drawn behind the arm instead of on top of it. Colours (owner, 2026-10-17):
  * the cap and accent are yellow #FFEA6D instead of blue / cyan. Realistic
  * style (owner, 2026-10-19): smooth-shaded solids with per-part materials
@@ -656,15 +658,20 @@ function frame(now) {
   // in front of the arm, so it keeps turning towards you as the view turns; every 1.4–3.2 s it glances at another
   // spot close by, as if looking around near the camera. With the mouse over the box it follows
   // the mouse instead; leaving the box eases it back to facing the viewer.
-  const active = follow && haveLast && !pointers.size;
-  if (!active && !reduced && now > glance.next) {                // idle: glance at another spot near the viewer
+  // While the view is being dragged (owner, 2026-10-19) the arm holds still: no following, no glancing.
+  const dragging = pointers.size > 0;
+  const active = follow && haveLast && !dragging;
+  if (dragging) glance.next = now + 1400;
+  else if (!active && !reduced && now > glance.next) {           // idle: glance at another spot near the viewer
     glance.x = .5 + (Math.random() - .5) * .34; glance.y = .38 + (Math.random() - .5) * .22;
     glance.next = now + 1400 + Math.random() * 1800;
   }
-  const want = solve(active ? pointerTarget(lastX, lastY) : pointerTarget(W * glance.x, H * glance.y));
-  qFollow = qFollow || want.slice();
-  const k = reduced ? 1 : Math.min(1, dt * (active ? 5 : 2.5));   // a little lag, so it moves like a machine
-  qFollow = qFollow.map((v, i) => angLerp(v, want[i], k));
+  if (!dragging || !qFollow) {
+    const want = solve(active ? pointerTarget(lastX, lastY) : pointerTarget(W * glance.x, H * glance.y));
+    qFollow = qFollow || want.slice();
+    const k = reduced ? 1 : Math.min(1, dt * (active ? 5 : 2.5));   // a little lag, so it moves like a machine
+    qFollow = qFollow.map((v, i) => angLerp(v, want[i], k));
+  }
   const frames = linkFrames(qFollow); frames[7] = mI();
 
   drawScene(frames);                  // the 3D scene on the GPU …
@@ -704,9 +711,15 @@ root.addEventListener('pointermove', e => {   // the sensor follows the mouse wh
 }, { passive: true });
 root.addEventListener('pointerleave', () => { haveLast = false; });   // leave the box: back to the pose loop
 
+// A click or tap (hardly any movement, short) opens the article the visual belongs to (owner, 2026-10-19): the
+// first link in the card around the box, looked up on the click (the inline script runs before the rest of the
+// card is parsed). A drag only turns the view.
+const cardLink = () => root.closest('.article, article, li')?.querySelector('a[href]');
+let press = null;
 canvas.addEventListener('pointerdown', e => {
   canvas.setPointerCapture(e.pointerId);
   pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  press = pointers.size === 1 ? { x: e.clientX, y: e.clientY, t: performance.now(), moved: 0 } : null;
   canvas.classList.add('drag');
   back = null;
 });
@@ -715,12 +728,20 @@ canvas.addEventListener('pointermove', e => {
   if (!p || pointers.size > 1) return;
   const dx = e.clientX - p.x, dy = e.clientY - p.y;
   p.x = e.clientX; p.y = e.clientY;
+  if (press) press.moved += Math.hypot(dx, dy);
   dYaw += dx * .006;
   dPitch = Math.min(1.45, Math.max(-.05, HOME.pitch + dPitch + dy * .005)) - HOME.pitch;
 });
 const release = e => {
   pointers.delete(e.pointerId);
   if (pointers.size) return;
+  const link = cardLink();
+  if (e.type === 'pointerup' && press && press.moved < 6 && performance.now() - press.t < 600 && link) {
+    press = null; canvas.classList.remove('drag');
+    if (e.metaKey || e.ctrlKey) window.open(link.href, '_blank'); else location.href = link.href;
+    return;
+  }
+  press = null;
   dYaw = Math.atan2(Math.sin(dYaw), Math.cos(dYaw));        // turn back the short way
   back = { t0: performance.now(), yaw: dYaw, pitch: dPitch };
   canvas.classList.remove('drag');

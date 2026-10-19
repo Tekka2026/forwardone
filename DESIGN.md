@@ -316,8 +316,9 @@ screens the list stacks under the CTA.
   slowly orbiting view) and keeps moving slightly: every 1.4–3.2 s it picks
   another spot near the camera to look at, eased so it moves like a machine.
   It follows the mouse while the pointer is over the box and eases back to
-  the viewer when it leaves; drag turns the view; the SENSORFACT label sits
-  behind the arm. Coded visuals sit above the card's full-size link, so
+  the viewer when it leaves; drag turns the view, and while dragging the arm
+  holds still; a click or tap (under 6px of movement) opens the article;
+  the SENSORFACT label sits behind the arm. Coded visuals sit above the card's full-size link, so
   dragging works; the title still links. The second (Munich) uses
   `MunichMap.astro` (owner, 2026-10-19): a static, top-down street map of
   central Munich in the manner of a Mapbox "Light" style: pale land,
