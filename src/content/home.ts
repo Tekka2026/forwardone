@@ -227,7 +227,7 @@ export const founders = {
   role: 'CEO',
   /** 20 founders; the card type alternates. */
   people: [
-    { ...founder('ROCSYS'), name: 'Crijn Bouman', role: 'CEO & Co-founder' }, // owner, 2026-10-19
+    { ...founder('ROCSYS'), name: 'Crijn Bouman', role: 'CEO & Co-founder', photo: '/founders/rocsys.jpg' }, // owner, 2026-10-19
     company('Voltfang', 'Grid-scale storage from used EV batteries.'),
     founder('Qualinx'),
     company('ORE Energy', 'Iron-air batteries for long-duration grid storage.'),

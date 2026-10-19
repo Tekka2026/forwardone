@@ -10,7 +10,7 @@ invented; replace the value in the file named and the marker disappears.
 |---|---|---|
 | Hero, stats, footnotes | `footnotes[0]` | Benchmark source and date for the top-5% ranking (footnote ¹). |
 | Footnotes | `disclaimer` | Past performance disclaimer, to be supplied by compliance. |
-| Founders strip | `founders.people[*].name`, `.photo` | Name and photo (portrait, 5:7, at least 800 × 1120) of each of the 20 founders (CEOs). Photos go in `public/founders/`. Done: Optics11 Life (Jacquelien ten Dam, name and photo); ROCSYS (Crijn Bouman, CEO & Co-founder; photo still needed). |
+| Founders strip | `founders.people[*].name`, `.photo` | Name and photo (portrait, 5:7, at least 800 × 1120) of each of the 20 founders (CEOs). Photos go in `public/founders/`. Done: Optics11 Life (Jacquelien ten Dam, name and photo); ROCSYS (Crijn Bouman, CEO & Co-founder, name and photo). |
 | Founders strip | `founders.people[*].company` | Three of the 20 slots still need a company (17 are filled from forward.one/portfolio). Never a Proof company (`caseStudies`) or an exit (`trackRecord.exits`): the build fails if one is. |
 | Founders strip | `founders.people[*].colour` | Brand colour (hex) per company card. Empty falls back to a site tone. |
 | Founders strip | `founders.people[*].blurb` | Check the one-liners under the company names (paraphrased from the forward.one portfolio pages). |
