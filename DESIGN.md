@@ -270,7 +270,10 @@ screens the list stacks under the CTA.
 - Content (owner, 2026-10-19): the LP's investor-report overview, after the
   owner's portal screenshot. The top bar (logo, Home / Wealth / Transactions /
   Documents, then the Fundrbird mark (the owner's SVG redrawn as a 1.5-stroke
-  line icon at 18px, 2026-10-19), mail with badge, settings, log out) and the greeting row
+  line icon at 18px, 2026-10-19), mail with badge, settings, log out; the
+  badge counts 3 → 4 once, 0.8s after the dashboard is half in view: the
+  number slides up and is replaced from below, the yellow circle pops
+  gently to 1.18×, 460ms; under reduced motion the number just changes) and the greeting row
   (greeting, value date, Filter) stay as before; no email address or user
   name is shown. Under them one card with a table:
   - a head row of mono column labels, right-aligned: Commitment, Paid-in

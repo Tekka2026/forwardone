@@ -318,7 +318,8 @@ export const portal = {
     { label: 'Transactions', menu: true },
     { label: 'Documents' },
   ],
-  unread: '3',
+  /** Unread messages: shown as `from`, then counts up to `to` once the dashboard is in view (a new message arrives). */
+  unread: { from: '3', to: '4' },
   /** Picked from the viewer's local time: morning 05–12, afternoon 12–18, evening otherwise. */
   greeting: { morning: 'Good morning', afternoon: 'Good afternoon', evening: 'Good evening' },
   /** Followed by the viewer's current date and time, e.g. "Monday, 05.02.2030 13:52". */
