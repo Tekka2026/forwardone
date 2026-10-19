@@ -402,8 +402,7 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
      the card; the whole card is its click area. On hover (or keyboard focus)
      it animates in like the H1: word by word, each appearing two steps low
      and stepping up in 80ms frames (--reveal-frame, --reveal-stagger), the
-     last word rising smoothly while a light tint of the text colour sweeps
-     off to the right. The step is sized so it moves the same ~2px as the
+     last word rising smoothly; no tint (owner, 2026-10-19). The step is sized so it moves the same ~2px as the
      H1's. Touch screens (no hover) show it plainly. */
   .fc__more {
     --reveal-step: 0.14em;
@@ -438,19 +437,12 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
       animation-delay: calc(var(--i) * var(--reveal-stagger));
     }
     .fc--company:is(:hover, :focus-within) .fc__w--last {
-      --fcw-sweep: 100%;
-      background: linear-gradient(90deg, var(--fc-fg) var(--fcw-sweep), color-mix(in srgb, var(--fc-fg) 25%, transparent) calc(var(--fcw-sweep) + 100%));
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
       animation:
         fc-w-show calc(var(--reveal-frame) * 9) step-end forwards,
-        fc-w-rise calc(var(--reveal-frame) * 9) cubic-bezier(0.2, 0.7, 0.2, 1) forwards,
-        fc-w-tint var(--reveal-tint-duration) var(--reveal-gentle-ease) both;
+        fc-w-rise calc(var(--reveal-frame) * 9) cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
       animation-delay:
         calc(var(--i) * var(--reveal-stagger)),
-        calc(var(--i) * var(--reveal-stagger)),
-        calc(var(--i) * var(--reveal-stagger) + var(--reveal-frame));
+        calc(var(--i) * var(--reveal-stagger));
     }
   }
   /* 4 frames: invisible, then two steps down, one step, rest */
@@ -467,14 +459,6 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
   @keyframes fc-w-rise {
     0%   { transform: translateY(calc(7 * var(--reveal-step))); }
     100% { transform: translateY(0); }
-  }
-  @property --fcw-sweep {
-    syntax: '<percentage>';
-    inherits: false;
-    initial-value: 100%;
-  }
-  @keyframes fc-w-tint {
-    from { --fcw-sweep: 0%; }
   }
   .fc__blurb {
     max-width: 30ch;

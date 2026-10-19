@@ -238,8 +238,8 @@ Rules:
   at the bottom, the whole card its click area (the company's page on
   forward.one, else the portfolio overview). On hover or keyboard focus it
   animates in like the H1: word by word in 80ms frames (two steps low, one,
-  rest), the last word rising smoothly while a light tint of the text colour
-  sweeps off to the right; steps sized to ~2px like the H1's. Touch screens
+  rest), the last word rising smoothly (no tint
+  gradient, owner 2026-10-19); steps sized to ~2px like the H1's. Touch screens
   show it plainly; reduced motion shows it without motion.
 - Clip card (TikTok-style): a muted, looping vertical video that plays while
   in view (until the team videos arrive, all five play the owner's
