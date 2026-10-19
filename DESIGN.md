@@ -212,6 +212,8 @@ Rules:
 - Phones (880px and below): cards min(72vw, 340px) wide.
 - Each card eases up 32px and fades in (700ms) the first time it comes into
   view.
+- Never a Proof company (owner, 2026-10-19): no company in the strip may
+  also be in the Proof slider; the build fails if one is.
 - Sequence: the 20 founders in order, the card type alternating founder /
   company, and a clip after every fourth founder (25 cards).
 - Founder card: the CEO's photo, full bleed (#ECECEA until supplied); name
@@ -499,6 +501,10 @@ CLAUDE.md action A0005).
 
 Link underlines (hover, current page) are 1px (`a` in global.css); the
 font's default underline is too heavy.
+8. **A company is in the Proof slider or in the founders strip, never both**
+   (owner, 2026-10-19). `Founders.astro` fails the build if a founders-strip
+   company also appears in `caseStudies`.
+
 
 ## 8. Navigation
 
