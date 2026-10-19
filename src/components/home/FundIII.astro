@@ -32,6 +32,9 @@ import PortalPreview from '@components/home/PortalPreview.astro';
      (owner, 2026-10-14). */
   .fund {
     padding-bottom: 0;
+    /* The portal preview reaches 50px below the section and rises into view
+       on scroll (PortalPreview.astro): clip it at the section's edge. */
+    overflow: hidden;
     background-image: linear-gradient(to top right, #ffea6d, rgba(0, 0, 0, 0.04));
     /* Keep the gradient out from under the (translucent) top hairline, so
        the line shows the same grey as every other hairline. */

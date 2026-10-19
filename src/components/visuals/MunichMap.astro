@@ -1,14 +1,12 @@
 ---
 /**
  * Munich map visual (owner, 2026-10-19): a static, top-down street map of
- * central Munich in the manner of a Mapbox "Light" style, with the site's
- * yellow as the one accent: pale land, slightly darker built-up blocks, a
- * dense web of white minor streets, white main roads with grey casings, the
- * Mittlerer Ring in yellow like a motorway, muted green parks, grey-blue
- * water, rail corridors, and Inter labels with white halos (street names
- * along their roads, district names spaced in capitals, parks in green, the
- * Isar in blue italics). One yellow pin on Marienplatz. It does not move.
- * Rendered at build time to an SVG.
+ * central Munich in the manner of a Mapbox "Light" style: pale land,
+ * slightly darker built-up blocks, a dense web of white minor streets, white
+ * main roads with grey casings (the Mittlerer Ring among them), muted green
+ * parks, grey-blue water and rail corridors. No names, pins or other copy on
+ * the map (owner, 2026-10-19); only the legend: a 1 km scale bar and N ↑.
+ * It does not move. Rendered at build time to an SVG.
  *
  * Geography: the main roads, the Isar, the parks and the landmarks are drawn
  * from real coordinates, in km from Marienplatz (48.1374 N, 11.5755 E;
@@ -26,18 +24,11 @@ const C = {
   block: '#e8e7e3',      // built-up area
   blockOuter: '#e8e7e3', // outside the Mittlerer Ring: the same, so district edges do not show
   park: '#dbe5d1',
-  parkLabel: '#5f7d4f',
   sand: '#e9e4d6',       // Theresienwiese
   water: '#c3d3de',
-  waterLabel: '#5a7b92',
   casing: '#d6d4cf',
   road: '#ffffff',
-  ring: '#ffea6d',       // the site's yellow
-  ringCasing: '#e2c64a',
   rail: '#bdbbb5',
-  label: '#7a7974',
-  district: '#a3a19b',
-  ink: '#1f1f1f',
 };
 
 // Top-down projection: 6.4 km across the 500-wide box, centred a little
@@ -79,21 +70,21 @@ const rnd = () => {
 };
 
 // ---- Districts: built-up area, each with its typical street angle (degrees from east) and block size (km)
-type District = { name?: string; at?: K; poly: K[]; angle: number; step: number; outer?: boolean };
+type District = { poly: K[]; angle: number; step: number; outer?: boolean };
 const districts: District[] = [
   // outside the Mittlerer Ring: a looser grid over the whole box (first, so the districts draw over it)
   { poly: [[-3.4, -4.4], [3.7, -4.4], [3.7, 5.3], [-3.4, 5.3]], angle: 10, step: 0.21, outer: true },
-  { name: 'MAXVORSTADT', at: [-0.42, 1.42], poly: [[-1.12, 0.62], [0.12, 0.66], [0.42, 1.4], [0.5, 2.1], [-1.05, 2.15]], angle: -2, step: 0.13 },
-  { name: 'SCHWABING', at: [0.15, 3.05], poly: [[-0.95, 2.15], [0.5, 2.1], [0.95, 2.75], [1.2, 3.75], [-0.75, 3.75]], angle: 4, step: 0.15 },
+  { poly: [[-1.12, 0.62], [0.12, 0.66], [0.42, 1.4], [0.5, 2.1], [-1.05, 2.15]], angle: -2, step: 0.13 }, // Maxvorstadt
+  { poly: [[-0.95, 2.15], [0.5, 2.1], [0.95, 2.75], [1.2, 3.75], [-0.75, 3.75]], angle: 4, step: 0.15 }, // Schwabing
   { poly: [[-0.66, -0.4], [-0.74, 0.12], [-0.45, 0.45], [0.08, 0.66], [0.45, 0.56], [0.56, 0.15], [0.5, -0.24], [0.05, -0.54]], angle: 18, step: 0.085 }, // Altstadt
-  { name: 'ISARVORSTADT', at: [-0.3, -1.05], poly: [[-1.45, 0.25], [-0.74, 0.12], [-0.66, -0.4], [0.05, -0.54], [0.5, -0.65], [0.15, -1.0], [-0.55, -1.45], [-1.5, -1.5]], angle: -38, step: 0.14 },
-  { name: 'LEHEL', at: [0.95, 0.45], poly: [[0.45, 0.56], [0.56, 0.15], [0.62, -0.1], [1.0, 0.02], [1.32, 0.48], [1.05, 0.75], [0.62, 0.72]], angle: -28, step: 0.11 },
-  { name: 'HAIDHAUSEN', at: [1.95, -0.5], poly: [[1.0, -0.6], [1.2, -0.05], [1.5, 0.45], [2.35, 0.4], [2.45, -1.3], [1.4, -1.35]], angle: 24, step: 0.15 },
-  { name: 'AU', at: [0.95, -1.35], poly: [[0.25, -1.05], [0.75, -0.62], [1.4, -1.35], [1.5, -2.5], [0.4, -2.6]], angle: 12, step: 0.15 },
-  { name: 'BOGENHAUSEN', at: [2.05, 1.25], poly: [[1.5, 0.45], [2.4, 0.4], [2.45, 2.2], [2.0, 1.85], [1.7, 1.2]], angle: 40, step: 0.16 },
-  { name: 'NEUHAUSEN', at: [-2.05, 1.75], poly: [[-2.9, 0.5], [-1.12, 0.55], [-1.05, 2.15], [-0.75, 3.75], [-2.5, 3.4], [-2.95, 2.2]], angle: -18, step: 0.16 },
-  { name: 'WESTEND', at: [-2.35, -0.25], poly: [[-2.95, 0.12], [-1.45, 0.25], [-1.5, -0.25], [-2.1, -0.45], [-2.35, -1.0], [-2.9, -0.9]], angle: 6, step: 0.13 },
-  { name: 'SENDLING', at: [-1.65, -2.05], poly: [[-2.75, -1.1], [-2.35, -1.0], [-1.5, -1.5], [-0.55, -1.45], [-0.3, -2.9], [-2.1, -2.75]], angle: 30, step: 0.17 },
+  { poly: [[-1.45, 0.25], [-0.74, 0.12], [-0.66, -0.4], [0.05, -0.54], [0.5, -0.65], [0.15, -1.0], [-0.55, -1.45], [-1.5, -1.5]], angle: -38, step: 0.14 }, // Isarvorstadt
+  { poly: [[0.45, 0.56], [0.56, 0.15], [0.62, -0.1], [1.0, 0.02], [1.32, 0.48], [1.05, 0.75], [0.62, 0.72]], angle: -28, step: 0.11 }, // Lehel
+  { poly: [[1.0, -0.6], [1.2, -0.05], [1.5, 0.45], [2.35, 0.4], [2.45, -1.3], [1.4, -1.35]], angle: 24, step: 0.15 }, // Haidhausen
+  { poly: [[0.25, -1.05], [0.75, -0.62], [1.4, -1.35], [1.5, -2.5], [0.4, -2.6]], angle: 12, step: 0.15 }, // Au
+  { poly: [[1.5, 0.45], [2.4, 0.4], [2.45, 2.2], [2.0, 1.85], [1.7, 1.2]], angle: 40, step: 0.16 }, // Bogenhausen
+  { poly: [[-2.9, 0.5], [-1.12, 0.55], [-1.05, 2.15], [-0.75, 3.75], [-2.5, 3.4], [-2.95, 2.2]], angle: -18, step: 0.16 }, // Neuhausen
+  { poly: [[-2.95, 0.12], [-1.45, 0.25], [-1.5, -0.25], [-2.1, -0.45], [-2.35, -1.0], [-2.9, -0.9]], angle: 6, step: 0.13 }, // Westend
+  { poly: [[-2.75, -1.1], [-2.35, -1.0], [-1.5, -1.5], [-0.55, -1.45], [-0.3, -2.9], [-2.1, -2.75]], angle: 30, step: 0.17 }, // Sendling
   { poly: [[-0.55, -1.45], [0.15, -1.0], [0.4, -2.6], [-0.3, -2.95]], angle: -10, step: 0.15 },
 ];
 // A slightly irregular street grid for one district: two families of lines
@@ -194,40 +185,13 @@ const secondary: K[][] = [
 ];
 const pedestrian = [[-0.62, 0.05], [-0.3, 0.03], [0.0, 0.0]] as K[];    // Neuhauser / Kaufinger Straße
 
-// ---- Labels
-// Street names follow their road (text on a path); a path is reversed when
-// it runs right to left, so the name always reads left to right.
-const readable = (pts: K[]) => (X(pts[pts.length - 1][0]) < X(pts[0][0]) ? pts.slice().reverse() : pts);
-const streetLabels: { id: string; t: string; pts: K[]; at: number }[] = [
-  { id: 'sl-leopold', t: 'Leopoldstraße', pts: [[0.48, 1.67], [0.8, 2.7], [1.0, 3.6]], at: 50 },
-  { id: 'sl-prinz', t: 'Prinzregentenstraße', pts: [[1.67, 0.58], [2.6, 0.46], [3.7, 0.5]], at: 30 },
-  { id: 'sl-landsberger', t: 'Landsberger Straße', pts: [[-1.2, 0.22], [-2.2, 0.16], [-3.6, 0.04]], at: 45 },
-  { id: 'sl-lindwurm', t: 'Lindwurmstraße', pts: [[-0.8, -0.55], [-1.34, -1.01], [-2.3, -2.0]], at: 50 },
-  { id: 'sl-rosenheimer', t: 'Rosenheimer Straße', pts: [[1.2, -0.8], [2.0, -1.4], [3.0, -2.1]], at: 45 },
-  { id: 'sl-nymph', t: 'Nymphenburger Straße', pts: [[-1.1, 1.0], [-2.2, 1.6], [-3.4, 2.2]], at: 40 },
-  { id: 'sl-ring', t: 'Mittlerer Ring', pts: [[-1.2, 3.55], [0.0, 3.55], [0.9, 3.5]], at: 50 },
-];
-const districtLabels = districts.filter((x) => x.name && x.at) as Required<Pick<District, 'name' | 'at'>>[];
-const parkLabels: { t: string; e: number; n: number }[] = [
-  { t: 'Englischer Garten', e: 1.62, n: 2.2 },
-  { t: 'Olympiapark', e: -1.6, n: 4.32 },
-  { t: 'Theresienwiese', e: -1.92, n: -0.6 },
-];
-const isarLabel = { id: 'sl-isar', pts: smooth([[1.55, 0.85], [1.85, 1.45], [2.25, 1.95]], 1) };
-const pois = [
-  { t: 'Hauptbahnhof', e: -1.08, n: 0.27, dx: -6, anchor: 'end' },
-  { t: 'Olympiaturm', e: -1.62, n: 4.1, dx: 7, anchor: 'start' },
-];
-const marien = { x: X(0), y: Y(0) };
 // scale bar: 1 km, bottom left
 const bar = { x: 24, y: VB.h - 26, w: S };
 ---
 
-<svg class="munich" viewBox={`0 0 ${VB.w} ${VB.h}`} preserveAspectRatio="xMidYMid slice" role="img" aria-label="Map of central Munich: the old town around Marienplatz, the Isar, the main streets and the Mittlerer Ring, the Englischer Garten and the Olympiapark">
+<svg class="munich" viewBox={`0 0 ${VB.w} ${VB.h}`} preserveAspectRatio="xMidYMid slice" role="img" aria-label="Map of central Munich: the old town, the Isar, the main streets and the Mittlerer Ring, the Englischer Garten and the Olympiapark">
   <defs>
     {districts.map((dist, i) => <clipPath id={`mm-d${i}`}><path d={d(dist.poly, true)} /></clipPath>)}
-    {streetLabels.map((l) => <path id={l.id} d={d(readable(l.pts))} />)}
-    <path id={isarLabel.id} d={d(isarLabel.pts)} />
   </defs>
 
   <!-- Land, built-up blocks and the minor street web -->
@@ -256,7 +220,7 @@ const bar = { x: 24, y: VB.h - 26, w: S };
     <path d={d(railLines[1])} stroke={C.land} stroke-width="0.8" stroke-dasharray="3 3" />
   </g>
 
-  <!-- Roads: casings first, then fills; the ring on top -->
+  <!-- Roads: casings first, then fills; the Mittlerer Ring (a main road, white like the rest) on top -->
   <g fill="none" stroke-linecap="round" stroke-linejoin="round">
     <path d={d(pedestrian)} stroke={C.casing} stroke-width="2.6" />
     <path d={d(pedestrian)} stroke="#fbfaf7" stroke-width="1.6" stroke-dasharray="1 1.5" />
@@ -264,45 +228,10 @@ const bar = { x: 24, y: VB.h - 26, w: S };
     {primary.map((r) => <path d={d(smooth(r))} stroke={C.casing} stroke-width="5.2" />)}
     {secondary.map((r) => <path d={d(smooth(r))} stroke={C.road} stroke-width="2.2" />)}
     {primary.map((r) => <path d={d(smooth(r))} stroke={C.road} stroke-width="3.8" />)}
-    <path d={d(ringRoad, true)} stroke={C.ringCasing} stroke-width="5.8" />
-    <path d={d(ringRoad, true)} stroke={C.ring} stroke-width="4.3" />
+    <path d={d(ringRoad, true)} stroke={C.casing} stroke-width="5.8" />
+    <path d={d(ringRoad, true)} stroke={C.road} stroke-width="4.3" />
   </g>
 
-  <!-- Labels -->
-  <g font-family="Inter, system-ui, sans-serif" paint-order="stroke" stroke="#ffffff" stroke-linejoin="round">
-    {
-      districtLabels.map((l) => (
-        <text x={f(X(l.at[0]))} y={f(Y(l.at[1]))} text-anchor="middle" font-size="6.6" font-weight="600" letter-spacing="1.6" fill={C.district} stroke-width="2.4">{l.name}</text>
-      ))
-    }
-    {
-      streetLabels.map((l) => (
-        <text font-size="5.6" fill={C.label} stroke-width="2.2" dy="1.9">
-          <textPath href={`#${l.id}`} startOffset={`${l.at}%`} text-anchor="middle">{l.t}</textPath>
-        </text>
-      ))
-    }
-    <text font-size="7" font-style="italic" letter-spacing="0.6" fill={C.waterLabel} stroke="none" dy="-6">
-      <textPath href={`#${isarLabel.id}`} startOffset="50%" text-anchor="middle">Isar</textPath>
-    </text>
-    {parkLabels.map((l) => <text x={f(X(l.e))} y={f(Y(l.n))} text-anchor="middle" font-size="7" font-weight="500" fill={C.parkLabel} stroke-width="2.2">{l.t}</text>)}
-    {
-      pois.map((p) => (
-        <g>
-          <circle cx={f(X(p.e))} cy={f(Y(p.n))} r="3" fill="#6f6e69" stroke="#ffffff" stroke-width="1.2" />
-          <text x={f(X(p.e) + p.dx)} y={f(Y(p.n) + 2.2)} text-anchor={p.anchor} font-size="6.4" font-weight="500" fill="#5b5a55" stroke-width="2.4">{p.t}</text>
-        </g>
-      ))
-    }
-  </g>
-
-  <!-- Marienplatz: a map pin in the site's yellow -->
-  <g transform={`translate(${f(marien.x)} ${f(marien.y)})`}>
-    <ellipse cx="0" cy="0.5" rx="4.5" ry="1.6" fill="rgba(0,0,0,0.18)" />
-    <path d="M0 0C-1.2-4.2-7.5-8.6-7.5-14.2a7.5 7.5 0 0 1 15 0C7.5-8.6 1.2-4.2 0 0Z" fill={C.ring} stroke={C.ink} stroke-width="1" />
-    <circle cx="0" cy="-14.2" r="2.6" fill={C.ink} />
-    <text x="11" y="-11" font-family="Inter, system-ui, sans-serif" font-size="8.5" font-weight="600" fill={C.ink} paint-order="stroke" stroke="#ffffff" stroke-width="2.6" stroke-linejoin="round">Marienplatz</text>
-  </g>
 
   <!-- Scale bar and north -->
   <g font-family="Inter, system-ui, sans-serif" font-size="6" fill="#5b5a55">

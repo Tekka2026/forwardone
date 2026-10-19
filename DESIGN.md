@@ -256,6 +256,14 @@ screens the list stacks under the CTA.
   dashboard runs into the section's bottom edge and is cut off there: only
   the top 75% of the 1328 × 840 screen is drawn (1328 × 630), and content
   below the cut is left out of the markup, not hidden.
+- Rise on scroll (owner, 2026-10-19): the frame is 50px taller than the
+  visible cut and reaches 50px below the section, which clips it
+  (`overflow: hidden` on `.fund`). As the section scrolls in, the preview
+  rises by those 50px (`--pp-rise` 0 → 1 while its container comes up from
+  the bottom of the window to a quarter from the top, smoothstep eased), so
+  more of the dashboard slides out from under the edge where the Insights
+  block starts. It starts 98px under the CTA and ends at the usual 48px.
+  Without JS or under reduced motion it rests risen.
 - Designed at that fixed size and scaled to the column width like an image
   (a ResizeObserver sets `--pp-scale`), so the layout never reflows.
 - Content (owner, 2026-10-19): the LP's investor-report overview, after the
@@ -323,16 +331,13 @@ screens the list stacks under the CTA.
   `MunichMap.astro` (owner, 2026-10-19): a static, top-down street map of
   central Munich in the manner of a Mapbox "Light" style: pale land,
   built-up blocks, a dense web of white minor streets, white main roads
-  with grey casings, the Mittlerer Ring in the site's yellow like a
-  motorway, muted green parks, grey-blue water (Isar, Eisbach, Auer
-  Mühlbach, two lakes), rail corridors, Inter labels with white halos
-  (street names along their roads, district names in spaced capitals, parks
-  in green, the Isar in blue italics), POI dots for Hauptbahnhof and
-  Olympiaturm, a yellow map pin on Marienplatz, a 1 km scale bar and N ↑.
-  Main roads, water, parks and landmarks follow real coordinates,
-  simplified; the minor streets are a seeded, slightly irregular grid per
-  district (that district's street angle and block size), not real streets.
-  Built at build time; it does not move.
+  with grey casings (the Mittlerer Ring among them, no longer yellow),
+  muted green parks, grey-blue water (Isar, Eisbach, Auer Mühlbach, two
+  lakes) and rail corridors. No names, pins or other copy on the map; only
+  the legend (a 1 km scale bar and N ↑). Main roads, water and parks follow
+  real coordinates, simplified; the minor streets are a seeded, slightly
+  irregular grid per district (that district's street angle and block
+  size), not real streets. Built at build time; it does not move.
 - Insights: on desktop the H2 runs at most 6 of the 12 grid
   columns (fluid, from the wrap width); full width at ≤880px.
 - Closing ("Serious about performance? So are we."): title and buttons
@@ -514,8 +519,8 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
 - Accent: `--brand-yellow` #FFEA6D (owner, 2026-10-17; replaced the cyan
   #78F6FB and the blue #2D75D9). Used for the H1 last-word tint, the nav
   AI mark and entrance glow, Proof card dates, the Fund III gradient corner, the portal's mail badge, and the robot's
-  cap and the Munich pin. Where it must read on light grey (robot ring and
-  label, map ring and labels) it is darkened to ochre rgb(196,160,20).
+  cap. Where it must read on light grey (the robot's ring and label) it is
+  darkened to ochre rgb(196,160,20).
 - Dark sections: `.section--dark.theme-dark` (black band, tokens inverted;
   `data-nav-dark` so the floating nav inverts over it). Used by Insights.
 - `.theme-dark` re-points the colour tokens (`--bg` #000, `--fg` #FFF,
