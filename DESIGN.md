@@ -217,7 +217,9 @@ Rules:
   width to the right, one after another (320ms apart), and settle into
   their slots over 2800ms (cubic-bezier(0.16, 1, 0.3, 1); fade 1200ms;
   doubled from 1400 / 160 / 600 on 2026-10-19).
-  Sideways scrolling is locked until they have docked. Later cards dock the
+  Sideways scrolling is locked until the last of them has mostly arrived
+  (90% of its slide, a third of the way into it; about 1.6s for three
+  cards); the settle finishes while you scroll. Later cards dock the
   same way the first time they scroll into view. Reduced motion: no motion.
 - Never a Proof company or an exit (owner, 2026-10-19): no company in the
   strip may also be in the Proof slider or the track record's exits; the

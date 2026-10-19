@@ -175,6 +175,10 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
     // cards' slots (offsetLeft), not their moving boxes.
     if ('IntersectionObserver' in window && !reduce.matches) {
       var DOCK_MS = 2800, STAGGER = 320; // twice the first timing (owner, 2026-10-19)
+      // Scrolling unlocks once the last card has mostly arrived (owner,
+      // 2026-10-19): this ease-out has covered 90% of the slide a third of
+      // the way into it; the rest of the settle carries on while you scroll.
+      var ARRIVED = 0.33;
       var waiting = cards.slice(1);
       waiting.forEach(function (c) { c.classList.add('is-waiting'); });
       track.classList.add('is-docking');
@@ -190,7 +194,7 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
           c.style.transitionDelay = k * STAGGER + 'ms';
           c.classList.remove('is-waiting');
         });
-        return batch.length ? (batch.length - 1) * STAGGER + DOCK_MS : 0;
+        return batch.length ? (batch.length - 1) * STAGGER + DOCK_MS * ARRIVED : 0;
       };
       new IntersectionObserver(function (entries, obs) {
         if (started || !entries.some(function (e) { return e.isIntersecting; })) return;
