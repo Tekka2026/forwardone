@@ -204,7 +204,7 @@ export type FounderEntry = {
   /** Company card: one line under the name. */
   blurb: string;
 };
-export type FounderClip = { video: string; webm?: string; poster: string; person: string; caption: string };
+export type FounderClip = { video: string; webm?: string; poster: string; avatar?: string; person: string; caption: string };
 
 const PH = {
   name: '[PLACEHOLDER: founder name]',
@@ -251,6 +251,8 @@ export const founders = {
     video: '/founders/clip-placeholder.mp4',
     webm: '/founders/clip-placeholder.webm',
     poster: '/founders/clip-placeholder.jpg',
+    /** Profile circle: the presenter's photo (owner, 2026-10-19, for the placeholder clip). */
+    avatar: '/founders/clip-avatar.jpg',
     person: '[PLACEHOLDER: team member, role]',
     caption: '[PLACEHOLDER: one-line caption]',
   })) as FounderClip[],
