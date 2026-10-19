@@ -303,7 +303,14 @@ screens the list stacks under the CTA.
   on phones (≤640px, one column) 7:5 landscape. An article can instead set
   `visual` to a coded visual from `src/components/visuals/`: the first one
   (Sensorfact) uses `RobotArm.astro`, the owner's interactive canvas robot
-  arm (second version, WebGL2 with a depth buffer; inverted version). It
+  arm (second version, WebGL2 with a depth buffer; inverted version). Since
+  2026-10-19 the arm is drawn realistically: smooth-shaded solids without
+  outlines, off-white powder-coated links, dark graphite base plate, motor
+  covers and wrist flange, aluminium tool changer and fingers, a black
+  anodised gripper and the yellow (#FFEA6D) sensor, lit per pixel by a
+  camera-fixed studio rig (key upper left, fill right, rim behind, sky/ground
+  ambient, highlights per material) with a soft contact shadow under the
+  base. The plus-grid floor, dashed reach ring and label are unchanged. It
   fits itself to the box. Idle, its cap faces the viewer (turning with the
   slowly orbiting view) and keeps moving slightly: every 1.4–3.2 s it picks
   another spot near the camera to look at, eased so it moves like a machine.
