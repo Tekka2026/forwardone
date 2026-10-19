@@ -225,7 +225,8 @@ Rules:
   by the colour's luminance.
 - Clip card (TikTok-style): a muted, looping vertical video that plays while
   in view; a thin progress bar at the top that follows the video; right
-  rail with the FORWARD.one avatar and red follow "+", Like (heart, fills
+  rail (small: avatar 20px, icons 15px, labels 9px) with the FORWARD.one
+  avatar and red follow "+", Like (heart, fills
   red #FF3B5C and pops; "Like" → "Liked") and Share (Web Share API, else
   copies the page link and shows "Link copied"); bottom left the handle,
   the person and role, a caption and "♪ original sound · FORWARD.one". No
