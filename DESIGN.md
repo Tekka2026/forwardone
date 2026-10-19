@@ -306,10 +306,10 @@ screens the list stacks under the CTA.
   arm (second version, WebGL2 with a depth buffer; inverted version). Since
   2026-10-19 the arm is drawn realistically: smooth-shaded solids without
   outlines, matte black links with a fine powder-coat grain (object-space
-  noise mottling colour and sheen, so it sticks to the parts), satin dark
-  graphite base plate, motor covers and wrist flange, aluminium tool changer and fingers, a black
-  anodised gripper and the yellow (#FFEA6D) sensor, lit per pixel by a
-  camera-fixed studio rig (key upper left, fill right, rim behind, sky/ground
+  noise mottling colour and sheen, so it sticks to the parts), all of it
+  matte black down to the base plate, motor covers, tool changer and gripper
+  (slightly different sheens keep the parts apart), and the yellow (#FFEA6D)
+  sensor, lit per pixel by a camera-fixed studio rig (key upper left, fill right, rim behind, sky/ground
   ambient, highlights per material) with a soft contact shadow under the
   base. The plus-grid floor, dashed reach ring and label are unchanged. It
   fits itself to the box. Idle, its cap faces the viewer (turning with the
