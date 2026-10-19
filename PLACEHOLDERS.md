@@ -10,6 +10,12 @@ invented; replace the value in the file named and the marker disappears.
 |---|---|---|
 | Hero, stats, footnotes | `footnotes[0]` | Benchmark source and date for the top-5% ranking (footnote ¹). |
 | Footnotes | `disclaimer` | Past performance disclaimer, to be supplied by compliance. |
+| Founders strip | `founders.people[*].name`, `.photo` | Name and photo (portrait, 5:7, at least 800 × 1120) of each of the 20 founders (CEOs). Photos go in `public/founders/`. |
+| Founders strip | `founders.people[*].company` | Company of each founder; seven are filled in (Sensorfact, Mayht, QuantWare, Axign, Edmund, Aito, Nuventura), three company cards and all founder cards still need theirs. |
+| Founders strip | `founders.people[*].colour` | Brand colour (hex) per company card. Empty falls back to a site tone. |
+| Founders strip | `founders.people[*].blurb` | One line under the company name for Aito, Nuventura and the three unnamed companies. |
+| Founders strip | `founders.clips[*].video`, `.poster`, `.person`, `.caption` | Five short vertical videos of FORWARD.one team members (MP4, about 9:16, cropped to 5:7; muted autoplay), with a poster frame, the person's name and role, and a one-line caption. |
+| Founders strip | `founders.clip.handle` | The social handle shown on the clips (e.g. the TikTok or Instagram account). |
 | Proof slider | `caseStudies.groups[*].items[*].date` | Date at the top of each card, written as month and year, like "April 2022" (shown as "EXIT: APRIL 2022"): the exit date for Axign (Sensorfact and Mayht supplied). For QuantWare and Edmund (traction, no exit) decide which date to show, e.g. first investment. |
 | Proof slider | `caseStudies.groups[*].items[*].visual` or `.video` | Visual per company card (Sensorfact, Mayht and QuantWare supplied as background videos). Either an image in the right half (transparent PNG/WebP works best on the dark card) or a short muted video filling the card (MP4; Claude adds a WebM copy and a poster frame). Drop files in `public/cases/`. |
 | Proof slider | `caseStudies.groups[*].items[*].facts` | Optional: two or three short facts per company for the mono row at the card's bottom edge (like "Raw material origin · Carbon footprint"). Hidden while empty. |

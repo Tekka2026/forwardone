@@ -57,3 +57,4 @@
 | A0009 | open   | Run https://pagespeed.web.dev on the live homepage (mobile) and share the LCP. The H1 is the LCP element and its intro animation waits `--reveal-start` (800ms), which adds to LCP; local mobile emulation measured 2.6s (good is 2.5s or less). Decide whether to shorten the delay. |
 | A0010 | cancelled | Licence for KMR Apparat. Withdrawn 2026-10-17: the headings went back to Clash Display and the font was removed. |
 | A0011 | done   | Fundrbird logo icon supplied by the owner on 2026-10-19; redrawn as a line icon in the portal preview's top-bar icon row. |
+| A0012 | open   | Supply the founders strip content (see `PLACEHOLDERS.md`, Founders strip): the 20 founders' names, CEO photos and companies, brand colours, a line per company, five short vertical team videos with name, role and caption, and the social handle. |

@@ -3,6 +3,7 @@ import Base from '@layouts/Base.astro';
 import { meta, hero } from '@content/home';
 import Hero from '@components/home/Hero.astro';
 import Stats from '@components/home/Stats.astro';
+import Founders from '@components/home/Founders.astro';
 import TrackRecord from '@components/home/TrackRecord.astro';
 import WhatWeDo from '@components/home/WhatWeDo.astro';
 import CaseStudies from '@components/home/CaseStudies.astro';
@@ -22,6 +23,7 @@ const h1Words = hero.title.split(/\s+/).filter(Boolean).length;
     <Hero />
     <Stats />
   </div>
+  <Founders />
   <TrackRecord />
   <WhatWeDo />
   <CaseStudies />

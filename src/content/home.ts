@@ -174,6 +174,89 @@ export type FundRow = {
   status: string;
 };
 
+/**
+ * Founders strip (owner, 2026-10-19): between the intro and the track record,
+ * a big horizontal scroll of 5:7 cards, three grid columns wide, with the 20
+ * founders, in three card types:
+ * - 'founder': the CEO's photo, name, and "CEO, company";
+ * - 'company': the company's brand colour, its name and a line of body copy;
+ * - clips (every fifth card): a TikTok-style video of a FORWARD.one team
+ *   member, with Like and Share.
+ * Only what the site already states is filled in: the seven portfolio
+ * companies named elsewhere on the page and their one-liners (Proof slider).
+ * Founder names, photos, the other companies, brand colours (empty = a site
+ * tone is used), the videos and their captions are placeholders (see
+ * PLACEHOLDERS.md and A0012).
+ */
+export type FounderEntry = {
+  card: 'founder' | 'company';
+  name: string;
+  company: string;
+  /** Founder card: path under public/, or a placeholder. */
+  photo: string;
+  /** Company card: brand colour as hex; empty = a site tone. */
+  colour: string;
+  /** Company card: one line under the name. */
+  blurb: string;
+};
+export type FounderClip = { video: string; poster: string; person: string; caption: string };
+
+const PH = {
+  name: '[PLACEHOLDER: founder name]',
+  company: '[PLACEHOLDER: company]',
+  photo: '[PLACEHOLDER: CEO photo]',
+  blurb: '[PLACEHOLDER: one line about the company]',
+};
+const founder = (company = PH.company): FounderEntry => ({ card: 'founder', name: PH.name, company, photo: PH.photo, colour: '', blurb: '' });
+const company = (name = PH.company, blurb = PH.blurb): FounderEntry => ({ card: 'company', name: PH.name, company: name, photo: '', colour: '', blurb });
+
+export const founders = {
+  eyebrow: 'Founders',
+  title: 'The founders we back.',
+  role: 'CEO',
+  /** 20 founders; the card type alternates. */
+  people: [
+    founder(),
+    company('Sensorfact', 'Energy intelligence for SMEs. Acquired by ABB.'),
+    founder(),
+    company('Mayht', 'Loudspeaker technology. Acquired by Sonos.'),
+    founder(),
+    company('QuantWare', 'Largest private round for a dedicated quantum processor company.'),
+    founder(),
+    company('Axign', 'Audio semiconductors. Acquired by MPS.'),
+    founder(),
+    company('Edmund', 'Selling to top-tier industrial customers within 12 months.'),
+    founder(),
+    company('Aito'),
+    founder(),
+    company('Nuventura'),
+    founder(),
+    company(),
+    founder(),
+    company(),
+    founder(),
+    company(),
+  ] as FounderEntry[],
+  /** A clip after every `clipEvery` founder cards. */
+  clipEvery: 4,
+  clips: [1, 2, 3, 4, 5].map((i) => ({
+    video: `[PLACEHOLDER: /founders/clip-${i}.mp4]`,
+    poster: '',
+    person: '[PLACEHOLDER: team member, role]',
+    caption: '[PLACEHOLDER: one-line caption]',
+  })) as FounderClip[],
+  clip: {
+    handle: '[PLACEHOLDER: social handle]',
+    sound: 'original sound · FORWARD.one',
+    like: 'Like',
+    liked: 'Liked',
+    share: 'Share',
+    copied: 'Link copied',
+  },
+  /** Fallback colours for company cards without a brand colour: the site's own tones. */
+  tones: ['#FFEA6D', '#111111', '#26175A', '#E9E4D6', '#DB8E00', '#820400', '#C3D3DE'],
+};
+
 export const trackRecord = {
   eyebrow: 'Track record',
   /**

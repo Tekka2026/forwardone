@@ -196,6 +196,41 @@ Rules:
   each row restacks into a block between hairlines (no box) with mono
   labels taken from `data-label`; tables never scroll horizontally.
 
+### Founders strip (between the intro and the track record)
+
+`src/components/home/Founders.astro`; copy in `founders` (home.ts). Owner,
+2026-10-19.
+
+- White section: eyebrow "Founders", H2, then a row of 5:7 cards, each three
+  of the twelve columns wide, 32px apart, starting at the content's left
+  edge and running on past the window's right edge.
+- Desktop (above 880px, motion allowed): the section pins. A tall runway
+  (100vh + the track's overflow ÷ 1.25) holds a sticky, window-high stage;
+  scrolling down moves the track sideways (1px down = 1.25px sideways)
+  until the last card ends at the content's right edge. Cards shrink if the
+  window is too short for a three-column 5:7 card (height ≤ 100svh − 300px).
+  Keyboard focus on a card scrolls the page to where it is in view.
+- Phones (880px and below) and reduced motion: a plain horizontal scroller
+  with snap points; cards min(72vw, 340px) wide.
+- Each card eases up 32px and fades in (700ms) the first time it comes into
+  view.
+- Sequence: the 20 founders in order, the card type alternating founder /
+  company, and a clip after every fourth founder (25 cards).
+- Founder card: the CEO's photo, full bleed (#ECECEA until supplied); name
+  (card title) and "CEO, company" (small, muted) at the bottom, white over a
+  soft dark gradient when there is a photo.
+- Company card: the brand colour (else the site's tones in turn: yellow,
+  ink, purple, sand, amber, deep red, grey-blue); the name in the display
+  face (28–44px), one line of small body copy under it; text dark or white
+  by the colour's luminance.
+- Clip card (TikTok-style): a muted, looping vertical video that plays while
+  in view; a thin progress bar at the top that follows the video; right
+  rail with the FORWARD.one avatar and red follow "+", Like (heart, fills
+  red #FF3B5C and pops; "Like" → "Liked") and Share (Web Share API, else
+  copies the page link and shows "Link copied"); bottom left the handle,
+  the person and role, a caption and "♪ original sound · FORWARD.one". No
+  like or share counts are shown (no invented numbers).
+
 ### Track record head
 
 Centred: eyebrow, then the headline figure (`€388M`, the three funds' total commitments) with the number at
