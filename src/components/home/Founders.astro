@@ -59,6 +59,13 @@ const companyStyle = (colour: string) => {
   return `--fc-bg: ${bg}; --fc-fg: ${light ? '#111111' : '#ffffff'};`;
 };
 const isPh = (v: string) => isPlaceholder(v);
+// "Discover more about <company> →", word by word for the H1-style reveal;
+// the arrow travels with the last word.
+const moreWords = (company: string) => {
+  const w = `${founders.discover} ${company}`.split(/\s+/);
+  w[w.length - 1] += '\u00a0\u2192';
+  return w;
+};
 // Share (owner, 2026-10-19): straight to LinkedIn's share dialog, to post the
 // site on the visitor's own feed.
 const pageUrl = new URL(import.meta.env.BASE_URL.replace(/\/?$/, '/'), Astro.site).href;
@@ -133,6 +140,16 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
                     <li class="fc fc--company" style={companyStyle(p.colour)} data-fc>
                       <p class="fc__company"><Placeholder value={p.company} /></p>
                       <p class="fc__blurb"><Placeholder value={p.blurb} /></p>
+                      {!isPh(p.company) && (
+                        <a class="fc__more" href={p.href || founders.portfolioHref}>
+                          {moreWords(p.company).map((w, i, all) => (
+                            <>
+                              <span class:list={['fc__w', i === all.length - 1 && 'fc__w--last']} style={`--i: ${i}`}>{w}</span>
+                              {i < all.length - 1 && ' '}
+                            </>
+                          ))}
+                        </a>
+                      )}
                     </li>
                   );
                 }
@@ -381,6 +398,84 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
     line-height: 1.05;
     font-weight: var(--fw-heading);
   }
+  /* "Discover more about <company> →" (owner, 2026-10-19): at the bottom of
+     the card; the whole card is its click area. On hover (or keyboard focus)
+     it animates in like the H1: word by word, each appearing two steps low
+     and stepping up in 80ms frames (--reveal-frame, --reveal-stagger), the
+     last word rising smoothly while a light tint of the text colour sweeps
+     off to the right. The step is sized so it moves the same ~2px as the
+     H1's. Touch screens (no hover) show it plainly. */
+  .fc__more {
+    --reveal-step: 0.14em;
+    margin-top: auto;
+    color: inherit;
+    font-size: var(--fs-small);
+    font-weight: 500;
+    line-height: 1.3;
+    text-decoration: none;
+  }
+  .fc__more::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .fc__more:focus-visible {
+    outline: none;
+  }
+  .fc__more:focus-visible::after {
+    outline: 2px solid var(--fc-fg);
+    outline-offset: -8px;
+  }
+  .fc__w {
+    display: inline-block;
+  }
+  @media (hover: hover) {
+    .fc__more .fc__w {
+      opacity: 0;
+    }
+    .fc--company:is(:hover, :focus-within) .fc__w {
+      animation: fc-w-in calc(var(--reveal-frame) * 4) step-end forwards;
+      animation-delay: calc(var(--i) * var(--reveal-stagger));
+    }
+    .fc--company:is(:hover, :focus-within) .fc__w--last {
+      --fcw-sweep: 100%;
+      background: linear-gradient(90deg, var(--fc-fg) var(--fcw-sweep), color-mix(in srgb, var(--fc-fg) 25%, transparent) calc(var(--fcw-sweep) + 100%));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation:
+        fc-w-show calc(var(--reveal-frame) * 9) step-end forwards,
+        fc-w-rise calc(var(--reveal-frame) * 9) cubic-bezier(0.2, 0.7, 0.2, 1) forwards,
+        fc-w-tint var(--reveal-tint-duration) var(--reveal-gentle-ease) both;
+      animation-delay:
+        calc(var(--i) * var(--reveal-stagger)),
+        calc(var(--i) * var(--reveal-stagger)),
+        calc(var(--i) * var(--reveal-stagger) + var(--reveal-frame));
+    }
+  }
+  /* 4 frames: invisible, then two steps down, one step, rest */
+  @keyframes fc-w-in {
+    0%   { opacity: 0; transform: translateY(calc(2 * var(--reveal-step))); }
+    25%  { opacity: 1; transform: translateY(calc(2 * var(--reveal-step))); }
+    50%  { opacity: 1; transform: translateY(var(--reveal-step)); }
+    75%, 100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fc-w-show {
+    0%      { opacity: 0; }
+    11.111%, 100% { opacity: 1; }
+  }
+  @keyframes fc-w-rise {
+    0%   { transform: translateY(calc(7 * var(--reveal-step))); }
+    100% { transform: translateY(0); }
+  }
+  @property --fcw-sweep {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 100%;
+  }
+  @keyframes fc-w-tint {
+    from { --fcw-sweep: 0%; }
+  }
   .fc__blurb {
     max-width: 30ch;
     font-size: var(--fs-small);
@@ -578,6 +673,11 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
   @media (prefers-reduced-motion: reduce) {
     .fc {
       transition: none;
+    }
+    .fc--company:is(:hover, :focus-within) .fc__w,
+    .fc--company:is(:hover, :focus-within) .fc__w--last {
+      opacity: 1;
+      animation: none;
     }
     .fc__like[aria-pressed='true'] svg {
       animation: none;

@@ -234,6 +234,13 @@ Rules:
   face (28–44px), one line of small body copy under it; text dark or white
   by the colour's luminance.
 - The clip's profile circle links to the presenter's team profile.
+- Company card link (owner, 2026-10-19): "Discover more about <company> →"
+  at the bottom, the whole card its click area (the company's page on
+  forward.one, else the portfolio overview). On hover or keyboard focus it
+  animates in like the H1: word by word in 80ms frames (two steps low, one,
+  rest), the last word rising smoothly while a light tint of the text colour
+  sweeps off to the right; steps sized to ~2px like the H1's. Touch screens
+  show it plainly; reduced motion shows it without motion.
 - Clip card (TikTok-style): a muted, looping vertical video that plays while
   in view (until the team videos arrive, all five play the owner's
   placeholder clip `public/founders/clip-placeholder.mp4`, 20s, each from a

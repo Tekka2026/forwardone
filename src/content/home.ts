@@ -205,6 +205,8 @@ export type FounderEntry = {
   colour: string;
   /** Company card: one line under the name. */
   blurb: string;
+  /** Company card: "Discover more about <company>" link. Empty = the portfolio overview. */
+  href?: string;
 };
 export type FounderClip = { video: string; webm?: string; poster: string; avatar?: string; /** slug of the presenter's team profile (/about/team/<slug>) */ profile?: string; person: string; caption: string };
 
@@ -215,7 +217,7 @@ const PH = {
   blurb: '[PLACEHOLDER: one line about the company]',
 };
 const founder = (company = PH.company): FounderEntry => ({ card: 'founder', name: PH.name, company, photo: PH.photo, colour: '', blurb: '' });
-const company = (name = PH.company, blurb = PH.blurb): FounderEntry => ({ card: 'company', name: PH.name, company: name, photo: '', colour: '', blurb });
+const company = (name = PH.company, blurb = PH.blurb, href = ''): FounderEntry => ({ card: 'company', name: PH.name, company: name, photo: '', colour: '', blurb, href });
 
 export const founders = {
   eyebrow: 'On the road',
@@ -228,19 +230,19 @@ export const founders = {
   /** 20 founders; the card type alternates. */
   people: [
     { ...founder('ROCSYS'), name: 'Crijn Bouman', role: 'CEO & Co-founder', photo: '/founders/rocsys.jpg' }, // owner, 2026-10-19
-    company('Voltfang', 'Grid-scale storage from used EV batteries.'),
+    company('Voltfang', 'Grid-scale storage from used EV batteries.', 'https://www.forward.one/portfolio-companies/voltfang'),
     founder('Qualinx'),
-    company('ORE Energy', 'Iron-air batteries for long-duration grid storage.'),
+    company('ORE Energy', 'Iron-air batteries for long-duration grid storage.', 'https://www.forward.one/portfolio/ore-energy'),
     founder('driveblocks'),
-    company('QuiX Quantum', 'Photonic quantum computers.'),
+    company('QuiX Quantum', 'Photonic quantum computers.', 'https://www.forward.one/portfolio-companies/quix-quantum'),
     founder('Helin'),
-    company('Optics11', 'Fibre-optic sensing for grids and seabed security.'),
+    company('Optics11', 'Fibre-optic sensing for grids and seabed security.', 'https://www.forward.one/portfolio-companies/optics11'),
     founder('AddOptics'),
-    company('ExRobotics', 'Autonomous inspection robots for hazardous industrial sites.'),
+    company('ExRobotics', 'Autonomous inspection robots for hazardous industrial sites.', 'https://www.forward.one/portfolio-companies/exr-obotics'),
     { ...founder('Optics11 Life'), name: 'Jacquelien ten Dam', photo: '/founders/optics11-life.jpg' }, // name and photo: owner, 2026-10-19
-    company('Fizyr', 'Vision AI that helps robots pick objects they have never seen.'),
+    company('Fizyr', 'Vision AI that helps robots pick objects they have never seen.', 'https://www.forward.one/portfolio-companies/fizyr'),
     founder('Photosynthetic'),
-    company('Sapient Perception', 'Sensing and edge AI for drones.'),
+    company('Sapient Perception', 'Sensing and edge AI for drones.', 'https://www.forward.one/portfolio-companies/sapient-perception'),
     founder(),
     company('Fibersail', 'Fibre-optic shape sensing for wind turbine blades.'),
     founder(),
@@ -272,6 +274,10 @@ export const founders = {
     share: 'Share',
     shareLabel: 'Share on LinkedIn',
   },
+  /** Company cards: the link that animates in on hover, followed by the company name. */
+  discover: 'Discover more about',
+  /** Where a company card links without its own page (the current site's portfolio overview). */
+  portfolioHref: 'https://www.forward.one/portfolio',
   /** Fallback colours for company cards without a brand colour: the site's own tones. */
   tones: ['#FFEA6D', '#111111', '#26175A', '#E9E4D6', '#DB8E00', '#820400', '#C3D3DE'],
 };
