@@ -49,10 +49,11 @@
 | A0001 | cancelled | Disable GitHub Pages. Withdrawn: the live site is wanted, so Pages stays on. |
 | A0002 | done   | Live site updates via the default branch. Decided 2026-10-12: see "Publishing" above. |
 | A0003 | done   | Pages source is GitHub Actions. The first workflow deploy succeeded on 2026-10-12 without a settings change. |
-| A0004 | open   | Supply the values in `PLACEHOLDERS.md` (benchmark source, disclaimer, Proof outcome figures and logos, Fund I and II status, partner photos and two quotes, LP login URL, article categories, dates and images). |
+| A0004 | open   | Supply the values in `PLACEHOLDERS.md` (benchmark source, disclaimer, Proof outcome figures and logos, Fund I and II status, partner photos and two quotes, LP login URL, article images). |
 | A0005 | open   | Verify the Geist spacing values in `DESIGN.md` §6 against https://vercel.com/geist (spacing, Stack, Button). The site is unreachable from Claude's build environment, so the values were transcribed from memory of Geist's CSS variables. |
 | A0006 | done   | Live homepage checked by the owner on 2026-10-13: Clash Display headings render, no console errors. |
 | A0007 | done   | Button reference supplied by the owner on 2026-10-13 (vercel.com screenshot). Buttons take Geist's shape only (pill, sizes, type size); colours stay the site's own. |
 | A0008 | done   | Pages source switched to GitHub Actions by the owner on 2026-10-13. |
 | A0009 | open   | Run https://pagespeed.web.dev on the live homepage (mobile) and share the LCP. The H1 is the LCP element and its intro animation waits `--reveal-start` (800ms), which adds to LCP; local mobile emulation measured 2.6s (good is 2.5s or less). Decide whether to shorten the delay. |
 | A0010 | cancelled | Licence for KMR Apparat. Withdrawn 2026-10-17: the headings went back to Clash Display and the font was removed. |
+| A0011 | open   | Supply the Fundrbird logo icon (SVG, or the icon cut from the logo) for the portal preview's top-bar icon row (next to mail, settings, log out). fundrbird.com is unreachable from Claude's build environment, and the icon is not drawn from memory. |

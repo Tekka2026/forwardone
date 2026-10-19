@@ -19,8 +19,6 @@ invented; replace the value in the file named and the marker disappears.
 | The team | `partners.people[*].photo` | Portrait of each partner. Drop files in `public/team/` and set the path (4:5 crop). |
 | The team | `partners.people[2].quote` | Quote from Robin van Boxsel. |
 | The team | `partners.people[3].quote` | Quote from Paul Pruijmboom. |
-| Insights | `insights.articles[*].category` | Category of each featured article. The repo has no news collection to pull it from. |
-| Insights | `insights.articles[*].date` | Publication date (ISO) of each featured article. |
 | Insights | `insights.articles[2].image` | Visual for the third featured article (the first has the robot arm, the second the Munich map), 5:7 portrait (cropped to 7:5 landscape on phones, so keep the subject centred). Drop files in `public/insights/` and set the path; until then a flat light grey box. |
 | Insights | `insights.articles[*].slug` | Slugs are derived from titles; match them to the CMS slugs when the news collection is migrated. |
 

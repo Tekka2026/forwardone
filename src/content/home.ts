@@ -385,9 +385,8 @@ export const portal = {
 export type Article = {
   title: string;
   slug: string;
-  category: string;
-  /** ISO date, or a placeholder. */
-  date: string;
+  /** Two lines of body copy under the title, introducing the article. */
+  intro: string;
   /** Visual above the article (5:7, portrait). Path under public/, or a placeholder. */
   image: string;
   /** Instead of an image: a coded visual from src/components/visuals/. */
@@ -398,33 +397,32 @@ export const insights = {
   eyebrow: 'Insights',
   title: 'Intelligence from the front line of European industrial tech.',
   /**
-   * Default featured articles from the existing news collection.
-   * The repo has no news collection yet, so category and date stay
-   * placeholders; slugs are derived from the titles and must be matched to
-   * the CMS slugs when the collection is migrated. Titles in sentence case.
+   * Default featured articles from the existing news collection. Slugs are
+   * derived from the titles and must be matched to the CMS slugs when the
+   * collection is migrated. Titles in sentence case. No category or date on
+   * the cards (owner, 2026-10-19); instead a two-line intro, drafted by
+   * Claude from the titles and the site's own copy (no new facts or
+   * figures): replace it with each article's own standfirst when migrated.
    */
   articles: [
     {
       title: 'What the exit of Sensorfact taught us about early-stage investing',
       slug: 'what-the-exit-of-sensorfact-taught-us-about-early-stage-investing',
-      category: '[PLACEHOLDER: category]',
-      date: '[PLACEHOLDER: date]',
+      intro: 'Building, backing and selling an industrial company: the lessons we take into every early-stage investment.',
       image: '',
       visual: 'robot-arm',
     },
     {
       title: 'Why Munich matters for Europe’s next generation of industrial tech',
       slug: 'why-munich-matters-for-europes-next-generation-of-industrial-tech',
-      category: '[PLACEHOLDER: category]',
-      date: '[PLACEHOLDER: date]',
+      intro: 'Universities, industrial leaders and a growing founder scene: why we look closely at Munich.',
       image: '',
       visual: 'munich-map',
     },
     {
       title: 'Fund III: doubling down on Europe’s industrial technology winners',
       slug: 'fund-iii-doubling-down-on-europes-industrial-technology-winners',
-      category: '[PLACEHOLDER: category]',
-      date: '[PLACEHOLDER: date]',
+      intro: 'Why our third fund keeps the same discipline: invest early, then back the companies that deliver.',
       image: '[PLACEHOLDER: image]',
     },
   ] as Article[],

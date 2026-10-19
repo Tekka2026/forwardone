@@ -307,6 +307,9 @@ screens the list stacks under the CTA.
 
 - Insights section: black band (`.section--dark.theme-dark`, owner
   2026-10-15); the 5:7 visual boxes are light grey tiles (#F5F5F5) on it.
+- Insights cards: visual, title (card title), then two lines of body copy
+  (`.body`, muted) introducing the article (owner, 2026-10-19). No
+  category or date line.
 - Insights article visuals: light grey tiles (#F5F5F5) until supplied, 5:7 portrait;
   on phones (≤640px, one column) 7:5 landscape. An article can instead set
   `visual` to a coded visual from `src/components/visuals/`: the first one

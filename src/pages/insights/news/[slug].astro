@@ -16,6 +16,6 @@ const { article } = Astro.props;
 <Stub
   section="News"
   title={article.title}
-  intro="Article from the existing news collection."
-  todos={['Migrate article body from the current site', 'Category: ' + article.category, 'Date: ' + article.date]}
+  intro={article.intro}
+  todos={['Migrate article body, category and date from the current site']}
 />

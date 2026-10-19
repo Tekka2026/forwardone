@@ -27,18 +27,10 @@ import MunichMap from '@components/visuals/MunichMap.astro';
                 <img src={href(a.image)} alt="" loading="lazy" decoding="async" />
               )}
             </div>
-            <p class="label article__meta">
-              <Placeholder value={a.category} />
-              <span aria-hidden="true"> &middot; </span>
-              {isPlaceholder(a.date) ? (
-                <Placeholder value={a.date} />
-              ) : (
-                <time datetime={a.date}>{a.date}</time>
-              )}
-            </p>
             <h3 class="card-title article__title">
               <a class="article__link" href={href(`/insights/news/${a.slug}`)}>{a.title}</a>
             </h3>
+            <p class="body article__intro">{a.intro}</p>
           </li>
         ))
       }
@@ -103,12 +95,14 @@ import MunichMap from '@components/visuals/MunichMap.astro';
       aspect-ratio: 7 / 5;
     }
   }
-  .article__meta {
-    margin: 0;
-    color: var(--muted);
-  }
   .article__title {
     margin: 0;
+  }
+  /* Two lines of body copy under the title (owner, 2026-10-19; replaced the
+     category · date line above it). */
+  .article__intro {
+    margin: 0;
+    color: var(--muted);
   }
   .article__link {
     text-decoration-line: none;
