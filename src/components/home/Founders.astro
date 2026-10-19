@@ -5,9 +5,10 @@
  *
  * A plain horizontal scroller (owner, 2026-10-19: the page's own scrolling is
  * never taken over): swipe, trackpad or shift + wheel, with snap points; no
- * arrows or progress line (owner, 2026-10-19). Each card eases up into
- * place the first time it comes into view, so more cards come in as you
- * scroll sideways.
+ * arrows or progress line (owner, 2026-10-19). Cards dock: card 1 is in
+ * place, the rest slide in from the right and settle into their slots as
+ * they come into view; sideways scrolling unlocks once the first ones have
+ * docked.
  *
  * Card types: founder (photo, name, "CEO, company"), company (brand colour,
  * name, one line), and a TikTok-style clip of a FORWARD.one team member with
@@ -165,17 +166,42 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
     var cards = [].slice.call(track.querySelectorAll('[data-fc]'));
     var reduce = matchMedia('(prefers-reduced-motion: reduce)');
 
-    // ---- Cards ease in the first time they come into view ----------------
+    // ---- Docking (owner, 2026-10-19) -------------------------------------
+    // Card 1 is in place from the start. When the section comes into view,
+    // the other cards in view slide in from the right one after another and
+    // settle into their slots (a long ease-out); sideways scrolling unlocks
+    // once they have docked. After that, each card docks the same way the
+    // first time it scrolls into view. Visibility is worked out from the
+    // cards' slots (offsetLeft), not their moving boxes.
     if ('IntersectionObserver' in window && !reduce.matches) {
-      cards.forEach(function (c) { c.classList.add('is-waiting'); });
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (!e.isIntersecting) return;
-          e.target.classList.remove('is-waiting');
-          io.unobserve(e.target);
+      var DOCK_MS = 1400, STAGGER = 160;
+      var waiting = cards.slice(1);
+      waiting.forEach(function (c) { c.classList.add('is-waiting'); });
+      track.classList.add('is-docking');
+      var started = false;
+      var inView = function (c) {
+        var w = c.offsetWidth, l = c.offsetLeft;
+        return l < track.scrollLeft + track.clientWidth - w * 0.2 && l + w > track.scrollLeft;
+      };
+      var dock = function () {
+        var batch = waiting.filter(inView);
+        waiting = waiting.filter(function (c) { return batch.indexOf(c) < 0; });
+        batch.forEach(function (c, k) {
+          c.style.transitionDelay = k * STAGGER + 'ms';
+          c.classList.remove('is-waiting');
         });
-      }, { threshold: 0.15 });
-      cards.forEach(function (c) { io.observe(c); });
+        return batch.length ? (batch.length - 1) * STAGGER + DOCK_MS : 0;
+      };
+      new IntersectionObserver(function (entries, obs) {
+        if (started || !entries.some(function (e) { return e.isIntersecting; })) return;
+        started = true;
+        obs.disconnect();
+        setTimeout(function () { track.classList.remove('is-docking'); }, dock());
+      }, { threshold: 0.35 }).observe(track);
+      var raf = 0;
+      var later = function () { raf = 0; if (started && waiting.length) dock(); };
+      track.addEventListener('scroll', function () { if (!raf) raf = requestAnimationFrame(later); }, { passive: true });
+      window.addEventListener('resize', later);
     }
 
     // ---- Clips: play muted while in view; progress bar follows the video --
@@ -272,11 +298,20 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
     aspect-ratio: 5 / 7;
     overflow: hidden;
     scroll-snap-align: start;
-    transition: opacity 700ms var(--reveal-gentle-ease), transform 700ms var(--reveal-gentle-ease);
+    /* docking: a long, soft ease-out, the fade done early */
+    transition: transform 1400ms cubic-bezier(0.16, 1, 0.3, 1), opacity 600ms ease-out;
   }
   .fc.is-waiting {
     opacity: 0;
-    transform: translateY(32px);
+    transform: translate3d(calc(var(--card-w) * 0.9), 0, 0);
+  }
+  /* no sideways scrolling until the first cards have docked */
+  .founders__track.is-docking {
+    overflow-x: hidden;
+  }
+  /* slots are measured from the track */
+  .founders__track {
+    position: relative;
   }
   .fc :global(p) {
     margin: 0;

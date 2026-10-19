@@ -212,8 +212,12 @@ Rules:
   content's left edge. The track never scrolls vertically, so the wheel
   always moves the page. No arrows or progress line (owner, 2026-10-19).
 - Phones (880px and below): cards min(72vw, 340px) wide.
-- Each card eases up 32px and fades in (700ms) the first time it comes into
-  view.
+- Docking (owner, 2026-10-19): card 1 is in place from the start. When the
+  track is 35% in view, the other cards in view slide in from 0.9 of a card
+  width to the right, one after another (160ms apart), and settle into
+  their slots over 1400ms (cubic-bezier(0.16, 1, 0.3, 1); fade 600ms).
+  Sideways scrolling is locked until they have docked. Later cards dock the
+  same way the first time they scroll into view. Reduced motion: no motion.
 - Never a Proof company or an exit (owner, 2026-10-19): no company in the
   strip may also be in the Proof slider or the track record's exits; the
   build fails if one is.
