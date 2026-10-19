@@ -225,9 +225,10 @@ const { class: cls } = Astro.props;
       pad(now.getDate()) + '.' + pad(now.getMonth() + 1) + '.' + now.getFullYear() + ' ' +
       pad(h) + ':' + pad(now.getMinutes());
 
-    // Rise on scroll: --pp-rise goes 0 → 1 as the preview's (untransformed)
-    // container comes up from the bottom of the window to a quarter from the
-    // top, eased. Reduced motion: left at the CSS default (risen).
+    // Rise on scroll: --pp-rise goes 0 → 1, eased, over 1.5 window heights of
+    // scrolling from when the preview's (untransformed) container enters at
+    // the bottom of the window (twice the earlier 0.75, owner 2026-10-19, so
+    // it comes in slower). Reduced motion: left at the CSS default (risen).
     var wrap = figs[0].closest('.pp-wrap');
     var host = wrap && wrap.parentElement;
     if (host && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -235,7 +236,7 @@ const { class: cls } = Astro.props;
       var rise = function () {
         raf = 0;
         var vh = window.innerHeight;
-        var p = Math.min(1, Math.max(0, (vh - host.getBoundingClientRect().top) / (vh * 0.75)));
+        var p = Math.min(1, Math.max(0, (vh - host.getBoundingClientRect().top) / (vh * 1.5)));
         wrap.style.setProperty('--pp-rise', (p * p * (3 - 2 * p)).toFixed(3));
       };
       var queue = function () { if (!raf) raf = requestAnimationFrame(rise); };

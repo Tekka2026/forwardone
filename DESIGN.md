@@ -259,8 +259,9 @@ screens the list stacks under the CTA.
 - Rise on scroll (owner, 2026-10-19): the frame is 50px taller than the
   visible cut and reaches 50px below the section, which clips it
   (`overflow: hidden` on `.fund`). As the section scrolls in, the preview
-  rises by those 50px (`--pp-rise` 0 → 1 while its container comes up from
-  the bottom of the window to a quarter from the top, smoothstep eased), so
+  rises by those 50px (`--pp-rise` 0 → 1 over 1.5 window heights of
+  scrolling from when its container enters at the bottom of the window,
+  smoothstep eased; doubled from 0.75 on 2026-10-19 so it comes in slower), so
   more of the dashboard slides out from under the edge where the Insights
   block starts. It starts 98px under the CTA and ends at the usual 48px.
   Without JS or under reduced motion it rests risen.
