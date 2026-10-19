@@ -231,7 +231,7 @@ export const founders = {
     company('Optics11', 'Fibre-optic sensing for grids and seabed security.'),
     founder('AddOptics'),
     company('ExRobotics', 'Autonomous inspection robots for hazardous industrial sites.'),
-    founder('Optics11 Life'),
+    { ...founder('Optics11 Life'), photo: '/founders/optics11-life.jpg' }, // photo: owner, 2026-10-19
     company('Fizyr', 'Vision AI that helps robots pick objects they have never seen.'),
     founder('Photosynthetic'),
     company('Sapient Perception', 'Sensing and edge AI for drones.'),
