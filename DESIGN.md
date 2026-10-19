@@ -214,8 +214,9 @@ Rules:
 - Phones (880px and below): cards min(72vw, 340px) wide.
 - Docking (owner, 2026-10-19): card 1 is in place from the start. When the
   track is 35% in view, the other cards in view slide in from 0.9 of a card
-  width to the right, one after another (160ms apart), and settle into
-  their slots over 1400ms (cubic-bezier(0.16, 1, 0.3, 1); fade 600ms).
+  width to the right, one after another (320ms apart), and settle into
+  their slots over 2800ms (cubic-bezier(0.16, 1, 0.3, 1); fade 1200ms;
+  doubled from 1400 / 160 / 600 on 2026-10-19).
   Sideways scrolling is locked until they have docked. Later cards dock the
   same way the first time they scroll into view. Reduced motion: no motion.
 - Never a Proof company or an exit (owner, 2026-10-19): no company in the

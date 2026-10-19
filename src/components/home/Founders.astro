@@ -174,7 +174,7 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
     // first time it scrolls into view. Visibility is worked out from the
     // cards' slots (offsetLeft), not their moving boxes.
     if ('IntersectionObserver' in window && !reduce.matches) {
-      var DOCK_MS = 1400, STAGGER = 160;
+      var DOCK_MS = 2800, STAGGER = 320; // twice the first timing (owner, 2026-10-19)
       var waiting = cards.slice(1);
       waiting.forEach(function (c) { c.classList.add('is-waiting'); });
       track.classList.add('is-docking');
@@ -299,7 +299,7 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
     overflow: hidden;
     scroll-snap-align: start;
     /* docking: a long, soft ease-out, the fade done early */
-    transition: transform 1400ms cubic-bezier(0.16, 1, 0.3, 1), opacity 600ms ease-out;
+    transition: transform 2800ms cubic-bezier(0.16, 1, 0.3, 1), opacity 1200ms ease-out;
   }
   .fc.is-waiting {
     opacity: 0;
