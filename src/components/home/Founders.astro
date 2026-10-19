@@ -86,7 +86,7 @@ const isPh = (v: string) => isPlaceholder(v);
                       <span class="fc__progress" aria-hidden="true"><span data-fc-progress /></span>
                       <div class="fc__rail">
                         <span class="fc__avatar" aria-hidden="true">
-                          {v.avatar ? <img src={href(v.avatar)} alt="" width="20" height="20" loading="lazy" decoding="async" /> : 'F.'}
+                          {v.avatar ? <img src={href(v.avatar)} alt="" width="28" height="28" loading="lazy" decoding="async" /> : 'F.'}
                           <span class="fc__follow">+</span>
                         </span>
                         <button type="button" class="fc__action fc__like" aria-pressed="false" data-fc-like data-like={founders.clip.like} data-liked={founders.clip.liked}>
@@ -384,20 +384,20 @@ const isPh = (v: string) => isPlaceholder(v);
     align-items: center;
     gap: 10px;
   }
-  /* Rail icons at half their first size (owner, 2026-10-19): avatar 20px,
-     Like and Share 15px. */
+  /* Rail icons at half their first size (owner, 2026-10-19): Like and Share
+     15px; the avatar a little bigger again, 28px. */
   .fc__avatar {
     position: relative;
     display: grid;
     place-items: center;
-    width: 20px;
-    height: 20px;
-    margin-bottom: 3px;
+    width: 28px;
+    height: 28px;
+    margin-bottom: 4px;
     border: 1px solid #ffffff;
     border-radius: 50%;
     background: #111111;
     font-family: var(--font-display);
-    font-size: 8px;
+    font-size: 11px;
   }
   .fc__avatar img {
     width: 100%;
@@ -407,17 +407,17 @@ const isPh = (v: string) => isPlaceholder(v);
   }
   .fc__follow {
     position: absolute;
-    bottom: -4px;
+    bottom: -5px;
     left: 50%;
     display: grid;
     place-items: center;
-    width: 9px;
-    height: 9px;
-    margin-left: -4.5px;
+    width: 11px;
+    height: 11px;
+    margin-left: -5.5px;
     border-radius: 50%;
     background: #ff3b5c;
     font-family: var(--font-sans);
-    font-size: 7px;
+    font-size: 9px;
     line-height: 1;
   }
   .fc__action {

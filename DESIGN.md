@@ -228,7 +228,7 @@ Rules:
   in view (until the team videos arrive, all five play the owner's
   placeholder clip `public/founders/clip-placeholder.mp4`, 20s, each from a
   different moment); a thin progress bar at the top that follows the video; right
-  rail (small: avatar 20px, icons 15px, labels 9px) with the FORWARD.one
+  rail (small: avatar 28px, icons 15px, labels 9px) with the FORWARD.one
   avatar (the presenter's photo, cropped round; "F." without one) and red
   follow "+", Like (heart, fills
   red #FF3B5C and pops; "Like" → "Liked") and Share (Web Share API, else
