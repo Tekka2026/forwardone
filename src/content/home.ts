@@ -199,6 +199,8 @@ export type FounderEntry = {
   company: string;
   /** Founder card: path under public/, or a placeholder. */
   photo: string;
+  /** Founder card: title, when not the default `founders.role` ("CEO"). */
+  role?: string;
   /** Company card: brand colour as hex; empty = a site tone. */
   colour: string;
   /** Company card: one line under the name. */
@@ -225,7 +227,7 @@ export const founders = {
   role: 'CEO',
   /** 20 founders; the card type alternates. */
   people: [
-    founder('ROCSYS'),
+    { ...founder('ROCSYS'), name: 'Crijn Bouman', role: 'CEO & Co-founder' }, // owner, 2026-10-19
     company('Voltfang', 'Grid-scale storage from used EV batteries.'),
     founder('Qualinx'),
     company('ORE Energy', 'Iron-air batteries for long-duration grid storage.'),

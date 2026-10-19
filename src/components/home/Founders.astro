@@ -146,7 +146,7 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
                     <div class="fc__who">
                       <p class="card-title fc__name"><Placeholder value={p.name} /></p>
                       <p class="fc__role">
-                        {founders.role}, <Placeholder value={p.company} />
+                        {p.role ?? founders.role}, <Placeholder value={p.company} />
                       </p>
                     </div>
                   </li>
