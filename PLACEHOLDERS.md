@@ -11,9 +11,9 @@ invented; replace the value in the file named and the marker disappears.
 | Hero, stats, footnotes | `footnotes[0]` | Benchmark source and date for the top-5% ranking (footnote ¹). |
 | Footnotes | `disclaimer` | Past performance disclaimer, to be supplied by compliance. |
 | Founders strip | `founders.people[*].name`, `.photo` | Name and photo (portrait, 5:7, at least 800 × 1120) of each of the 20 founders (CEOs). Photos go in `public/founders/`. |
-| Founders strip | `founders.people[*].company` | Company of each founder. Never a Proof company (`caseStudies`) or an exit (`trackRecord.exits`): the build fails if one is. |
+| Founders strip | `founders.people[*].company` | Three of the 20 slots still need a company (17 are filled from forward.one/portfolio). Never a Proof company (`caseStudies`) or an exit (`trackRecord.exits`): the build fails if one is. |
 | Founders strip | `founders.people[*].colour` | Brand colour (hex) per company card. Empty falls back to a site tone. |
-| Founders strip | `founders.people[*].blurb` | One line under the company name, for every company card. |
+| Founders strip | `founders.people[*].blurb` | Check the one-liners under the company names (paraphrased from the forward.one portfolio pages). |
 | Founders strip | `founders.clips[*].video`, `.poster`, `.person`, `.caption` | Five short vertical videos of FORWARD.one team members (MP4, about 9:16, cropped to 5:7; muted autoplay), with a poster frame, the person's name and role, and a one-line caption. Until then all five play `public/founders/placeholder.mp4`, a generated clip marked "PLACEHOLDER VIDEO". |
 | Founders strip | `founders.clip.handle` | The social handle shown on the clips (e.g. the TikTok or Instagram account). |
 | Proof slider | `caseStudies.groups[*].items[*].date` | Date at the top of each card, written as month and year, like "April 2022" (shown as "EXIT: APRIL 2022"): the exit date for Axign (Sensorfact and Mayht supplied). For QuantWare and Edmund (traction, no exit) decide which date to show, e.g. first investment. |

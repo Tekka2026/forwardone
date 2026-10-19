@@ -184,9 +184,14 @@ export type FundRow = {
  *   member, with Like and Share.
  * RULE (owner, 2026-10-19): no company here may be a Proof company
  * (`caseStudies`) or an exit (`trackRecord.exits`). Founders.astro fails the
- * build if one is. So no company is filled in yet: founder names, photos,
- * companies, brand colours (empty = a site tone is used), lines, the videos
- * and their captions are placeholders (see PLACEHOLDERS.md and A0012).
+ * build if one is.
+ * Companies (owner, 2026-10-19: "all the companies FORWARD.one backs"): the
+ * 17 current portfolio companies with a page on forward.one/portfolio, read
+ * via web search on 2026-10-19 (the site itself is not reachable from the
+ * build environment); the one-liners are short paraphrases of those pages,
+ * without figures. Three slots stay open. Founder names, photos, brand
+ * colours (empty = a site tone is used), the videos and their captions are
+ * placeholders (see PLACEHOLDERS.md and A0012).
  */
 export type FounderEntry = {
   card: 'founder' | 'company';
@@ -216,26 +221,26 @@ export const founders = {
   role: 'CEO',
   /** 20 founders; the card type alternates. */
   people: [
+    founder('ROCSYS'),
+    company('Voltfang', 'Grid-scale storage from used EV batteries.'),
+    founder('Qualinx'),
+    company('ORE Energy', 'Iron-air batteries for long-duration grid storage.'),
+    founder('driveblocks'),
+    company('QuiX Quantum', 'Photonic quantum computers.'),
+    founder('Helin'),
+    company('Optics11', 'Fibre-optic sensing for grids and seabed security.'),
+    founder('AddOptics'),
+    company('ExRobotics', 'Autonomous inspection robots for hazardous industrial sites.'),
+    founder('Optics11 Life'),
+    company('Fizyr', 'Vision AI that helps robots pick objects they have never seen.'),
+    founder('Photosynthetic'),
+    company('Sapient Perception', 'Sensing and edge AI for drones.'),
     founder(),
-    company(),
+    company('Fibersail', 'Fibre-optic shape sensing for wind turbine blades.'),
     founder(),
-    company(),
+    company('SenseGlove', 'Haptic gloves that let you feel virtual objects.'),
     founder(),
-    company(),
-    founder(),
-    company(),
-    founder(),
-    company(),
-    founder(),
-    company(),
-    founder(),
-    company(),
-    founder(),
-    company(),
-    founder(),
-    company(),
-    founder(),
-    company(),
+    company('Collo', 'Sensors that read the digital fingerprint of liquids.'),
   ] as FounderEntry[],
   /** A clip after every `clipEvery` founder cards. */
   clipEvery: 4,
