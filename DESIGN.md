@@ -264,7 +264,7 @@ screens the list stacks under the CTA.
   (greeting, value date, Filter) stay as before; no email address or user
   name is shown. Under them one card with a table:
   - a head row of mono column labels, right-aligned: Commitment, Paid-in
-    capital, Distributed, Unfunded commitment, then on a tinted band (2.5%
+    capital, Distributed, Unfunded commitment, then on a tinted band (1.25%
     black, a 1px line on its left) Capital account at fair value, Fund
     multiple TVPI, Fund net IRR;
   - per fund a group row (name in 15px, a small grey mono currency badge,
@@ -305,8 +305,9 @@ screens the list stacks under the CTA.
   (Sensorfact) uses `RobotArm.astro`, the owner's interactive canvas robot
   arm (second version, WebGL2 with a depth buffer; inverted version). Since
   2026-10-19 the arm is drawn realistically: smooth-shaded solids without
-  outlines, off-white powder-coated links, dark graphite base plate, motor
-  covers and wrist flange, aluminium tool changer and fingers, a black
+  outlines, matte black links with a fine powder-coat grain (object-space
+  noise mottling colour and sheen, so it sticks to the parts), satin dark
+  graphite base plate, motor covers and wrist flange, aluminium tool changer and fingers, a black
   anodised gripper and the yellow (#FFEA6D) sensor, lit per pixel by a
   camera-fixed studio rig (key upper left, fill right, rim behind, sky/ground
   ambient, highlights per material) with a soft contact shadow under the
@@ -318,16 +319,19 @@ screens the list stacks under the CTA.
   the viewer when it leaves; drag turns the view; the SENSORFACT label sits
   behind the arm. Coded visuals sit above the card's full-size link, so
   dragging works; the title still links. The second (Munich) uses
-  `MunichMap.astro`: a static, top-down street map of central Munich, laid
-  out like Google Maps, in the robot's style: plus grid as the ground,
-  streets as white bands with thin dark outlines (main roads wider), the
-  Mittlerer Ring with the dashed ochre line, the Isar as a light grey river,
-  parks as faint ochre with dashed edges (Englischer Garten, Olympiapark,
-  Hofgarten, Theresienwiese, Alter Südfriedhof), rail into the Hauptbahnhof
-  dashed, the Olympiaturm from above, one yellow pin on Marienplatz with
-  MÜNCHEN and its coordinates, mono place labels with a grey halo, a 1 km
-  scale bar and N ↑. Built at build time from real coordinates, simplified
-  (main streets only). It does not move.
+  `MunichMap.astro` (owner, 2026-10-19): a static, top-down street map of
+  central Munich in the manner of a Mapbox "Light" style: pale land,
+  built-up blocks, a dense web of white minor streets, white main roads
+  with grey casings, the Mittlerer Ring in the site's yellow like a
+  motorway, muted green parks, grey-blue water (Isar, Eisbach, Auer
+  Mühlbach, two lakes), rail corridors, Inter labels with white halos
+  (street names along their roads, district names in spaced capitals, parks
+  in green, the Isar in blue italics), POI dots for Hauptbahnhof and
+  Olympiaturm, a yellow map pin on Marienplatz, a 1 km scale bar and N ↑.
+  Main roads, water, parks and landmarks follow real coordinates,
+  simplified; the minor streets are a seeded, slightly irregular grid per
+  district (that district's street angle and block size), not real streets.
+  Built at build time; it does not move.
 - Insights: on desktop the H2 runs at most 6 of the 12 grid
   columns (fluid, from the wrap width); full width at ≤880px.
 - Closing ("Serious about performance? So are we."): title and buttons

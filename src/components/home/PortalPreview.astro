@@ -443,7 +443,7 @@ const { class: cls } = Astro.props;
   .pp-table {
     padding: 0;
     --pp-cols: minmax(0, 1fr) 120px 112px 112px 128px 156px 120px 112px;
-    --pp-band: rgba(0, 0, 0, 0.025);
+    --pp-band: rgba(0, 0, 0, 0.0125); /* half the earlier 2.5% (owner, 2026-10-19) */
   }
   .pp-row {
     display: grid;
