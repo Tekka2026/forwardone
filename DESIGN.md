@@ -454,7 +454,7 @@ Built like the "Follow the battery." section on vikka.io
 `src/pages/the-pitch.astro`; copy in `src/content/pitch.ts`. Owner,
 2026-10-21: landing page for FORWARD.one's live pitch event at Slush
 (founders pitch to FORWARD.one and a second VC; the winner gets a term
-sheet).
+sheet, wording confirmed by the owner 2026-10-21).
 
 - One black block (`.theme-dark`) from under the header, like the homepage
   intro: eyebrow, H1, the form, event facts.
