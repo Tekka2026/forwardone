@@ -477,11 +477,21 @@ sheet, wording confirmed by the owner 2026-10-21).
   and yellow, on a muted hairline (yellow on focus, dashed when invalid
   after interaction); the hint shows in muted handwriting while empty; each
   blank grows with its text. Each input has a visually hidden label.
+- The letter unfolds sentence by sentence (owner, 2026-10-21): at first
+  only "Dear FORWARD.one, we are [company name]."; once the company name is
+  in, "I'm [name], our [role]."; once the name is in, "Reach me at [email]
+  or [phone]."; once a valid email is in, what they build; once that is in,
+  the deck link and closing sentence with the button and privacy note. A
+  step counts as filled after a 900ms pause in typing, on leaving the field
+  or on Enter (Enter also jumps to the next blank; it only sends from the
+  last one). Each new sentence fades in like the body copy
+  (`reveal-gentle`); shown sentences stay. A blank keeps its following full
+  stop or comma on the same line. Without script the whole letter shows.
 - Then the solid button, a status line, the privacy note (muted, small) and
   four event facts over a hairline (When, Where, Apply by, The panel; mono
   labels), 4 columns, 2 at ≤880px, 1 at ≤640px.
 - Intro motion: eyebrow, then "The", the blank and "Pitch" snap in like H1
-  words; the letter eases in gently; the button arrives as a block.
+  words; the first sentence of the letter eases in gently.
 - Until a form endpoint is set (`pitch.action`), the button does not post
   and the status line says applications are not sent yet.
 

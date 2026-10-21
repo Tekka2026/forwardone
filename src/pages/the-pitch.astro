@@ -15,15 +15,29 @@
 import Base from '@layouts/Base.astro';
 import Button from '@components/ui/Button.astro';
 import Placeholder from '@components/ui/Placeholder.astro';
-import { pitch } from '@content/pitch';
+import { pitch, type LetterPart, type PitchField } from '@content/pitch';
 import { isPlaceholder } from '@lib/href';
 
-// A space between parts, except before punctuation.
-const parts = pitch.letter;
-const gap = (i: number) => {
-  const next = parts[i + 1];
-  return next !== undefined && !(typeof next === 'string' && /^[.,;:]/.test(next));
+// Each step as render tokens. Punctuation right after a blank is kept with
+// it (no line break between the blank and its full stop or comma), and gets
+// no space before it.
+type Token = { text: string } | { field: PitchField; tail: string } | { placeholder: string };
+const tokens = (parts: LetterPart[]): Token[] => {
+  const out: Token[] = [];
+  parts.forEach((part) => {
+    const prev = out[out.length - 1];
+    if (typeof part === 'string') {
+      const m = prev && 'field' in prev ? part.match(/^[.,;:]+/) : null;
+      if (m && prev && 'field' in prev) prev.tail = m[0];
+      const rest = m ? part.slice(m[0].length).trim() : part;
+      if (rest) out.push({ text: rest });
+    } else if ('field' in part) out.push({ field: part.field, tail: '' });
+    else out.push({ placeholder: part.placeholder });
+  });
+  return out;
 };
+const steps = pitch.steps.map(tokens);
+const firstField = steps[0].findIndex((t) => 'field' in t);
 // Values with an embedded placeholder ("FORWARD.one and [PLACEHOLDER: …]").
 const chunks = (v: string) => v.split(/(\[PLACEHOLDER:[^\]]*\])/).filter(Boolean);
 const ready = !isPlaceholder(pitch.action);
@@ -59,38 +73,48 @@ const ready = !isPlaceholder(pitch.action);
         >
           <p class="pitch__letter reveal-gentle">
             {
-              parts.map((part, i) => (
+              steps.map((toks, si) => (
                 <>
-                  {typeof part === 'string' ? (
-                    part
-                  ) : 'placeholder' in part ? (
-                    <Placeholder value={part.placeholder} />
-                  ) : (
-                    <label class="pitch__field">
-                      <span class="visually-hidden">{part.field.label}</span>
-                      <input
-                        class="pitch__input"
-                        type={part.field.type ?? 'text'}
-                        name={part.field.name}
-                        placeholder={part.field.hint}
-                        autocomplete={part.field.autocomplete}
-                        required={part.field.required}
-                        spellcheck="false"
-                        data-pitch-input
-                        data-pitch-company={i === parts.findIndex((p) => typeof p !== 'string' && 'field' in p) ? '' : undefined}
-                      />
-                    </label>
-                  )}
-                  {gap(i) && ' '}
+                  {si > 0 && ' '}
+                  <span class="pitch__step" data-pitch-step>
+                    {toks.map((t, i) => (
+                      <>
+                        {i > 0 && ' '}
+                        {'text' in t ? (
+                          t.text
+                        ) : 'placeholder' in t ? (
+                          <Placeholder value={t.placeholder} />
+                        ) : (
+                          <span class="pitch__blank-wrap">
+                            <label class="pitch__field">
+                              <span class="visually-hidden">{t.field.label}</span>
+                              <input
+                                class="pitch__input"
+                                type={t.field.type ?? 'text'}
+                                name={t.field.name}
+                                placeholder={t.field.hint}
+                                autocomplete={t.field.autocomplete}
+                                required={t.field.required}
+                                spellcheck="false"
+                                data-pitch-input
+                                data-pitch-company={si === 0 && i === firstField ? '' : undefined}
+                              />
+                            </label>
+                            {t.tail}
+                          </span>
+                        )}
+                      </>
+                    ))}
+                  </span>
                 </>
               ))
             }
           </p>
-          <div class="pitch__send reveal-block">
+          <div class="pitch__send" data-pitch-final>
             <Button type="submit">{pitch.submit}</Button>
             <p class="small pitch__status" data-pitch-status role="status" aria-live="polite"></p>
           </div>
-          <p class="small pitch__privacy"><Placeholder value={pitch.privacy} /></p>
+          <p class="small pitch__privacy" data-pitch-final><Placeholder value={pitch.privacy} /></p>
           <template data-pitch-msg-not-sent>{pitch.notSent}</template>
           <template data-pitch-msg-sent>{pitch.sent}</template>
         </form>
@@ -183,6 +207,68 @@ const ready = !isPlaceholder(pitch.action);
       size(input);
       input.addEventListener('input', function () { size(input); });
     });
+
+    // ---- Steps: the letter unfolds sentence by sentence. -----------------
+    // Only the first sentence shows at first. The next one appears once the
+    // first required field of the current one holds a valid value: after a
+    // short pause in typing, on leaving the field, or on Enter (which also
+    // moves to the next blank). The button and privacy note come with the
+    // last sentence. Shown steps stay shown.
+    var steps = [].slice.call(form.querySelectorAll('[data-pitch-step]'));
+    var finals = [].slice.call(form.querySelectorAll('[data-pitch-final]'));
+    var shownSteps = 1;
+    function gate(step) {
+      return step.querySelector('input[required]');
+    }
+    function passed(step) {
+      var g = gate(step);
+      return !g || (g.value.trim() !== '' && g.checkValidity());
+    }
+    function showEl(el) {
+      if (!el.hidden) return;
+      el.hidden = false;
+      if (!reduce) {
+        el.classList.remove('is-entering');
+        void el.offsetWidth;
+        el.classList.add('is-entering');
+      }
+    }
+    function advance() {
+      while (shownSteps < steps.length && passed(steps[shownSteps - 1])) {
+        showEl(steps[shownSteps]);
+        steps[shownSteps].querySelectorAll('[data-pitch-input]').forEach(size);
+        shownSteps++;
+      }
+      if (shownSteps === steps.length) finals.forEach(showEl);
+    }
+    steps.slice(1).forEach(function (st) { st.hidden = true; });
+    finals.forEach(function (el) { el.hidden = true; });
+    var pause;
+    steps.forEach(function (st) {
+      var g = gate(st);
+      if (!g) return;
+      g.addEventListener('input', function () {
+        clearTimeout(pause);
+        pause = setTimeout(advance, 900);
+      });
+      g.addEventListener('change', advance);
+    });
+    // Enter moves on to the next empty blank instead of sending early.
+    form.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter' || !e.target.matches('[data-pitch-input]')) return;
+      var visible = [].slice.call(form.querySelectorAll('[data-pitch-input]')).filter(function (i) { return i.offsetParent; });
+      var at = visible.indexOf(e.target);
+      if (shownSteps === steps.length && at === visible.length - 1) return;
+      e.preventDefault();
+      if (!e.target.checkValidity()) { e.target.reportValidity(); return; }
+      clearTimeout(pause);
+      advance();
+      visible = [].slice.call(form.querySelectorAll('[data-pitch-input]')).filter(function (i) { return i.offsetParent; });
+      var next = visible[visible.indexOf(e.target) + 1];
+      if (next) next.focus();
+    });
+    // A restored or autofilled form opens as far as it is filled.
+    advance();
 
     // ---- Send. Until an endpoint is set, say so instead of posting. -------
     var status = form.querySelector('[data-pitch-status]');
@@ -277,6 +363,13 @@ const ready = !isPlaceholder(pitch.action);
   .pitch__field {
     display: inline;
   }
+  .pitch__blank-wrap {
+    white-space: nowrap;
+  }
+  .pitch__send[hidden],
+  .pitch__privacy[hidden] {
+    display: none;
+  }
   .pitch__input {
     font-family: var(--font-hand);
     font-size: var(--fs-hand);
@@ -312,7 +405,6 @@ const ready = !isPlaceholder(pitch.action);
     align-items: center;
     gap: var(--gap);
     margin-top: var(--gap-double);
-    animation-delay: calc(var(--reveal-start) + 6 * var(--reveal-stagger) + 9 * var(--reveal-frame));
   }
   .pitch__letter.reveal-gentle {
     animation-delay: calc(var(--reveal-start) + 3 * var(--reveal-stagger) + 4 * var(--reveal-frame));
@@ -385,6 +477,11 @@ const ready = !isPlaceholder(pitch.action);
     font-family: var(--font-hand);
     font-size: var(--fs-hand);
     font-weight: 400;
+  }
+  /* A sentence of the letter (or the button) appearing: a gentle fade in,
+     like the body copy. */
+  .pitch .is-entering {
+    animation: reveal-gentle var(--reveal-gentle) var(--reveal-gentle-ease) both;
   }
   /* Each new letter is written in: wiped open left to right while it settles
      from a slight lift. Spans are made in script, so the styles are global. */

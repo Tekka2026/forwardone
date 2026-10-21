@@ -35,26 +35,35 @@ export const pitch = {
   eyebrow: 'FORWARD.one at Slush, Helsinki',
   /** H1, either side of the blank line. */
   title: { before: 'The', after: 'Pitch' },
-  /** The fill-in letter. The first field is the company name: it is written on the H1's line. */
-  letter: [
-    'Dear FORWARD.one, we are',
-    { field: { name: 'company', label: 'Company name', hint: 'company name', autocomplete: 'organization', required: true } },
-    '. I’m',
-    { field: { name: 'name', label: 'Your full name', hint: 'your name', autocomplete: 'name', required: true } },
-    ', our',
-    { field: { name: 'role', label: 'Your role', hint: 'role', autocomplete: 'organization-title' } },
-    '. Reach me at',
-    { field: { name: 'email', label: 'Email address', hint: 'email', type: 'email', autocomplete: 'email', required: true } },
-    'or',
-    { field: { name: 'phone', label: 'Phone number', hint: 'phone', type: 'tel', autocomplete: 'tel' } },
-    '. In one line, we are building',
-    { field: { name: 'building', label: 'What you are building, in one line', hint: 'what you are building', required: true } },
-    '. Our deck is at',
-    { field: { name: 'deck', label: 'Link to your pitch deck (optional)', hint: 'link (optional)', type: 'url' } },
-    '. We’d like to pitch live to FORWARD.one and',
-    { placeholder: PH('second VC') },
-    'at Slush, for the term sheet that goes to the winner.',
-  ] as LetterPart[],
+  /** The fill-in letter, one sentence per step. Only the first step shows at
+   * first; each next step appears once the first required field of the step
+   * before is filled (owner, 2026-10-21). The first field is the company
+   * name: it is written on the H1's line. The button comes with the last step. */
+  steps: [
+    ['Dear FORWARD.one, we are', { field: { name: 'company', label: 'Company name', hint: 'company name', autocomplete: 'organization', required: true } }, '.'],
+    [
+      'I’m',
+      { field: { name: 'name', label: 'Your full name', hint: 'your name', autocomplete: 'name', required: true } },
+      ', our',
+      { field: { name: 'role', label: 'Your role', hint: 'role', autocomplete: 'organization-title' } },
+      '.',
+    ],
+    [
+      'Reach me at',
+      { field: { name: 'email', label: 'Email address', hint: 'email', type: 'email', autocomplete: 'email', required: true } },
+      'or',
+      { field: { name: 'phone', label: 'Phone number', hint: 'phone', type: 'tel', autocomplete: 'tel' } },
+      '.',
+    ],
+    ['In one line, we are building', { field: { name: 'building', label: 'What you are building, in one line', hint: 'what you are building', required: true } }, '.'],
+    [
+      'Our deck is at',
+      { field: { name: 'deck', label: 'Link to your pitch deck (optional)', hint: 'link (optional)', type: 'url' } },
+      '. We’d like to pitch live to FORWARD.one and',
+      { placeholder: PH('second VC') },
+      'at Slush, for the term sheet that goes to the winner.',
+    ],
+  ] as LetterPart[][],
   submit: 'Send our pitch',
   /** Where the form posts (a form service or CRM endpoint). Until set, submitting shows `notSent`. */
   action: PH('form endpoint'),
