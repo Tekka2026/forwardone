@@ -472,8 +472,8 @@ sheet).
   On phones the empty heading is already scaled to fit.
 - Form as a fill-in-the-blanks letter at `--fs-metric` (24–32px, Inter,
   line height 1.9, 8 columns max): company name first, then name, role,
-  street and number, postcode, city, country, email, phone, what they build
-  (one line), deck link. Blanks are inline inputs in the same handwriting
+  email, phone, what they build (one line), deck link (no address, owner
+  2026-10-21). Blanks are inline inputs in the same handwriting
   and yellow, on a muted hairline (yellow on focus, dashed when invalid
   after interaction); the hint shows in muted handwriting while empty; each
   blank grows with its text. Each input has a visually hidden label.
