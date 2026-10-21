@@ -225,7 +225,7 @@ export const founders = {
    * companies we meet, the places we go: all of Europe, not one region. The
    * 2,500 a year is the site's own figure (stats). */
   title: 'We go where Europe’s builders are.',
-  intro: 'Across Europe, we meet 2,500 companies a year and back the few who will lead.',
+  intro: 'Across Europe, we screen 2,500 companies a year and back the few who will lead.',
   role: 'CEO',
   /** 20 founders; the card type alternates. */
   people: [

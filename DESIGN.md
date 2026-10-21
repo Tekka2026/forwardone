@@ -203,7 +203,7 @@ Rules:
 
 - White section. Head as in the Proof slider: eyebrow "On the road" and the
   H2 ("We go where Europe’s builders are.") left, a line of body copy right
-  (all of Europe, 2,500 a year; owner 2026-10-19). Then a row of 5:7 cards, each three
+  (all of Europe, 2,500 screened a year; owner 2026-10-19, 'screen' not 'meet' 2026-10-21). Then a row of 5:7 cards, each three
   of the twelve columns wide, 32px apart, starting at the content's left
   edge and running on past the window's right edge.
 - Never takes over the page's scrolling (owner, 2026-10-19): a plain
