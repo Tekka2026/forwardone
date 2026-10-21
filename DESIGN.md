@@ -102,19 +102,12 @@ All queries are `max-width`, desktop-first.
 
 ## 5. Type scale (marketing pages)
 
-Four families, loaded in `src/layouts/Base.astro` and `css/global.css`:
+Three families, all loaded in `src/layouts/Base.astro`:
 
-- `--font-heading`: **CB Install** by Calame Bureau (owner, 2026-10-21, a
-  try-out for the MVP; trial cuts self-hosted as WOFF2 from
-  `src/assets/fonts/cb-install`: Light 300, Regular 400, Semibold 600, Bold
-  700). Display (H1), Section (H2) and Feature headings only. The heading
-  weight 450 resolves to Regular. The trial lacks ’ ' € % and →; those
-  glyphs fall back to Clash Display. Licence before going public (A0015).
-  Going back to Clash Display is a one-line change in `--font-heading`.
 - `--font-display`: **Clash Display** (Fontshare; variable font, weight axis
-  200–700, plus static 400/500/600 as fallback). Stat values, headline
-  figures, card metrics and names (case and founders cards), and the
-  heading fallback.
+  200–700, plus static 400/500/600 as fallback). Used for Display (H1),
+  Section (H2) and Feature headings, stat values, card metrics and the
+  wordmark only.
 - `--font-sans`: **Inter** (Google Fonts, variable 400–600). H3 and below
   (card titles, the Playbook list) and all body and UI text: lede, body,
   small, buttons, navigation, forms, footer.
@@ -189,9 +182,8 @@ Rules:
 - Every size, line height, tracking and heading weight value exists as a token
   (`--fs-*`, `--lh-*`, `--ls-*`, `--fw-heading`, `--fw-card-title`). New
   components reference tokens, never literal values. Heading weights are
-  450 / 550 (set 2026-10-12). For headings in CB Install 450 resolves to
-  Regular (static cuts); in Clash Display it needs the variable font loaded
-  in `src/layouts/Base.astro`, without which it snaps to 500.
+  450 / 550 (set 2026-10-12), which requires the Clash Display variable font
+  loaded in `src/layouts/Base.astro`; without it they snap to 500 / 600.
 
 ### Figures and tables
 
