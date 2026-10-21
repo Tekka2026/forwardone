@@ -272,8 +272,9 @@ export const founders = {
     share: 'Share',
     shareLabel: 'Share on LinkedIn',
   },
-  /** Company cards: the link that animates in on hover, followed by the company name. */
-  discover: 'Discover more about',
+  /** Company cards: the link that animates in on hover, followed by the company
+   * name. Three phrasings, used in turn so neighbouring cards differ. */
+  discover: ['Discover more about', 'Get to know', 'Learn more about'],
   /** Where a company card links without its own page (the current site's portfolio overview). */
   portfolioHref: 'https://www.forward.one/portfolio',
   /** Fallback colours for company cards without a brand colour: the site's own tones. */

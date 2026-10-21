@@ -235,7 +235,8 @@ Rules:
   by the colour's luminance.
 - The clip's profile circle links to the presenter's team profile.
 - Company card link (owner, 2026-10-19): "Discover more about <company> →"
-  at the bottom, the whole card its click area (the company's page on
+  at the bottom, the phrasing rotating card by card between "Discover more
+  about", "Get to know" and "Learn more about" (owner, 2026-10-21); the whole card its click area (the company's page on
   forward.one, else the portfolio overview). On hover or keyboard focus it
   animates in like the H1: word by word in 80ms frames (two steps low, one,
   rest), the last word rising smoothly (no tint

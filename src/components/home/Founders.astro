@@ -60,9 +60,11 @@ const companyStyle = (colour: string) => {
 };
 const isPh = (v: string) => isPlaceholder(v);
 // "Discover more about <company> →", word by word for the H1-style reveal;
-// the arrow travels with the last word.
+// the arrow travels with the last word. The phrasing rotates per company card.
+let discoverAt = 0;
 const moreWords = (company: string) => {
-  const w = `${founders.discover} ${company}`.split(/\s+/);
+  const lead = founders.discover[discoverAt++ % founders.discover.length];
+  const w = `${lead} ${company}`.split(/\s+/);
   w[w.length - 1] += '\u00a0\u2192';
   return w;
 };
