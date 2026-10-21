@@ -27,6 +27,16 @@ invented; replace the value in the file named and the marker disappears.
 | Insights | `insights.articles[2].image` | Visual for the third featured article (the first has the robot arm, the second the Munich map), 5:7 portrait (cropped to 7:5 landscape on phones, so keep the subject centred). Drop files in `public/insights/` and set the path; until then a flat light grey box. |
 | Insights | `insights.articles[*].slug` | Slugs are derived from titles; match them to the CMS slugs when the news collection is migrated. |
 
+## The ____ Pitch (`src/content/pitch.ts`, page `/the-pitch`)
+
+| Where | Key | Needed |
+|---|---|---|
+| Letter, facts | `letter` (placeholder part), `facts[3]` | The second VC on the panel. |
+| Facts | `facts[0]`, `facts[1]`, `facts[2]` | Date and time at Slush, stage or venue, application deadline. |
+| Form | `action` | Where applications go: a form service or CRM endpoint that accepts a POST (e.g. HubSpot, Typeform, Formspree). Until set, the button shows a "not sent yet" note. |
+| Form | `privacy` | Privacy note for the form, with a link to the privacy policy. |
+| Copy | `letter`, `meta.description` | The prize is written as "the term sheet that goes to the winner" (the owner said "investment sheet"); confirm the wording and what the winner actually gets. |
+
 ## Navigation and footer (`src/content/nav.ts`)
 
 | Where | Key | Needed |

@@ -449,6 +449,42 @@ Built like the "Follow the battery." section on vikka.io
   (their clips, 5:7, muted loop, max 320px wide), Insights (article links).
 - Stacks at 880px and below.
 
+### The ____ Pitch (`/the-pitch`)
+
+`src/pages/the-pitch.astro`; copy in `src/content/pitch.ts`. Owner,
+2026-10-21: landing page for FORWARD.one's live pitch event at Slush
+(founders pitch to FORWARD.one and a second VC; the winner gets a term
+sheet).
+
+- One black block (`.theme-dark`) from under the header, like the homepage
+  intro: eyebrow, H1, the form, event facts.
+- H1 "The ____ Pitch" on one line (no wrap). The blank is a line on the
+  baseline (min 3.5em, `max(2px, 0.035em)` thick, heading colour). As the
+  visitor types the company name (the form's first field) it is written onto
+  the line letter by letter in handwriting (**Nothing You Could Do**, Google
+  Fonts, OFL; loaded on this page only via Base's `head` slot) at 1.3em, in
+  `--brand-yellow`: each new letter wipes open left to right in 300ms and
+  settles from a slight lift, with a small random tilt (±2°) and baseline
+  shift (±0.02em). Pasted text writes in at 45ms per letter.
+- Fit: the whole H1, handwriting included, never runs wider than 90% of the
+  content width. Up to that it keeps the Display size; beyond it the size
+  scales down continuously (`--pitch-scale`, font-size transition 240ms).
+  On phones the empty heading is already scaled to fit.
+- Form as a fill-in-the-blanks letter at `--fs-metric` (24–32px, Inter,
+  line height 1.9, 8 columns max): company name first, then name, role,
+  street and number, postcode, city, country, email, phone, what they build
+  (one line), deck link. Blanks are inline inputs in the same handwriting
+  and yellow, on a muted hairline (yellow on focus, dashed when invalid
+  after interaction); the hint shows in muted handwriting while empty; each
+  blank grows with its text. Each input has a visually hidden label.
+- Then the solid button, a status line, the privacy note (muted, small) and
+  four event facts over a hairline (When, Where, Apply by, The panel; mono
+  labels), 4 columns, 2 at ≤880px, 1 at ≤640px.
+- Intro motion: eyebrow, then "The", the blank and "Pitch" snap in like H1
+  words; the letter eases in gently; the button arrives as a block.
+- Until a form endpoint is set (`pitch.action`), the button does not post
+  and the status line says applications are not sent yet.
+
 ## 6. Spacing — Vercel Geist system
 
 The padding system is Geist's: a 4px base unit named by multiple, a "gap"

@@ -1,0 +1,411 @@
+---
+/**
+ * The ____ Pitch (owner, 2026-10-21): landing page for FORWARD.one's live
+ * pitch event at Slush. One black block under the header:
+ * - Eyebrow, then the H1 "The ____ Pitch" on one line. The blank is a line;
+ *   as the visitor types the company name (the form's first field), the name
+ *   is written onto it letter by letter in handwriting, in yellow. When the
+ *   name is long the whole H1, handwriting included, scales down continuously
+ *   so it never runs wider than 90% of the content width.
+ * - Under it the form as a fill-in-the-blanks letter (name, address, contact,
+ *   what they build, deck), answers in the same handwriting, then the
+ *   button, the privacy note and the event facts.
+ * Copy and placeholders in src/content/pitch.ts.
+ */
+import Base from '@layouts/Base.astro';
+import Button from '@components/ui/Button.astro';
+import Placeholder from '@components/ui/Placeholder.astro';
+import { pitch } from '@content/pitch';
+import { isPlaceholder } from '@lib/href';
+
+// A space between parts, except before punctuation.
+const parts = pitch.letter;
+const gap = (i: number) => {
+  const next = parts[i + 1];
+  return next !== undefined && !(typeof next === 'string' && /^[.,;:]/.test(next));
+};
+// Values with an embedded placeholder ("FORWARD.one and [PLACEHOLDER: …]").
+const chunks = (v: string) => v.split(/(\[PLACEHOLDER:[^\]]*\])/).filter(Boolean);
+const ready = !isPlaceholder(pitch.action);
+---
+
+<Base title={pitch.meta.title} description={pitch.meta.description} darkTop>
+  <link
+    slot="head"
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Nothing+You+Could+Do&display=swap"
+  />
+  <div class="pitch theme-dark" data-nav-dark>
+    <section class="section section--flush pitch__hero">
+      <div class="wrap">
+        <p class="eyebrow reveal-snap">{pitch.eyebrow}</p>
+        <h1 class="h-display pitch__title" data-pitch-title>
+          <span class="pitch__line" data-pitch-line>
+            <span class="pitch__word reveal-snap" style="--i: 0">{pitch.title.before}</span>
+            <span class="pitch__blank reveal-snap" style="--i: 1"
+              ><span class="pitch__hand" data-pitch-hand aria-hidden="true">&#8203;</span
+              ><span class="visually-hidden" data-pitch-sr></span></span
+            >
+            <span class="pitch__word reveal-snap" style="--i: 2">{pitch.title.after}</span>
+          </span>
+        </h1>
+
+        <form
+          class="pitch__form"
+          data-pitch-form
+          data-ready={ready ? 'true' : 'false'}
+          action={ready ? pitch.action : undefined}
+          method="post"
+        >
+          <p class="pitch__letter reveal-gentle">
+            {
+              parts.map((part, i) => (
+                <>
+                  {typeof part === 'string' ? (
+                    part
+                  ) : 'placeholder' in part ? (
+                    <Placeholder value={part.placeholder} />
+                  ) : (
+                    <label class="pitch__field">
+                      <span class="visually-hidden">{part.field.label}</span>
+                      <input
+                        class="pitch__input"
+                        type={part.field.type ?? 'text'}
+                        name={part.field.name}
+                        placeholder={part.field.hint}
+                        autocomplete={part.field.autocomplete}
+                        required={part.field.required}
+                        spellcheck="false"
+                        data-pitch-input
+                        data-pitch-company={i === parts.findIndex((p) => typeof p !== 'string' && 'field' in p) ? '' : undefined}
+                      />
+                    </label>
+                  )}
+                  {gap(i) && ' '}
+                </>
+              ))
+            }
+          </p>
+          <div class="pitch__send reveal-block">
+            <Button type="submit">{pitch.submit}</Button>
+            <p class="small pitch__status" data-pitch-status role="status" aria-live="polite"></p>
+          </div>
+          <p class="small pitch__privacy"><Placeholder value={pitch.privacy} /></p>
+          <template data-pitch-msg-not-sent>{pitch.notSent}</template>
+          <template data-pitch-msg-sent>{pitch.sent}</template>
+        </form>
+
+        <dl class="pitch__facts">
+          {
+            pitch.facts.map((f) => (
+              <div>
+                <dt class="label">{f.label}</dt>
+                <dd class="body">
+                  {chunks(f.value).map((c) => (
+                    <Placeholder value={c} />
+                  ))}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<script is:inline>
+  (function () {
+    var title = document.querySelector('[data-pitch-title]');
+    var line = document.querySelector('[data-pitch-line]');
+    var hand = document.querySelector('[data-pitch-hand]');
+    var sr = document.querySelector('[data-pitch-sr]');
+    var company = document.querySelector('[data-pitch-company]');
+    var form = document.querySelector('[data-pitch-form]');
+    if (!title || !line || !hand || !company || !form) return;
+
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ---- Fit: the H1 never runs wider than 90% of the content width. ------
+    // Font size scales linearly with width, so one measurement is enough:
+    // the natural width at the base size, from the current width and size.
+    var probe = document.createElement('span');
+    probe.className = 'pitch__probe';
+    probe.setAttribute('aria-hidden', 'true');
+    title.parentNode.appendChild(probe);
+    function fit() {
+      var base = parseFloat(getComputedStyle(probe).fontSize);
+      var cur = parseFloat(getComputedStyle(title).fontSize);
+      var w = line.getBoundingClientRect().width;
+      if (!base || !cur || !w) return;
+      var natural = (w * base) / cur;
+      var scale = Math.min(1, (0.9 * title.clientWidth) / natural);
+      title.style.setProperty('--pitch-scale', scale.toFixed(4));
+    }
+
+    // ---- Handwriting on the line: new letters are written in. -------------
+    var shown = '';
+    function write() {
+      var next = company.value;
+      var k = 0;
+      while (k < shown.length && k < next.length && shown[k] === next[k]) k++;
+      var letters = hand.querySelectorAll('.pitch__letter-hw');
+      for (var i = letters.length - 1; i >= k; i--) letters[i].remove();
+      for (var j = k; j < next.length; j++) {
+        var s = document.createElement('span');
+        s.className = 'pitch__letter-hw';
+        s.textContent = next[j];
+        // A slight wobble per letter, as by hand.
+        s.style.setProperty('--r', (Math.random() * 4 - 2).toFixed(2) + 'deg');
+        s.style.setProperty('--y', (Math.random() * 0.04 - 0.02).toFixed(3) + 'em');
+        if (!reduce) s.style.animationDelay = (j - k) * 45 + 'ms';
+        hand.appendChild(s);
+      }
+      shown = next;
+      sr.textContent = next;
+      title.classList.toggle('is-filled', next.length > 0);
+      fit();
+    }
+    company.addEventListener('input', write);
+
+    // ---- Blanks in the letter grow with what is typed. ---------------------
+    var meter = document.createElement('span');
+    meter.className = 'pitch__meter';
+    meter.setAttribute('aria-hidden', 'true');
+    form.querySelector('.pitch__letter').appendChild(meter);
+    function size(input) {
+      meter.textContent = input.value || input.placeholder;
+      // + 2px for the caret at the end.
+      input.style.width = Math.ceil(meter.getBoundingClientRect().width) + 2 + 'px';
+    }
+    var inputs = form.querySelectorAll('[data-pitch-input]');
+    inputs.forEach(function (input) {
+      size(input);
+      input.addEventListener('input', function () { size(input); });
+    });
+
+    // ---- Send. Until an endpoint is set, say so instead of posting. -------
+    var status = form.querySelector('[data-pitch-status]');
+    form.addEventListener('submit', function (e) {
+      if (form.dataset.ready !== 'true') {
+        e.preventDefault();
+        status.textContent = form.querySelector('[data-pitch-msg-not-sent]').content.textContent;
+      }
+    });
+
+    function refit() {
+      inputs.forEach(size);
+      fit();
+    }
+    window.addEventListener('resize', refit);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(refit);
+    // Autofill or a restored form: write what is already there.
+    if (company.value) write();
+    else fit();
+  })();
+</script>
+
+<style is:global>
+  /* Black block from under the header to past the fold, like the homepage
+     intro (see .intro in src/pages/index.astro). */
+  .pitch {
+    margin-top: calc(-1 * var(--header-h));
+    padding-top: var(--header-h);
+    min-height: 100vh;
+    min-height: 100svh;
+    background: var(--bg);
+    box-shadow: 0 0 0 100vmax var(--bg);
+    clip-path: inset(-100vmax -100vmax 0);
+  }
+</style>
+
+<style>
+  .pitch__hero {
+    padding-top: var(--gap-double);
+  }
+
+  /* ---- H1: The ____ Pitch ------------------------------------------------ */
+  .pitch__title {
+    --pitch-scale: 1;
+    margin: var(--gap-half) 0 0;
+    font-size: calc(var(--fs-display) * var(--pitch-scale));
+    white-space: nowrap;
+    transition: font-size 240ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .pitch__line {
+    display: inline-block;
+  }
+  .pitch__word,
+  .pitch__blank {
+    animation-delay: calc(var(--reveal-start) + var(--i) * var(--reveal-stagger));
+  }
+  .eyebrow.reveal-snap {
+    animation-delay: calc(var(--reveal-start) - 4 * var(--reveal-frame));
+  }
+  /* The blank: a line on the baseline, at least 3.5em long, growing with
+     the handwritten name on it. */
+  .pitch__blank {
+    display: inline-block;
+    min-width: 3.5em;
+    margin-inline: 0.12em;
+    padding-inline: 0.08em;
+    border-bottom: max(2px, 0.035em) solid currentColor;
+    line-height: 1;
+  }
+  .pitch__hand {
+    display: inline-block;
+    font-family: var(--font-hand);
+    font-size: var(--fs-hand);
+    font-weight: 400;
+    line-height: 1;
+    white-space: pre;
+    color: var(--hand-colour);
+    transform: translateY(0.04em);
+  }
+
+  /* ---- The letter -------------------------------------------------------- */
+  .pitch__form {
+    margin-top: var(--gap-double);
+  }
+  .pitch__letter {
+    position: relative;
+    max-width: var(--col-8);
+    margin: 0;
+    font-size: var(--fs-metric);
+    line-height: 1.9;
+  }
+  .pitch__field {
+    display: inline;
+  }
+  .pitch__input {
+    font-family: var(--font-hand);
+    font-size: var(--fs-hand);
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+  .pitch__input {
+    max-width: 100%;
+    padding: 0 0.1em;
+    border: 0;
+    border-bottom: var(--hairline-w) solid var(--muted);
+    border-radius: 0;
+    background: transparent;
+    color: var(--hand-colour);
+    line-height: 1.2;
+    outline: none;
+    box-sizing: content-box;
+  }
+  .pitch__input::placeholder {
+    color: var(--muted);
+    opacity: 0.75;
+  }
+  .pitch__input:focus {
+    border-bottom-color: var(--hand-colour);
+  }
+  .pitch__input:user-invalid {
+    border-bottom-style: dashed;
+    border-bottom-color: var(--brand-yellow);
+  }
+  .pitch__send {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--gap);
+    margin-top: var(--gap-double);
+    animation-delay: calc(var(--reveal-start) + 6 * var(--reveal-stagger) + 9 * var(--reveal-frame));
+  }
+  .pitch__letter.reveal-gentle {
+    animation-delay: calc(var(--reveal-start) + 3 * var(--reveal-stagger) + 4 * var(--reveal-frame));
+  }
+  .pitch__status {
+    margin: 0;
+    color: var(--muted);
+  }
+  .pitch__privacy {
+    max-width: var(--col-6);
+    margin: var(--gap) 0 0;
+    color: var(--muted);
+  }
+
+  /* ---- Event facts ------------------------------------------------------- */
+  .pitch__facts {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--gutter);
+    margin: var(--space-32x) 0 0;
+    padding-top: var(--gap);
+    border-top: var(--hairline-w) solid var(--hairline);
+  }
+  .pitch__facts dt {
+    color: var(--muted);
+  }
+  .pitch__facts dd {
+    margin: var(--space-2x) 0 0;
+  }
+
+  @media (max-width: 880px) {
+    .pitch__facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 640px) {
+    .pitch__letter {
+      line-height: 1.8;
+    }
+    .pitch__facts {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-4x);
+      margin-top: var(--space-16x);
+    }
+  }
+</style>
+
+<style is:global>
+  /* Handwriting tokens (this page only). */
+  .pitch {
+    --font-hand: "Nothing You Could Do", "Segoe Script", "Bradley Hand", cursive;
+    --fs-hand: 1.3em;
+    --hand-colour: var(--brand-yellow);
+  }
+  /* Measuring helpers made in script (so outside the scoped styles): the
+     H1's base size, and the width of a blank's text. */
+  .pitch__probe,
+  .pitch__meter {
+    position: absolute;
+    top: 0;
+    left: 0;
+    visibility: hidden;
+    pointer-events: none;
+    white-space: pre;
+  }
+  .pitch__probe {
+    font-size: var(--fs-display);
+  }
+  .pitch__meter {
+    font-family: var(--font-hand);
+    font-size: var(--fs-hand);
+    font-weight: 400;
+  }
+  /* Each new letter is written in: wiped open left to right while it settles
+     from a slight lift. Spans are made in script, so the styles are global. */
+  .pitch__letter-hw {
+    display: inline-block;
+    transform: translateY(var(--y, 0)) rotate(var(--r, 0deg));
+    animation: pitch-write 300ms cubic-bezier(0.3, 0.6, 0.2, 1) backwards;
+  }
+  @keyframes pitch-write {
+    from {
+      clip-path: inset(-0.6em 100% -0.6em -0.6em);
+      transform: translateY(calc(var(--y, 0em) - 0.06em)) rotate(var(--r, 0deg));
+    }
+    to {
+      clip-path: inset(-0.6em -0.6em -0.6em -0.6em);
+      transform: translateY(var(--y, 0)) rotate(var(--r, 0deg));
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pitch__letter-hw {
+      animation: none;
+    }
+  }
+</style>
