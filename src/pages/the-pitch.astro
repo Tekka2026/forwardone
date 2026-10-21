@@ -110,7 +110,7 @@ const ready = !isPlaceholder(pitch.action);
               ))
             }
           </p>
-          <div class="pitch__send" data-pitch-final>
+          <div class="pitch__send">
             <Button type="submit">{pitch.submit}</Button>
             <p class="small pitch__status" data-pitch-status role="status" aria-live="polite"></p>
           </div>
@@ -240,7 +240,15 @@ const ready = !isPlaceholder(pitch.action);
         shownSteps++;
       }
       if (shownSteps === steps.length) finals.forEach(showEl);
+      updateSend();
     }
+    // The button shows from the start but stays disabled until the whole
+    // letter is open and every required blank is validly filled.
+    var send = form.querySelector('button[type="submit"]');
+    function updateSend() {
+      send.disabled = !(shownSteps === steps.length && form.checkValidity());
+    }
+    form.addEventListener('input', updateSend);
     steps.slice(1).forEach(function (st) { st.hidden = true; });
     finals.forEach(function (el) { el.hidden = true; });
     var pause;

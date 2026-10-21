@@ -481,7 +481,10 @@ sheet, wording confirmed by the owner 2026-10-21).
   only "Dear FORWARD.one, we are [company name]."; once the company name is
   in, "I'm [name], our [role]."; once the name is in, "Reach me at [email]
   or [phone]."; once a valid email is in, what they build; once that is in,
-  the deck link and closing sentence with the button and privacy note. A
+  the deck link and closing sentence with the privacy note. The button
+  shows from the start, disabled (40% opacity, the global `.btn:disabled`),
+  and enables once the whole letter is open and every required blank is
+  validly filled (owner, 2026-10-21). A
   step counts as filled after a 900ms pause in typing, on leaving the field
   or on Enter (Enter also jumps to the next blank; it only sends from the
   last one). Each new sentence fades in like the body copy
