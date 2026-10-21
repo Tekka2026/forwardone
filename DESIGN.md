@@ -457,13 +457,27 @@ Built like the "Follow the battery." section on vikka.io
 sheet, wording confirmed by the owner 2026-10-21).
 
 - One black block (`.theme-dark`) from under the header, like the homepage
-  intro: eyebrow, H1, the form, event facts.
+  intro. On it a sheet of paper (owner, 2026-10-21, after a torn-paper
+  reference) carries the eyebrow, H1 and form; the event facts sit under
+  it on the black.
+- The paper: full content width, square top corners, light grey surface
+  (#e9e8e4 into #dfded9, a soft radial wash) with fine grain and a faint
+  uneven wash (two inline SVG noise layers), padding 64px (48px at ≤880px,
+  24px at ≤640px; plus 24px at the bottom for the tear). Inside it the
+  colour tokens switch back to ink on paper (`--fg` #151515, muted
+  #6e6d68, dark solid button). The bottom edge is torn: one wandering line
+  (a point every 4px, fixed seed, so it tears the same way on every visit
+  and at every width) cuts the sheet's white fibre layer (#f7f6f2) with
+  fine teeth; the grey surface follows it 2–14px higher, so a ragged white
+  strip of varying width shows between. Drawn by script as two
+  `clip-path` polygons (`--tear-edge`, `--tear-paper`), redrawn on resize;
+  without script the edge stays straight.
 - H1 "The ____ Pitch" on one line (no wrap). The blank is a line on the
   baseline (min 3.5em, `max(2px, 0.035em)` thick, heading colour). As the
   visitor types the company name (the form's first field) it is written onto
   the line letter by letter in handwriting (**Nothing You Could Do**, Google
   Fonts, OFL; loaded on this page only via Base's `head` slot) at 1.3em, in
-  `--brand-yellow`: each new letter wipes open left to right in 300ms and
+  red marker #E0251B (on the paper, owner 2026-10-21; was yellow on black): each new letter wipes open left to right in 300ms and
   settles from a slight lift, with a small random tilt (±2°) and baseline
   shift (±0.02em). Pasted text writes in at 45ms per letter.
 - Fit: the whole H1, handwriting included, never runs wider than 90% of the
@@ -474,7 +488,7 @@ sheet, wording confirmed by the owner 2026-10-21).
   line height 1.9, 8 columns max): company name first, then name, role,
   email, phone, what they build (one line), deck link (no address, owner
   2026-10-21). Blanks are inline inputs in the same handwriting
-  and yellow, on a muted hairline (yellow on focus, dashed when invalid
+  and red, on a muted hairline (red on focus, dashed red when invalid
   after interaction); the hint shows in muted handwriting while empty; each
   blank grows with its text. Each input has a visually hidden label.
 - The letter unfolds sentence by sentence (owner, 2026-10-21): at first
