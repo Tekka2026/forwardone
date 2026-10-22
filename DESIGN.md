@@ -499,7 +499,7 @@ sheet, wording confirmed by the owner 2026-10-21).
   names Balnord, the name links to balnord.vc), 6 columns max. Fades in with the
   letter.
 - Form as a fill-in-the-blanks letter at `--fs-metric` (24–32px, Inter,
-  line height 1.9, 8 columns max): company name first, then name, role,
+  line height 1.6, 8 columns max): company name first, then name, role,
   email, phone, what they build (one line), deck link (no address, owner
   2026-10-21). Opens "Hi investors, we are …" (owner, 2026-10-22). Blanks
   are inline inputs; what the visitor types is in Inter 500 (a step heavier
@@ -523,6 +523,13 @@ sheet, wording confirmed by the owner 2026-10-21).
 - Then the solid button, a status line, the privacy note (muted, small) and
   four event facts over a hairline (When, Where, Apply by, The panel; mono
   labels), 4 columns, 2 at ≤880px, 1 at ≤640px.
+- Spacing (owner, 2026-10-22, tightened): paper padding 48px (32px at
+  ≤880px, 24px at ≤640px; +20px at the bottom for the tear); eyebrow to
+  H1 12px; H1 to lede 24px; lede to letter 24px; letter to button 24px
+  (16/16 on phones, where the letter's line height adds the rest); letter
+  line height 1.6; privacy note 16px under the button; facts 48px under
+  the paper (32px on phones) and the footer 48px under the facts (24px).
+  No minimum height on the black block.
 - Intro motion: eyebrow, then "The", the blank and "Pitch" snap in like H1
   words; the first sentence of the letter eases in gently.
 - Until a form endpoint is set (`pitch.action`), the button does not post

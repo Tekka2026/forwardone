@@ -369,13 +369,12 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
 </script>
 
 <style is:global>
-  /* Black block from under the header to past the fold, like the homepage
-     intro (see .intro in src/pages/index.astro). */
+  /* Black block from under the header, like the homepage intro (see .intro
+     in src/pages/index.astro). No minimum height: the footer follows the
+     facts directly and its black runs on below. */
   .pitch {
     margin-top: calc(-1 * var(--header-h));
     padding-top: var(--header-h);
-    min-height: 100vh;
-    min-height: 100svh;
     background: var(--bg);
     box-shadow: 0 0 0 100vmax var(--bg);
     clip-path: inset(-100vmax -100vmax 0);
@@ -383,8 +382,11 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
 </style>
 
 <style>
+  /* Spacing (owner, 2026-10-22: tightened throughout). The letter's line
+     height is part of every gap around it, so the margins stay small. */
   .pitch__hero {
     padding-top: var(--gap);
+    padding-bottom: var(--gap-double);
   }
 
   /* ---- The sheet of paper ----------------------------------------------- */
@@ -401,7 +403,7 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
     --btn-hover-shade: rgba(0, 0, 0, 0.06);
     --reveal-tint: #db8e00;
     position: relative;
-    padding: var(--space-16x) var(--space-16x) calc(var(--space-16x) + 24px);
+    padding: var(--gap-double) var(--gap-double) calc(var(--gap-double) + 20px);
     color: var(--fg);
     /* The white fibre layer, cut by the outer tear. */
     background: #f7f6f2;
@@ -490,14 +492,14 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
 
   /* ---- The letter -------------------------------------------------------- */
   .pitch__form {
-    margin-top: var(--gap-double);
+    margin-top: var(--gap);
   }
   .pitch__letter {
     position: relative;
     max-width: var(--col-8);
     margin: 0;
     font-size: var(--fs-metric);
-    line-height: 1.9;
+    line-height: 1.6;
   }
   .pitch__field {
     display: inline;
@@ -545,7 +547,7 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
     flex-wrap: wrap;
     align-items: center;
     gap: var(--gap);
-    margin-top: var(--gap-double);
+    margin-top: var(--gap);
   }
   .pitch__letter.reveal-gentle {
     animation-delay: calc(var(--reveal-start) + 3 * var(--reveal-stagger) + 4 * var(--reveal-frame));
@@ -556,7 +558,7 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
   }
   .pitch__privacy {
     max-width: var(--col-6);
-    margin: var(--gap) 0 0;
+    margin: var(--space-4x) 0 0;
     color: var(--muted);
   }
 
@@ -565,7 +567,7 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: var(--gutter);
-    margin: var(--space-16x) 0 0;
+    margin: var(--gap-double) 0 0;
     padding-top: var(--gap);
     border-top: var(--hairline-w) solid var(--hairline);
   }
@@ -583,20 +585,26 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
   }
   @media (max-width: 880px) {
     .pitch__paper {
-      padding: var(--gap-double) var(--gap-double) calc(var(--gap-double) + 24px);
+      padding: var(--space-8x) var(--space-8x) calc(var(--space-8x) + 20px);
     }
   }
   @media (max-width: 640px) {
-    .pitch__paper {
-      padding: var(--gap) var(--gap) calc(var(--gap) + 24px);
+    .pitch__hero {
+      padding-bottom: var(--gap);
     }
-    .pitch__letter {
-      line-height: 1.8;
+    .pitch__paper {
+      padding: var(--gap) var(--gap) calc(var(--gap) + 20px);
+    }
+    .pitch__intro {
+      margin-top: var(--space-4x);
+    }
+    .pitch__form {
+      margin-top: var(--space-4x);
     }
     .pitch__facts {
       grid-template-columns: minmax(0, 1fr);
       gap: var(--space-4x);
-      margin-top: var(--gap-double);
+      margin-top: var(--space-8x);
     }
   }
 </style>
