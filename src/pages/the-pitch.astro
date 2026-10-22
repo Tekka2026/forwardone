@@ -248,8 +248,22 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
       if (!next.trim()) done = false;
       hug();
       fit();
+      paint();
     }
     company.addEventListener('input', write);
+
+    // One gradient across the whole name (owner, 2026-10-22), though every
+    // letter is its own span: each letter shows its slice of a gradient as
+    // wide as the name. Measured in em, so it holds while the H1 scales.
+    function paint() {
+      var fs = parseFloat(getComputedStyle(hand).fontSize);
+      var letters = hand.querySelectorAll('.pitch__letter-hw');
+      if (!fs || !letters.length) return;
+      var x0 = letters[0].offsetLeft, x1 = 0;
+      letters.forEach(function (l) { x1 = Math.max(x1, l.offsetLeft + l.offsetWidth); });
+      hand.style.setProperty('--hw-w', ((x1 - x0) / fs).toFixed(3) + 'em');
+      letters.forEach(function (l) { l.style.setProperty('--hw-x', ((l.offsetLeft - x0) / fs).toFixed(3) + 'em'); });
+    }
 
     // The line keeps its full length while the name is short and still being
     // typed; from 5 characters, or once the visitor leaves the field, it
@@ -475,6 +489,7 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
     white-space: pre;
     color: var(--hand-colour);
     transform: translateY(0.04em);
+    position: relative; /* offset parent for the letters (gradient slices) */
   }
 
   /* ---- What the event is ------------------------------------------------ */
@@ -658,8 +673,22 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
   }
   /* Each new letter is written in: wiped open left to right while it settles
      from a slight lift. Spans are made in script, so the styles are global. */
+  /* Gradient #E39200 to #8A0A00 over the whole name (owner, 2026-10-22).
+     Each letter paints its slice (--hw-x of --hw-w, set by script); the
+     padding, taken back by negative margins, gives overhanging strokes of the
+     hand room inside the painted area. */
   .pitch__letter-hw {
+    --pad: 0.2em;
     display: inline-block;
+    padding: var(--pad);
+    margin: calc(-1 * var(--pad));
+    background-image: linear-gradient(90deg, #e39200, #8a0a00);
+    background-size: var(--hw-w, 1em) 100%;
+    background-position: calc(-1 * var(--hw-x, 0em)) 0;
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
     transform: translateY(var(--y, 0)) rotate(var(--r, 0deg));
     animation: pitch-write 300ms cubic-bezier(0.3, 0.6, 0.2, 1) backwards;
   }
