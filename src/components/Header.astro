@@ -13,8 +13,10 @@ import { utilityNav } from '@content/nav';
 
 interface Props {
   dark?: boolean;
+  /** Landing pages: no LP login. */
+  minimal?: boolean;
 }
-const { dark = false } = Astro.props;
+const { dark = false, minimal = false } = Astro.props;
 ---
 
 <header class:list={['site-top', dark && 'site-top--dark theme-dark']}>
@@ -22,9 +24,13 @@ const { dark = false } = Astro.props;
     <Logo />
     <div class="site-top__actions">
       <Button href={utilityNav.pitch.href} size="small" class="site-top__pitch">{utilityNav.pitch.label}</Button>
-      <Button href={utilityNav.lpLogin.href} variant="ghost" size="small" external={utilityNav.lpLogin.external}>
-        {utilityNav.lpLogin.label}
-      </Button>
+      {
+        !minimal && (
+          <Button href={utilityNav.lpLogin.href} variant="ghost" size="small" external={utilityNav.lpLogin.external}>
+            {utilityNav.lpLogin.label}
+          </Button>
+        )
+      }
     </div>
   </div>
 </header>

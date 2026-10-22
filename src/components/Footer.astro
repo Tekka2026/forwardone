@@ -9,10 +9,20 @@ const labelled = (svg: string, label: string) =>
   svg.replace('<svg ', `<svg role="img" aria-label="${label}" class="footer-partner__logo" `);
 
 const year = new Date().getFullYear();
+
+interface Props {
+  /** Landing pages: the copyright line only. */
+  minimal?: boolean;
+}
+const { minimal = false } = Astro.props;
 ---
 
-<footer class="site-footer">
+<footer class:list={['site-footer', minimal && 'site-footer--minimal theme-dark']}>
   <div class="wrap">
+    {minimal ? (
+      <p class="footer-tagline small"><span class="footer-copy">&copy; {footer.company} {year}.</span></p>
+    ) : (
+    <>
     <div class="footer-grid">
       {
         footer.columns.map((section) => (
@@ -83,6 +93,8 @@ const year = new Date().getFullYear();
         }
       </ul>
     </div>
+    </>
+    )}
   </div>
 </footer>
 
@@ -90,6 +102,14 @@ const year = new Date().getFullYear();
   .site-footer {
     border-top: var(--hairline-w) solid var(--hairline);
     padding-block: var(--space-16x);
+  }
+
+  /* Landing pages: black like the page above, the copyright line only. */
+  .site-footer--minimal {
+    padding-block: var(--gap);
+    background: var(--bg);
+    box-shadow: 0 0 0 100vmax var(--bg);
+    clip-path: inset(0 -100vmax -100vmax); /* black down to the page end, under the floating nav */
   }
 
   .footer-grid {

@@ -456,6 +456,10 @@ Built like the "Follow the battery." section on vikka.io
 (founders pitch to FORWARD.one and a second VC; the winner gets a term
 sheet, wording confirmed by the owner 2026-10-21).
 
+- Landing page chrome (owner, 2026-10-22; `<Base minimal>`): the header
+  keeps the logo and Pitch us but drops LP login; the footer is the
+  copyright line only ("© FORWARD.one <year>."), black like the page, down
+  under the floating nav. The floating nav stays.
 - One black block (`.theme-dark`) from under the header, like the homepage
   intro. On it a sheet of paper (owner, 2026-10-21, after a torn-paper
   reference) carries the eyebrow, H1 and form; the event facts sit under

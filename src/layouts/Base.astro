@@ -11,9 +11,12 @@ interface Props {
   description?: string;
   /** Header on a black intro block (homepage). */
   darkTop?: boolean;
+  /** Landing page (e.g. /the-pitch): header without LP login, footer with
+   *  the copyright line only. */
+  minimal?: boolean;
 }
 
-const { title, description = site.description, darkTop = false } = Astro.props;
+const { title, description = site.description, darkTop = false, minimal = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 
@@ -53,11 +56,11 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   <body>
     <a class="skip-link" href="#main">{site.skipLinkLabel}</a>
     <div class="page" data-page>
-      <Header dark={darkTop} />
+      <Header dark={darkTop} minimal={minimal} />
       <main id="main" tabindex="-1">
         <slot />
       </main>
-      <Footer />
+      <Footer minimal={minimal} />
     </div>
     <Nav />
   </body>
