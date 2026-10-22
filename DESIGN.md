@@ -459,7 +459,8 @@ sheet, wording confirmed by the owner 2026-10-21).
 - Landing page chrome (owner, 2026-10-22; `<Base minimal>`): the header
   keeps the logo and Pitch us but drops LP login; the footer is the
   copyright line only ("© FORWARD.one <year>."), black like the page, down
-  under the floating nav. The floating nav stays.
+  to the page end. No floating navigation bar (owner, 2026-10-22), and no
+  room kept for it at the bottom.
 - One black block (`.theme-dark`) from under the header, like the homepage
   intro. On it a sheet of paper (owner, 2026-10-21, after a torn-paper
   reference) carries the eyebrow, H1 and form; the event facts sit under
@@ -476,7 +477,9 @@ sheet, wording confirmed by the owner 2026-10-21).
   strip of varying width shows between. Drawn by script as two
   `clip-path` polygons (`--tear-edge`, `--tear-paper`), redrawn on resize;
   without script the edge stays straight.
-- H1 "The ____ Pitch" on one line (no wrap). The blank is a line on the
+- H1 "The ____ Pitch" on one line (no wrap), in Inter at weight 500, a
+  step heavier than body copy (owner, 2026-10-22; the only heading on the
+  site not in the display face), Display size and tracking. The blank is a line on the
   baseline (min 3.5em, `max(2px, 0.035em)` thick, heading colour). As the
   visitor types the company name (the form's first field) it is written onto
   the line letter by letter in handwriting (**Permanent Marker**, Google

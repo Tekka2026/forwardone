@@ -12,7 +12,7 @@ interface Props {
   /** Header on a black intro block (homepage). */
   darkTop?: boolean;
   /** Landing page (e.g. /the-pitch): header without LP login, footer with
-   *  the copyright line only. */
+   *  the copyright line only, no floating navigation bar. */
   minimal?: boolean;
 }
 
@@ -55,14 +55,14 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   </head>
   <body>
     <a class="skip-link" href="#main">{site.skipLinkLabel}</a>
-    <div class="page" data-page>
+    <div class:list={['page', minimal && 'page--minimal']} data-page>
       <Header dark={darkTop} minimal={minimal} />
       <main id="main" tabindex="-1">
         <slot />
       </main>
       <Footer minimal={minimal} />
     </div>
-    <Nav />
+    {!minimal && <Nav />}
   </body>
 </html>
 
@@ -95,6 +95,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     padding-bottom: calc(var(--nav-height) + 2 * var(--gap));
     /* transform-origin is set by Nav.astro to the centre of the viewport */
     transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1); /* release mirrors push */
+  }
+  /* No floating nav on landing pages, so no room kept for it. */
+  .page--minimal {
+    padding-bottom: 0;
   }
   .page.is-pushed {
     transform: scale(0.97);

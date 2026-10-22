@@ -411,8 +411,12 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
   }
 
   /* ---- H1: The ____ Pitch ------------------------------------------------ */
+  /* Inter, a step heavier than body copy (owner, 2026-10-22), instead of
+     the display face. */
   .pitch__title {
     --pitch-scale: 1;
+    font-family: var(--font-sans);
+    font-weight: 500;
     margin: var(--gap-half) 0 0;
     font-size: calc(var(--fs-display) * var(--pitch-scale));
     white-space: nowrap;
