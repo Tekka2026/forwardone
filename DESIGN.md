@@ -463,7 +463,7 @@ sheet, wording confirmed by the owner 2026-10-21).
   room kept for it at the bottom.
 - One black block (`.theme-dark`) from under the header, like the homepage
   intro. On it a sheet of paper (owner, 2026-10-21, after a torn-paper
-  reference) carries the eyebrow, H1 and form; the event facts sit under
+  reference) carries the eyebrow ("Slush, Helsinki"), H1 and form; the event facts sit under
   it on the black.
 - The paper: full content width, square top corners, light grey surface
   (#e9e8e4 into #dfded9, a soft radial wash) with fine grain and a faint
@@ -498,10 +498,12 @@ sheet, wording confirmed by the owner 2026-10-21).
 - Form as a fill-in-the-blanks letter at `--fs-metric` (24–32px, Inter,
   line height 1.9, 8 columns max): company name first, then name, role,
   email, phone, what they build (one line), deck link (no address, owner
-  2026-10-21). Blanks are inline inputs in the same handwriting
-  and red, on a muted hairline (red on focus, dashed red when invalid
-  after interaction); the hint shows in muted handwriting while empty; each
-  blank grows with its text. Each input has a visually hidden label.
+  2026-10-21). Opens "Hi investors, we are …" (owner, 2026-10-22). Blanks
+  are inline inputs; what the visitor types is in Inter 500 (a step heavier
+  than the letter, `--fw-answer`) in red, not handwriting (owner,
+  2026-10-22: only the name on the H1's line is handwritten), on a muted
+  hairline (red on focus, dashed red when invalid after interaction); the
+  hint shows in muted Inter while empty; each blank grows with its text. Each input has a visually hidden label.
 - The letter unfolds sentence by sentence (owner, 2026-10-21): at first
   only "Dear FORWARD.one, we are [company name]."; once the company name is
   in, "I'm [name], our [role]."; once the name is in, "Reach me at [email]

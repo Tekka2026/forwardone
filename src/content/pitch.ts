@@ -32,7 +32,7 @@ export const pitch = {
     title: 'The Pitch at Slush | FORWARD.one',
     description: 'Pitch your company live to FORWARD.one and Balnord at Slush in Helsinki. The winner gets a term sheet.',
   },
-  eyebrow: 'FORWARD.one at Slush, Helsinki',
+  eyebrow: 'Slush, Helsinki',
   /** H1, either side of the blank line. */
   title: { before: 'The', after: 'Pitch' },
   /** What the event is, under the H1 (owner's wording, 2026-10-22). Only what is known;
@@ -47,7 +47,7 @@ export const pitch = {
    * before is filled (owner, 2026-10-21). The first field is the company
    * name: it is written on the H1's line. The button comes with the last step. */
   steps: [
-    ['Dear FORWARD.one, we are', { field: { name: 'company', label: 'Company name', hint: 'company name', autocomplete: 'organization', required: true } }, '.'],
+    ['Hi investors, we are', { field: { name: 'company', label: 'Company name', hint: 'company name', autocomplete: 'organization', required: true } }, '.'],
     [
       'I’m',
       { field: { name: 'name', label: 'Your full name', hint: 'your name', autocomplete: 'name', required: true } },

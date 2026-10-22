@@ -490,10 +490,12 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
   .pitch__privacy[hidden] {
     display: none;
   }
+  /* Answers in Inter, a step heavier than the letter, still in red
+     (owner, 2026-10-22); only the name on the H1's line is handwritten. */
   .pitch__input {
-    font-family: var(--font-hand);
-    font-size: var(--fs-hand);
-    font-weight: 400;
+    font-family: var(--font-answer);
+    font-size: 1em;
+    font-weight: var(--fw-answer);
     letter-spacing: 0;
   }
   .pitch__input {
@@ -588,6 +590,9 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
        larger than the text. */
     --font-hand: "Covered By Your Grace", "Marker Felt", "Segoe Print", cursive;
     --fs-hand: 1.3em;
+    /* What the visitor types into the letter. */
+    --font-answer: var(--font-sans);
+    --fw-answer: 500;
     /* Red marker on the paper, as in the owner's reference (2026-10-21). */
     --hand-colour: #e0251b;
   }
@@ -606,9 +611,9 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
     font-size: var(--fs-display);
   }
   .pitch__meter {
-    font-family: var(--font-hand);
-    font-size: var(--fs-hand);
-    font-weight: 400;
+    font-family: var(--font-answer);
+    font-size: 1em;
+    font-weight: var(--fw-answer);
   }
   /* A sentence of the letter (or the button) appearing: a gentle fade in,
      like the body copy. */
