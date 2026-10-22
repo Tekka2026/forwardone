@@ -503,7 +503,9 @@ sheet, wording confirmed by the owner 2026-10-21).
 - Form as a fill-in-the-blanks letter at `--fs-metric` (24–32px, Inter,
   line height 1.35, normal text leading, 8 columns max): company name first, then name, role,
   email, phone, what they build (one line), deck link (no address, owner
-  2026-10-21). Opens "Hi investors, we are …" (owner, 2026-10-22). Blanks
+  2026-10-21). Opens "Hi investors, we are …" (owner, 2026-10-22); on
+  phones (≤640px) the company blank always starts the second line, so it
+  does not jump up when a short name would fit on the first. Blanks
   are inline inputs; what the visitor types is in Inter 500 (a step heavier
   than the letter, `--fw-answer`) in red, not handwriting (owner,
   2026-10-22: only the name on the H1's line is handwritten), on a muted
