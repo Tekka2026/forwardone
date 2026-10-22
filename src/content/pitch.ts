@@ -7,7 +7,7 @@
  * written onto it in handwriting as the visitor types. The form is a
  * fill-in-the-blanks letter: `letter` alternates copy and fields.
  *
- * Unknowns (date, venue, deadline, the format, where applications go, the
+ * Unknowns (date, venue, deadline, where applications go, the
  * privacy note) are visible placeholders, listed in PLACEHOLDERS.md.
  */
 
@@ -36,10 +36,9 @@ export const pitch = {
   /** H1, either side of the blank line. */
   title: { before: 'The', after: 'Pitch' },
   /** What the event is, under the H1 (owner, 2026-10-22). Only what is known;
-   * the format details are a placeholder until supplied. */
+   * no format details (the owner removed that placeholder, 2026-10-22). */
   intro: [
     'The Pitch is a live pitch session at Slush. Founders pitch their company to two investors, FORWARD.one and Balnord, and answer their questions on the spot. The panel picks one winner, who gets a term sheet.',
-    PH('format: how many founders pitch, minutes per pitch and Q&A, how founders are selected'),
   ],
   /** The second VC on the panel. */
   partner: { name: 'Balnord', href: 'https://www.balnord.vc/' },
