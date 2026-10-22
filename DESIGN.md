@@ -528,7 +528,7 @@ sheet, wording confirmed by the owner 2026-10-21).
   four event facts over a hairline (When, Where, Apply by, The panel; mono
   labels), 4 columns, 2 at ≤880px, 1 at ≤640px.
 - Spacing (owner, 2026-10-22, tightened): paper padding 48px (32px at
-  ≤880px, 24px at ≤640px; +20px at the bottom for the tear); eyebrow to
+  ≤880px, 24px at ≤640px; +40px at the bottom, clear of the tear, owner 2026-10-22); eyebrow to
   H1 12px; H1 to lede 24px; lede to letter 24px; letter to button 24px
   (16/16 on phones, where the letter's line height adds the rest); letter
   line height 1.35 (normal leading; the blanks sit inside it at 1.15); privacy note 16px under the button; facts 48px under
