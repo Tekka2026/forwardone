@@ -5,7 +5,7 @@
  * of paper (grey, grainy, torn along the bottom) carrying:
  * - Eyebrow, then the H1 "The ____ Pitch" on one line. The blank is a line;
  *   as the visitor types the company name (the form's first field), the name
- *   is written onto it letter by letter in Permanent Marker, in red. When the
+ *   is written onto it letter by letter in Covered By Your Grace, in red. When the
  *   name is long the whole H1, handwriting included, scales down continuously
  *   so it never runs wider than 90% of the content width.
  * - A short lede on what the event is (Balnord linked).
@@ -52,7 +52,7 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
   <link
     slot="head"
     rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Covered+By+Your+Grace&display=swap"
   />
   <div class="pitch theme-dark" data-nav-dark>
     <section class="section section--flush pitch__hero">
@@ -583,10 +583,11 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
 <style is:global>
   /* Handwriting tokens (this page only). */
   .pitch {
-    /* Permanent Marker (owner, 2026-10-22; was Nothing You Could Do). A
-       marker with large capitals, so close to the text size. */
-    --font-hand: "Permanent Marker", "Marker Felt", "Segoe Print", cursive;
-    --fs-hand: 1.05em;
+    /* Covered By Your Grace (owner, 2026-10-22; before: Permanent Marker,
+       Nothing You Could Do). A bold marker hand with small letters, so set
+       larger than the text. */
+    --font-hand: "Covered By Your Grace", "Marker Felt", "Segoe Print", cursive;
+    --fs-hand: 1.3em;
     /* Red marker on the paper, as in the owner's reference (2026-10-21). */
     --hand-colour: #e0251b;
   }

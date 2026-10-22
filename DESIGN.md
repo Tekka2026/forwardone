@@ -482,9 +482,9 @@ sheet, wording confirmed by the owner 2026-10-21).
   site not in the display face), Display size and tracking. The blank is a line on the
   baseline (min 3.5em, `max(2px, 0.035em)` thick, heading colour). As the
   visitor types the company name (the form's first field) it is written onto
-  the line letter by letter in handwriting (**Permanent Marker**, Google
-  Fonts, Apache 2.0, owner 2026-10-22, was Nothing You Could Do; loaded on
-  this page only via Base's `head` slot) at 1.05em (its capitals are large), in
+  the line letter by letter in handwriting (**Covered By Your Grace**,
+  Google Fonts, OFL, owner 2026-10-22; before: Permanent Marker, Nothing
+  You Could Do; loaded on this page only via Base's `head` slot) at 1.3em, in
   red marker #E0251B (on the paper, owner 2026-10-21; was yellow on black): each new letter wipes open left to right in 300ms and
   settles from a slight lift, with a small random tilt (±2°) and baseline
   shift (±0.02em). Pasted text writes in at 45ms per letter.
