@@ -490,9 +490,10 @@ sheet, wording confirmed by the owner 2026-10-21).
   the line letter by letter in handwriting (**Covered By Your Grace**,
   Google Fonts, OFL, owner 2026-10-22; before: Permanent Marker, Nothing
   You Could Do; loaded on this page only via Base's `head` slot) at 1.3em,
-  as one left-to-right gradient #E39200 to #8A0A00 across the whole name
-  (owner, 2026-10-22; before: red #E0251B, yellow on black; each letter
-  paints its slice of a name-wide gradient, re-measured as the name grows): each new letter wipes open left to right in 300ms and
+  as one left-to-right gradient from the red #E0251B to the dark orange
+  #E39200 across the whole name (owner, 2026-10-22; briefly #E39200 to
+  #8A0A00; before that solid red, and yellow on black; each letter paints
+  its slice of a name-wide gradient, re-measured as the name grows): each new letter wipes open left to right in 300ms and
   settles from a slight lift, with a small random tilt (±2°) and baseline
   shift (±0.02em). Pasted text writes in at 45ms per letter.
 - Fit: the whole H1, handwriting included, never runs wider than 90% of the
