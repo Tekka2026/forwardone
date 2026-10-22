@@ -544,7 +544,7 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
     max-width: 100%;
     padding: 0 0.1em;
     border: 0;
-    border-bottom: var(--hairline-w) solid var(--muted);
+    border-bottom: var(--hairline-w) solid var(--fg); /* the line stays black (owner, 2026-10-22) */
     border-radius: 0;
     background: transparent;
     color: var(--hand-colour);
@@ -555,9 +555,6 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
   .pitch__input::placeholder {
     color: var(--muted);
     opacity: 0.75;
-  }
-  .pitch__input:focus {
-    border-bottom-color: var(--hand-colour);
   }
   .pitch__input:user-invalid {
     border-bottom-style: dashed;

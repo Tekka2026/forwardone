@@ -511,8 +511,9 @@ sheet, wording confirmed by the owner 2026-10-21).
   does not jump up when a short name would fit on the first. Blanks
   are inline inputs; what the visitor types is in Inter 500 (a step heavier
   than the letter, `--fw-answer`) in red, not handwriting (owner,
-  2026-10-22: only the name on the H1's line is handwritten), on a muted
-  hairline (red on focus, dashed red when invalid after interaction); the
+  2026-10-22: only the name on the H1's line is handwritten), on a black
+  hairline (stays black on focus, owner 2026-10-22; dashed red when
+  invalid after interaction); the
   hint shows in muted Inter while empty; each blank grows with its text. Each input has a visually hidden label.
 - The letter unfolds sentence by sentence (owner, 2026-10-21): at first
   only "Dear FORWARD.one, we are [company name]."; once the company name is
