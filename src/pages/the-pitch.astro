@@ -670,7 +670,7 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
   }
   /* Each new letter is written in: wiped open left to right while it settles
      from a slight lift. Spans are made in script, so the styles are global. */
-  /* Gradient from the red #E0251B to the dark orange #E39200 over the whole
+  /* Gradient from red #FF0000 to dark red #8A0A00 over the whole
      name (owner, 2026-10-22).
      Each letter paints its slice (--hw-x of --hw-w, set by script); the
      padding, taken back by negative margins, gives overhanging strokes of the
@@ -680,7 +680,7 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
     display: inline-block;
     padding: var(--pad);
     margin: calc(-1 * var(--pad));
-    background-image: linear-gradient(90deg, #e0251b, #e39200);
+    background-image: linear-gradient(90deg, #ff0000, #8a0a00);
     background-size: var(--hw-w, 1em) 100%;
     background-position: calc(-1 * var(--hw-x, 0em)) 0;
     background-repeat: no-repeat;
