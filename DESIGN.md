@@ -480,7 +480,10 @@ sheet, wording confirmed by the owner 2026-10-21).
 - H1 "The ____ Pitch" on one line (no wrap), in Inter at weight 500, a
   step heavier than body copy (owner, 2026-10-22; the only heading on the
   site not in the display face), Display size and tracking. The blank is a line on the
-  baseline (min 3.5em, `max(2px, 0.035em)` thick, heading colour). As the
+  baseline (3.5em long while empty, `max(2px, 0.035em)` thick, heading
+  colour). From 5 typed characters, or once the visitor leaves the field
+  with a shorter name, the line shrinks to the name (360ms; owner,
+  2026-10-22), and grows back to 3.5em when the field is cleared. As the
   visitor types the company name (the form's first field) it is written onto
   the line letter by letter in handwriting (**Covered By Your Grace**,
   Google Fonts, OFL, owner 2026-10-22; before: Permanent Marker, Nothing

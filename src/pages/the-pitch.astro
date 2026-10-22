@@ -242,9 +242,23 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
       shown = next;
       sr.textContent = next;
       title.classList.toggle('is-filled', next.length > 0);
+      if (!next.trim()) done = false;
+      hug();
       fit();
     }
     company.addEventListener('input', write);
+
+    // The line keeps its full length while the name is short and still being
+    // typed; from 5 characters, or once the visitor leaves the field, it
+    // shrinks to the name (owner, 2026-10-22).
+    var done = false;
+    var blank = title.querySelector('.pitch__blank');
+    function hug() {
+      title.classList.toggle('is-fit', company.value.trim().length >= 5 || (done && company.value.trim().length > 0));
+    }
+    company.addEventListener('change', function () { done = true; hug(); });
+    // Re-fit the heading as the line changes length.
+    if (blank) blank.addEventListener('transitionend', function () { fit(); });
 
     // ---- Blanks in the letter grow with what is typed. ---------------------
     var meter = document.createElement('span');
@@ -432,8 +446,8 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
   .eyebrow.reveal-snap {
     animation-delay: calc(var(--reveal-start) - 4 * var(--reveal-frame));
   }
-  /* The blank: a line on the baseline, at least 3.5em long, growing with
-     the handwritten name on it. */
+  /* The blank: a line on the baseline, 3.5em long while empty or short,
+     growing with the handwritten name on it. */
   .pitch__blank {
     display: inline-block;
     min-width: 3.5em;
@@ -441,6 +455,11 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
     padding-inline: 0.08em;
     border-bottom: max(2px, 0.035em) solid currentColor;
     line-height: 1;
+    transition: min-width 360ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  /* From 5 characters (or once the field is left) the line hugs the name. */
+  .pitch__title.is-fit .pitch__blank {
+    min-width: 0;
   }
   .pitch__hand {
     display: inline-block;
