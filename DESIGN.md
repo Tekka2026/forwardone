@@ -457,7 +457,9 @@ Built like the "Follow the battery." section on vikka.io
 sheet, wording confirmed by the owner 2026-10-21).
 
 - Landing page chrome (owner, 2026-10-22; `<Base minimal>`): the header
-  keeps the logo and Pitch us but drops LP login; the footer is the
+  keeps the logo and Pitch us but drops LP login; the wordmark is a little
+  larger there (24px high, 19px on phones ≤420px; elsewhere 20 / 15px), and
+  the paper starts right under the header's own 24px bottom padding; the footer is the
   copyright line only ("© FORWARD.one <year>."), black like the page, down
   to the page end. No floating navigation bar (owner, 2026-10-22), and no
   room kept for it at the bottom.

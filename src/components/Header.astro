@@ -19,7 +19,7 @@ interface Props {
 const { dark = false, minimal = false } = Astro.props;
 ---
 
-<header class:list={['site-top', dark && 'site-top--dark theme-dark']}>
+<header class:list={['site-top', dark && 'site-top--dark theme-dark', minimal && 'site-top--minimal']}>
   <div class="wrap site-top__row">
     <Logo />
     <div class="site-top__actions">
@@ -55,6 +55,16 @@ const { dark = false, minimal = false } = Astro.props;
   .site-top__actions {
     display: flex;
     gap: var(--gap-half);
+  }
+  /* Landing pages (owner, 2026-10-22): no LP login next to it, so the
+     wordmark can be a little larger, also on narrow phones. */
+  .site-top.site-top--minimal :global(.logo__mark) {
+    height: 24px;
+  }
+  @media (max-width: 420px) {
+    .site-top.site-top--minimal :global(.logo__mark) {
+      height: 19px;
+    }
   }
   /* Phones: no Pitch us in the top strip (owner, 2026-10-14); founders
      still reach it from the closing section ("Founders: pitch us"). */

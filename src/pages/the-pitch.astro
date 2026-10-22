@@ -385,7 +385,7 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
   /* Spacing (owner, 2026-10-22: tightened throughout). The letter's line
      height is part of every gap around it, so the margins stay small. */
   .pitch__hero {
-    padding-top: var(--gap);
+    padding-top: 0; /* the header's own bottom padding is the gap to the paper */
     padding-bottom: var(--gap-double);
   }
 
