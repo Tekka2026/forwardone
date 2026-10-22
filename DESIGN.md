@@ -492,9 +492,8 @@ sheet, wording confirmed by the owner 2026-10-21).
   content width. Up to that it keeps the Display size; beyond it the size
   scales down continuously (`--pitch-scale`, font-size transition 240ms).
   On phones the empty heading is already scaled to fit.
-- Under the H1 a short lede on what the event is (live pitch session at
-  Slush, two investors, questions on the spot, one winner gets a term
-  sheet; Balnord links to balnord.vc), 6 columns max. Fades in with the
+- Under the H1 a short lede on what the event is (owner's wording; if it
+  names Balnord, the name links to balnord.vc), 6 columns max. Fades in with the
   letter.
 - Form as a fill-in-the-blanks letter at `--fs-metric` (24–32px, Inter,
   line height 1.9, 8 columns max): company name first, then name, role,

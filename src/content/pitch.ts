@@ -35,10 +35,10 @@ export const pitch = {
   eyebrow: 'FORWARD.one at Slush, Helsinki',
   /** H1, either side of the blank line. */
   title: { before: 'The', after: 'Pitch' },
-  /** What the event is, under the H1 (owner, 2026-10-22). Only what is known;
+  /** What the event is, under the H1 (owner's wording, 2026-10-22). Only what is known;
    * no format details (the owner removed that placeholder, 2026-10-22). */
   intro: [
-    'The Pitch is a live pitch session at Slush. Founders pitch their company to two investors, FORWARD.one and Balnord, and answer their questions on the spot. The panel picks one winner, who gets a term sheet.',
+    'Pitch to our investors, answer their questions on the spot. We pick one winner, who gets a term sheet.',
   ],
   /** The second VC on the panel. */
   partner: { name: 'Balnord', href: 'https://www.balnord.vc/' },
