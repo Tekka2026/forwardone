@@ -5,9 +5,10 @@
  * of paper (grey, grainy, torn along the bottom) carrying:
  * - Eyebrow, then the H1 "The ____ Pitch" on one line. The blank is a line;
  *   as the visitor types the company name (the form's first field), the name
- *   is written onto it letter by letter in handwriting, in red marker. When the
+ *   is written onto it letter by letter in Permanent Marker, in red. When the
  *   name is long the whole H1, handwriting included, scales down continuously
  *   so it never runs wider than 90% of the content width.
+ * - A short lede on what the event is (Balnord linked).
  * - Under it the form as a fill-in-the-blanks letter (name, address, contact,
  *   what they build, deck), answers in the same handwriting, then the
  *   button and the privacy note. The event facts sit under the sheet.
@@ -42,6 +43,8 @@ const firstField = steps[0].findIndex((t) => 'field' in t);
 // Values with an embedded placeholder ("FORWARD.one and [PLACEHOLDER: …]").
 const chunks = (v: string) => v.split(/(\[PLACEHOLDER:[^\]]*\])/).filter(Boolean);
 const ready = !isPlaceholder(pitch.action);
+// The intro with the partner's name linked to their site.
+const introParts = pitch.intro[0].split(pitch.partner.name);
 
 ---
 
@@ -49,7 +52,7 @@ const ready = !isPlaceholder(pitch.action);
   <link
     slot="head"
     rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Nothing+You+Could+Do&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap"
   />
   <div class="pitch theme-dark" data-nav-dark>
     <section class="section section--flush pitch__hero">
@@ -66,6 +69,18 @@ const ready = !isPlaceholder(pitch.action);
             <span class="pitch__word reveal-snap" style="--i: 2">{pitch.title.after}</span>
           </span>
         </h1>
+
+        <div class="pitch__intro reveal-gentle">
+          <p class="lede">
+            {introParts.map((t, i) => (
+              <>
+                {t}
+                {i < introParts.length - 1 && <a href={pitch.partner.href} rel="noopener">{pitch.partner.name}</a>}
+              </>
+            ))}
+          </p>
+          {pitch.intro.slice(1).map((p) => <p class="small"><Placeholder value={p} /></p>)}
+        </div>
 
         <form
           class="pitch__form"
@@ -434,6 +449,22 @@ const ready = !isPlaceholder(pitch.action);
     transform: translateY(0.04em);
   }
 
+  /* ---- What the event is ------------------------------------------------ */
+  .pitch__intro {
+    max-width: var(--col-6);
+    margin-top: var(--gap);
+    animation-delay: calc(var(--reveal-start) + 3 * var(--reveal-stagger) + 2 * var(--reveal-frame));
+  }
+  .pitch__intro p {
+    margin: 0;
+  }
+  .pitch__intro p + p {
+    margin-top: var(--space-2x);
+  }
+  .pitch__intro a {
+    text-underline-offset: 3px;
+  }
+
   /* ---- The letter -------------------------------------------------------- */
   .pitch__form {
     margin-top: var(--gap-double);
@@ -548,8 +579,10 @@ const ready = !isPlaceholder(pitch.action);
 <style is:global>
   /* Handwriting tokens (this page only). */
   .pitch {
-    --font-hand: "Nothing You Could Do", "Segoe Script", "Bradley Hand", cursive;
-    --fs-hand: 1.3em;
+    /* Permanent Marker (owner, 2026-10-22; was Nothing You Could Do). A
+       marker with large capitals, so close to the text size. */
+    --font-hand: "Permanent Marker", "Marker Felt", "Segoe Print", cursive;
+    --fs-hand: 1.05em;
     /* Red marker on the paper, as in the owner's reference (2026-10-21). */
     --hand-colour: #e0251b;
   }

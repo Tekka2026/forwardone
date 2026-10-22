@@ -453,7 +453,7 @@ Built like the "Follow the battery." section on vikka.io
 
 `src/pages/the-pitch.astro`; copy in `src/content/pitch.ts`. Owner,
 2026-10-21: landing page for FORWARD.one's live pitch event at Slush
-(founders pitch to FORWARD.one and a second VC; the winner gets a term
+(founders pitch to FORWARD.one and Balnord, balnord.vc, owner 2026-10-22; the winner gets a term
 sheet, wording confirmed by the owner 2026-10-21).
 
 - Landing page chrome (owner, 2026-10-22; `<Base minimal>`): the header
@@ -479,8 +479,9 @@ sheet, wording confirmed by the owner 2026-10-21).
 - H1 "The ____ Pitch" on one line (no wrap). The blank is a line on the
   baseline (min 3.5em, `max(2px, 0.035em)` thick, heading colour). As the
   visitor types the company name (the form's first field) it is written onto
-  the line letter by letter in handwriting (**Nothing You Could Do**, Google
-  Fonts, OFL; loaded on this page only via Base's `head` slot) at 1.3em, in
+  the line letter by letter in handwriting (**Permanent Marker**, Google
+  Fonts, Apache 2.0, owner 2026-10-22, was Nothing You Could Do; loaded on
+  this page only via Base's `head` slot) at 1.05em (its capitals are large), in
   red marker #E0251B (on the paper, owner 2026-10-21; was yellow on black): each new letter wipes open left to right in 300ms and
   settles from a slight lift, with a small random tilt (±2°) and baseline
   shift (±0.02em). Pasted text writes in at 45ms per letter.
@@ -488,6 +489,10 @@ sheet, wording confirmed by the owner 2026-10-21).
   content width. Up to that it keeps the Display size; beyond it the size
   scales down continuously (`--pitch-scale`, font-size transition 240ms).
   On phones the empty heading is already scaled to fit.
+- Under the H1 a short lede on what the event is (live pitch session at
+  Slush, two investors, questions on the spot, one winner gets a term
+  sheet; Balnord links to balnord.vc), 6 columns max, then the format as a
+  placeholder (small). Fades in with the letter.
 - Form as a fill-in-the-blanks letter at `--fs-metric` (24–32px, Inter,
   line height 1.9, 8 columns max): company name first, then name, role,
   email, phone, what they build (one line), deck link (no address, owner

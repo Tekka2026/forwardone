@@ -1,13 +1,13 @@
 /**
  * "The ____ Pitch" (owner, 2026-10-21): landing page for a live pitch event
  * FORWARD.one runs at Slush in Helsinki. Founders pitch to FORWARD.one and a
- * second VC; the winner gets a term sheet. Page: src/pages/the-pitch.astro.
+ * second VC, Balnord (balnord.vc); the winner gets a term sheet. Page: src/pages/the-pitch.astro.
  *
  * The H1 has a blank line; the first field of the form (company name) is
  * written onto it in handwriting as the visitor types. The form is a
  * fill-in-the-blanks letter: `letter` alternates copy and fields.
  *
- * Unknowns (date, venue, deadline, the second VC, where applications go, the
+ * Unknowns (date, venue, deadline, the format, where applications go, the
  * privacy note) are visible placeholders, listed in PLACEHOLDERS.md.
  */
 
@@ -30,11 +30,19 @@ export type LetterPart = string | { field: PitchField } | { placeholder: string 
 export const pitch = {
   meta: {
     title: 'The Pitch at Slush | FORWARD.one',
-    description: 'Pitch your company live to FORWARD.one and a second VC at Slush in Helsinki. The winner gets a term sheet.',
+    description: 'Pitch your company live to FORWARD.one and Balnord at Slush in Helsinki. The winner gets a term sheet.',
   },
   eyebrow: 'FORWARD.one at Slush, Helsinki',
   /** H1, either side of the blank line. */
   title: { before: 'The', after: 'Pitch' },
+  /** What the event is, under the H1 (owner, 2026-10-22). Only what is known;
+   * the format details are a placeholder until supplied. */
+  intro: [
+    'The Pitch is a live pitch session at Slush. Founders pitch their company to two investors, FORWARD.one and Balnord, and answer their questions on the spot. The panel picks one winner, who gets a term sheet.',
+    PH('format: how many founders pitch, minutes per pitch and Q&A, how founders are selected'),
+  ],
+  /** The second VC on the panel. */
+  partner: { name: 'Balnord', href: 'https://www.balnord.vc/' },
   /** The fill-in letter, one sentence per step. Only the first step shows at
    * first; each next step appears once the first required field of the step
    * before is filled (owner, 2026-10-21). The first field is the company
@@ -59,9 +67,7 @@ export const pitch = {
     [
       'Our deck is at',
       { field: { name: 'deck', label: 'Link to your pitch deck (optional)', hint: 'link (optional)', type: 'url' } },
-      '. We’d like to pitch live to FORWARD.one and',
-      { placeholder: PH('second VC') },
-      'at Slush, for the term sheet that goes to the winner.',
+      '. We’d like to pitch live to FORWARD.one and Balnord at Slush, for the term sheet that goes to the winner.',
     ],
   ] as LetterPart[][],
   submit: 'Send our pitch',
@@ -75,6 +81,6 @@ export const pitch = {
     { label: 'When', value: PH('date and time at Slush') },
     { label: 'Where', value: PH('stage or venue at Slush, Helsinki') },
     { label: 'Apply by', value: PH('deadline') },
-    { label: 'The panel', value: `FORWARD.one and ${PH('second VC')}` },
+    { label: 'The panel', value: 'FORWARD.one and Balnord' },
   ],
 };
