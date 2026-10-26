@@ -175,8 +175,13 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
               <div>
                 <dt class="label">{f.label}</dt>
                 <dd class="body">
-                  {chunks(f.value).map((c) => (
-                    <Placeholder value={c} />
+                  {f.value.split('\n').map((line, li) => (
+                    <>
+                      {li > 0 && <br />}
+                      {chunks(line).map((c) => (
+                        <Placeholder value={c} />
+                      ))}
+                    </>
                   ))}
                 </dd>
               </div>

@@ -95,9 +95,9 @@ export const pitch = {
   slotsFailed: 'The pitch times could not be loaded. Please try again in a minute.',
   failed: 'Your request could not be sent. Please try again in a minute.',
   privacy: PH('privacy note: what happens with the details, with a link to the privacy policy'),
-  /** Event facts under the form. */
+  /** Event facts under the form. A \n in a value starts a new line. */
   facts: [
-    { label: 'When', value: '18 November, 08:00–16:00 Helsinki time' },
+    { label: 'When', value: '18 November\n08:00–16:00 Helsinki time' },
     { label: 'Where', value: PH('stage or venue at Slush, Helsinki') },
     { label: 'Apply by', value: PH('deadline') },
     { label: 'The panel', value: 'FORWARD.one, Balnord and HCVC' },
