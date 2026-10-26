@@ -517,7 +517,7 @@ sheet, wording confirmed by the owner 2026-10-21).
 
 - Landing page chrome (owner, 2026-10-22; `<Base minimal>`): the header
   keeps the logo and Pitch us but drops LP login; the wordmark there is
-  19.2px high, 15.2px on phones ≤420px (owner, 2026-10-26: 20% smaller than
+  19.2px high (owner, 2026-10-26: 20% smaller than
   the 24 / 19px before; elsewhere 20 / 15px). Next to it, a joint effort
   (owner, 2026-10-26), the Balnord (linked to balnord.vc) and HCVC logos
   (`src/assets/brand/`, currentColor), each exactly as high as the
