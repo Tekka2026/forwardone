@@ -27,6 +27,10 @@
   over without a push. Builds run with `TZ=Europe/Amsterdam`.
 - Before pushing, run `npm run check` and `npm run build` locally. Both must
   be clean.
+- Since 2026-10-26 a second session works on `/the-pitch` only (branch
+  `claude/the-pitch`) and also fast-forwards the default branch. Before
+  every push, fetch the default branch and merge it in; never force-push
+  it.
 
 ## Stack
 
