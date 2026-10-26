@@ -41,11 +41,12 @@ export const forFounders = {
   why: {
     eyebrow: 'Why founders pick us',
     title: 'Capital that keeps up\nwhen building gets expensive.',
+    /** "\n" in a title is a line break beside the visual (owner, 2026-10-26). */
     cards: [
-      { title: 'We’ve sat in your seat.', body: 'Our team are former founders and operators. We know what the next eighteen months of building feel like.' },
-      { title: 'Partners decide.', body: 'The partners you meet are the ones who decide. No waiting for an investment committee you never see.' },
-      { title: 'Capital that keeps up.', body: 'We start with up to €5M and have followed on with up to €100M per company, so we can keep backing you when building gets expensive.' },
-      { title: 'Terms we would sign ourselves.', body: 'We offer the terms we would have wanted for our own companies: simple, with no surprises.' },
+      { title: 'We’ve sat\nin your seat.', body: 'Our team are former founders and operators. We know what the next eighteen months of building feel like.' },
+      { title: 'Partners\ndecide.', body: 'The partners you meet are the ones who decide. No waiting for an investment committee you never see.' },
+      { title: 'Capital that\nkeeps up.', body: 'We start with up to €5M and have followed on with up to €100M per company, so we can keep backing you when building gets expensive.' },
+      { title: 'Terms we would\nsign ourselves.', body: 'We offer the terms we would have wanted for our own companies: simple, with no surprises.' },
     ] as TitledLine[],
     /** One visual per card (owner, 2026-10-26): a placeholder until the
      * visuals are supplied (no title in it, owner 2026-10-26). */

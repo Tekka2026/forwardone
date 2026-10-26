@@ -114,7 +114,14 @@ const labelled = (svg: string, label: string) =>
               f.why.cards.map((c, i) => (
                 <li class:list={['f-deck__item', i % 2 ? 'is-right' : 'is-left']} data-deck-item>
                   <div class="f-deck__text">
-                    <h3 class="f-deck__title">{c.title}</h3>
+                    <h3 class="f-deck__title">
+                      {c.title.split('\n').map((line, li) => (
+                        <>
+                          {li > 0 && <br />}
+                          {line}
+                        </>
+                      ))}
+                    </h3>
                     <p class="small f-deck__body">{c.body}</p>
                   </div>
                   <div class="f-deck__visual" aria-hidden="true">

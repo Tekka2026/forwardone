@@ -458,7 +458,8 @@ and classes, because the homepage components read their copy from `home.ts`:
   hairline, square corners), only a centred placeholder marker in it until
   the visuals are supplied (no title in it, owner 2026-10-26); beside it, in the outer three columns (1–3 or
   10–12), the title
-  (display face, metric size) and the muted small body, on the left for
+  (display face, metric size; set line breaks from the content, e.g.
+  "We’ve sat / in your seat.", owner 2026-10-26) and the muted small body, on the left for
   the first card, the right for the second, and so on. On wider screens
   the visuals lie in a sticky, full-height stage and the page's own
   scrolling moves through them (about 70% of a screen per card, never
