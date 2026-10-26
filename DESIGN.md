@@ -564,9 +564,11 @@ sheet, wording confirmed by the owner 2026-10-21).
   phones (≤640px) the company blank always starts the second line, so it
   does not jump up when a short name would fit on the first. Blanks
   are inline inputs; what the visitor types is in Inter 500 (a step heavier
-  than the letter, `--fw-answer`) in red, not handwriting (owner,
+  than the letter, `--fw-answer`) in the handwriting's gradient (#04EDCD to
+  #05F46B, bottom left to top right per blank, `--hand-gradient`; owner
+  2026-10-26, before: red), not handwriting (owner,
   2026-10-22: only the name on the H1's line is handwritten), on a black
-  hairline (stays black on focus, owner 2026-10-22; dashed red when
+  hairline (stays black on focus, owner 2026-10-22; dashed red #E0251B when
   invalid after interaction); the
   hint shows in muted Inter while empty; each blank grows with its text. Each input has a visually hidden label.
 - The letter unfolds sentence by sentence (owner, 2026-10-21): at first
