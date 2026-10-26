@@ -433,6 +433,36 @@ Built like the "Follow the battery." section on vikka.io
   filling by slide in `--fg` (black), and round back/next buttons at the content's right edge
   (disabled at the ends). Swipe, trackpad and keyboard scroll the track too.
 
+### Founders page (`/founders`)
+
+`src/pages/founders.astro`; copy in `src/content/founders.ts` (owner,
+2026-10-26). The homepage is for investors; this page is for founders. It
+reuses the homepage's patterns, composed in the page from the shared tokens
+and classes, because the homepage components read their copy from `home.ts`:
+
+- Black intro (as `.intro` on the homepage, at least one screen high):
+  "← For investors" back link to the homepage, eyebrow (ticks in), H1 (word
+  reveal), lede, "Pitch us" (to the closing, `#pitch`) and "Meet the
+  partners" (`#partners`); the key figures at its bottom in the homepage
+  stats pattern (4 columns, 2 at ≤980px), with room below them for the
+  floating nav. Same intro sequence and timings as the homepage.
+- Why founders pick us: H2 and four cards (`.cards` at 4 columns, each a
+  `.panel`: card title and muted small body).
+- How we work with you: the homepage Playbook pattern (feature H2 with the
+  word reveal on scroll, lede, numbered list in columns 9–12), no button.
+- What we back: H2, lede, sector tags as chips on the 4% tint (as on the
+  team profile).
+- Founders we back: three quote cards (4:5 photo, quote, name, role and
+  company), then "In the portfolio" (card title) and a 4-column grid of
+  companies on hairlines (name, muted one-liner), then the exits line.
+- The partners (`#partners`): the homepage team pattern; the people come
+  from `partners` in `home.ts`, so both pages stay in step.
+- After you pitch: four numbered steps (mono 01–04, card title, muted small
+  body) on hairlines, 4 columns.
+- Closing (`#pitch`): black band (`.section--dark.theme-dark`), centred
+  feature title, the Pitch us button, and the pitch email line.
+- Grids follow `.cards`: 2 columns at ≤980px, 1 at ≤640px.
+
 ### Team profile (`/about/team/:slug`)
 
 `src/pages/about/team/[slug].astro`; copy in `src/content/team.ts`. Owner,

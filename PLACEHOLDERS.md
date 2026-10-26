@@ -52,7 +52,17 @@ invented; replace the value in the file named and the marker disappears.
 
 Every route other than the homepage renders a heading, a one-line intro and
 `TODO` blocks listing the content it needs. See that file for the full list.
-The `/founders` page needs a pitch email address or form URL.
+
+## Founders page (`src/content/founders.ts`, page `/founders`)
+
+| Where | Key | Needed |
+|---|---|---|
+| Founders we back | `backed.quotes[*].quote` | A short quote from each of Crijn Bouman (ROCSYS), Tom Trill (Qualinx) and Jacquelien ten Dam (Optics11 Life). |
+| In the portfolio | `backed.portfolio[11].line` | One-line description of ZuriQ. |
+| The partners | `partners.people[*]` in `home.ts` | Shared with the homepage: the four partner photos, and the quotes from Robin van Boxsel and Paul Pruijmboom. |
+| After you pitch | `after.steps[1].body`, `after.steps[3].body` | How many days until a founder hears back, and how many weeks from the first meeting to a decision. |
+| Closing | `closing.cta.href` | Where "Pitch us" goes: a pitch form URL or a mailto link. Until set, the button shows disabled with the marker next to it. |
+| Closing | `closing.email` | The pitch email address. |
 
 ## Hosting
 
