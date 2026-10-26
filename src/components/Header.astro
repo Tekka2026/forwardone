@@ -11,6 +11,14 @@ import Logo from '@components/ui/Logo.astro';
 import Button from '@components/ui/Button.astro';
 import { utilityNav } from '@content/nav';
 
+/** A partner logo shown next to the wordmark: raw SVG markup, drawn in
+ *  currentColor at the wordmark's height. */
+export interface Partner {
+  name: string;
+  href?: string;
+  svg: string;
+}
+
 interface Props {
   dark?: boolean;
   /** Landing pages: no LP login. */
@@ -19,13 +27,35 @@ interface Props {
    *  homepage) in the place of Pitch us, which would link to the page
    *  itself. */
   forFounders?: boolean;
+  /** Landing pages run with partners (owner, 2026-10-26, /the-pitch):
+   *  their logos sit next to the wordmark, each as high as it. */
+  partners?: Partner[];
 }
-const { dark = false, minimal = false, forFounders = false } = Astro.props;
+const { dark = false, minimal = false, forFounders = false, partners = [] } = Astro.props;
+const marks = partners.map((p) => ({
+  ...p,
+  svg: p.svg.replace('<svg ', '<svg class="site-top__partner-mark" role="img" aria-label="' + p.name + '" focusable="false" '),
+}));
 ---
 
 <header class:list={['site-top', dark && 'site-top--dark theme-dark', minimal && 'site-top--minimal', forFounders && 'site-top--founders']}>
   <div class="wrap site-top__row">
-    <Logo />
+    {
+      marks.length ? (
+        <div class="site-top__brands">
+          <Logo />
+          {marks.map((m) =>
+            m.href ? (
+              <a class="site-top__partner" href={m.href} rel="noopener" set:html={m.svg} />
+            ) : (
+              <span class="site-top__partner" set:html={m.svg} />
+            ),
+          )}
+        </div>
+      ) : (
+        <Logo />
+      )
+    }
     <div class="site-top__actions">
       {
         forFounders ? (
@@ -75,6 +105,46 @@ const { dark = false, minimal = false, forFounders = false } = Astro.props;
   @media (max-width: 420px) {
     .site-top.site-top--minimal :global(.logo__mark) {
       height: 15.2px;
+    }
+  }
+  /* Partner logos (owner, 2026-10-26): in a row with the wordmark, each
+     as high as it (the artwork boxes are all cap/ascender to baseline). */
+  .site-top__brands {
+    display: flex;
+    align-items: center;
+    gap: var(--gap);
+    min-width: 0;
+  }
+  .site-top__partner,
+  .site-top__brands :global(.logo) {
+    display: inline-flex;
+    flex-shrink: 0;
+    color: inherit;
+  }
+  .site-top__brands :global(.site-top__partner-mark) {
+    display: block;
+    height: 20px;
+    width: auto;
+  }
+  .site-top--minimal .site-top__brands :global(.site-top__partner-mark) {
+    height: 19.2px;
+  }
+  @media (max-width: 420px) {
+    .site-top__brands {
+      gap: var(--gap-half);
+    }
+    .site-top .site-top__brands :global(.logo__mark),
+    .site-top .site-top__brands :global(.site-top__partner-mark) {
+      height: 13px;
+    }
+  }
+  @media (max-width: 360px) {
+    .site-top__brands {
+      gap: var(--space-2x);
+    }
+    .site-top .site-top__brands :global(.logo__mark),
+    .site-top .site-top__brands :global(.site-top__partner-mark) {
+      height: 12px;
     }
   }
   /* Founders page on phones: "For investors" stays (unlike Pitch us), so

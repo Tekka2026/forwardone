@@ -42,6 +42,12 @@ export const pitch = {
   ],
   /** The second VC on the panel. */
   partner: { name: 'Balnord', href: 'https://www.balnord.vc/' },
+  /** Logos next to FORWARD.one in the header: a joint effort (owner,
+   * 2026-10-26). `logo` names the SVG in src/assets/brand/. */
+  hosts: [
+    { name: 'Balnord', href: 'https://www.balnord.vc/', logo: 'balnord' },
+    { name: 'HCVC', logo: 'hcvc' },
+  ],
   /** The fill-in letter, one sentence per step. Only the first step shows at
    * first; each next step appears once the first required field of the step
    * before is filled (owner, 2026-10-21). The first field is the company

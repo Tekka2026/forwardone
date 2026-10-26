@@ -19,6 +19,8 @@ import Button from '@components/ui/Button.astro';
 import Placeholder from '@components/ui/Placeholder.astro';
 import { pitch, type LetterPart, type PitchField } from '@content/pitch';
 import { isPlaceholder } from '@lib/href';
+import balnordLogo from '../assets/brand/balnord.svg?raw';
+import hcvcLogo from '../assets/brand/hcvc.svg?raw';
 
 // Each step as render tokens. Punctuation right after a blank is kept with
 // it (no line break between the blank and its full stop or comma), and gets
@@ -45,10 +47,13 @@ const chunks = (v: string) => v.split(/(\[PLACEHOLDER:[^\]]*\])/).filter(Boolean
 const ready = !isPlaceholder(pitch.action);
 // The intro with the partner's name linked to their site.
 const introParts = pitch.intro[0].split(pitch.partner.name);
+// The partners' logos for the header, next to FORWARD.one.
+const logos: Record<string, string> = { balnord: balnordLogo, hcvc: hcvcLogo };
+const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logos[h.logo] }));
 
 ---
 
-<Base title={pitch.meta.title} description={pitch.meta.description} minimal>
+<Base title={pitch.meta.title} description={pitch.meta.description} minimal partners={partners}>
   <link
     slot="head"
     rel="stylesheet"

@@ -518,7 +518,12 @@ sheet, wording confirmed by the owner 2026-10-21).
 - Landing page chrome (owner, 2026-10-22; `<Base minimal>`): the header
   keeps the logo and Pitch us but drops LP login; the wordmark there is
   19.2px high, 15.2px on phones ≤420px (owner, 2026-10-26: 20% smaller than
-  the 24 / 19px before; elsewhere 20 / 15px), and
+  the 24 / 19px before; elsewhere 20 / 15px). Next to it, a joint effort
+  (owner, 2026-10-26), the Balnord (linked to balnord.vc) and HCVC logos
+  (`src/assets/brand/`, currentColor), each exactly as high as the
+  wordmark, 24px apart (`Header` `partners`, from `pitch.hosts`); on phones
+  ≤420px all three are 13px high, 12px apart, and 12px high, 8px apart
+  at ≤360px so the row fits down to 320px. Then
   the eyebrow starts 24px under the header's own 24px bottom padding; the footer is the
   copyright line only ("© FORWARD.one <year>."), black, down
   to the page end. No floating navigation bar (owner, 2026-10-22), and no
