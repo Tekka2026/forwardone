@@ -522,8 +522,8 @@ sheet, wording confirmed by the owner 2026-10-21).
   the 24 / 19px before; elsewhere 20 / 15px). Next to it, a joint effort
   (owner, 2026-10-26), the Balnord (linked to balnord.vc) and HCVC logos
   (`src/assets/brand/`, currentColor), each exactly as high as the
-  wordmark, 24px apart (`Header` `partners`, from `pitch.hosts`); on phones
-  ≤420px all three are 13px high, 12px apart, and 12px high, 8px apart
+  wordmark, 48px apart (owner, 2026-10-26; before: 24px) (`Header` `partners`, from `pitch.hosts`); on phones
+  ≤420px all three are 13px high, 24px apart, and 12px high, 16px apart
   at ≤360px so the row fits down to 320px. Then
   the eyebrow starts 24px under the header's own 24px bottom padding; the footer is the
   copyright line only ("© FORWARD.one <year>."), black, down
