@@ -1,12 +1,104 @@
 /**
- * Every text the service sends or shows, in one place so it can be edited
- * without touching the logic. Times are Helsinki time (the slot labels).
+ * Texts the service sends or shows. The four founder emails are templates
+ * the team can edit on the dashboard (/review/emails, owner 2026-10-26); the
+ * defaults below apply until someone saves a change, and "Revert to the
+ * default" brings them back. Placeholders in {braces} are filled per email.
+ * Times are Helsinki time (the slot labels).
  */
-import type { Application, Env, Slot } from './env';
+import type { Env } from './env';
 
-/** The event name without the blank ("The Pitch at Slush"): the owner's
- * wording for the approved and denied emails (2026-10-26). */
-const plain = (env: Env) => env.EVENT_NAME.replace(/\s*_+\s*/, ' ');
+export type TemplateKey = 'received' | 'approved' | 'denied' | 'expired';
+
+/** What each placeholder means, shown next to the editor. */
+export const VARIABLES: Record<string, string> = {
+  name: 'Founder’s full name',
+  company: 'Company name',
+  time: 'Their slot, e.g. 09:30',
+  event: 'Event name with the blank: The _____ Pitch at Slush',
+  event_plain: 'Event name without the blank: The Pitch at Slush',
+  cancel_link: 'Link that releases their slot',
+  page_link: 'Link to the pitch page',
+};
+
+export const TEMPLATES: Record<
+  TemplateKey,
+  { title: string; when: string; vars: string[]; subject: string; body: string; note?: string }
+> = {
+  received: {
+    title: 'Request received',
+    when: 'Right after a founder sends the letter',
+    vars: ['name', 'company', 'time', 'event', 'event_plain', 'cancel_link', 'page_link'],
+    subject: '{event}: your request for {time}',
+    body: [
+      'Hi {name},',
+      '',
+      'Thank you for applying to {event} with {company}.',
+      'We have put the {time} slot (Helsinki time) on hold for you while we read your application. You will hear from us by email whether it is confirmed.',
+      '',
+      'Can no longer make it? Release the slot here: {cancel_link}',
+      '',
+      'FORWARD.one',
+    ].join('\n'),
+  },
+  approved: {
+    title: 'Approved',
+    when: 'When a reviewer approves the request',
+    vars: ['name', 'company', 'time', 'event', 'event_plain', 'page_link'],
+    note: 'A calendar invite for the slot is attached automatically.',
+    subject: '{event}: you pitch at {time}',
+    body: [
+      'Hi {name},',
+      '',
+      '{company} pitches at {event_plain} at {time} (Helsinki time). The calendar invite is attached.',
+      '',
+      'FORWARD.one',
+    ].join('\n'),
+  },
+  denied: {
+    title: 'Denied',
+    when: 'When a reviewer denies the request',
+    vars: ['name', 'company', 'time', 'event', 'event_plain', 'page_link'],
+    subject: '{event}: your request',
+    body: [
+      'Hi {name},',
+      '',
+      'Thank you for applying to {event_plain} with {company}. We cannot offer you a pitch slot this time, so we have released the time you asked for.',
+      '',
+      'FORWARD.one',
+    ].join('\n'),
+  },
+  expired: {
+    title: 'Hold ended',
+    when: 'When nobody decided within the hold period (only if one is set)',
+    vars: ['name', 'company', 'time', 'event', 'event_plain', 'page_link'],
+    subject: '{event}: your request for {time}',
+    body: [
+      'Hi {name},',
+      '',
+      'We could not confirm the {time} slot for {company} in time, so the hold has ended. You are welcome to request a time again on {page_link}',
+      '',
+      'FORWARD.one',
+    ].join('\n'),
+  },
+};
+
+export const TEMPLATE_KEYS = Object.keys(TEMPLATES) as TemplateKey[];
+export const isTemplateKey = (k: string): k is TemplateKey => k in TEMPLATES;
+
+/** Placeholders used in a text that this email does not know. */
+export function unknownVars(key: TemplateKey, text: string) {
+  return [...new Set([...text.matchAll(/\{([a-z_]+)\}/g)].map((m) => m[1]))].filter((v) => !TEMPLATES[key].vars.includes(v));
+}
+
+export function fill(text: string, values: Record<string, string>) {
+  return text.replace(/\{([a-z_]+)\}/g, (m, k: string) => (k in values ? values[k] : m));
+}
+
+/** The event name without the blank ("The Pitch at Slush"). */
+export const plain = (env: Env) => env.EVENT_NAME.replace(/\s*_+\s*/, ' ');
+
+/** Values for a sample email (Send test). */
+export const SAMPLE = { name: 'Ann Example', company: 'Northwind Robotics', time: '09:30' };
 
 export const copy = {
   errors: {
@@ -16,70 +108,6 @@ export const copy = {
     unknown_slot: 'That time is not available.',
     server: 'Something went wrong on our side. Please try again in a minute.',
   },
-
-  received: (env: Env, a: Application, s: Slot, cancelUrl: string) => ({
-    subject: `${env.EVENT_NAME}: your request for ${s.label}`,
-    text: [
-      `Hi ${a.name},`,
-      '',
-      `Thank you for applying to ${env.EVENT_NAME} with ${a.company}.`,
-      `We have put the ${s.label} slot (Helsinki time) on hold for you while we read your application. You will hear from us by email whether it is confirmed.`,
-      '',
-      `Can no longer make it? Release the slot here: ${cancelUrl}`,
-      '',
-      'FORWARD.one',
-    ].join('\n'),
-  }),
-
-  approved: (env: Env, a: Application, s: Slot) => ({
-    subject: `${env.EVENT_NAME}: you pitch at ${s.label}`,
-    text: [
-      `Hi ${a.name},`,
-      '',
-      `${a.company} pitches at ${plain(env)} at ${s.label} (Helsinki time). The calendar invite is attached.`,
-      '',
-      'FORWARD.one',
-    ].join('\n'),
-  }),
-
-  denied: (env: Env, a: Application) => ({
-    subject: `${env.EVENT_NAME}: your request`,
-    text: [
-      `Hi ${a.name},`,
-      '',
-      `Thank you for applying to ${plain(env)} with ${a.company}. We cannot offer you a pitch slot this time, so we have released the time you asked for.`,
-      '',
-      'FORWARD.one',
-    ].join('\n'),
-  }),
-
-  expired: (env: Env, a: Application, s: Slot) => ({
-    subject: `${env.EVENT_NAME}: your request for ${s.label}`,
-    text: [
-      `Hi ${a.name},`,
-      '',
-      `We could not confirm the ${s.label} slot for ${a.company} in time, so the hold has ended. You are welcome to request a time again on ${env.PAGE_URL}`,
-      '',
-      'FORWARD.one',
-    ].join('\n'),
-  }),
-
-  newRequest: (env: Env, a: Application, s: Slot, reviewUrl: string) => ({
-    subject: `New pitch request: ${a.company} at ${s.label}`,
-    text: [
-      `${a.company} asks for the ${s.label} slot.`,
-      `${a.name}${a.role ? `, ${a.role}` : ''} <${a.email}>`,
-      `Building: ${a.building}`,
-      a.deck ? `Deck: ${a.deck}` : 'No deck link.',
-      '',
-      `Approve or deny: ${reviewUrl}`,
-    ].join('\n'),
-  }),
-
-  cancelled: (a: Application, s: Slot) => ({
-    subject: `Pitch request cancelled: ${a.company}`,
-    text: `${a.company} released the ${s.label} slot. It is free again.`,
-  }),
 
   login: (env: Env, link: string) => ({
     subject: `${env.EVENT_NAME}: your review link`,

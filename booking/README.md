@@ -30,13 +30,16 @@ Approve, Deny; nothing sent or saved) is on the site at
 | When | To | What |
 |------|----|------|
 | Request sent | founder | "Your slot is on hold", with a cancel link |
-| Request sent | reviewers | Company, founder, one-liner, deck, link to `/review` |
 | Approved | founder | Confirmation with a calendar invite (`.ics`) |
 | Denied | founder | Polite no; the slot is released |
-| Founder cancels | reviewers | Which time is free again |
 | Hold expired (`HOLD_DAYS`) | founder | The hold has ended |
+| Every day at 18:00 Amsterdam | reviewers | One overview: new requests and cancellations of the day, who is waiting, slots taken. Not sent when there is nothing new and nothing waiting. |
 
-All wording is in `src/copy.ts`. Until `MAIL_FROM` and `RESEND_API_KEY` are
+The team edits the four founder emails on the dashboard (`/review/emails`):
+subject and text with placeholders (`{name}`, `{company}`, `{time}`, …), a
+live example, Send test to me, and Revert to the default. Saved texts live in
+the `email_templates` table; the defaults are in `src/copy.ts`. Reviewers get
+no email per request (owner, 2026-10-26), only the daily overview. Until `MAIL_FROM` and `RESEND_API_KEY` are
 set, emails are written to the Worker log instead of sent (the review login
 link too, so the team can log in during setup via `wrangler tail`).
 

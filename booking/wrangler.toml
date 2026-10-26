@@ -10,9 +10,10 @@ database_name = "forwardone-pitch"
 database_id = "00000000-0000-0000-0000-000000000000"
 migrations_dir = "migrations"
 
-# Expire unreviewed requests (only when HOLD_DAYS is set).
+# Hourly: expire unreviewed requests (only when HOLD_DAYS is set).
+# 17:00 UTC (18:00 Amsterdam in winter): the daily overview to the reviewers.
 [triggers]
-crons = ["17 * * * *"]
+crons = ["17 * * * *", "0 17 * * *"]
 
 [vars]
 # Pages that may call the API (comma separated origins).

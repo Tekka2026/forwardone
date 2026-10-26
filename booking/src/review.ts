@@ -9,6 +9,7 @@
  * file with sample data and a local stand-in for the API, so the preview and
  * the real dashboard cannot drift apart.
  */
+import { VARIABLES, TEMPLATES, type TemplateKey } from './copy.ts'; // .ts: also loaded by Node in scripts/preview.mjs
 import type { Application, Slot } from './env';
 
 export const esc = (s: unknown) =>
@@ -42,6 +43,8 @@ export const CSS = `
   color-scheme: light;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
+#banners:empty { display: none; }
 body {
   margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 14px;
   line-height: 1.5; letter-spacing: -0.011em; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
@@ -181,7 +184,46 @@ dialog::backdrop { background: var(--scrim); }
 .login { max-width: 420px; display: grid; gap: 20px; }
 .login form { display: grid; gap: 12px; }
 
+/* App layout: sidebar + content (§4 Zijbalk). */
+.app { display: grid; grid-template-columns: 232px minmax(0, 1fr); min-height: 100vh; }
+.side {
+  position: sticky; top: 0; height: 100vh; display: grid; grid-template-rows: auto minmax(0, 1fr) auto;
+  border-right: 1px solid var(--border); background: var(--bg-elev);
+}
+.side-top { padding: 16px; display: grid; gap: 12px; border-bottom: 1px solid var(--border); }
+.brand { font-weight: 600; text-decoration: none; letter-spacing: 0; }
+.side-search { height: var(--btn-sm); padding-block: 0; width: 100%; font-size: 13px; }
+.side-nav { overflow-y: auto; padding: 12px 8px; display: grid; align-content: start; gap: 2px; }
+.nav-head { padding: 8px 8px 4px; margin: 0; }
+.nav-item { display: block; padding: 6px 8px; border-radius: var(--radius-sm); text-decoration: none; color: var(--fg-muted); font-size: 13.5px; }
+.nav-item:hover { color: var(--fg); background: var(--bg); }
+.nav-item[aria-current="page"] { color: var(--fg); background: var(--bg); font-weight: 500; }
+.side-foot { padding: 12px 16px; border-top: 1px solid var(--border); display: grid; gap: 8px; font-size: 13px; color: var(--fg-muted); }
+.side-foot span { overflow-wrap: anywhere; }
+.app main { max-width: var(--page-max); margin: 0; width: 100%; }
+.crumb { font-size: 13px; color: var(--fg-muted); text-decoration: none; }
+.crumb:hover { color: var(--fg); }
+
+/* Email editor. */
+.form { display: grid; gap: 16px; }
+textarea.field { min-height: 280px; resize: vertical; line-height: 1.55; width: 100%; font-family: var(--font); }
+.form-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.grid-2 { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 24px; align-items: start; }
+.sample { white-space: pre-wrap; font-size: 13.5px; margin: 0; overflow-wrap: anywhere; }
+.sample-subject { font-weight: 600; margin: 0; overflow-wrap: anywhere; }
+tr[data-href] { cursor: pointer; }
+.var-table td { padding: 7px 0; vertical-align: top; }
+.var-table td:first-child { padding-right: 12px; white-space: nowrap; }
+
+@media (max-width: 900px) {
+  .grid-2 { grid-template-columns: minmax(0, 1fr); }
+}
 @media (max-width: 720px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .side { position: static; height: auto; grid-template-rows: auto auto auto; border-right: 0; border-bottom: 1px solid var(--border); }
+  .side-nav { display: flex; flex-wrap: wrap; overflow: visible; padding: 8px; }
+  .nav-head { display: none; }
+  .side-foot { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
   .hide-sm { display: none; }
   .only-sm { display: flex; }
   .row-actions { justify-content: flex-start; margin-top: 8px; }
@@ -197,11 +239,60 @@ export function page(title: string, body: string, extraHead = '') {
   );
 }
 
+/** The menu: one source for the sidebar and the ⌘K search (§4). */
+export const NAV = [
+  { group: 'The Pitch', items: [
+    { label: 'Requests', path: '/' },
+    { label: 'Emails', path: '/emails/' },
+  ] },
+];
+
+export type Shell = { who: string; base: string; active: string; logout?: 'form' | 'button' };
+
+export function appHtml(sh: Shell, content: string) {
+  const nav = NAV.map(
+    (g) => `<p class="t-eyebrow nav-head">${esc(g.group)}</p>` +
+      g.items.map((i) => `<a class="nav-item" data-nav="${esc(i.label)}" href="${esc(sh.base + i.path)}"${i.label === sh.active ? ' aria-current="page"' : ''}>${esc(i.label)}</a>`).join(''),
+  ).join('');
+  const logout = sh.logout === 'button'
+    ? '<button class="btn btn--sm" type="button" id="logout">Log out</button>'
+    : `<form method="post" action="${esc(sh.base)}/logout"><button class="btn btn--sm" type="submit">Log out</button></form>`;
+  return `<div class="app">
+    <aside class="side" aria-label="Menu">
+      <div class="side-top">
+        <a class="brand" href="${esc(sh.base)}/">FORWARD.one</a>
+        <label class="sr-only" for="nav-q">Go to</label>
+        <input class="field side-search" id="nav-q" type="search" placeholder="Go to…  ⌘K" autocomplete="off">
+      </div>
+      <nav class="side-nav" id="nav">${nav}</nav>
+      <div class="side-foot"><span id="who">${esc(sh.who)}</span>${logout}</div>
+    </aside>
+    <main>${content}</main>
+  </div>
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+  <dialog id="confirm" aria-labelledby="confirm-h">
+    <div class="dialog-body"><h2 class="t-section" id="confirm-h"></h2><p class="t-intro flush" id="confirm-text"></p></div>
+    <div class="dialog-actions">
+      <button class="btn" type="button" id="confirm-cancel">Cancel</button>
+      <button class="btn btn--danger" type="button" id="confirm-ok"></button>
+    </div>
+  </dialog>
+  <script>${SHARED_JS}</script>`;
+}
+
+/** A full page with the app layout (no <main> wrapper from page()). */
+export function appPage(title: string, sh: Shell, content: string, script: string) {
+  return new Response(
+    `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="robots" content="noindex"><title>${esc(title)}</title>${FONTS}<style>${CSS}</style></head><body>${appHtml(sh, content)}<script>${script}</script></body></html>`,
+    { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' } },
+  );
+}
+
 export function loginHtml(eventName: string, message = '') {
   return `<section class="login" aria-labelledby="login-h">
     <div>
-      <h1 class="t-title" id="login-h">Pitch requests</h1>
-      <p class="t-intro">${esc(eventName)}. Reviewers log in with a link sent to their email; only addresses on the reviewers list get one.</p>
+      <h1 class="t-title" id="login-h">Log in</h1>
+      <p class="t-intro">Pitch requests for ${esc(eventName)}. Reviewers log in with a link sent to their email; only addresses on the reviewers list get one.</p>
     </div>
     ${message ? `<p class="banner banner--neutral" role="status">${esc(message)}</p>` : ''}
     <form method="post" action="/review/login" data-busy="Sending…">
@@ -217,10 +308,11 @@ export function loginHtml(eventName: string, message = '') {
 }
 
 export function loginPage(eventName: string, message = '') {
-  return page('Pitch requests: log in', loginHtml(eventName, message));
+  return page('Log in', loginHtml(eventName, message));
 }
 
 export type ReviewData = {
+  base: string;
   event: string;
   who: string;
   emailConfigured: boolean;
@@ -230,16 +322,11 @@ export type ReviewData = {
 };
 
 /** The dashboard's markup: a shell the client script fills in. */
-export function dashboardHtml(data: ReviewData, logout = true) {
+export function dashboardHtml(data: ReviewData) {
   const json = JSON.stringify(data).replace(/</g, '\\u003c');
-  return `<div class="head">
-      <div>
-        <h1 class="t-title">Pitch requests</h1>
-        <p class="t-intro" id="intro">${esc(data.event)}. Times are Helsinki time.</p>
-      </div>
-      <div class="who"><span>${esc(data.who)}</span>${
-        logout ? '<form method="post" action="/review/logout"><button class="btn btn--sm" type="submit">Log out</button></form>' : '<button class="btn btn--sm" type="button" id="logout">Log out</button>'
-      }</div>
+  return `<div>
+      <h1 class="t-title">Requests</h1>
+      <p class="t-intro" id="intro">${esc(data.event)}. Times are Helsinki time.</p>
     </div>
     <div id="banners">${data.emailConfigured ? '' : '<p class="banner banner--warn">Emails are not sent yet: the email service is not connected. Decisions are saved, but founders are not told.</p>'}</div>
     <section class="card" aria-labelledby="slots-h">
@@ -263,14 +350,6 @@ export function dashboardHtml(data: ReviewData, logout = true) {
       <button class="btn btn--sm" type="button" id="export">Export CSV</button>
     </div>
     <div id="list"></div>
-    <div class="toasts" id="toasts" aria-live="polite"></div>
-    <dialog id="confirm" aria-labelledby="confirm-h">
-      <div class="dialog-body"><h2 class="t-section" id="confirm-h"></h2><p class="t-intro flush" id="confirm-text"></p></div>
-      <div class="dialog-actions">
-        <button class="btn" type="button" id="confirm-cancel">Cancel</button>
-        <button class="btn btn--danger" type="button" id="confirm-ok"></button>
-      </div>
-    </dialog>
     <script type="application/json" id="review-data">${json}</script>`;
 }
 
@@ -284,7 +363,7 @@ export const CLIENT_JS = String.raw`(function () {
   var data = JSON.parse(document.getElementById('review-data').textContent);
   var api = window.REVIEW_API || {
     decide: function (id, decision) {
-      return fetch('/review/decide', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ id: id, decision: decision }) })
+      return fetch(data.base + '/decide', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ id: id, decision: decision }) })
         .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d.message || 'The decision was not saved.'); return d; }); });
     },
   };
@@ -330,32 +409,7 @@ export const CLIENT_JS = String.raw`(function () {
   };
   function sortBy(key) { if (state.sort === key) state.dir = -state.dir; else { state.sort = key; state.dir = 1; } writeUrl(); render(); }
 
-  // ---- Toasts: success fades after --toast-ms, an error stays until closed.
-  var toasts = document.getElementById('toasts');
-  var toastMs = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--toast-ms')) || 4500;
-  function toast(text, isError) {
-    var t = document.createElement('div');
-    t.className = 'toast'; t.setAttribute('role', isError ? 'alert' : 'status');
-    t.innerHTML = '<p></p><button type="button" aria-label="Close">Close</button>';
-    t.querySelector('p').textContent = text;
-    t.querySelector('button').addEventListener('click', function () { t.remove(); });
-    toasts.appendChild(t);
-    if (!isError) setTimeout(function () { t.remove(); }, toastMs);
-  }
-
-  // ---- Confirm dialog: Escape closes, focus starts on Cancel.
-  var dlg = document.getElementById('confirm'), pending = null;
-  function confirmAsk(title, text, yes, then) {
-    document.getElementById('confirm-h').textContent = title;
-    document.getElementById('confirm-text').textContent = text;
-    document.getElementById('confirm-ok').textContent = yes;
-    pending = then;
-    dlg.showModal();
-    document.getElementById('confirm-cancel').focus();
-  }
-  document.getElementById('confirm-cancel').addEventListener('click', function () { dlg.close(); });
-  dlg.addEventListener('close', function () { pending = null; });
-  document.getElementById('confirm-ok').addEventListener('click', function () { var f = pending; pending = null; dlg.close(); if (f) f(); });
+  var toast = window.UI.toast, confirmAsk = window.UI.confirm;
 
   // ---- Decisions.
   function decide(a, decision, btn) {
@@ -451,5 +505,192 @@ export const CLIENT_JS = String.raw`(function () {
 })();`;
 
 export function reviewPage(data: ReviewData) {
-  return page('Pitch requests', dashboardHtml(data) + `<script>${CLIENT_JS}</script>`);
+  return appPage('Requests', { who: data.who, base: data.base, active: 'Requests' }, dashboardHtml(data), CLIENT_JS);
 }
+
+
+/** Shared by every screen: toasts, confirm dialog, busy buttons, ⌘K menu
+ *  search, clickable rows. Exposes window.UI. */
+export const SHARED_JS = String.raw`(function () {
+  // Toasts: success fades after --toast-ms, an error stays until closed (§4).
+  var toasts = document.getElementById('toasts');
+  var toastMs = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--toast-ms')) || 4500;
+  function toast(text, isError) {
+    var t = document.createElement('div');
+    t.className = 'toast'; t.setAttribute('role', isError ? 'alert' : 'status');
+    t.innerHTML = '<p></p><button type="button" aria-label="Close">Close</button>';
+    t.querySelector('p').textContent = text;
+    t.querySelector('button').addEventListener('click', function () { t.remove(); });
+    toasts.appendChild(t);
+    if (!isError) setTimeout(function () { t.remove(); }, toastMs);
+  }
+  // Confirm dialog: Escape closes, focus starts on Cancel (§4).
+  var dlg = document.getElementById('confirm'), pending = null;
+  function confirmAsk(title, text, yes, then) {
+    document.getElementById('confirm-h').textContent = title;
+    document.getElementById('confirm-text').textContent = text;
+    document.getElementById('confirm-ok').textContent = yes;
+    pending = then; dlg.showModal(); document.getElementById('confirm-cancel').focus();
+  }
+  document.getElementById('confirm-cancel').addEventListener('click', function () { dlg.close(); });
+  dlg.addEventListener('close', function () { pending = null; });
+  document.getElementById('confirm-ok').addEventListener('click', function () { var f = pending; pending = null; dlg.close(); if (f) f(); });
+  // Busy state: disable and relabel while a request runs (§3).
+  function busy(btn, text) {
+    var old = btn.textContent; btn.disabled = true; btn.textContent = text;
+    return function () { btn.disabled = false; btn.textContent = old; };
+  }
+  ${BUSY_JS}
+  // Menu search: filters the menu (one source); ⌘K / Ctrl+K focuses it, Enter opens the first match.
+  var navQ = document.getElementById('nav-q');
+  var items = [].slice.call(document.querySelectorAll('[data-nav]'));
+  navQ.addEventListener('input', function () {
+    var n = navQ.value.trim().toLowerCase();
+    items.forEach(function (a) { a.hidden = !!n && a.dataset.nav.toLowerCase().indexOf(n) === -1; });
+  });
+  navQ.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { var first = items.find(function (a) { return !a.hidden; }); if (first) location.href = first.href; }
+    if (e.key === 'Escape') { navQ.value = ''; navQ.dispatchEvent(new Event('input')); navQ.blur(); }
+  });
+  document.addEventListener('keydown', function (e) { if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); navQ.focus(); } });
+  // Whole row clickable where a row has a detail page (§4).
+  document.addEventListener('click', function (e) {
+    var tr = e.target.closest('tr[data-href]');
+    if (tr && !e.target.closest('a, button')) location.href = tr.dataset.href;
+  });
+  window.UI = { toast: toast, confirm: confirmAsk, busy: busy };
+})();`;
+
+const ago = (iso: string | null) => (iso ? iso.slice(0, 16).replace('T', ' ') + ' UTC' : '');
+
+export type EmailRow = { key: TemplateKey; subject: string; body: string; changed: boolean; updated_at: string | null; updated_by: string | null };
+
+export function emailsHtml(base: string, list: EmailRow[]) {
+  return `<div>
+      <h1 class="t-title">Emails</h1>
+      <p class="t-intro">The ${list.length} emails founders get. Open one to change its text; the change applies to every email sent after you save. The team’s daily overview at 18:00 is not editable.</p>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Email</th><th class="hide-sm">Subject</th><th>Text</th><th class="hide-sm">Last changed</th></tr></thead>
+      <tbody>${list
+        .map((t) => {
+          const href = `${base}/emails/${t.key}/`;
+          return `<tr data-href="${esc(href)}">
+            <td><a href="${esc(href)}">${esc(TEMPLATES[t.key].title)}</a><div class="cell-sub">${esc(TEMPLATES[t.key].when)}</div></td>
+            <td class="hide-sm mono">${esc(t.subject)}</td>
+            <td>${t.changed ? '<span class="pill pill--ok">Changed</span>' : '<span class="pill pill--neutral">Default</span>'}</td>
+            <td class="hide-sm cell-sub">${t.changed ? `${esc(t.updated_by)}<br>${esc(ago(t.updated_at))}` : ''}</td>
+          </tr>`;
+        })
+        .join('')}</tbody>
+    </table></div>`;
+}
+
+export function emailsPage(o: { who: string; base: string; templates: EmailRow[] }) {
+  return appPage('Emails', { who: o.who, base: o.base, active: 'Emails' }, emailsHtml(o.base, o.templates), '');
+}
+
+export type EmailEdit = { base: string; template: EmailRow; emailConfigured: boolean; sample: Record<string, string> };
+
+export function emailEditHtml(e: EmailEdit) {
+  const t = e.template, def = TEMPLATES[t.key];
+  const data = JSON.stringify({ base: e.base, key: t.key, vars: def.vars, sample: e.sample, changed: t.changed, emailConfigured: e.emailConfigured }).replace(/</g, '\\u003c');
+  return `<div>
+      <a class="crumb" href="${esc(e.base)}/emails/">Emails</a>
+      <h1 class="t-title">${esc(def.title)}</h1>
+      <p class="t-intro">${esc(def.when)}.${def.note ? ' ' + esc(def.note) : ''}</p>
+    </div>
+    <div id="banners">${e.emailConfigured ? '' : '<p class="banner banner--warn">Emails are not sent yet: the email service is not connected, so Send test does nothing for now. Saving works.</p>'}</div>
+    <div class="grid-2">
+      <section class="card" aria-labelledby="edit-h">
+        <div class="card-head"><h2 class="t-section" id="edit-h">Text</h2><span id="state">${t.changed ? `<span class="pill pill--ok">Changed</span>` : '<span class="pill pill--neutral">Default</span>'}</span></div>
+        <form class="form" id="email-form">
+          <div>
+            <label class="t-label" for="subject">Subject</label>
+            <input class="field block" id="subject" name="subject" maxlength="200" required value="${esc(t.subject)}">
+          </div>
+          <div>
+            <label class="t-label" for="body">Text</label>
+            <textarea class="field" id="body" name="body" maxlength="5000" required>${esc(t.body)}</textarea>
+            <p class="t-help">Placeholders in braces, like {name}, are filled in for each founder. The list is on the right.</p>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn--primary" type="submit" id="save">Save</button>
+            <button class="btn" type="button" id="test">Send test to me</button>
+            <button class="btn btn--warn" type="button" id="reset"${t.changed ? '' : ' hidden'}>Revert to the default</button>
+          </div>
+        </form>
+      </section>
+      <div class="form">
+        <section class="card" aria-labelledby="ex-h">
+          <div class="card-head"><h2 class="t-section" id="ex-h">Example</h2><span class="t-eyebrow">As a founder sees it</span></div>
+          <p class="sample-subject" id="ex-subject"></p>
+          <p class="sample" id="ex-body"></p>
+        </section>
+        <section class="card" aria-labelledby="vars-h">
+          <h2 class="t-section" id="vars-h">Placeholders</h2>
+          <table class="var-table"><tbody>${def.vars.map((v) => `<tr><td class="mono">{${esc(v)}}</td><td class="cell-sub">${esc(VARIABLES[v])}</td></tr>`).join('')}</tbody></table>
+        </section>
+      </div>
+    </div>
+    <script type="application/json" id="email-data">${data}</script>`;
+}
+
+export function emailEditPage(o: { who: string; base: string; template: EmailRow; emailConfigured: boolean; sample: Record<string, string> }) {
+  return appPage(TEMPLATES[o.template.key].title, { who: o.who, base: o.base, active: 'Emails' }, emailEditHtml(o), EMAIL_JS);
+}
+
+/** The email editor: live example, save, test, revert; warns on leaving unsaved. */
+export const EMAIL_JS = String.raw`(function () {
+  var d = JSON.parse(document.getElementById('email-data').textContent);
+  var post = function (what, body) {
+    return fetch(d.base + '/emails/' + what, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json().then(function (x) { if (!r.ok) throw new Error(x.message || 'That did not work. Try again.'); return x; }); });
+  };
+  var api = window.EMAIL_API || {
+    save: function (b) { return post('save', b); },
+    test: function (b) { return post('test', b); },
+    reset: function (b) { return post('reset', b); },
+  };
+  var form = document.getElementById('email-form'), subject = document.getElementById('subject'), body = document.getElementById('body');
+  var saved = { subject: subject.value, body: body.value };
+  var dirty = function () { return subject.value !== saved.subject || body.value !== saved.body; };
+  var fill = function (text) { return text.replace(/\{([a-z_]+)\}/g, function (m, k) { return k in d.sample ? d.sample[k] : m; }); };
+  function preview() {
+    document.getElementById('ex-subject').textContent = fill(subject.value);
+    document.getElementById('ex-body').textContent = fill(body.value);
+  }
+  function state(changed) {
+    document.getElementById('state').innerHTML = changed ? '<span class="pill pill--ok">Changed</span>' : '<span class="pill pill--neutral">Default</span>';
+    document.getElementById('reset').hidden = !changed;
+  }
+  subject.addEventListener('input', preview); body.addEventListener('input', preview);
+  window.addEventListener('beforeunload', function (e) { if (dirty()) { e.preventDefault(); e.returnValue = ''; } });
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var done = UI.busy(document.getElementById('save'), 'Saving…');
+    api.save({ key: d.key, subject: subject.value, body: body.value }).then(function (x) {
+      saved = { subject: x.template.subject, body: x.template.body };
+      subject.value = saved.subject; body.value = saved.body; preview(); state(true);
+      UI.toast('Saved. Every email from now on uses this text.');
+    }).catch(function (err) { UI.toast(err.message, true); }).then(done);
+  });
+  document.getElementById('test').addEventListener('click', function () {
+    var done = UI.busy(this, 'Sending…');
+    api.test({ key: d.key, subject: subject.value, body: body.value }).then(function (x) {
+      UI.toast(x.emailConfigured ? 'Test sent to ' + x.sentTo + ', with example details.' : 'Not sent: the email service is not connected yet.', !x.emailConfigured);
+    }).catch(function (err) { UI.toast(err.message, true); }).then(done);
+  });
+  document.getElementById('reset').addEventListener('click', function () {
+    var btn = this;
+    UI.confirm('Revert to the default text?', 'Your changes to this email are replaced by the original text. Emails already sent stay as they were.', 'Yes, revert', function () {
+      var done = UI.busy(btn, 'Reverting…');
+      api.reset({ key: d.key }).then(function (x) {
+        saved = { subject: x.template.subject, body: x.template.body };
+        subject.value = saved.subject; body.value = saved.body; preview(); state(false);
+        UI.toast('Reverted to the default text.');
+      }).catch(function (err) { UI.toast(err.message, true); }).then(done);
+    });
+  });
+  preview();
+})();`;

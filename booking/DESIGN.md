@@ -12,7 +12,12 @@ colours only as tokens in `:root`, no inline `style` attributes).
   token each for the placeholder colour (#b3b3b3, §4), the dialog backdrop and
   the field focus ring (§4), button heights, toast duration and page width.
 - Single light theme (the rules define no dark values).
-- One screen, so no sidebar (§4 Zijbalk applies once there are more screens).
+- Two screens (Requests, Emails) and the email editor, so the sidebar of §4:
+  menu from one source (`NAV`), which also feeds the ⌘K / Ctrl+K search.
+  On phones (≤720px) the sidebar becomes a block above the content.
+- Email editor: the form card (Save black 40px, Send test to me white,
+  Revert to the default destructive with the dialog) beside an Example card
+  and the placeholder list; warns when leaving with unsaved changes.
 - Order (§5): title + intro with live counts → banner (email not connected)
   → slots card → toolbar (search, status filter; Export CSV right) → table.
 - Table: sortable headers (Time, Company, Received, Status), filters instant
@@ -24,8 +29,9 @@ colours only as tokens in `:root`, no inline `style` attributes).
 - Toasts: black, top right, success 4.5 s, errors stay until closed.
 - Language: the interface is English, so §6 applies in spirit: no em dashes,
   no exclamation marks, one word per concept ("request", "slot", "reviewer").
-- Preview: `npm run preview` builds `public/the-pitch/review-preview/` from
-  this same code with sample data.
+- Preview: `npm run preview` builds `public/the-pitch/review-preview/`
+  (requests, emails, one editor per email) from this same code with sample
+  data.
 
 ## The rules (owner, 2026-10-26, as supplied)
 

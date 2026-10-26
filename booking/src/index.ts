@@ -15,13 +15,22 @@
  *   POST /review/login     sends a login link to a listed reviewer
  *   GET  /review/auth?t=…  sets the session
  *   POST /review/decide    approve / deny a pending request
+ *   GET  /review/emails    the founder emails; /review/emails/<key> edits one
+ *   POST /review/emails/save | test | reset
  *   POST /review/logout
+ *
+ * Cron: hourly, expiry (only with HOLD_DAYS); 17:00 UTC (18:00 Amsterdam in
+ * winter), the daily overview to the reviewers (owner, 2026-10-26).
  */
 import { currentReviewer, LOGIN_MS, logoutCookie, sessionCookie, sign, verify } from './auth';
-import { copy } from './copy';
+import { copy, fill, isTemplateKey, SAMPLE, TEMPLATES, unknownVars } from './copy';
+import { digest, founderEmail, template, templates, values } from './emails';
 import { reviewers, type Application, type Env, type Slot, type Status } from './env';
 import { ics, send } from './mail';
-import { BUSY_JS, esc, loginPage, page, reviewPage } from './review';
+import { BUSY_JS, emailEditPage, emailsPage, esc, loginPage, page, reviewPage } from './review';
+
+/** 18:00 Amsterdam in winter (UTC+1); keep in step with wrangler.toml. */
+const DIGEST_CRON = '0 17 * * *';
 
 const json = (body: unknown, status = 200, headers: HeadersInit = {}) =>
   new Response(JSON.stringify(body), {
@@ -113,12 +122,8 @@ async function apply(env: Env, req: Request, ctx: ExecutionContext) {
   }
 
   const base = new URL(req.url).origin;
-  ctx.waitUntil(
-    Promise.all([
-      send(env, { to: a.email, ...copy.received(env, a, slot, `${base}/cancel?t=${a.cancel_token}`) }),
-      reviewers(env).length ? send(env, { to: reviewers(env), ...copy.newRequest(env, a, slot, `${base}/review`) }) : null,
-    ]),
-  );
+  // The team hears about it in the daily overview, not per request.
+  ctx.waitUntil(founderEmail(env, 'received', a, slot, `${base}/cancel?t=${a.cancel_token}`).then((m) => send(env, { to: a.email, ...m })));
   return json({ ok: true, slot: slot.label }, 201);
 }
 
@@ -152,8 +157,7 @@ async function cancel(env: Env, req: Request, ctx: ExecutionContext) {
     .bind(new Date().toISOString(), t)
     .first<Application>();
   if (!a) return page('Cancel', `<div><h1 class="t-title">${esc(env.EVENT_NAME)}</h1><p class="t-intro">${copy.pages.cancelGone}</p></div>`);
-  const slot = await env.DB.prepare('SELECT * FROM slots WHERE id = ?').bind(a.slot_id).first<Slot>();
-  if (slot && reviewers(env).length) ctx.waitUntil(send(env, { to: reviewers(env), ...copy.cancelled(a, slot) }));
+  // Reported in the daily overview.
   return page('Cancelled', `<div><h1 class="t-title">${esc(env.EVENT_NAME)}</h1><p class="t-intro">${copy.pages.cancelled}</p></div>`);
 }
 
@@ -204,16 +208,65 @@ async function review(env: Env, req: Request, url: URL, ctx: ExecutionContext) {
     if (a) {
       const slot = (await env.DB.prepare('SELECT * FROM slots WHERE id = ?').bind(a.slot_id).first<Slot>())!;
       ctx.waitUntil(
-        decision === 'approved'
-          ? send(env, {
-              to: a.email,
-              ...copy.approved(env, a, slot),
-              attachments: [{ filename: 'the-pitch.ics', content: ics(env, a.id, slot.starts_at, slot.ends_at, `${env.EVENT_NAME}: ${a.company}`), content_type: 'text/calendar' }],
-            })
-          : send(env, { to: a.email, ...copy.denied(env, a) }),
+        founderEmail(env, decision, a, slot).then((m) =>
+          send(env, {
+            to: a.email,
+            ...m,
+            attachments:
+              decision === 'approved'
+                ? [{ filename: 'the-pitch.ics', content: ics(env, a.id, slot.starts_at, slot.ends_at, `${plainTitle(env)}: ${a.company}`), content_type: 'text/calendar' }]
+                : undefined,
+          }),
+        ),
       );
     }
     return a ? json({ ok: true, status: decision }) : json({ error: 'stale', message: 'This request was already decided. Reload to see the latest state.' }, 409);
+  }
+
+  // ---- Founder emails: list, edit, save, test, reset.
+  const emailPath = path.replace(/\/+$/, '');
+  if (emailPath === '/review/emails' && req.method === 'GET') return emailsPage({ who, base: '/review', templates: await templates(env) });
+  const edit = emailPath.match(/^\/review\/emails\/([a-z]+)$/);
+  if (edit && req.method === 'GET') {
+    if (!isTemplateKey(edit[1])) return new Response('Not found', { status: 404 });
+    const v = values(env, SAMPLE, SAMPLE.time, `${url.origin}/cancel?t=example`);
+    return emailEditPage({ who, base: '/review', template: await template(env, edit[1]), emailConfigured: !!(env.MAIL_FROM && env.RESEND_API_KEY), sample: v });
+  }
+  const act = emailPath.match(/^\/review\/emails\/(save|test|reset)$/);
+  if (act && req.method === 'POST') {
+    if (!sameOrigin(req)) return json({ error: 'forbidden', message: 'Forbidden.' }, 403);
+    let body: { key?: unknown; subject?: unknown; body?: unknown } = {};
+    try {
+      body = await req.json();
+    } catch {
+      /* checked below */
+    }
+    const key = String(body.key ?? '');
+    if (!isTemplateKey(key)) return json({ error: 'invalid', message: 'Unknown email.' }, 400);
+    if (act[1] === 'reset') {
+      await env.DB.prepare('DELETE FROM email_templates WHERE key = ?').bind(key).run();
+      return json({ ok: true, template: await template(env, key) });
+    }
+    const subject = String(body.subject ?? '').trim();
+    const text = String(body.body ?? '').replace(/\r\n/g, '\n').trim();
+    if (!subject || !text) return json({ error: 'invalid', message: 'Subject and text cannot be empty.' }, 400);
+    if (subject.length > 200 || text.length > 5000) return json({ error: 'invalid', message: 'The subject or text is too long.' }, 400);
+    const unknown = unknownVars(key, subject + '\n' + text);
+    if (unknown.length)
+      return json({ error: 'invalid', message: `This email does not know ${unknown.map((u) => `{${u}}`).join(', ')}. Use only the placeholders listed.` }, 400);
+    if (act[1] === 'test') {
+      const v = values(env, SAMPLE, SAMPLE.time, `${url.origin}/cancel?t=test`);
+      await send(env, { to: who, subject: `[Test] ${fill(subject, v)}`, text: fill(text, v) });
+      return json({ ok: true, sentTo: who, emailConfigured: !!(env.MAIL_FROM && env.RESEND_API_KEY) });
+    }
+    const now = new Date().toISOString();
+    await env.DB.prepare(
+      `INSERT INTO email_templates (key, subject, body, updated_at, updated_by) VALUES (?, ?, ?, ?, ?)
+       ON CONFLICT (key) DO UPDATE SET subject = excluded.subject, body = excluded.body, updated_at = excluded.updated_at, updated_by = excluded.updated_by`,
+    )
+      .bind(key, subject, text, now, who)
+      .run();
+    return json({ ok: true, template: await template(env, key) });
   }
 
   if (path === '/review' && req.method === 'GET') {
@@ -224,6 +277,7 @@ async function review(env: Env, req: Request, url: URL, ctx: ExecutionContext) {
       ).all<Application & { label: string }>(),
     ]);
     return reviewPage({
+      base: '/review',
       event: env.EVENT_NAME,
       who,
       emailConfigured: !!(env.MAIL_FROM && env.RESEND_API_KEY),
@@ -250,13 +304,43 @@ async function expire(env: Env) {
     .all<Application>();
   for (const a of results) {
     const slot = await env.DB.prepare('SELECT * FROM slots WHERE id = ?').bind(a.slot_id).first<Slot>();
-    if (slot) await send(env, { to: a.email, ...copy.expired(env, a, slot) });
+    if (slot) await send(env, { to: a.email, ...(await founderEmail(env, 'expired', a, slot)) });
   }
 }
+
+const plainTitle = (env: Env) => env.EVENT_NAME.replace(/\s*_+\s*/, ' ');
+
+// ---- Daily overview to the reviewers -------------------------------------------
+
+async function meta(env: Env, key: string) {
+  return (await env.DB.prepare('SELECT value FROM meta WHERE key = ?').bind(key).first<{ value: string }>())?.value ?? null;
+}
+async function setMeta(env: Env, key: string, value: string) {
+  await env.DB.prepare('INSERT INTO meta (key, value) VALUES (?, ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value').bind(key, value).run();
+}
+
+async function dailyOverview(env: Env) {
+  const to = reviewers(env);
+  if (!to.length) return;
+  const now = new Date().toISOString();
+  const since = (await meta(env, 'last_digest_at')) ?? new Date(Date.now() - 86400000).toISOString();
+  const origin = (await meta(env, 'origin')) ?? '';
+  const d = await digest(env, since, `${origin}/review`);
+  if (d) await send(env, { to, ...d });
+  await setMeta(env, 'last_digest_at', now);
+}
+
+// The scheduled run has no request to learn its own address from, so the
+// address is kept from the first request this copy of the service sees.
+let originSaved = '';
 
 export default {
   async fetch(req: Request, env: Env, ctx: ExecutionContext) {
     const url = new URL(req.url);
+    if (originSaved !== url.origin) {
+      originSaved = url.origin;
+      ctx.waitUntil(setMeta(env, 'origin', url.origin).catch(() => {}));
+    }
     try {
       if (url.pathname === '/slots' || url.pathname === '/apply') {
         const h = cors(env, req);
@@ -278,7 +362,8 @@ export default {
       return json({ error: 'server', message: copy.errors.server }, 500, cors(env, req));
     }
   },
-  async scheduled(_: ScheduledController, env: Env) {
-    await expire(env);
+  async scheduled(controller: ScheduledController, env: Env) {
+    if (controller.cron === DIGEST_CRON) await dailyOverview(env);
+    else await expire(env);
   },
 } satisfies ExportedHandler<Env>;
