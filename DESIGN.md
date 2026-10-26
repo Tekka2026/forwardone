@@ -518,25 +518,20 @@ sheet, wording confirmed by the owner 2026-10-21).
   keeps the logo and Pitch us but drops LP login; the wordmark is a little
   larger there (24px high, 19px on phones ≤420px; elsewhere 20 / 15px), and
   the paper starts right under the header's own 24px bottom padding; the footer is the
-  copyright line only ("© FORWARD.one <year>."), black like the page, down
+  copyright line only ("© FORWARD.one <year>."), black, down
   to the page end. No floating navigation bar (owner, 2026-10-22), and no
   room kept for it at the bottom.
-- One black block (`.theme-dark`) from under the header, like the homepage
-  intro. On it a sheet of paper (owner, 2026-10-21, after a torn-paper
-  reference) carries the eyebrow ("Slush, Helsinki"), H1 and form; the event facts sit under
-  it on the black.
-- The paper: full content width, square top corners, light grey surface
+- One white block (light theme, header included; owner, 2026-10-26; before:
+  black, like the homepage intro) from the logo down to the event facts.
+  On it a sheet of paper (owner, 2026-10-21) carries the eyebrow ("Slush,
+  Helsinki"), H1 and form; the event facts sit under it on the white.
+- The paper: full content width, square corners, light grey surface
   (#e9e8e4 into #dfded9, a soft radial wash) with fine grain and a faint
   uneven wash (two inline SVG noise layers), padding 64px (48px at ≤880px,
-  24px at ≤640px; plus 24px at the bottom for the tear). Inside it the
+  24px at ≤640px). Inside it the
   colour tokens switch back to ink on paper (`--fg` #151515, muted
-  #6e6d68, dark solid button). The bottom edge is torn: one wandering line
-  (a point every 4px, fixed seed, so it tears the same way on every visit
-  and at every width) cuts the sheet's white fibre layer (#f7f6f2) with
-  fine teeth; the grey surface follows it 2–14px higher, so a ragged white
-  strip of varying width shows between. Drawn by script as two
-  `clip-path` polygons (`--tear-edge`, `--tear-paper`), redrawn on resize;
-  without script the edge stays straight.
+  #6e6d68, dark solid button). The bottom edge is straight (owner,
+  2026-10-26: the torn edge was removed as too gimmicky).
 - H1 "The ____ Pitch" on one line (no wrap), in Inter at weight 500, a
   step heavier than body copy (owner, 2026-10-22; the only heading on the
   site not in the display face), Display size and tracking. The blank is a line on the
@@ -590,12 +585,12 @@ sheet, wording confirmed by the owner 2026-10-21).
   four event facts over a hairline (When, Where, Apply by, The panel; mono
   labels), 4 columns, 2 at ≤880px, 1 at ≤640px.
 - Spacing (owner, 2026-10-22, tightened): paper padding 48px (32px at
-  ≤880px, 24px at ≤640px; +40px at the bottom, clear of the tear, owner 2026-10-22); eyebrow to
+  ≤880px, 24px at ≤640px; the same at the bottom since the tear went, owner 2026-10-26); eyebrow to
   H1 12px; H1 to lede 24px; lede to letter 24px; letter to button 24px
   (16/16 on phones, where the letter's line height adds the rest); letter
   line height 1.35 (normal leading; the blanks sit inside it at 1.15); privacy note 16px under the button; facts 48px under
   the paper (32px on phones) and the footer 48px under the facts (24px).
-  No minimum height on the black block.
+  No minimum height on the white block.
 - Intro motion: eyebrow, then "The", the blank and "Pitch" snap in like H1
   words; the first sentence of the letter eases in gently.
 - Until a form endpoint is set (`pitch.action`), the button does not post

@@ -1,8 +1,8 @@
 ---
 /**
  * The ____ Pitch (owner, 2026-10-21): landing page for FORWARD.one's live
- * pitch event at Slush. One black block under the header, and on it a sheet
- * of paper (grey, grainy, torn along the bottom) carrying:
+ * pitch event at Slush. One white block under the header, and on it a sheet
+ * of paper (grey, grainy) carrying:
  * - Eyebrow, then the H1 "The ____ Pitch" on one line. The blank is a line;
  *   as the visitor types the company name (the form's first field), the name
  *   is written onto it letter by letter in Covered By Your Grace, in red. When the
@@ -48,13 +48,13 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
 
 ---
 
-<Base title={pitch.meta.title} description={pitch.meta.description} darkTop minimal>
+<Base title={pitch.meta.title} description={pitch.meta.description} minimal>
   <link
     slot="head"
     rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Covered+By+Your+Grace&display=swap"
   />
-  <div class="pitch theme-dark" data-nav-dark>
+  <div class="pitch">
     <section class="section section--flush pitch__hero">
       <div class="wrap">
         <div class="pitch__paper" data-pitch-paper>
@@ -169,41 +169,6 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
     var company = document.querySelector('[data-pitch-company]');
     var form = document.querySelector('[data-pitch-form]');
     if (!title || !line || !hand || !company || !form) return;
-
-    // ---- Torn bottom edge of the paper (owner, 2026-10-21). ----------------
-    // Two jagged polygons, a point every few pixels whatever the width, from
-    // fixed seeds so the tear looks the same on every visit. The outer one
-    // cuts the sheet (its white fibre layer); the inner one cuts the grey
-    // surface higher and wavier, leaving a ragged white strip of varying
-    // width between them. Without script the bottom edge stays straight.
-    var paper = document.querySelector('[data-pitch-paper]');
-    var tornAt = 0;
-    function tearPaper() {
-      var w = paper.offsetWidth;
-      if (!w || w === tornAt) return;
-      tornAt = w;
-      var x = 7;
-      function rnd() { x = (x * 16807) % 2147483647; return (x - 1) / 2147483646; }
-      // One wandering tear line; the outer edge follows it with fine fibre
-      // teeth, the grey surface follows it a band higher, the band itself
-      // wandering between 2 and 14px.
-      var n = Math.max(30, Math.round(w / 4));
-      var edge = ['0 0', '100% 0'], surface = ['0 0', '100% 0'];
-      var y = 8, v = 0, band = 6, bv = 0;
-      for (var i = n; i >= 0; i--) {
-        v = v * 0.85 + (rnd() - 0.5) * 1.6;
-        y = Math.max(0, Math.min(18, y + v));
-        bv = bv * 0.8 + (rnd() - 0.5) * 1.2;
-        band = Math.max(2, Math.min(14, band + bv));
-        var fibre = rnd() * 2.5 + (rnd() < 0.04 ? rnd() * 5 : 0);
-        var at = ((i / n) * 100).toFixed(2) + '% calc(100% - ';
-        edge.push(at + (y + fibre).toFixed(1) + 'px)');
-        surface.push(at + (y + band + rnd() * 1.2).toFixed(1) + 'px)');
-      }
-      paper.style.setProperty('--tear-edge', 'polygon(' + edge.join(', ') + ')');
-      paper.style.setProperty('--tear-paper', 'polygon(' + surface.join(', ') + ')');
-    }
-    if (paper) tearPaper();
 
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -373,7 +338,6 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
     });
 
     function refit() {
-      if (paper) tearPaper();
       inputs.forEach(size);
       fit();
     }
@@ -386,15 +350,11 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
 </script>
 
 <style is:global>
-  /* Black block from under the header, like the homepage intro (see .intro
-     in src/pages/index.astro). No minimum height: the footer follows the
-     facts directly and its black runs on below. */
+  /* White from the header down to the facts (owner, 2026-10-26; before: a
+     black block under the header, like the homepage intro). No minimum
+     height: the black footer follows the facts directly and runs on below. */
   .pitch {
-    margin-top: calc(-1 * var(--header-h));
-    padding-top: var(--header-h);
     background: var(--bg);
-    box-shadow: 0 0 0 100vmax var(--bg);
-    clip-path: inset(-100vmax -100vmax 0);
   }
 </style>
 
@@ -407,7 +367,7 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
   }
 
   /* ---- The sheet of paper ----------------------------------------------- */
-  /* Light paper inside the black block: the colour tokens switch back to
+  /* Light paper inside the white block: the colour tokens switch back to
      ink on paper, so text, hairlines and the button read as on a light page. */
   .pitch__paper {
     --bg: #e9e8e4;
@@ -420,14 +380,11 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
     --btn-hover-shade: rgba(0, 0, 0, 0.06);
     --reveal-tint: #db8e00;
     position: relative;
-    padding: var(--gap-double) var(--gap-double) calc(var(--gap-double) + 40px);
+    padding: var(--gap-double) var(--gap-double) calc(var(--gap-double));
     color: var(--fg);
-    /* The white fibre layer, cut by the outer tear. */
-    background: #f7f6f2;
-    clip-path: var(--tear-edge);
+    background: var(--bg);
   }
-  /* The grey paper surface: grain, a faint uneven wash, cut by the inner
-     tear a little higher. */
+  /* The grey paper surface: grain and a faint uneven wash. */
   .pitch__paper::before {
     content: '';
     position: absolute;
@@ -437,7 +394,6 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='600'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.004 .008' numOctaves='2' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)'/%3E%3C/svg%3E"),
       radial-gradient(120% 90% at 30% 20%, #efeeea 0%, #e6e5e0 60%, #dfded9 100%);
     background-size: 240px 240px, 900px 600px, 100% 100%;
-    clip-path: var(--tear-paper);
   }
   .pitch__paper > * {
     position: relative;
@@ -603,7 +559,7 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
   }
   @media (max-width: 880px) {
     .pitch__paper {
-      padding: var(--space-8x) var(--space-8x) calc(var(--space-8x) + 40px);
+      padding: var(--space-8x) var(--space-8x) calc(var(--space-8x));
     }
   }
   @media (max-width: 640px) {
@@ -611,7 +567,7 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
       padding-bottom: var(--gap);
     }
     .pitch__paper {
-      padding: var(--gap) var(--gap) calc(var(--gap) + 40px);
+      padding: var(--gap) var(--gap) calc(var(--gap));
     }
     .pitch__intro {
       margin-top: var(--space-4x);
