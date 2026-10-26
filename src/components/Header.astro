@@ -42,7 +42,7 @@ const marks = partners.map((p) => ({
 ---
 
 <header class:list={['site-top', dark && 'site-top--dark theme-dark', minimal && 'site-top--minimal', forFounders && 'site-top--founders']}>
-  <div class="wrap site-top__row">
+  <div class:list={['wrap site-top__row', marks.length && 'site-top__row--brands']}>
     {
       marks.length ? (
         <div class="site-top__brands">
@@ -115,11 +115,21 @@ const marks = partners.map((p) => ({
     }
   }
   /* Partner logos (owner, 2026-10-26): in a row with the wordmark, each
-     as high as it (the artwork boxes are all cap/ascender to baseline). */
+     as high as it (the artwork boxes are all cap/ascender to baseline).
+     The row always fits its width, whatever page it is pasted into
+     (Webflow, owner 2026-10-26: the logos ran off on phones): the header
+     row is a size container, and gap and height follow its width. The
+     three artworks are 18.76 heights wide together (9.95 + 4.28 + 4.53),
+     so height = (width - 2 gaps) / 19, at most the wordmark's 19.2px. */
+  .site-top__row--brands {
+    container-type: inline-size;
+  }
   .site-top__brands {
+    --brand-gap: min(var(--gap-double), 6cqw); /* 48px, twice the 24px before (owner, 2026-10-26) */
+    --brand-h: min(19.2px, (100cqw - 2 * var(--brand-gap)) / 19);
     display: flex;
     align-items: center;
-    gap: var(--gap-double); /* owner, 2026-10-26: twice the 24px before */
+    gap: var(--brand-gap);
     min-width: 0;
   }
   .site-top__partner,
@@ -128,31 +138,11 @@ const marks = partners.map((p) => ({
     flex-shrink: 0;
     color: inherit;
   }
-  .site-top__brands :global(.site-top__partner-mark) {
+  .site-top .site-top__brands :global(.logo__mark),
+  .site-top .site-top__brands :global(.site-top__partner-mark) {
     display: block;
-    height: 20px;
+    height: var(--brand-h);
     width: auto;
-  }
-  .site-top--minimal .site-top__brands :global(.site-top__partner-mark) {
-    height: 19.2px;
-  }
-  @media (max-width: 420px) {
-    .site-top__brands {
-      gap: var(--gap);
-    }
-    .site-top .site-top__brands :global(.logo__mark),
-    .site-top .site-top__brands :global(.site-top__partner-mark) {
-      height: 13px;
-    }
-  }
-  @media (max-width: 360px) {
-    .site-top__brands {
-      gap: var(--space-4x);
-    }
-    .site-top .site-top__brands :global(.logo__mark),
-    .site-top .site-top__brands :global(.site-top__partner-mark) {
-      height: 12px;
-    }
   }
   /* Founders page on phones: "For investors" stays (unlike Pitch us), so
      the logo and the two buttons sit closer to fit down to 320px. */

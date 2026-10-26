@@ -523,9 +523,11 @@ sheet, wording confirmed by the owner 2026-10-21).
   the 24 / 19px before; elsewhere 20 / 15px). Next to it, a joint effort
   (owner, 2026-10-26), the Balnord (linked to balnord.vc) and HCVC logos
   (`src/assets/brand/`, currentColor), each exactly as high as the
-  wordmark, 48px apart (owner, 2026-10-26; before: 24px) (`Header` `partners`, from `pitch.hosts`); on phones
-  ≤420px all three are 13px high, 24px apart, and 12px high, 16px apart
-  at ≤360px so the row fits down to 320px. Then
+  wordmark, 48px apart (owner, 2026-10-26; before: 24px) (`Header` `partners`, from `pitch.hosts`). The row always
+  fits its width, also when pasted into another site (Webflow): the header
+  row is a size container; the gap is min(48px, 6% of the row) and the
+  height min(19.2px, (row − 2 gaps) / 19), e.g. about 16px on a 390px
+  phone, 12.6px at 320px (owner, 2026-10-26: the logos ran off on phones). Then
   the eyebrow starts 24px under the header's own 24px bottom padding; the footer is the
   copyright line only ("© FORWARD.one <year>."), black, down
   to the page end. No floating navigation bar (owner, 2026-10-22), and no

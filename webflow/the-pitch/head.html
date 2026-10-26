@@ -137,16 +137,10 @@ to{opacity:1;transform:translateY(0)}
 .fo-site-top[data-astro-cid-nen7h5rs].fo-site-top--minimal .fo-logo__mark{height:19.2px}
 @media (width<=420px){.fo-site-top[data-astro-cid-nen7h5rs].fo-site-top--minimal .fo-logo__mark{height:15.2px}
 }
-.fo-site-top__brands[data-astro-cid-nen7h5rs]{align-items:center;gap:var(--gap-double);min-width:0;display:flex}
+.fo-site-top__row--brands[data-astro-cid-nen7h5rs]{container-type:inline-size}
+.fo-site-top__brands[data-astro-cid-nen7h5rs]{--brand-gap:min(var(--gap-double), 6cqw);--brand-h:min(19.2px, (100cqw - 2 * var(--brand-gap)) / 19);align-items:center;gap:var(--brand-gap);min-width:0;display:flex}
 .fo-site-top__partner[data-astro-cid-nen7h5rs],.fo-site-top__brands[data-astro-cid-nen7h5rs] .fo-logo{color:inherit;flex-shrink:0;display:inline-flex}
-.fo-site-top__brands[data-astro-cid-nen7h5rs] .fo-site-top__partner-mark{width:auto;height:20px;display:block}
-.fo-site-top--minimal[data-astro-cid-nen7h5rs] .fo-site-top__brands[data-astro-cid-nen7h5rs] .fo-site-top__partner-mark{height:19.2px}
-@media (width<=420px){.fo-site-top__brands[data-astro-cid-nen7h5rs]{gap:var(--gap)}
-.fo-site-top[data-astro-cid-nen7h5rs] .fo-site-top__brands[data-astro-cid-nen7h5rs] .fo-logo__mark,.fo-site-top[data-astro-cid-nen7h5rs] .fo-site-top__brands[data-astro-cid-nen7h5rs] .fo-site-top__partner-mark{height:13px}
-}
-@media (width<=360px){.fo-site-top__brands[data-astro-cid-nen7h5rs]{gap:var(--space-4x)}
-.fo-site-top[data-astro-cid-nen7h5rs] .fo-site-top__brands[data-astro-cid-nen7h5rs] .fo-logo__mark,.fo-site-top[data-astro-cid-nen7h5rs] .fo-site-top__brands[data-astro-cid-nen7h5rs] .fo-site-top__partner-mark{height:12px}
-}
+.fo-site-top[data-astro-cid-nen7h5rs] .fo-site-top__brands[data-astro-cid-nen7h5rs] .fo-logo__mark,.fo-site-top[data-astro-cid-nen7h5rs] .fo-site-top__brands[data-astro-cid-nen7h5rs] .fo-site-top__partner-mark{height:var(--brand-h);width:auto;display:block}
 @media (width<=640px){.site-top--founders[data-astro-cid-nen7h5rs] .fo-site-top__row[data-astro-cid-nen7h5rs]{gap:var(--gap-half)}
 .site-top__actions[data-astro-cid-nen7h5rs] .site-top__pitch{display:none}
 }
