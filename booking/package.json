@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
-    "check": "tsc --noEmit",
+    "check": "tsc --noEmit && node scripts/design-lint.mjs",
     "test": "node --test test/",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy",
+    "preview": "node --experimental-strip-types --no-warnings scripts/preview.mjs"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20261019.1",

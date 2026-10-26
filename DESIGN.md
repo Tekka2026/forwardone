@@ -511,6 +511,9 @@ and classes, because the homepage components read their copy from `home.ts`:
 
 ### The ____ Pitch (`/the-pitch`)
 
+The team's review dashboard for this page (`booking/`, `/review`) follows its own
+rules in `booking/DESIGN.md` (owner, 2026-10-26), not this file.
+
 `src/pages/the-pitch.astro`; copy in `src/content/pitch.ts`. Owner,
 2026-10-21: landing page for FORWARD.one's live pitch event at Slush
 (founders pitch to FORWARD.one, Balnord (balnord.vc, owner 2026-10-22) and HCVC (owner 2026-10-26); the winner gets a term

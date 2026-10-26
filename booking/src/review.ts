@@ -1,102 +1,455 @@
 /**
- * The team's review page: every slot with who holds it, and the requests
- * with Approve / Deny. Plain server-rendered HTML in the site's look
- * (Inter, black on white, pill buttons); no script.
+ * The team's review dashboard (/review) and its login, built on the
+ * dashboard design rules in booking/DESIGN.md (owner, 2026-10-26).
+ *
+ * The server sends a shell with the data as JSON; the client script below
+ * renders the table, filters, sorting, dialog and toasts, and calls
+ * `window.REVIEW_API` for decisions. The preview on the site
+ * (scripts/preview.mjs → public/the-pitch/review-preview/) uses this same
+ * file with sample data and a local stand-in for the API, so the preview and
+ * the real dashboard cannot drift apart.
  */
-import type { Application, Env, Slot } from './env';
+import type { Application, Slot } from './env';
 
-const esc = (s: unknown) =>
+export const esc = (s: unknown) =>
   String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 
-const STYLE = `
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400..600&display=swap');
-  :root { --fg:#111; --muted:#666; --hair:rgba(0,0,0,.14); --ok:#05a85a; --no:#e0251b; }
-  * { box-sizing: border-box; }
-  body { margin:0; font:16px/1.5 Inter, system-ui, sans-serif; color:var(--fg); background:#fff; }
-  main { max-width:1100px; margin:0 auto; padding:24px; }
-  h1 { font-weight:500; font-size:32px; margin:24px 0 8px; }
-  h2 { font-weight:500; font-size:20px; margin:40px 0 12px; }
-  p { margin:8px 0; }
-  .muted { color:var(--muted); }
-  table { width:100%; border-collapse:collapse; font-size:14px; }
-  th, td { text-align:left; vertical-align:top; padding:10px 8px; border-top:1px solid var(--hair); }
-  th { font-weight:500; color:var(--muted); }
-  .slots { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:8px; }
-  .slot { border:1px solid var(--hair); padding:8px 12px; font-size:14px; }
-  .slot b { font-weight:500; }
-  .tag { display:inline-block; font-size:12px; padding:0 8px; border-radius:999px; border:1px solid var(--hair); }
-  .tag--approved { border-color:var(--ok); color:var(--ok); }
-  .tag--pending { border-color:#c98a00; color:#a06e00; }
-  form { display:inline; margin:0; }
-  button, input[type=email] { font:inherit; font-size:14px; height:32px; border-radius:999px; padding:0 14px; }
-  button { border:0; background:#111; color:#fff; cursor:pointer; }
-  button.ghost { background:#fff; color:#111; box-shadow:inset 0 0 0 1px var(--hair); }
-  input[type=email] { border:1px solid var(--hair); min-width:260px; }
-  .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-  .top { display:flex; justify-content:space-between; align-items:center; gap:16px; }
-  a { color:inherit; }
+export const FONTS =
+  '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
+  '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">';
+
+/* Every value comes from a token (booking/DESIGN.md §1); `npm run check`
+   fails on a colour literal outside :root (scripts/design-lint.mjs). */
+export const CSS = `
+:root {
+  --bg: #f9f9fa; --bg-elev: #ffffff;
+  --border: #eaeaea; --border-strong: #d4d4d4;
+  --fg: #000000; --fg-muted: #666666; --fg-faint: #8f8f8f; --placeholder: #b3b3b3;
+  --accent: #000000; --accent-fg: #ffffff;
+  --geist-blue: #0070f3;
+  --ok-bg: #ecfdf5; --ok-border: #a7f3d0; --ok-fg: #047857;
+  --err-bg: #fef2f2; --err-border: #fecaca; --err-fg: #b91c1c;
+  --warn-bg: #fff7ed; --warn-border: #fed7aa; --warn-fg: #c2410c;
+  --neutral-bg: #f5f5f5; --neutral-border: #e5e5e5; --neutral-fg: #666666;
+  --scrim: rgba(0, 0, 0, 0.4); --focus-field: rgba(0, 0, 0, 0.1);
+  --radius: 10px; --radius-sm: 6px;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05); --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.08);
+  --font: "Geist", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --btn: 40px; --btn-sm: 32px;
+  --toast-ms: 4500ms; --t-fast: 120ms;
+  --gutter: 16px; --page-max: 1100px;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 14px;
+  line-height: 1.5; letter-spacing: -0.011em; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+}
+main {
+  max-width: var(--page-max); margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px;
+  padding-block: 32px 64px;
+  padding-left: max(var(--gutter), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
+}
+:focus-visible { outline: 2px solid var(--geist-blue); outline-offset: 2px; }
+a { color: inherit; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.block { width: 100%; }
+.flush { margin: 0; }
+.mono { font-family: var(--mono); letter-spacing: 0; }
+
+/* Typography: five levels (§2). */
+.t-title { font-size: 26px; font-weight: 700; line-height: 1.2; margin: 0; text-wrap: balance; }
+.t-intro { font-size: 14.5px; color: var(--fg-muted); line-height: 1.55; margin: 6px 0 0; max-width: 65ch; }
+.t-section { font-size: 15px; font-weight: 600; color: var(--fg); margin: 0; }
+.t-label { display: block; font-size: 13px; font-weight: 500; color: var(--fg-muted); margin-bottom: 7px; }
+.t-eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.045em; color: var(--fg-faint); }
+.t-help { font-size: 12.5px; color: var(--fg-faint); margin: 6px 0 0; }
+
+.head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+.who { display: flex; align-items: center; gap: 8px; color: var(--fg-muted); font-size: 13px; }
+
+/* Buttons: 40px and 32px only (§3). */
+.btn {
+  font: inherit; font-size: 14px; font-weight: 500; height: var(--btn); padding: 0 16px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong); background: var(--bg-elev); color: var(--fg); cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px; text-decoration: none; white-space: nowrap;
+  transition: border-color var(--t-fast), background-color var(--t-fast);
+}
+.btn:hover { border-color: var(--fg-faint); }
+.btn--sm { height: var(--btn-sm); padding: 0 12px; font-size: 13px; }
+.btn--primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.btn--primary:hover { border-color: var(--accent); }
+.btn--warn { color: var(--warn-fg); border-color: var(--warn-border); }
+.btn--warn:hover { border-color: var(--warn-fg); }
+.btn--danger { background: var(--err-fg); color: var(--accent-fg); border-color: var(--err-fg); }
+.btn:disabled { cursor: default; opacity: 0.55; }
+
+/* Fields (§4). */
+.field {
+  font: inherit; font-size: 14px; padding: 9px 11px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border); background: var(--bg-elev); color: var(--fg); min-width: 0;
+}
+.field::placeholder { color: var(--placeholder); }
+.field:focus { outline: none; border-color: var(--fg); box-shadow: 0 0 0 3px var(--focus-field); }
+.field:focus-visible { outline: none; }
+select.field {
+  appearance: none; -webkit-appearance: none; padding-right: 32px; cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--fg-muted) 50%), linear-gradient(135deg, var(--fg-muted) 50%, transparent 50%);
+  background-position: calc(100% - 15px) 50%, calc(100% - 10px) 50%; background-size: 5px 5px; background-repeat: no-repeat;
+}
+
+/* Card: dashboards and details only, never lists (§4). */
+.card { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; display: grid; gap: 16px; }
+.card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+
+.slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 8px; }
+.slot { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; display: grid; gap: 4px; align-content: start; min-height: 74px; }
+.slot-time { font-weight: 600; font-variant-numeric: tabular-nums; }
+.slot-who { font-size: 13px; overflow-wrap: anywhere; }
+
+/* Status pills (§4). */
+.pill { display: inline-block; font-size: 12px; font-weight: 500; line-height: 20px; padding: 0 8px; border-radius: 999px; border: 1px solid; white-space: nowrap; }
+.pill--ok { background: var(--ok-bg); border-color: var(--ok-border); color: var(--ok-fg); }
+.pill--err { background: var(--err-bg); border-color: var(--err-border); color: var(--err-fg); }
+.pill--warn { background: var(--warn-bg); border-color: var(--warn-border); color: var(--warn-fg); }
+.pill--neutral { background: var(--neutral-bg); border-color: var(--neutral-border); color: var(--neutral-fg); }
+
+/* Banner: the state of the page (§4). */
+.banner { border: 1px solid; border-radius: var(--radius-sm); padding: 10px 12px; font-size: 13.5px; }
+.banner--warn { background: var(--warn-bg); border-color: var(--warn-border); color: var(--warn-fg); }
+.banner--neutral { background: var(--neutral-bg); border-color: var(--neutral-border); color: var(--neutral-fg); }
+.banner--ok { background: var(--ok-bg); border-color: var(--ok-border); color: var(--ok-fg); }
+.banner--err { background: var(--err-bg); border-color: var(--err-border); color: var(--err-fg); }
+
+/* Toolbar: search and filters left, export right (§5). */
+.toolbar { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center; }
+.toolbar-left { display: flex; gap: 8px; flex-wrap: wrap; flex: 1 1 320px; }
+.toolbar-left .field { height: var(--btn-sm); padding-block: 0; }
+.toolbar-left input.field { flex: 1 1 200px; max-width: 320px; }
+
+/* Records: a real table in a bordered wrapper (§4). */
+.table-wrap { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius); overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+th {
+  text-align: left; font-size: 12px; font-weight: 600; color: var(--fg-muted); background: var(--bg);
+  padding: 9px 14px; border-bottom: 1px solid var(--border); white-space: nowrap;
+}
+th button { all: unset; cursor: pointer; display: inline-flex; gap: 4px; align-items: center; }
+th button:focus-visible { outline: 2px solid var(--geist-blue); outline-offset: 2px; }
+th [aria-hidden] { color: var(--fg-faint); }
+td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+tbody tr { transition: box-shadow var(--t-fast); }
+tbody tr:hover { box-shadow: inset 0 0 0 1px var(--border-strong); }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.cell-sub { color: var(--fg-muted); font-size: 12.5px; }
+.row-actions { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; }
+.only-sm { display: none; }
+.answer { font-weight: 500; }
+
+/* Empty state (§4). */
+.empty {
+  border: 1px dashed var(--border-strong); border-radius: var(--radius); padding: 32px 16px;
+  display: grid; justify-items: center; gap: 12px; text-align: center; color: var(--fg-muted);
+}
+
+/* Toast: what an action just did, top right (§4). */
+.toasts {
+  position: fixed; z-index: 30; display: grid; gap: 8px; width: min(360px, calc(100vw - 32px));
+  top: calc(16px + env(safe-area-inset-top, 0px)); right: calc(16px + env(safe-area-inset-right, 0px));
+}
+.toast {
+  background: var(--accent); color: var(--accent-fg); border-radius: var(--radius); padding: 12px 14px;
+  box-shadow: var(--shadow-md); display: flex; gap: 12px; align-items: flex-start; font-size: 13.5px;
+}
+.toast p { margin: 0; flex: 1; }
+.toast button { all: unset; cursor: pointer; color: var(--fg-faint); font-size: 13px; }
+.toast button:focus-visible { outline: 2px solid var(--geist-blue); outline-offset: 2px; }
+
+/* Confirm dialog (§4). */
+dialog {
+  border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; max-width: min(420px, calc(100vw - 32px));
+  box-shadow: var(--shadow-md); background: var(--bg-elev); color: var(--fg);
+}
+dialog::backdrop { background: var(--scrim); }
+.dialog-body { display: grid; gap: 8px; }
+.dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+
+/* Login. */
+.login { max-width: 420px; display: grid; gap: 20px; }
+.login form { display: grid; gap: 12px; }
+
+@media (max-width: 720px) {
+  .hide-sm { display: none; }
+  .only-sm { display: flex; }
+  .row-actions { justify-content: flex-start; margin-top: 8px; }
+  td, th { padding-left: 10px; padding-right: 10px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 `;
 
-export function page(title: string, body: string) {
+export function page(title: string, body: string, extraHead = '') {
   return new Response(
-    `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>${esc(title)}</title><style>${STYLE}</style></head><body><main>${body}</main></body></html>`,
+    `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="robots" content="noindex"><title>${esc(title)}</title>${FONTS}<style>${CSS}</style>${extraHead}</head><body><main>${body}</main></body></html>`,
     { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' } },
   );
 }
 
-export function loginPage(env: Env, message = '') {
-  return page(
-    'Review: log in',
-    `<h1>${esc(env.EVENT_NAME)}: review</h1>
-     <p class="muted">Reviewers log in with a link sent to their email.</p>
-     ${message ? `<p>${esc(message)}</p>` : ''}
-     <form method="post" action="/review/login" class="row">
-       <input type="email" name="email" required autocomplete="email" placeholder="you@forward.one" aria-label="Email address">
-       <button type="submit">Send me a link</button>
-     </form>`,
-  );
+export function loginHtml(eventName: string, message = '') {
+  return `<section class="login" aria-labelledby="login-h">
+    <div>
+      <h1 class="t-title" id="login-h">Pitch requests</h1>
+      <p class="t-intro">${esc(eventName)}. Reviewers log in with a link sent to their email; only addresses on the reviewers list get one.</p>
+    </div>
+    ${message ? `<p class="banner banner--neutral" role="status">${esc(message)}</p>` : ''}
+    <form method="post" action="/review/login" data-busy="Sending…">
+      <div>
+        <label class="t-label" for="login-email">Email address</label>
+        <input class="field block" type="email" id="login-email" name="email" required autocomplete="email" placeholder="you@forward.one">
+        <p class="t-help">The link works for 15 minutes.</p>
+      </div>
+      <div><button class="btn btn--primary" type="submit">Send me a link</button></div>
+    </form>
+  </section>
+  <script>${BUSY_JS}</script>`;
 }
 
-export function reviewPage(env: Env, who: string, slots: Slot[], apps: (Application & { label: string })[], flash = '') {
-  const holder = new Map(apps.filter((a) => a.status === 'pending' || a.status === 'approved').map((a) => [a.slot_id, a]));
-  const slotList = slots.length
-    ? `<div class="slots">${slots
-        .map((s) => {
-          const a = holder.get(s.id);
-          return `<div class="slot"><b>${esc(s.label)}</b><br>${
-            a ? `${esc(a.company)} <span class="tag tag--${a.status}">${a.status}</span>` : '<span class="muted">free</span>'
-          }</div>`;
-        })
-        .join('')}</div>`
-    : '<p class="muted">No slots yet (booking/slots.json).</p>';
+export function loginPage(eventName: string, message = '') {
+  return page('Pitch requests: log in', loginHtml(eventName, message));
+}
 
-  const row = (a: Application & { label: string }) => `<tr>
-      <td><b>${esc(a.label)}</b></td>
-      <td><b>${esc(a.company)}</b><br>${esc(a.building)}${a.deck ? `<br><a href="${esc(a.deck)}" rel="noopener noreferrer" target="_blank">Deck</a>` : ''}</td>
-      <td>${esc(a.name)}${a.role ? `, ${esc(a.role)}` : ''}<br><a href="mailto:${esc(a.email)}">${esc(a.email)}</a>${a.phone ? `<br>${esc(a.phone)}` : ''}</td>
-      <td class="muted">${esc(a.created_at.slice(0, 16).replace('T', ' '))} UTC</td>
-      <td>${
-        a.status === 'pending'
-          ? `<div class="row">
-               <form method="post" action="/review/decide"><input type="hidden" name="id" value="${esc(a.id)}"><input type="hidden" name="decision" value="approved"><button type="submit">Approve</button></form>
-               <form method="post" action="/review/decide"><input type="hidden" name="id" value="${esc(a.id)}"><input type="hidden" name="decision" value="denied"><button type="submit" class="ghost">Deny</button></form>
-             </div>`
-          : `<span class="tag tag--${a.status}">${a.status}</span>${a.decided_by ? `<br><span class="muted">${esc(a.decided_by)}</span>` : ''}`
-      }</td>
-    </tr>`;
-  const table = (list: (Application & { label: string })[]) =>
-    list.length
-      ? `<table><thead><tr><th>Time</th><th>Company</th><th>Founder</th><th>Received</th><th></th></tr></thead><tbody>${list.map(row).join('')}</tbody></table>`
-      : '<p class="muted">None.</p>';
+export type ReviewData = {
+  event: string;
+  who: string;
+  emailConfigured: boolean;
+  pageUrl: string;
+  slots: Pick<Slot, 'id' | 'label'>[];
+  apps: (Pick<Application, 'id' | 'slot_id' | 'status' | 'company' | 'name' | 'role' | 'email' | 'phone' | 'building' | 'deck' | 'created_at' | 'decided_by'> & { label: string })[];
+};
 
-  return page(
-    'Review',
-    `<div class="top"><h1>${esc(env.EVENT_NAME)}: review</h1>
-       <form method="post" action="/review/logout"><button type="submit" class="ghost">Log out</button></form></div>
-     <p class="muted">Logged in as ${esc(who)}. Times are Helsinki time. Denying a request frees its slot at once.</p>
-     ${flash ? `<p>${esc(flash)}</p>` : ''}
-     <h2>Slots</h2>${slotList}
-     <h2>To review</h2>${table(apps.filter((a) => a.status === 'pending'))}
-     <h2>Decided</h2>${table(apps.filter((a) => a.status !== 'pending'))}`,
-  );
+/** The dashboard's markup: a shell the client script fills in. */
+export function dashboardHtml(data: ReviewData, logout = true) {
+  const json = JSON.stringify(data).replace(/</g, '\\u003c');
+  return `<div class="head">
+      <div>
+        <h1 class="t-title">Pitch requests</h1>
+        <p class="t-intro" id="intro">${esc(data.event)}. Times are Helsinki time.</p>
+      </div>
+      <div class="who"><span>${esc(data.who)}</span>${
+        logout ? '<form method="post" action="/review/logout"><button class="btn btn--sm" type="submit">Log out</button></form>' : '<button class="btn btn--sm" type="button" id="logout">Log out</button>'
+      }</div>
+    </div>
+    <div id="banners">${data.emailConfigured ? '' : '<p class="banner banner--warn">Emails are not sent yet: the email service is not connected. Decisions are saved, but founders are not told.</p>'}</div>
+    <section class="card" aria-labelledby="slots-h">
+      <div class="card-head"><h2 class="t-section" id="slots-h">Slots</h2><span class="t-eyebrow" id="slot-count"></span></div>
+      <div class="slots" id="slots"></div>
+    </section>
+    <div class="toolbar" role="search">
+      <div class="toolbar-left">
+        <label class="sr-only" for="q">Search</label>
+        <input class="field" type="search" id="q" placeholder="Search company, founder or email" autocomplete="off">
+        <label class="sr-only" for="status">Status</label>
+        <select class="field" id="status">
+          <option value="">All statuses</option>
+          <option value="pending">Waiting</option>
+          <option value="approved">Approved</option>
+          <option value="denied">Denied</option>
+          <option value="cancelled">Cancelled</option>
+          <option value="expired">Expired</option>
+        </select>
+      </div>
+      <button class="btn btn--sm" type="button" id="export">Export CSV</button>
+    </div>
+    <div id="list"></div>
+    <div class="toasts" id="toasts" aria-live="polite"></div>
+    <dialog id="confirm" aria-labelledby="confirm-h">
+      <div class="dialog-body"><h2 class="t-section" id="confirm-h"></h2><p class="t-intro flush" id="confirm-text"></p></div>
+      <div class="dialog-actions">
+        <button class="btn" type="button" id="confirm-cancel">Cancel</button>
+        <button class="btn btn--danger" type="button" id="confirm-ok"></button>
+      </div>
+    </dialog>
+    <script type="application/json" id="review-data">${json}</script>`;
+}
+
+/** Busy state on every submit button: disabled, other text (§3). */
+export const BUSY_JS = `document.querySelectorAll('form[data-busy]').forEach(function (f) {
+  f.addEventListener('submit', function () { var b = f.querySelector('[type=submit]'); if (b) { b.disabled = true; b.textContent = f.dataset.busy; } });
+});`;
+
+/** The dashboard's behaviour. Decisions go through window.REVIEW_API. */
+export const CLIENT_JS = String.raw`(function () {
+  var data = JSON.parse(document.getElementById('review-data').textContent);
+  var api = window.REVIEW_API || {
+    decide: function (id, decision) {
+      return fetch('/review/decide', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ id: id, decision: decision }) })
+        .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d.message || 'The decision was not saved.'); return d; }); });
+    },
+  };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var STATUS = {
+    pending: ['Waiting', 'warn'], approved: ['Approved', 'ok'], denied: ['Denied', 'err'],
+    cancelled: ['Cancelled', 'neutral'], expired: ['Expired', 'neutral'],
+  };
+  // Row actions; on phones they sit under the status instead of in their own column.
+  var actions = function (a, cls) {
+    return a.status === 'pending' ? '<div class="row-actions ' + cls + '"><button class="btn btn--sm" type="button" data-approve="' + esc(a.id) + '">Approve</button><button class="btn btn--sm btn--warn" type="button" data-deny="' + esc(a.id) + '">Deny</button></div>' : '';
+  };
+  var pill = function (s) { return '<span class="pill pill--' + STATUS[s][1] + '">' + STATUS[s][0] + '</span>'; };
+  var live = function (a) { return a.status === 'pending' || a.status === 'approved'; };
+  var when = function (iso) { var d = new Date(iso); return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ', ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); };
+
+  // ---- Filters and sorting: instant, kept in the URL, back button works.
+  var q = document.getElementById('q'), status = document.getElementById('status');
+  var state = { q: '', status: '', sort: 'time', dir: 1 };
+  function readUrl() {
+    var p = new URLSearchParams(location.search);
+    state.q = p.get('q') || ''; state.status = p.get('status') || '';
+    state.sort = p.get('sort') || 'time'; state.dir = p.get('dir') === 'desc' ? -1 : 1;
+    q.value = state.q; status.value = state.status;
+  }
+  function writeUrl() {
+    var p = new URLSearchParams();
+    if (state.q) p.set('q', state.q);
+    if (state.status) p.set('status', state.status);
+    if (state.sort !== 'time') p.set('sort', state.sort);
+    if (state.dir < 0) p.set('dir', 'desc');
+    var s = p.toString();
+    try { history.pushState(null, '', location.pathname + (s ? '?' + s : '')); } catch (e) {}
+  }
+  var timer, shown = [];
+  q.addEventListener('input', function () { clearTimeout(timer); timer = setTimeout(function () { state.q = q.value.trim(); writeUrl(); render(); }, 300); });
+  status.addEventListener('change', function () { state.status = status.value; writeUrl(); render(); });
+  window.addEventListener('popstate', function () { readUrl(); render(); });
+
+  var KEYS = {
+    time: function (a) { return a.label; }, company: function (a) { return a.company.toLowerCase(); },
+    received: function (a) { return a.created_at; }, status: function (a) { return a.status; },
+  };
+  function sortBy(key) { if (state.sort === key) state.dir = -state.dir; else { state.sort = key; state.dir = 1; } writeUrl(); render(); }
+
+  // ---- Toasts: success fades after --toast-ms, an error stays until closed.
+  var toasts = document.getElementById('toasts');
+  var toastMs = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--toast-ms')) || 4500;
+  function toast(text, isError) {
+    var t = document.createElement('div');
+    t.className = 'toast'; t.setAttribute('role', isError ? 'alert' : 'status');
+    t.innerHTML = '<p></p><button type="button" aria-label="Close">Close</button>';
+    t.querySelector('p').textContent = text;
+    t.querySelector('button').addEventListener('click', function () { t.remove(); });
+    toasts.appendChild(t);
+    if (!isError) setTimeout(function () { t.remove(); }, toastMs);
+  }
+
+  // ---- Confirm dialog: Escape closes, focus starts on Cancel.
+  var dlg = document.getElementById('confirm'), pending = null;
+  function confirmAsk(title, text, yes, then) {
+    document.getElementById('confirm-h').textContent = title;
+    document.getElementById('confirm-text').textContent = text;
+    document.getElementById('confirm-ok').textContent = yes;
+    pending = then;
+    dlg.showModal();
+    document.getElementById('confirm-cancel').focus();
+  }
+  document.getElementById('confirm-cancel').addEventListener('click', function () { dlg.close(); });
+  dlg.addEventListener('close', function () { pending = null; });
+  document.getElementById('confirm-ok').addEventListener('click', function () { var f = pending; pending = null; dlg.close(); if (f) f(); });
+
+  // ---- Decisions.
+  function decide(a, decision, btn) {
+    btn.disabled = true; btn.textContent = decision === 'approved' ? 'Approving…' : 'Denying…';
+    api.decide(a.id, decision).then(function () {
+      a.status = decision; a.decided_by = data.who;
+      toast(decision === 'approved'
+        ? 'Approved ' + a.company + ' for ' + a.label + '.' + (data.emailConfigured ? ' The confirmation with a calendar invite is on its way.' : '')
+        : 'Denied ' + a.company + '. The ' + a.label + ' slot is free again.' + (data.emailConfigured ? ' The founder gets an email.' : ''));
+      render();
+    }).catch(function (e) { toast(e.message || 'The decision was not saved. Try again.', true); render(); });
+  }
+
+  // ---- Render.
+  function render() {
+    var holder = {};
+    data.apps.filter(live).forEach(function (a) { holder[a.slot_id] = a; });
+    document.getElementById('slots').innerHTML = data.slots.length ? data.slots.map(function (s) {
+      var a = holder[s.id];
+      return '<div class="slot"><span class="slot-time">' + esc(s.label) + '</span>' +
+        (a ? '<span class="slot-who">' + esc(a.company) + '</span><span>' + pill(a.status) + '</span>' : '<span><span class="pill pill--neutral">Free</span></span>') + '</div>';
+    }).join('') : '<div class="empty">No slots yet. They come from booking/slots.json.</div>';
+    var taken = Object.keys(holder).length;
+    document.getElementById('slot-count').textContent = taken + ' of ' + data.slots.length + ' taken';
+
+    var waiting = data.apps.filter(function (a) { return a.status === 'pending'; }).length;
+    document.getElementById('intro').textContent = data.event + '. ' + data.apps.length + (data.apps.length === 1 ? ' request, ' : ' requests, ') + waiting + ' waiting for review. Times are Helsinki time.';
+
+    var needle = state.q.toLowerCase();
+    var rows = data.apps.filter(function (a) {
+      if (state.status && a.status !== state.status) return false;
+      if (!needle) return true;
+      return [a.company, a.name, a.email, a.building].join(' ').toLowerCase().indexOf(needle) > -1;
+    });
+    var key = KEYS[state.sort] || KEYS.time;
+    rows.sort(function (x, y) { var a = key(x), b = key(y); return a < b ? -state.dir : a > b ? state.dir : 0; });
+
+    shown = rows;
+    var list = document.getElementById('list');
+    if (!data.apps.length) {
+      list.innerHTML = '<div class="empty"><p class="flush">No requests yet. They appear here as soon as a founder sends the letter.</p><a class="btn btn--sm" href="' + esc(data.pageUrl) + '" target="_blank" rel="noopener">Open the pitch page</a></div>';
+      return;
+    }
+    if (!rows.length) {
+      list.innerHTML = '<div class="empty"><p class="flush">No requests match these filters.</p><button class="btn btn--sm" type="button" id="clear">Clear filters</button></div>';
+      document.getElementById('clear').addEventListener('click', function () { state.q = ''; state.status = ''; q.value = ''; status.value = ''; writeUrl(); render(); });
+      return;
+    }
+    var th = function (k, label, cls) {
+      var on = state.sort === k;
+      return '<th' + (cls ? ' class="' + cls + '"' : '') + ' aria-sort="' + (on ? (state.dir > 0 ? 'ascending' : 'descending') : 'none') + '"><button type="button" data-sort="' + k + '">' + label + (on ? ' <span aria-hidden="true">' + (state.dir > 0 ? '↑' : '↓') + '</span>' : '') + '</button></th>';
+    };
+    list.innerHTML = '<div class="table-wrap"><table><thead><tr>' +
+      th('time', 'Time') + th('company', 'Company') + '<th class="hide-sm">Founder</th>' + th('received', 'Received', 'hide-sm') + th('status', 'Status') + '<th class="hide-sm"><span class="sr-only">Actions</span></th>' +
+      '</tr></thead><tbody>' + rows.map(function (a) {
+        return '<tr>' +
+          '<td class="mono">' + esc(a.label) + '</td>' +
+          '<td><div class="answer">' + esc(a.company) + '</div><div class="cell-sub">' + esc(a.building) + '</div>' +
+            (a.deck ? '<div class="cell-sub"><a href="' + esc(a.deck) + '" target="_blank" rel="noopener noreferrer">Deck</a></div>' : '') + '</td>' +
+          '<td class="hide-sm">' + esc(a.name) + (a.role ? ', ' + esc(a.role) : '') + '<div class="cell-sub mono">' + esc(a.email) + '</div>' + (a.phone ? '<div class="cell-sub mono">' + esc(a.phone) + '</div>' : '') + '</td>' +
+          '<td class="hide-sm cell-sub">' + esc(when(a.created_at)) + '</td>' +
+          '<td>' + pill(a.status) + (a.decided_by && a.status !== 'pending' ? '<div class="cell-sub">' + esc(a.decided_by) + '</div>' : '') + actions(a, 'only-sm') + '</td>' +
+          '<td class="hide-sm">' + actions(a, '') + '</td>' +
+        '</tr>';
+      }).join('') + '</tbody></table></div>';
+  }
+
+  document.addEventListener('click', function (e) {
+    var s = e.target.closest('[data-sort]'); if (s) return sortBy(s.dataset.sort);
+    var ap = e.target.closest('[data-approve]');
+    if (ap) { var a = data.apps.find(function (x) { return x.id === ap.dataset.approve; }); return decide(a, 'approved', ap); }
+    var dn = e.target.closest('[data-deny]');
+    if (dn) {
+      var d = data.apps.find(function (x) { return x.id === dn.dataset.deny; });
+      confirmAsk('Deny ' + d.company + '?', 'The ' + d.label + ' slot becomes free again' + (data.emailConfigured ? ' and the founder gets an email that they cannot pitch this time.' : '.'), 'Yes, deny', function () { decide(d, 'denied', dn); });
+    }
+  });
+
+  // ---- Export: the table as it is filtered now.
+  document.getElementById('export').addEventListener('click', function () {
+    var cols = ['label', 'company', 'building', 'name', 'role', 'email', 'phone', 'deck', 'status', 'created_at', 'decided_by'];
+    var csv = [cols.join(',')].concat(shown.map(function (a) {
+      return cols.map(function (c) { return '"' + String(a[c] == null ? '' : a[c]).replace(/"/g, '""') + '"'; }).join(',');
+    })).join('\n');
+    var link = document.createElement('a');
+    link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+    link.download = 'pitch-requests.csv';
+    document.body.appendChild(link); link.click(); link.remove();
+  });
+
+  readUrl();
+  render();
+})();`;
+
+export function reviewPage(data: ReviewData) {
+  return page('Pitch requests', dashboardHtml(data) + `<script>${CLIENT_JS}</script>`);
 }

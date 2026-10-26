@@ -21,7 +21,7 @@ import { currentReviewer, LOGIN_MS, logoutCookie, sessionCookie, sign, verify } 
 import { copy } from './copy';
 import { reviewers, type Application, type Env, type Slot, type Status } from './env';
 import { ics, send } from './mail';
-import { loginPage, page, reviewPage } from './review';
+import { BUSY_JS, esc, loginPage, page, reviewPage } from './review';
 
 const json = (body: unknown, status = 200, headers: HeadersInit = {}) =>
   new Response(JSON.stringify(body), {
@@ -131,13 +131,14 @@ async function cancelPage(env: Env, url: URL) {
   )
     .bind(t)
     .first<Application & { label: string }>();
-  if (!a) return page('Cancel', `<h1>${env.EVENT_NAME}</h1><p>${copy.pages.cancelGone}</p>`);
+  if (!a) return page('Cancel', `<div><h1 class="t-title">${esc(env.EVENT_NAME)}</h1><p class="t-intro">${copy.pages.cancelGone}</p></div>`);
   // A button, not the link itself, so mail scanners that open links do not cancel.
   return page(
     'Cancel',
-    `<h1>${env.EVENT_NAME}</h1>
-     <p>Release the ${a.label} slot (Helsinki time) for ${a.company.replace(/[<>&"]/g, '')}?</p>
-     <form method="post" action="/cancel"><input type="hidden" name="t" value="${t.replace(/[^a-f0-9]/g, '')}"><button type="submit">Release the slot</button></form>`,
+    `<div><h1 class="t-title">${esc(env.EVENT_NAME)}</h1>
+     <p class="t-intro">Release the ${esc(a.label)} slot (Helsinki time) for ${esc(a.company)}? Someone else can then take it.</p></div>
+     <form method="post" action="/cancel" data-busy="Releasing…"><input type="hidden" name="t" value="${t.replace(/[^a-f0-9]/g, '')}"><button class="btn btn--warn" type="submit">Release the slot</button></form>
+     <script>${BUSY_JS}</script>`,
   );
 }
 
@@ -150,10 +151,10 @@ async function cancel(env: Env, req: Request, ctx: ExecutionContext) {
   )
     .bind(new Date().toISOString(), t)
     .first<Application>();
-  if (!a) return page('Cancel', `<h1>${env.EVENT_NAME}</h1><p>${copy.pages.cancelGone}</p>`);
+  if (!a) return page('Cancel', `<div><h1 class="t-title">${esc(env.EVENT_NAME)}</h1><p class="t-intro">${copy.pages.cancelGone}</p></div>`);
   const slot = await env.DB.prepare('SELECT * FROM slots WHERE id = ?').bind(a.slot_id).first<Slot>();
   if (slot && reviewers(env).length) ctx.waitUntil(send(env, { to: reviewers(env), ...copy.cancelled(a, slot) }));
-  return page('Cancelled', `<h1>${env.EVENT_NAME}</h1><p>${copy.pages.cancelled}</p>`);
+  return page('Cancelled', `<div><h1 class="t-title">${esc(env.EVENT_NAME)}</h1><p class="t-intro">${copy.pages.cancelled}</p></div>`);
 }
 
 // ---- Review ------------------------------------------------------------------
@@ -170,26 +171,31 @@ async function review(env: Env, req: Request, url: URL, ctx: ExecutionContext) {
       const t = await sign(env, { email, kind: 'login', exp: Date.now() + LOGIN_MS });
       ctx.waitUntil(send(env, { to: email, ...copy.login(env, `${url.origin}/review/auth?t=${t}`) }));
     }
-    return loginPage(env, copy.pages.loginSent);
+    return loginPage(env.EVENT_NAME, copy.pages.loginSent);
   }
 
   if (path === '/review/auth') {
     const email = await verify(env, url.searchParams.get('t') ?? '', 'login');
-    if (!email) return loginPage(env, 'That link has expired. Ask for a new one.');
+    if (!email) return loginPage(env.EVENT_NAME, 'That link has expired. Ask for a new one.');
     return redirect('/review', { 'Set-Cookie': await sessionCookie(env, email) });
   }
 
   if (path === '/review/logout' && req.method === 'POST') return redirect('/review', { 'Set-Cookie': logoutCookie });
 
   const who = await currentReviewer(env, req);
-  if (!who) return loginPage(env);
+  if (!who) return path === '/review/decide' ? json({ error: 'auth', message: 'Your session has ended. Reload the page to log in again.' }, 401) : loginPage(env.EVENT_NAME);
 
   if (path === '/review/decide' && req.method === 'POST') {
-    if (!sameOrigin(req)) return new Response('Forbidden', { status: 403 });
-    const form = await req.formData();
-    const id = String(form.get('id') ?? '');
-    const decision = String(form.get('decision') ?? '') as Status;
-    if (decision !== 'approved' && decision !== 'denied') return new Response('Bad request', { status: 400 });
+    if (!sameOrigin(req)) return json({ error: 'forbidden', message: 'Forbidden.' }, 403);
+    let body: { id?: unknown; decision?: unknown } = {};
+    try {
+      body = await req.json();
+    } catch {
+      /* falls through to the check below */
+    }
+    const id = String(body.id ?? '');
+    const decision = String(body.decision ?? '') as Status;
+    if (decision !== 'approved' && decision !== 'denied') return json({ error: 'invalid', message: 'Unknown decision.' }, 400);
     const a = await env.DB.prepare(
       `UPDATE applications SET status = ?, decided_at = ?, decided_by = ? WHERE id = ? AND status = 'pending' RETURNING *`,
     )
@@ -207,7 +213,7 @@ async function review(env: Env, req: Request, url: URL, ctx: ExecutionContext) {
           : send(env, { to: a.email, ...copy.denied(env, a) }),
       );
     }
-    return redirect(`/review?done=${a ? decision : 'stale'}`);
+    return a ? json({ ok: true, status: decision }) : json({ error: 'stale', message: 'This request was already decided. Reload to see the latest state.' }, 409);
   }
 
   if (path === '/review' && req.method === 'GET') {
@@ -217,9 +223,14 @@ async function review(env: Env, req: Request, url: URL, ctx: ExecutionContext) {
         `SELECT a.*, s.label FROM applications a JOIN slots s ON s.id = a.slot_id ORDER BY s.starts_at, a.created_at`,
       ).all<Application & { label: string }>(),
     ]);
-    const done = url.searchParams.get('done');
-    const flash = done === 'approved' ? 'Approved. The founder gets an email with the calendar invite.' : done === 'denied' ? 'Denied. The slot is free again and the founder gets an email.' : done === 'stale' ? 'That request was already decided.' : '';
-    return reviewPage(env, who, s.results, apps.results, flash);
+    return reviewPage({
+      event: env.EVENT_NAME,
+      who,
+      emailConfigured: !!(env.MAIL_FROM && env.RESEND_API_KEY),
+      pageUrl: env.PAGE_URL,
+      slots: s.results.map(({ id, label }) => ({ id, label })),
+      apps: apps.results.map(({ cancel_token: _, decided_at: __, ...a }) => a),
+    });
   }
 
   return new Response('Not found', { status: 404 });

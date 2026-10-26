@@ -21,8 +21,9 @@ and one per email address.
 
 A click-through preview of `/review` with invented sample data (login,
 Approve, Deny; nothing sent or saved) is on the site at
-`/the-pitch/review-preview/` (`public/the-pitch/review-preview/index.html`,
-not linked, `noindex`).
+`/the-pitch/review-preview/`, generated from `src/review.ts` by
+`npm run preview` (not linked, `noindex`). Dashboard design rules:
+`DESIGN.md` in this folder.
 
 ## Emails
 
