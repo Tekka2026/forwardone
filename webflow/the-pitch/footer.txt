@@ -16,7 +16,7 @@
     // Font size scales linearly with width, so one measurement is enough:
     // the natural width at the base size, from the current width and size.
     var probe = document.createElement('span');
-    probe.className = 'pitch__probe';
+    probe.className = 'fo-pitch__probe';
     probe.setAttribute('aria-hidden', 'true');
     title.parentNode.appendChild(probe);
     function fit() {
@@ -36,11 +36,11 @@
       var next = company.value;
       var k = 0;
       while (k < shown.length && k < next.length && shown[k] === next[k]) k++;
-      var letters = hand.querySelectorAll('.pitch__letter-hw');
+      var letters = hand.querySelectorAll('.fo-pitch__letter-hw');
       for (var i = letters.length - 1; i >= k; i--) letters[i].remove();
       for (var j = k; j < next.length; j++) {
         var s = document.createElement('span');
-        s.className = 'pitch__letter-hw';
+        s.className = 'fo-pitch__letter-hw';
         s.textContent = next[j];
         // A slight wobble per letter, as by hand.
         s.style.setProperty('--r', (Math.random() * 4 - 2).toFixed(2) + 'deg');
@@ -50,7 +50,7 @@
       }
       shown = next;
       sr.textContent = next;
-      title.classList.toggle('is-filled', next.length > 0);
+      title.classList.toggle('fo-is-filled', next.length > 0);
       if (!next.trim()) done = false;
       hug();
       fit();
@@ -63,7 +63,7 @@
     // wide as the name. Measured in em, so it holds while the H1 scales.
     function paint() {
       var fs = parseFloat(getComputedStyle(hand).fontSize);
-      var letters = hand.querySelectorAll('.pitch__letter-hw');
+      var letters = hand.querySelectorAll('.fo-pitch__letter-hw');
       if (!fs || !letters.length) return;
       var x0 = letters[0].offsetLeft, x1 = 0;
       letters.forEach(function (l) { x1 = Math.max(x1, l.offsetLeft + l.offsetWidth); });
@@ -75,9 +75,9 @@
     // typed; from 5 characters, or once the visitor leaves the field, it
     // shrinks to the name (owner, 2026-10-22).
     var done = false;
-    var blank = title.querySelector('.pitch__blank');
+    var blank = title.querySelector('.fo-pitch__blank');
     function hug() {
-      title.classList.toggle('is-fit', company.value.trim().length >= 5 || (done && company.value.trim().length > 0));
+      title.classList.toggle('fo-is-fit', company.value.trim().length >= 5 || (done && company.value.trim().length > 0));
     }
     company.addEventListener('change', function () { done = true; hug(); });
 
@@ -91,16 +91,16 @@
         company.setSelectionRange(end, end);
       });
     }
-    company.addEventListener('focus', function () { title.classList.add('is-typing'); });
-    company.addEventListener('blur', function () { title.classList.remove('is-typing'); });
+    company.addEventListener('focus', function () { title.classList.add('fo-is-typing'); });
+    company.addEventListener('blur', function () { title.classList.remove('fo-is-typing'); });
     // Re-fit the heading as the line changes length.
     if (blank) blank.addEventListener('transitionend', function () { fit(); });
 
     // ---- Blanks in the letter grow with what is typed. ---------------------
     var meter = document.createElement('span');
-    meter.className = 'pitch__meter';
+    meter.className = 'fo-pitch__meter';
     meter.setAttribute('aria-hidden', 'true');
-    form.querySelector('.pitch__letter').appendChild(meter);
+    form.querySelector('.fo-pitch__letter').appendChild(meter);
     function size(input) {
       meter.textContent = input.tagName === 'SELECT'
         ? (input.selectedOptions[0] ? input.selectedOptions[0].textContent : '')
@@ -143,9 +143,9 @@
       if (!el.hidden) return;
       el.hidden = false;
       if (!reduce) {
-        el.classList.remove('is-entering');
+        el.classList.remove('fo-is-entering');
         void el.offsetWidth;
-        el.classList.add('is-entering');
+        el.classList.add('fo-is-entering');
       }
     }
     function advance() {
@@ -206,7 +206,7 @@
     var slot = form.querySelector('[data-pitch-slot]');
     var slotsAt = 0;
     function slotEmpty() {
-      slot.classList.toggle('is-empty', !slot.value);
+      slot.classList.toggle('fo-is-empty', !slot.value);
       size(slot);
     }
     function loadSlots(force) {
@@ -251,7 +251,7 @@
         .then(function (res) {
           if (res.ok) {
             status.textContent = msg('sent');
-            form.classList.add('is-sent');
+            form.classList.add('fo-is-sent');
             [].forEach.call(form.elements, function (el) { el.disabled = true; });
             return;
           }

@@ -17,6 +17,9 @@ Each file also comes as `.txt` with the same code: `head.html` holds only
 fonts and styles, so opened in a browser it looks empty; copy from the
 `.txt` if that is easier.
 
+All class names in the export carry the prefix `fo-`, so the Webflow
+site's own classes (section, wrap, label…) cannot restyle the page.
+
 Use an empty page without the site's navbar and footer (the page brings
 its own header with the three logos and its own footer). Custom code runs
 on the published site only, not in the Designer. After any change to the
