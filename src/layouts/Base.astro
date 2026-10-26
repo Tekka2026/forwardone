@@ -18,9 +18,11 @@ interface Props {
   forFounders?: boolean;
   /** Partner logos next to the wordmark (see Header.astro). */
   partners?: Partner[];
+  /** Header without its buttons (see Header.astro). */
+  noHeaderActions?: boolean;
 }
 
-const { title, description = site.description, darkTop = false, minimal = false, forFounders = false, partners = [] } = Astro.props;
+const { title, description = site.description, darkTop = false, minimal = false, forFounders = false, partners = [], noHeaderActions = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 
@@ -60,7 +62,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   <body>
     <a class="skip-link" href="#main">{site.skipLinkLabel}</a>
     <div class:list={['page', minimal && 'page--minimal']} data-page>
-      <Header dark={darkTop} minimal={minimal} forFounders={forFounders} partners={partners} />
+      <Header dark={darkTop} minimal={minimal} forFounders={forFounders} partners={partners} noActions={noHeaderActions} />
       <main id="main" tabindex="-1">
         <slot />
       </main>

@@ -30,8 +30,11 @@ interface Props {
   /** Landing pages run with partners (owner, 2026-10-26, /the-pitch):
    *  their logos sit next to the wordmark, each as high as it. */
   partners?: Partner[];
+  /** No buttons on the right (owner, 2026-10-26, /the-pitch: the page is
+   *  the pitch itself). */
+  noActions?: boolean;
 }
-const { dark = false, minimal = false, forFounders = false, partners = [] } = Astro.props;
+const { dark = false, minimal = false, forFounders = false, partners = [], noActions = false } = Astro.props;
 const marks = partners.map((p) => ({
   ...p,
   svg: p.svg.replace('<svg ', '<svg class="site-top__partner-mark" role="img" aria-label="' + p.name + '" focusable="false" '),
@@ -56,22 +59,26 @@ const marks = partners.map((p) => ({
         <Logo />
       )
     }
-    <div class="site-top__actions">
-      {
-        forFounders ? (
-          <Button href={utilityNav.investors.href} size="small" class="site-top__investors">{utilityNav.investors.label}</Button>
-        ) : (
-          <Button href={utilityNav.pitch.href} size="small" class="site-top__pitch">{utilityNav.pitch.label}</Button>
-        )
-      }
-      {
-        !minimal && (
-          <Button href={utilityNav.lpLogin.href} variant="ghost" size="small" external={utilityNav.lpLogin.external}>
-            {utilityNav.lpLogin.label}
-          </Button>
-        )
-      }
-    </div>
+    {
+      !noActions && (
+        <div class="site-top__actions">
+          {
+            forFounders ? (
+              <Button href={utilityNav.investors.href} size="small" class="site-top__investors">{utilityNav.investors.label}</Button>
+            ) : (
+              <Button href={utilityNav.pitch.href} size="small" class="site-top__pitch">{utilityNav.pitch.label}</Button>
+            )
+          }
+          {
+            !minimal && (
+              <Button href={utilityNav.lpLogin.href} variant="ghost" size="small" external={utilityNav.lpLogin.external}>
+                {utilityNav.lpLogin.label}
+              </Button>
+            )
+          }
+        </div>
+      )
+    }
   </div>
 </header>
 

@@ -516,7 +516,8 @@ and classes, because the homepage components read their copy from `home.ts`:
 sheet, wording confirmed by the owner 2026-10-21).
 
 - Landing page chrome (owner, 2026-10-22; `<Base minimal>`): the header
-  keeps the logo and Pitch us but drops LP login; the wordmark there is
+  keeps the logo only: no LP login, and no Pitch us either (owner,
+  2026-10-26; `noHeaderActions`); the wordmark there is
   19.2px high (owner, 2026-10-26: 20% smaller than
   the 24 / 19px before; elsewhere 20 / 15px). Next to it, a joint effort
   (owner, 2026-10-26), the Balnord (linked to balnord.vc) and HCVC logos
