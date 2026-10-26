@@ -7,7 +7,9 @@
  * 1. Black intro like the homepage: eyebrow, H1 (word reveal), lede, two
  *    buttons; the key figures at its bottom (homepage stats pattern). The
  *    header shows "For investors" (back to the homepage) instead of Pitch us.
- * 3. Why founders pick us: four cards (.cards, .panel).
+ * 3. Why founders pick us: a scroll-driven deck after lassie.ai: one
+ *    visual (placeholder, 8 columns) per card with its text beside it,
+ *    alternating left and right.
  * 4. How we work with you: the homepage Playbook pattern.
  * 5. What we back: lede and sector tags.
  * 6. Founders we back: the homepage founders strip (same sliding cards,
@@ -69,21 +71,33 @@ const labelled = (svg: string, label: string) =>
     </section>
   </div>
 
-  <!-- 3. Why founders pick us -->
-  <section class="section">
+  <!-- 3. Why founders pick us: a scroll-driven deck (after lassie.ai) -->
+  <section class="section f-why-section">
     <div class="wrap">
       <p class="eyebrow">{f.why.eyebrow}</p>
       <h2 class="h-section f-title"><Sentences text={f.why.title} /></h2>
-      <ul class="cards f-why">
-        {
-          f.why.cards.map((c) => (
-            <li class="panel f-card">
-              <h3 class="card-title f-card__title">{c.title}</h3>
-              <p class="small f-card__body">{c.body}</p>
-            </li>
-          ))
-        }
-      </ul>
+    </div>
+    <div class="f-deck" data-deck style={`--n: ${f.why.cards.length}`}>
+      <div class="f-deck__stage">
+        <div class="wrap">
+          <ol class="f-deck__list">
+            {
+              f.why.cards.map((c, i) => (
+                <li class:list={['f-deck__item', i % 2 ? 'is-right' : 'is-left']} data-deck-item>
+                  <div class="f-deck__text">
+                    <h3 class="f-deck__title">{c.title}</h3>
+                    <p class="small f-deck__body">{c.body}</p>
+                  </div>
+                  <div class="f-deck__visual" aria-hidden="true">
+                    <span class="f-deck__visual-title">{c.title}</span>
+                    <Placeholder value={f.why.visual} class="f-deck__marker" />
+                  </div>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -240,6 +254,72 @@ const labelled = (svg: string, label: string) =>
   </section>
 </Base>
 
+<script is:inline>
+  // The "Why founders pick us" deck (owner, 2026-10-26, after lassie.ai).
+  // The page scrolls as usual; the deck's sticky stage turns the scroll
+  // position into a progress value (0 = first card, n - 1 = last), followed
+  // lazily (eased a little each frame), so the cards glide rather than snap.
+  // Per card, d = its index minus the progress: d < 0 lifts away and fades,
+  // d = 0 is in front, d > 0 waits in the stack below, smaller and lower so
+  // its bottom edge peeks out (two cards deep). Text beside a card is shown
+  // around d = 0. Only on wider screens with motion allowed; otherwise the
+  // cards stay a plain list.
+  (function () {
+    var deck = document.querySelector('[data-deck]');
+    if (!deck) return;
+    var items = [].slice.call(deck.querySelectorAll('[data-deck-item]'));
+    var wide = window.matchMedia('(min-width: 880.02px)');
+    var still = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var n = items.length, cur = 0, raf = 0, on = false;
+    function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+    function target() {
+      var r = deck.getBoundingClientRect();
+      var run = deck.offsetHeight - window.innerHeight;
+      return run > 0 ? clamp(-r.top / run, 0, 1) * (n - 1) : 0;
+    }
+    function paint(p) {
+      items.forEach(function (it, i) {
+        var d = i - p;
+        var v = it.querySelector('.f-deck__visual'), t = it.querySelector('.f-deck__text');
+        var vy, vs, vo;
+        // Leaving: glides up and out of the stage, opaque all the way (so the
+        // next card never shows through it), fading only at the very end.
+        if (d < 0) { vy = d * 115 + '%'; vs = 1; vo = clamp(1 + (d + 0.75) * 4, 0, 1); }
+        else { vy = d * 22 + 'px'; vs = 1 - d * 0.06; vo = clamp(3 - d, 0, 1); }
+        v.style.setProperty('--vy', vy);
+        v.style.setProperty('--vs', vs.toFixed(4));
+        v.style.setProperty('--vo', vo.toFixed(3));
+        v.style.setProperty('--z', String(100 - Math.round(d * 10)));
+        v.style.setProperty('--shade', clamp(d * 3, 0, 9).toFixed(1));
+        var a = Math.abs(d);
+        t.style.setProperty('--to', clamp(1 - a * 2.5, 0, 1).toFixed(3));
+        t.style.setProperty('--ty', (d * 28).toFixed(1) + 'px');
+        it.toggleAttribute('inert', a > 0.5);
+      });
+    }
+    function tick() {
+      var to = target();
+      cur += (to - cur) * 0.12;
+      if (Math.abs(to - cur) < 0.001) cur = to;
+      paint(cur);
+      raf = cur === to ? 0 : requestAnimationFrame(tick);
+    }
+    function wake() { if (on && !raf) raf = requestAnimationFrame(tick); }
+    function setup() {
+      var want = wide.matches && !still.matches;
+      if (want === on) return;
+      on = want;
+      deck.classList.toggle('is-deck', on);
+      if (on) { cur = target(); paint(cur); }
+      else items.forEach(function (it) { it.removeAttribute('inert'); });
+    }
+    setup();
+    window.addEventListener('scroll', wake, { passive: true });
+    window.addEventListener('resize', function () { setup(); wake(); });
+    wide.addEventListener('change', setup);
+  })();
+</script>
+
 <style>
   /* ---- 1–2. Black intro (as .intro on the homepage) ---------------------- */
   .f-intro {
@@ -343,19 +423,136 @@ const labelled = (svg: string, label: string) =>
     margin-top: var(--space-4x);
   }
 
-  /* ---- 3. Why founders pick us ------------------------------------------- */
-  .f-why {
-    --cards-cols: 4;
-    margin: var(--space-8x) 0 0;
+  /* ---- 3. Why founders pick us: the deck -------------------------------- */
+  /* Without script, with reduced motion and at ≤880px: one row per card,
+     the visual (8 columns, centred) with its text beside it in the outer two
+     columns, alternating left and right; stacked on phones. With script on
+     wider screens (.is-deck) the rows lie on top of each other in a sticky
+     stage and the page's own scrolling moves through them (see the script):
+     the front card lifts away, the next one comes forward from the stack
+     below it, and the text beside it fades across, left then right. */
+  .f-deck {
+    margin-top: var(--space-8x);
+  }
+  .f-deck__list {
+    position: relative;
+    margin: 0;
     padding: 0;
     list-style: none;
   }
-  .f-card__title {
-    margin: 0;
+  .f-deck__item {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+    align-items: center;
   }
-  .f-card__body {
+  .f-deck__item + .f-deck__item {
+    margin-top: var(--gap-double);
+  }
+  .f-deck__visual {
+    grid-column: 3 / span 8;
+    grid-row: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 16 / 10;
+    max-height: 62vh;
+    max-height: 62svh;
+    padding: var(--gap-double);
+    border: var(--hairline-w) solid var(--hairline);
+    background: #f5f5f5;
+  }
+  .f-deck__visual-title {
+    max-width: var(--col-5);
+    font-family: var(--font-display);
+    font-size: var(--fs-section);
+    line-height: var(--lh-section);
+    font-weight: var(--fw-heading);
+    text-align: center;
+  }
+  .f-deck__visual :global(.f-deck__marker) {
+    position: absolute;
+    left: var(--gap);
+    bottom: var(--gap);
+  }
+  .f-deck__text {
+    grid-row: 1;
+  }
+  .is-left .f-deck__text {
+    grid-column: 1 / span 2;
+  }
+  .is-right .f-deck__text {
+    grid-column: 11 / span 2;
+  }
+  .f-deck__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--fs-metric);
+    line-height: var(--lh-metric);
+    font-weight: var(--fw-heading);
+  }
+  .f-deck__body {
     margin: var(--space-2x) 0 0;
     color: var(--muted);
+  }
+
+  /* Deck mode (set by the script, wider screens only). */
+  .f-deck:global(.is-deck) {
+    /* One screen of scrolling per card after the first, plus the stage. */
+    height: calc((var(--n) - 1) * 70vh + 100vh);
+    height: calc((var(--n) - 1) * 70svh + 100svh);
+    margin-top: 0;
+  }
+  .f-deck:global(.is-deck) .f-deck__stage {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    height: 100vh;
+    height: 100svh;
+    /* Clear of the floating navigation bar at the bottom. */
+    padding-bottom: calc(var(--nav-height) + var(--gap));
+  }
+  .f-deck:global(.is-deck) .f-deck__stage > .wrap {
+    width: calc(100% - 2 * var(--pad));
+  }
+  .f-deck:global(.is-deck) .f-deck__item + .f-deck__item {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+  }
+  .f-deck:global(.is-deck) .f-deck__visual {
+    z-index: var(--z, 1);
+    transform-origin: 50% 100%;
+    transform: translateY(var(--vy, 0)) scale(var(--vs, 1));
+    opacity: var(--vo, 1);
+    /* Cards further back in the stack are a shade darker. */
+    background: color-mix(in srgb, #f5f5f5, #000 calc(var(--shade, 0) * 1%));
+    will-change: transform, opacity;
+  }
+  .f-deck:global(.is-deck) .f-deck__text {
+    opacity: var(--to, 1);
+    transform: translateY(var(--ty, 0));
+    will-change: transform, opacity;
+  }
+
+  @media (max-width: 880px) {
+    .f-deck__item {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: var(--gap);
+    }
+    .f-deck__visual,
+    .is-left .f-deck__text,
+    .is-right .f-deck__text {
+      grid-column: 1;
+    }
+    .f-deck__text {
+      grid-row: 2;
+    }
+    .f-deck__visual {
+      padding: var(--gap);
+    }
   }
 
   /* ---- 4. Playbook pattern ----------------------------------------------- */

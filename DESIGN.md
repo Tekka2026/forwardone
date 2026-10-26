@@ -449,10 +449,25 @@ and classes, because the homepage components read their copy from `home.ts`:
   partners" (`#partners`); the key figures at its bottom in the homepage
   stats pattern (4 columns, 2 at ≤980px, wrapping to one per row on the
   narrowest phones), with room below them for the floating nav. Same intro sequence and timings as the homepage.
-- Why founders pick us: H2 and four cards (`.cards` at 4 columns, each a
-  `.panel`: card title and muted small body).
+- Why founders pick us (owner, 2026-10-26, after lassie.ai): H2, then a
+  scroll-driven deck. One visual per card, 8 columns wide and centred
+  (16:10, at most 62% of the screen high, light grey #F5F5F5 with a
+  hairline, square corners), the card's title set large in it until the
+  visuals are supplied; beside it, in the outer two columns, the title
+  (display face, metric size) and the muted small body, on the left for
+  the first card, the right for the second, and so on. On wider screens
+  the visuals lie in a sticky, full-height stage and the page's own
+  scrolling moves through them (about 70% of a screen per card, never
+  taken over): the front card glides up and out, opaque until the end;
+  the next ones wait behind it, each 6% smaller and 22px lower so their
+  bottom edges peek out, a shade darker per step, and come forward in
+  turn; the text beside the front card fades across. The progress follows
+  the scroll position lazily (eased 12% per frame). At ≤880px, with
+  reduced motion or without script: a plain list, visual then text.
 - How we work with you: the homepage Playbook pattern (feature H2 with the
   word reveal on scroll, lede, numbered list in columns 9–12), no button.
+  H2 "We don’t just advise on growth, we help you drive it." (owner,
+  2026-10-26).
 - What we back: H2, lede, sector tags as chips on the 4% tint (as on the
   team profile).
 - Founders we back: the homepage founders strip itself (same sliding,
