@@ -53,7 +53,7 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
 
 ---
 
-<Base title={pitch.meta.title} description={pitch.meta.description} minimal partners={partners}>
+<Base title={pitch.meta.title} description={pitch.meta.description} minimal partners={partners} noHeaderActions>
   <link
     slot="head"
     rel="stylesheet"

@@ -30,8 +30,11 @@ interface Props {
   /** Landing pages run with partners (owner, 2026-10-26, /the-pitch):
    *  their logos sit next to the wordmark, each as high as it. */
   partners?: Partner[];
+  /** No buttons on the right (owner, 2026-10-26, /the-pitch: the page is
+   *  the pitch itself). */
+  noActions?: boolean;
 }
-const { dark = false, minimal = false, forFounders = false, partners = [] } = Astro.props;
+const { dark = false, minimal = false, forFounders = false, partners = [], noActions = false } = Astro.props;
 const marks = partners.map((p) => ({
   ...p,
   svg: p.svg.replace('<svg ', '<svg class="site-top__partner-mark" role="img" aria-label="' + p.name + '" focusable="false" '),
@@ -56,22 +59,26 @@ const marks = partners.map((p) => ({
         <Logo />
       )
     }
-    <div class="site-top__actions">
-      {
-        forFounders ? (
-          <Button href={utilityNav.investors.href} size="small" class="site-top__investors">{utilityNav.investors.label}</Button>
-        ) : (
-          <Button href={utilityNav.pitch.href} size="small" class="site-top__pitch">{utilityNav.pitch.label}</Button>
-        )
-      }
-      {
-        !minimal && (
-          <Button href={utilityNav.lpLogin.href} variant="ghost" size="small" external={utilityNav.lpLogin.external}>
-            {utilityNav.lpLogin.label}
-          </Button>
-        )
-      }
-    </div>
+    {
+      !noActions && (
+        <div class="site-top__actions">
+          {
+            forFounders ? (
+              <Button href={utilityNav.investors.href} size="small" class="site-top__investors">{utilityNav.investors.label}</Button>
+            ) : (
+              <Button href={utilityNav.pitch.href} size="small" class="site-top__pitch">{utilityNav.pitch.label}</Button>
+            )
+          }
+          {
+            !minimal && (
+              <Button href={utilityNav.lpLogin.href} variant="ghost" size="small" external={utilityNav.lpLogin.external}>
+                {utilityNav.lpLogin.label}
+              </Button>
+            )
+          }
+        </div>
+      )
+    }
   </div>
 </header>
 
@@ -112,7 +119,7 @@ const marks = partners.map((p) => ({
   .site-top__brands {
     display: flex;
     align-items: center;
-    gap: var(--gap);
+    gap: var(--gap-double); /* owner, 2026-10-26: twice the 24px before */
     min-width: 0;
   }
   .site-top__partner,
@@ -131,7 +138,7 @@ const marks = partners.map((p) => ({
   }
   @media (max-width: 420px) {
     .site-top__brands {
-      gap: var(--gap-half);
+      gap: var(--gap);
     }
     .site-top .site-top__brands :global(.logo__mark),
     .site-top .site-top__brands :global(.site-top__partner-mark) {
@@ -140,7 +147,7 @@ const marks = partners.map((p) => ({
   }
   @media (max-width: 360px) {
     .site-top__brands {
-      gap: var(--space-2x);
+      gap: var(--space-4x);
     }
     .site-top .site-top__brands :global(.logo__mark),
     .site-top .site-top__brands :global(.site-top__partner-mark) {
