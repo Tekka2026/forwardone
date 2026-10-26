@@ -9,6 +9,10 @@
 | `embed.html` | A **Code Embed** element, the only thing on the page |
 | `footer.html` | Page settings → Custom code → **Before `</body>` tag** |
 
+Each file also comes as `.txt` with the same code: `head.html` holds only
+fonts and styles, so opened in a browser it looks empty; copy from the
+`.txt` if that is easier.
+
 Use an empty page without the site's navbar and footer (the page brings
 its own header with the three logos and its own footer). Custom code runs
 on the published site only, not in the Designer. After any change to the

@@ -28,7 +28,8 @@ const head = [
   '<link rel="preconnect" href="https://fonts.googleapis.com">',
   '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
   ...fonts.map((f) => `<link rel="stylesheet" href="${f}">`),
-  `<style>${css}</style>`,
+  // One rule per line, so the file is readable when opened.
+  `<style>\n${css.replace(/\}(?!\s*\n)/g, '}\n')}</style>`,
 ].join('\n');
 
 // Body: markup for the embed, scripts for the footer field. Internal links
@@ -48,5 +49,8 @@ mkdirSync(out, { recursive: true });
 for (const [name, text] of [['head.html', head], ['embed.html', embed], ['footer.html', footer]]) {
   if (text.length > LIMIT) throw new Error(`${name} is ${text.length} characters, over Webflow's ${LIMIT}`);
   writeFileSync(new URL(name, out), text + '\n');
+  // The same as plain text: opened in a browser, head.html alone shows a
+  // blank page (it holds only fonts and styles); the .txt shows the code.
+  writeFileSync(new URL(name.replace('.html', '.txt'), out), text + '\n');
   console.log(name.padEnd(12), text.length, 'characters');
 }
