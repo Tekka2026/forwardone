@@ -463,7 +463,9 @@ and classes, because the homepage components read their copy from `home.ts`:
   taken over): the front card glides up and out, opaque until the end;
   the next ones wait behind it, each 6% smaller and 22px lower so their
   bottom edges peek out, a shade darker per step, and come forward in
-  turn; the text beside the front card fades across. The progress follows
+  turn; the text beside the front card appears and disappears at once,
+  no fade or movement (owner, 2026-10-26), switching halfway between
+  cards. The progress follows
   the scroll position lazily (eased 12% per frame). At ≤880px, with
   reduced motion or without script: a plain list, visual then text.
 - How we work with you: the homepage Playbook pattern (feature H2 with the

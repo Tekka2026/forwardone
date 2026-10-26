@@ -262,7 +262,7 @@ const labelled = (svg: string, label: string) =>
   // Per card, d = its index minus the progress: d < 0 lifts away and fades,
   // d = 0 is in front, d > 0 waits in the stack below, smaller and lower so
   // its bottom edge peeks out (two cards deep). Text beside a card is shown
-  // around d = 0. Only on wider screens with motion allowed; otherwise the
+  // while it is the nearest to the front (|d| < 0.5), switched, not faded. Only on wider screens with motion allowed; otherwise the
   // cards stay a plain list.
   (function () {
     var deck = document.querySelector('[data-deck]');
@@ -291,9 +291,10 @@ const labelled = (svg: string, label: string) =>
         v.style.setProperty('--vo', vo.toFixed(3));
         v.style.setProperty('--z', String(100 - Math.round(d * 10)));
         v.style.setProperty('--shade', clamp(d * 3, 0, 9).toFixed(1));
+        // The text appears and disappears at once (owner, 2026-10-26): shown
+        // only beside the card nearest the front, no fade or movement.
         var a = Math.abs(d);
-        t.style.setProperty('--to', clamp(1 - a * 2.5, 0, 1).toFixed(3));
-        t.style.setProperty('--ty', (d * 28).toFixed(1) + 'px');
+        t.style.setProperty('--to', a < 0.5 ? '1' : '0');
         it.toggleAttribute('inert', a > 0.5);
       });
     }
@@ -430,7 +431,7 @@ const labelled = (svg: string, label: string) =>
      wider screens (.is-deck) the rows lie on top of each other in a sticky
      stage and the page's own scrolling moves through them (see the script):
      the front card lifts away, the next one comes forward from the stack
-     below it, and the text beside it fades across, left then right. */
+     below it, and the text beside it switches across, left then right. */
   .f-deck {
     margin-top: var(--space-8x);
   }
@@ -533,8 +534,6 @@ const labelled = (svg: string, label: string) =>
   }
   .f-deck:global(.is-deck) .f-deck__text {
     opacity: var(--to, 1);
-    transform: translateY(var(--ty, 0));
-    will-change: transform, opacity;
   }
 
   @media (max-width: 880px) {
