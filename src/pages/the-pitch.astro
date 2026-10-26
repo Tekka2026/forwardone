@@ -1,17 +1,17 @@
 ---
 /**
  * The ____ Pitch (owner, 2026-10-21): landing page for FORWARD.one's live
- * pitch event at Slush. One white block under the header, and on it a sheet
- * of paper (grey, grainy) carrying:
+ * pitch event at Slush. White, aligned with the logo (no card; owner,
+ * 2026-10-26), carrying:
  * - Eyebrow, then the H1 "The ____ Pitch" on one line. The blank is a line;
  *   as the visitor types the company name (the form's first field), the name
- *   is written onto it letter by letter in Covered By Your Grace, in red. When the
+ *   is written onto it letter by letter in Covered By Your Grace, in a teal-to-green gradient. When the
  *   name is long the whole H1, handwriting included, scales down continuously
  *   so it never runs wider than 60% of the content width (90% on phones).
  * - A short lede on what the event is (Balnord linked).
  * - Under it the form as a fill-in-the-blanks letter (name, address, contact,
  *   what they build, deck), answers in the same handwriting, then the
- *   button and the privacy note. The event facts sit under the sheet.
+ *   button and the privacy note. The event facts sit under it.
  * Copy and placeholders in src/content/pitch.ts.
  */
 import Base from '@layouts/Base.astro';
@@ -57,7 +57,7 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
   <div class="pitch">
     <section class="section section--flush pitch__hero">
       <div class="wrap">
-        <div class="pitch__paper" data-pitch-paper>
+        <div class="pitch__sheet">
         <p class="eyebrow reveal-snap">{pitch.eyebrow}</p>
         <h1 class="h-display pitch__title" data-pitch-title>
           <span class="pitch__line" data-pitch-line>
@@ -140,7 +140,10 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
           <template data-pitch-msg-sent>{pitch.sent}</template>
         </form>
         </div>
-
+      </div>
+    </section>
+    <section class="section section--flush pitch__info theme-dark">
+      <div class="wrap">
         <dl class="pitch__facts">
           {
             pitch.facts.map((f) => (
@@ -354,7 +357,7 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
 <style is:global>
   /* White from the header down to the facts (owner, 2026-10-26; before: a
      black block under the header, like the homepage intro). No minimum
-     height: the black footer follows the facts directly and runs on below. */
+     height. */
   .pitch {
     background: var(--bg);
   }
@@ -364,41 +367,15 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
   /* Spacing (owner, 2026-10-22: tightened throughout). The letter's line
      height is part of every gap around it, so the margins stay small. */
   .pitch__hero {
-    padding-top: 0; /* the header's own bottom padding is the gap to the paper */
+    padding-top: var(--gap); /* plus the header's own 24px bottom padding */
     padding-bottom: var(--gap-double);
   }
-
-  /* ---- The sheet of paper ----------------------------------------------- */
-  /* Light paper inside the white block: the colour tokens switch back to
-     ink on paper, so text, hairlines and the button read as on a light page. */
-  .pitch__paper {
-    --bg: #e9e8e4;
-    --fg: #151515;
-    --muted: #6e6d68;
-    --hairline: rgba(0, 0, 0, 0.16);
-    --accent: #151515;
-    --accent-fg: #ffffff;
-    --btn-hover-mix: #ffffff;
-    --btn-hover-shade: rgba(0, 0, 0, 0.06);
-    --reveal-tint: #db8e00;
-    position: relative;
-    padding: var(--gap-double) var(--gap-double) calc(var(--gap-double));
-    color: var(--fg);
+  /* The white ends where the facts' hairline was; the facts sit on black
+     (owner, 2026-10-26), and the black footer runs on below them. */
+  .pitch__info {
     background: var(--bg);
-  }
-  /* The grey paper surface: grain and a faint uneven wash. */
-  .pitch__paper::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='600'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.004 .008' numOctaves='2' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)'/%3E%3C/svg%3E"),
-      radial-gradient(120% 90% at 30% 20%, #efeeea 0%, #e6e5e0 60%, #dfded9 100%);
-    background-size: 240px 240px, 900px 600px, 100% 100%;
-  }
-  .pitch__paper > * {
-    position: relative;
+    padding-top: var(--gap);
+    padding-bottom: var(--gap-double);
   }
 
   /* ---- H1: The ____ Pitch ------------------------------------------------ */
@@ -551,9 +528,7 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: var(--gutter);
-    margin: var(--gap-double) 0 0;
-    padding-top: var(--gap);
-    border-top: var(--hairline-w) solid var(--hairline);
+    margin: 0;
   }
   .pitch__facts dt {
     color: var(--muted);
@@ -567,20 +542,15 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
-  @media (max-width: 880px) {
-    .pitch__paper {
-      padding: var(--space-8x) var(--space-8x) calc(var(--space-8x));
-    }
-  }
   @media (max-width: 640px) {
     .pitch__hero {
+      padding-bottom: var(--space-8x);
+    }
+    .pitch__info {
       padding-bottom: var(--gap);
     }
     .pitch__title {
       --pitch-max: 0.9; /* 60% would make the H1 smaller than the letter */
-    }
-    .pitch__paper {
-      padding: var(--gap);
     }
     .pitch__intro {
       margin-top: var(--space-4x);
@@ -594,7 +564,6 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
     .pitch__facts {
       grid-template-columns: minmax(0, 1fr);
       gap: var(--space-4x);
-      margin-top: var(--space-8x);
     }
   }
 </style>
@@ -610,7 +579,7 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
     /* What the visitor types into the letter. */
     --font-answer: var(--font-sans);
     --fw-answer: 500;
-    /* Red marker on the paper, as in the owner's reference (2026-10-21). */
+    /* Red marker, as in the owner's reference (2026-10-21). */
     --hand-colour: #e0251b;
   }
   /* Measuring helpers made in script (so outside the scoped styles): the
@@ -639,8 +608,9 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
   }
   /* Each new letter is written in: wiped open left to right while it settles
      from a slight lift. Spans are made in script, so the styles are global. */
-  /* Gradient from red #FF0000 to dark red #8A0A00 over the whole
-     name (owner, 2026-10-22).
+  /* Gradient from #04EDCD to #05F46B, bottom left to top right, over the
+     whole name (owner, 2026-10-26; before: red #FF0000 to #8A0A00, left
+     to right).
      Each letter paints its slice (--hw-x of --hw-w, set by script); the
      padding, taken back by negative margins, gives overhanging strokes of the
      hand room inside the painted area. */
@@ -649,7 +619,7 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
     display: inline-block;
     padding: var(--pad);
     margin: calc(-1 * var(--pad));
-    background-image: linear-gradient(90deg, #ff0000, #8a0a00);
+    background-image: linear-gradient(to top right, #04edcd, #05f46b);
     background-size: var(--hw-w, 1em) 100%;
     background-position: calc(-1 * var(--hw-x, 0em)) 0;
     background-repeat: no-repeat;
