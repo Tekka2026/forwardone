@@ -40,7 +40,7 @@ export const forFounders = {
    * per card, the text beside it, alternating left and right. */
   why: {
     eyebrow: 'Why founders pick us',
-    title: 'Capital that keeps up when building gets expensive.',
+    title: 'Capital that keeps up\nwhen building gets expensive.',
     cards: [
       { title: 'We’ve sat in your seat.', body: 'Our team are former founders and operators. We know what the next eighteen months of building feel like.' },
       { title: 'Partners decide.', body: 'The partners you meet are the ones who decide. No waiting for an investment committee you never see.' },
