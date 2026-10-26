@@ -1,8 +1,8 @@
 ---
 /**
  * The ____ Pitch (owner, 2026-10-21): landing page for FORWARD.one's live
- * pitch event at Slush. One white block under the header, and on it a sheet
- * of paper (grey, grainy) carrying:
+ * pitch event at Slush. White, aligned with the logo (no card; owner,
+ * 2026-10-26), carrying:
  * - Eyebrow, then the H1 "The ____ Pitch" on one line. The blank is a line;
  *   as the visitor types the company name (the form's first field), the name
  *   is written onto it letter by letter in Covered By Your Grace, in red. When the
@@ -11,7 +11,7 @@
  * - A short lede on what the event is (Balnord linked).
  * - Under it the form as a fill-in-the-blanks letter (name, address, contact,
  *   what they build, deck), answers in the same handwriting, then the
- *   button and the privacy note. The event facts sit under the sheet.
+ *   button and the privacy note. The event facts sit under it.
  * Copy and placeholders in src/content/pitch.ts.
  */
 import Base from '@layouts/Base.astro';
@@ -57,7 +57,7 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
   <div class="pitch">
     <section class="section section--flush pitch__hero">
       <div class="wrap">
-        <div class="pitch__paper" data-pitch-paper>
+        <div class="pitch__sheet">
         <p class="eyebrow reveal-snap">{pitch.eyebrow}</p>
         <h1 class="h-display pitch__title" data-pitch-title>
           <span class="pitch__line" data-pitch-line>
@@ -364,41 +364,8 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
   /* Spacing (owner, 2026-10-22: tightened throughout). The letter's line
      height is part of every gap around it, so the margins stay small. */
   .pitch__hero {
-    padding-top: 0; /* the header's own bottom padding is the gap to the paper */
+    padding-top: var(--gap); /* plus the header's own 24px bottom padding */
     padding-bottom: var(--gap-double);
-  }
-
-  /* ---- The sheet of paper ----------------------------------------------- */
-  /* Light paper inside the white block: the colour tokens switch back to
-     ink on paper, so text, hairlines and the button read as on a light page. */
-  .pitch__paper {
-    --bg: #e9e8e4;
-    --fg: #151515;
-    --muted: #6e6d68;
-    --hairline: rgba(0, 0, 0, 0.16);
-    --accent: #151515;
-    --accent-fg: #ffffff;
-    --btn-hover-mix: #ffffff;
-    --btn-hover-shade: rgba(0, 0, 0, 0.06);
-    --reveal-tint: #db8e00;
-    position: relative;
-    padding: var(--gap-double) var(--gap-double) calc(var(--gap-double));
-    color: var(--fg);
-    background: var(--bg);
-  }
-  /* The grey paper surface: grain and a faint uneven wash. */
-  .pitch__paper::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='600'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.004 .008' numOctaves='2' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)'/%3E%3C/svg%3E"),
-      radial-gradient(120% 90% at 30% 20%, #efeeea 0%, #e6e5e0 60%, #dfded9 100%);
-    background-size: 240px 240px, 900px 600px, 100% 100%;
-  }
-  .pitch__paper > * {
-    position: relative;
   }
 
   /* ---- H1: The ____ Pitch ------------------------------------------------ */
@@ -567,20 +534,12 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
-  @media (max-width: 880px) {
-    .pitch__paper {
-      padding: var(--space-8x) var(--space-8x) calc(var(--space-8x));
-    }
-  }
   @media (max-width: 640px) {
     .pitch__hero {
       padding-bottom: var(--gap);
     }
     .pitch__title {
       --pitch-max: 0.9; /* 60% would make the H1 smaller than the letter */
-    }
-    .pitch__paper {
-      padding: var(--gap);
     }
     .pitch__intro {
       margin-top: var(--space-4x);
@@ -610,7 +569,7 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
     /* What the visitor types into the letter. */
     --font-answer: var(--font-sans);
     --fw-answer: 500;
-    /* Red marker on the paper, as in the owner's reference (2026-10-21). */
+    /* Red marker, as in the owner's reference (2026-10-21). */
     --hand-colour: #e0251b;
   }
   /* Measuring helpers made in script (so outside the scoped styles): the
