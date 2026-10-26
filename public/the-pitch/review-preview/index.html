@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<!-- Preview of the review dashboard (booking/src/review.ts) with invented sample data; owner, 2026-10-26. Not linked from the site. -->
+<title>The Pitch review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+  /* Layout: one column, summary (slots) above detail (requests); the site's own look: Inter, ink on white, pill buttons, teal gradient for founders' answers. */
+  :root {
+    --bg: #ffffff;
+    --fg: #111111;
+    --muted: #666666;
+    --hair: rgba(0, 0, 0, 0.14);
+    --tint: rgba(0, 0, 0, 0.035);
+    --solid: #111111;
+    --solid-fg: #ffffff;
+    --ok: #05864a;
+    --wait: #9a6a00;
+    --no: #c21f16;
+    --hand-a: #04edcd;
+    --hand-b: #05f46b;
+    --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0b0b0b; --fg: #f2f2f2; --muted: #a1a1a1; --hair: rgba(255, 255, 255, 0.18); --tint: rgba(255, 255, 255, 0.05);
+      --solid: #ffffff; --solid-fg: #000000; --ok: #3ddc8a; --wait: #f0b43c; --no: #ff6b5e; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0b0b0b; --fg: #f2f2f2; --muted: #a1a1a1; --hair: rgba(255, 255, 255, 0.18); --tint: rgba(255, 255, 255, 0.05);
+    --solid: #ffffff; --solid-fg: #000000; --ok: #3ddc8a; --wait: #f0b43c; --no: #ff6b5e; color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.5 var(--font); }
+  main {
+    max-width: 1100px; margin: 0 auto;
+    padding-block: 24px 64px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    display: grid; gap: 40px;
+  }
+  .notice {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
+    border: 1px dashed var(--hair); padding: 8px 12px; color: var(--muted);
+  }
+  header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+  h1 { font-weight: 500; font-size: clamp(26px, 4vw, 36px); line-height: 1.15; margin: 0; text-wrap: balance; }
+  h2 { font-weight: 500; font-size: 20px; margin: 0; }
+  .sub { color: var(--muted); margin: 8px 0 0; max-width: 65ch; }
+  .label { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  section { display: grid; gap: 16px; }
+  .head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .count { font-variant-numeric: tabular-nums; }
+
+  .slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+  .slot { border: 1px solid var(--hair); padding: 10px 12px; display: grid; gap: 4px; min-height: 72px; }
+  .slot b { font-weight: 500; font-variant-numeric: tabular-nums; }
+  .slot.is-free { background: var(--tint); }
+  .slot .who { font-size: 14px; }
+
+  .pill { display: inline-block; font-size: 12px; line-height: 20px; padding: 0 8px; border-radius: 999px; border: 1px solid currentColor; }
+  .pill--pending { color: var(--wait); }
+  .pill--approved { color: var(--ok); }
+  .pill--denied { color: var(--no); }
+  .pill--free { color: var(--muted); border-style: dashed; }
+
+  .list { display: grid; }
+  .req {
+    display: grid; gap: 12px 24px; padding: 16px 0; border-top: 1px solid var(--hair);
+    grid-template-columns: 64px minmax(0, 2fr) minmax(0, 1.4fr) auto;
+    align-items: start;
+  }
+  .req:last-child { border-bottom: 1px solid var(--hair); }
+  .time { font-weight: 500; font-variant-numeric: tabular-nums; }
+  .company { font-weight: 500; }
+  .answer {
+    background: linear-gradient(to top right, var(--hand-a), var(--hand-b));
+    -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 500;
+  }
+  .small { font-size: 14px; color: var(--muted); }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  button {
+    font: inherit; font-size: 14px; height: 32px; padding: 0 14px; border-radius: 999px; cursor: pointer;
+    border: 0; background: var(--solid); color: var(--solid-fg);
+  }
+  button.ghost { background: transparent; color: var(--fg); box-shadow: inset 0 0 0 1px var(--hair); }
+  button:focus-visible { outline: 2px solid var(--hand-a); outline-offset: 2px; }
+  a { color: inherit; }
+  .empty { color: var(--muted); padding: 16px 0; border-top: 1px solid var(--hair); }
+  .toast { min-height: 24px; color: var(--muted); }
+
+  /* Login (the real dashboard: an emailed link, no password). */
+  .login { max-width: 440px; display: grid; gap: 16px; padding-block: 24px; }
+  .login form { display: flex; gap: 8px; flex-wrap: wrap; }
+  .login input {
+    font: inherit; font-size: 14px; height: 32px; padding: 0 14px; border-radius: 999px;
+    border: 1px solid var(--hair); background: var(--bg); color: var(--fg); flex: 1 1 220px; min-width: 0;
+  }
+  .login input:focus-visible { outline: 2px solid var(--hand-a); outline-offset: 2px; }
+  .mail { border: 1px solid var(--hair); padding: 16px; display: grid; gap: 8px; }
+  .mail .label { margin: 0; }
+  .who-line { color: var(--muted); font-size: 14px; }
+
+  @media (max-width: 720px) {
+    .req { grid-template-columns: 56px minmax(0, 1fr); }
+    .req .founder, .req .actions { grid-column: 2; }
+    .actions { justify-content: flex-start; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .req { transition: opacity 200ms; }
+  }
+</style>
+</head>
+<body>
+
+<main>
+  <p class="notice">Preview with sample applicants. Login, Approve and Deny work on this page only; nothing is sent or saved, and any email address gets in.</p>
+
+  <section class="login" id="login" aria-labelledby="login-h">
+    <h1 id="login-h">The _____ Pitch at Slush: review</h1>
+    <p class="sub">Reviewers log in with a link sent to their email. Only addresses on the reviewers list get a link.</p>
+    <form id="login-form">
+      <label class="label" for="login-email" style="flex-basis:100%">Your email</label>
+      <input type="email" id="login-email" required autocomplete="email" placeholder="you@forward.one">
+      <button type="submit">Send me a link</button>
+    </form>
+    <div class="mail" id="login-sent" hidden>
+      <p class="label">Email (preview)</p>
+      <p style="margin:0">If <b id="login-to"></b> may review, a login link is on its way. It works for 15 minutes.</p>
+      <p class="small" style="margin:0">In this preview no email is sent. Open the link here instead:</p>
+      <div><button type="button" id="login-open">Open the login link</button></div>
+    </div>
+  </section>
+
+  <div id="dash" hidden style="display:grid;gap:40px">
+  <header>
+    <div>
+      <h1>The _____ Pitch at Slush: review</h1>
+      <p class="sub">Times are Helsinki time. Approving sends the founder a confirmation with a calendar invite. Denying sends a polite no and frees the slot at once.</p>
+    </div>
+    <div class="actions">
+      <span class="who-line" id="who-line"></span>
+      <button class="ghost" type="button" id="reset">Reset sample</button>
+      <button class="ghost" type="button" id="logout">Log out</button>
+    </div>
+  </header>
+
+  <section aria-labelledby="slots-h">
+    <div class="head">
+      <h2 id="slots-h">Slots</h2>
+      <span class="label count" id="slot-count"></span>
+    </div>
+    <div class="slots" id="slots"></div>
+  </section>
+
+  <section aria-labelledby="todo-h">
+    <div class="head">
+      <h2 id="todo-h">To review</h2>
+      <span class="label count" id="todo-count"></span>
+    </div>
+    <p class="toast" id="toast" role="status" aria-live="polite"></p>
+    <div class="list" id="todo"></div>
+  </section>
+
+  <section aria-labelledby="done-h">
+    <div class="head">
+      <h2 id="done-h">Decided</h2>
+      <span class="label count" id="done-count"></span>
+    </div>
+    <div class="list" id="done"></div>
+  </section>
+  </div>
+</main>
+
+<script>
+  // Sample data: invented companies and people, for showing the flow only.
+  var SLOTS = ['14:00', '14:10', '14:20', '14:30', '14:40', '14:50'];
+  function sample() {
+    return [
+      { id: 'a1', time: '14:00', company: 'Northwind Robotics', building: 'robots that fold laundry', name: 'Ann Example', role: 'CEO', email: 'ann@northwind.example', phone: '', deck: true, received: '26 Oct, 10:12', status: 'pending' },
+      { id: 'a2', time: '14:20', company: 'Lumen Labs', building: 'batteries from seaweed', name: 'Bo Sample', role: 'Founder', email: 'bo@lumen.example', phone: '+358 40 000 0000', deck: true, received: '26 Oct, 11:40', status: 'approved', by: 'reviewer@forward.one' },
+      { id: 'a3', time: '14:30', company: 'Quill', building: 'contracts that read themselves', name: 'Cy Demo', role: 'CTO', email: 'cy@quill.example', phone: '', deck: false, received: '26 Oct, 12:03', status: 'pending' },
+      { id: 'a4', time: '14:50', company: 'Fjord Sensors', building: 'wind turbine blades that report their own cracks', name: 'Dee Placeholder', role: 'CEO', email: 'dee@fjord.example', phone: '', deck: true, received: '26 Oct, 12:31', status: 'pending' },
+    ];
+  }
+  var apps = sample();
+
+  var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var live = function (a) { return a.status === 'pending' || a.status === 'approved'; };
+
+  function row(a) {
+    var founder = esc(a.name) + (a.role ? ', ' + esc(a.role) : '') + '<br><span class="small">' + esc(a.email) + (a.phone ? '<br>' + esc(a.phone) : '') + '</span>';
+    var right = a.status === 'pending'
+      ? '<div class="actions"><button type="button" data-id="' + a.id + '" data-do="approved">Approve</button><button type="button" class="ghost" data-id="' + a.id + '" data-do="denied">Deny</button></div>'
+      : '<div class="actions"><span class="pill pill--' + a.status + '">' + a.status + '</span></div>';
+    return '<div class="req">' +
+      '<div class="time">' + a.time + '</div>' +
+      '<div><div class="company">' + esc(a.company) + '</div><div>We are building <span class="answer">' + esc(a.building) + '</span></div>' +
+        '<div class="small">' + (a.deck ? 'Deck link attached' : 'No deck link') + ' · received ' + esc(a.received) + '</div></div>' +
+      '<div class="founder">' + founder + (a.by ? '<div class="small">Decided by ' + esc(a.by) + '</div>' : '') + '</div>' +
+      right + '</div>';
+  }
+
+  function render() {
+    var holder = {};
+    apps.filter(live).forEach(function (a) { holder[a.time] = a; });
+    document.getElementById('slots').innerHTML = SLOTS.map(function (t) {
+      var a = holder[t];
+      return '<div class="slot' + (a ? '' : ' is-free') + '"><b>' + t + '</b>' +
+        (a ? '<span class="who">' + esc(a.company) + '</span><span><span class="pill pill--' + a.status + '">' + a.status + '</span></span>'
+           : '<span><span class="pill pill--free">free</span></span>') + '</div>';
+    }).join('');
+    var taken = Object.keys(holder).length;
+    document.getElementById('slot-count').textContent = taken + ' of ' + SLOTS.length + ' taken';
+
+    var todo = apps.filter(function (a) { return a.status === 'pending'; });
+    var done = apps.filter(function (a) { return a.status !== 'pending'; });
+    document.getElementById('todo').innerHTML = todo.length ? todo.map(row).join('') : '<p class="empty">Nothing to review. New requests appear here.</p>';
+    document.getElementById('done').innerHTML = done.length ? done.map(row).join('') : '<p class="empty">No decisions yet.</p>';
+    document.getElementById('todo-count').textContent = todo.length + ' waiting';
+    document.getElementById('done-count').textContent = done.length + ' decided';
+  }
+
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-do]');
+    if (b) {
+      var a = apps.find(function (x) { return x.id === b.dataset.id; });
+      a.status = b.dataset.do;
+      a.by = 'you (preview)';
+      document.getElementById('toast').textContent = a.status === 'approved'
+        ? 'Approved ' + a.company + ' at ' + a.time + '. In the live version the founder now gets the confirmation email with a calendar invite.'
+        : 'Denied ' + a.company + '. The ' + a.time + ' slot is free again. In the live version the founder now gets the polite no.';
+      render();
+    }
+    if (e.target.id === 'reset') {
+      apps = sample();
+      document.getElementById('toast').textContent = 'Sample reset.';
+      render();
+    }
+  });
+  render();
+
+  // Login flow, as in the real dashboard: email -> link -> session.
+  var who = '';
+  function show(loggedIn) {
+    document.getElementById('login').hidden = loggedIn;
+    var dash = document.getElementById('dash');
+    dash.hidden = !loggedIn;
+    dash.style.display = loggedIn ? 'grid' : 'none';
+    document.getElementById('who-line').textContent = loggedIn ? 'Logged in as ' + who : '';
+  }
+  document.getElementById('login-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    who = document.getElementById('login-email').value.trim();
+    document.getElementById('login-to').textContent = who;
+    document.getElementById('login-sent').hidden = false;
+    document.getElementById('login-open').focus();
+  });
+  document.getElementById('login-open').addEventListener('click', function () { show(true); });
+  document.getElementById('logout').addEventListener('click', function () {
+    who = '';
+    document.getElementById('login-sent').hidden = true;
+    document.getElementById('login-form').reset();
+    show(false);
+  });
+  show(false);
+</script>
+</body>
+</html>

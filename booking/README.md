@@ -19,6 +19,11 @@ A Cloudflare Worker with a D1 (SQLite) database; email through Resend.
 Rules the database enforces: one live (pending or approved) request per slot,
 and one per email address.
 
+A click-through preview of `/review` with invented sample data (login,
+Approve, Deny; nothing sent or saved) is on the site at
+`/the-pitch/review-preview/` (`public/the-pitch/review-preview/index.html`,
+not linked, `noindex`).
+
 ## Emails
 
 | When | To | What |
