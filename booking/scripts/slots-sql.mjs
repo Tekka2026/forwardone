@@ -8,6 +8,13 @@ const q = (s) => `'${String(s).replace(/'/g, "''")}'`;
 const time = /^([01]\d|2[0-3]):[0-5]\d$/;
 const lines = [];
 const ids = [];
+// A window (from, to, length in minutes) unless an explicit list is given.
+if (!cfg.slots.length && cfg.length) {
+  if (!time.test(cfg.from) || !time.test(cfg.to) || !(cfg.length > 0)) throw new Error('slots.json: from, to (HH:MM) and length (minutes) are needed');
+  const min = (t) => Number(t.slice(0, 2)) * 60 + Number(t.slice(3));
+  const hhmm = (m) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+  for (let m = min(cfg.from); m + cfg.length <= min(cfg.to); m += cfg.length) cfg.slots.push({ start: hhmm(m), end: hhmm(m + cfg.length) });
+}
 if (cfg.slots.length && !/^\d{4}-\d{2}-\d{2}$/.test(cfg.date)) throw new Error('slots.json: set "date" (YYYY-MM-DD)');
 for (const s of cfg.slots) {
   if (!time.test(s.start) || !time.test(s.end)) throw new Error(`slots.json: bad time in ${JSON.stringify(s)}`);

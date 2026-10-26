@@ -97,7 +97,7 @@ export const pitch = {
   privacy: PH('privacy note: what happens with the details, with a link to the privacy policy'),
   /** Event facts under the form. */
   facts: [
-    { label: 'When', value: PH('date and time at Slush') },
+    { label: 'When', value: '18 November, 08:00–16:00 Helsinki time' },
     { label: 'Where', value: PH('stage or venue at Slush, Helsinki') },
     { label: 'Apply by', value: PH('deadline') },
     { label: 'The panel', value: 'FORWARD.one, Balnord and HCVC' },

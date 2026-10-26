@@ -6,7 +6,12 @@ import { writeFileSync, mkdirSync } from 'node:fs';
 import { BUSY_JS, CLIENT_JS, CSS, FONTS, dashboardHtml, loginHtml } from '../src/review.ts';
 
 const at = (h, m) => `2026-10-26T${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00.000Z`;
-const slots = ['14:00', '14:10', '14:20', '14:30', '14:40', '14:50'].map((label) => ({ id: label.replace(':', ''), label }));
+// The real slots (slots.json: 18 November, 08:00 to 16:00, 30 minutes).
+const slots = Array.from({ length: 16 }, (_, i) => {
+  const m = 8 * 60 + i * 30;
+  const label = `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+  return { id: label.replace(':', ''), label };
+});
 const app = (id, label, status, company, building, name, role, email, created, extra = {}) => ({
   id, slot_id: label.replace(':', ''), label, status, company, building, name, role, email,
   phone: null, deck: 'https://example.com/deck.pdf', created_at: created, decided_by: null, ...extra,
@@ -18,11 +23,11 @@ const data = {
   pageUrl: 'https://tekka2026.github.io/forwardone/the-pitch/',
   slots,
   apps: [
-    app('a1', '14:00', 'pending', 'Northwind Robotics', 'robots that fold laundry', 'Ann Example', 'CEO', 'ann@northwind.example', at(8, 12)),
-    app('a2', '14:20', 'approved', 'Lumen Labs', 'batteries from seaweed', 'Bo Sample', 'Founder', 'bo@lumen.example', at(9, 40), { phone: '+358 40 000 0000', decided_by: 'reviewer@forward.one' }),
-    app('a3', '14:30', 'pending', 'Quill', 'contracts that read themselves', 'Cy Demo', 'CTO', 'cy@quill.example', at(10, 3), { deck: null }),
-    app('a4', '14:50', 'pending', 'Fjord Sensors', 'wind turbine blades that report their own cracks', 'Dee Placeholder', 'CEO', 'dee@fjord.example', at(10, 31)),
-    app('a5', '14:10', 'denied', 'Tundra Foods', 'protein from forest fungi', 'Eli Test', 'Founder', 'eli@tundra.example', at(7, 55), { decided_by: 'reviewer@forward.one' }),
+    app('a1', '09:00', 'pending', 'Northwind Robotics', 'robots that fold laundry', 'Ann Example', 'CEO', 'ann@northwind.example', at(8, 12)),
+    app('a2', '10:30', 'approved', 'Lumen Labs', 'batteries from seaweed', 'Bo Sample', 'Founder', 'bo@lumen.example', at(9, 40), { phone: '+358 40 000 0000', decided_by: 'reviewer@forward.one' }),
+    app('a3', '11:00', 'pending', 'Quill', 'contracts that read themselves', 'Cy Demo', 'CTO', 'cy@quill.example', at(10, 3), { deck: null }),
+    app('a4', '13:30', 'pending', 'Fjord Sensors', 'wind turbine blades that report their own cracks', 'Dee Placeholder', 'CEO', 'dee@fjord.example', at(10, 31)),
+    app('a5', '08:30', 'denied', 'Tundra Foods', 'protein from forest fungi', 'Eli Test', 'Founder', 'eli@tundra.example', at(7, 55), { decided_by: 'reviewer@forward.one' }),
   ],
 };
 

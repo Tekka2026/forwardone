@@ -1,6 +1,9 @@
 {
-  "//": "The Pitch at Slush: one day, time slots in Helsinki time. Fill in from the owner's list (A0018); `npm run slots` turns this into SQL. `offset` is Helsinki's UTC offset on that date (+02:00 in winter).",
-  "date": "",
+  "//": "The Pitch at Slush (owner, 2026-10-26): 18 November, slots from 08:00 to 16:00 Helsinki time (UTC+02:00 in November). `length`: 30 minutes per slot (owner, 2026-10-26), so 16 slots, 08:00 to 15:30. A list in `slots` ([{\"start\":\"08:00\",\"end\":\"08:15\"}, …]) overrides the window.",
+  "date": "2026-11-18",
   "offset": "+02:00",
+  "from": "08:00",
+  "to": "16:00",
+  "length": 30,
   "slots": []
 }

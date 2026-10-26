@@ -23,9 +23,9 @@ PAGE_URL = "https://tekka2026.github.io/forwardone/the-pitch/"
 EVENT_NAME = "The _____ Pitch at Slush"
 # Shown in the calendar invite; empty until the venue is known (A0016).
 EVENT_LOCATION = ""
-# Sender, e.g. "FORWARD.one <pitch@forward.one>" (domain verified with the
-# email service, A0018). Empty: emails are logged, not sent.
-MAIL_FROM = ""
+# Sender (owner, 2026-10-26; forward.one verified with Resend). Replies go
+# to this address. Empty: emails are logged, not sent.
+MAIL_FROM = "FORWARD.one <cailin.greiner@forward.one>"
 # Days an unreviewed request holds its slot; empty: it holds until decided.
 HOLD_DAYS = ""
 
