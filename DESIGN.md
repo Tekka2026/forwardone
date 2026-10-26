@@ -609,7 +609,9 @@ sheet, wording confirmed by the owner 2026-10-21).
   line height 1.35 (normal leading; the blanks sit inside it at 1.15); privacy note 16px under the button; white ends 48px
   under the form (32px on phones), facts 24px into the black, and the
   footer 48px under the facts (24px).
-  No minimum height on the white block.
+  The white block (header included) is at least 80% of the viewport high
+  (`80svh`, owner 2026-10-26; before: no minimum height); the content sits
+  at the top and the facts' black starts below.
 - Intro motion: eyebrow, then "The", the blank and "Pitch" snap in like H1
   words; the first sentence of the letter eases in gently.
 - Until a form endpoint is set (`pitch.action`), the button does not post

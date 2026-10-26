@@ -374,8 +374,8 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
 
 <style is:global>
   /* White from the header down to the facts (owner, 2026-10-26; before: a
-     black block under the header, like the homepage intro). No minimum
-     height. */
+     black block under the header, like the homepage intro). At least 80%
+     of the viewport high (see .pitch__hero). */
   .pitch {
     background: var(--bg);
   }
@@ -387,6 +387,11 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
   .pitch__hero {
     padding-top: var(--gap); /* plus the header's own 24px bottom padding */
     padding-bottom: var(--gap-double);
+    /* The white, header included, fills at least 80% of the viewport
+       height (owner, 2026-10-26); the facts' black starts below it. */
+    box-sizing: border-box;
+    min-height: calc(80vh - var(--header-h));
+    min-height: calc(80svh - var(--header-h));
   }
   /* The white ends where the facts' hairline was; the facts sit on black
      (owner, 2026-10-26), and the black footer runs on below them. */
