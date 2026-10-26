@@ -587,6 +587,9 @@ sheet, wording confirmed by the owner 2026-10-21).
   hairline (stays black on focus, owner 2026-10-22; dashed red #E0251B when
   invalid after interaction); the
   hint shows in muted Inter while empty; each blank grows with its text. Each input has a visually hidden label.
+  Labels and blanks reset the host page's form styles (font, margin,
+  height, shadow), so the letter looks the same on Webflow (owner,
+  2026-10-26, see webflow/README.md).
 - The letter unfolds sentence by sentence (owner, 2026-10-21): at first
   only "Dear FORWARD.one, we are [company name]."; once the company name is
   in, "I'm [name], our [role]."; once the name is in, "Reach me at [email]
