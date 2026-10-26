@@ -100,6 +100,8 @@ export const navGreeting = {
 export const utilityNav = {
   lpLogin: { label: 'LP login', href: LP_LOGIN_URL, external: true },
   pitch: { label: 'Pitch us', href: '/founders' },
+  /** On the founders page, in place of Pitch us: back to the investor homepage. */
+  investors: { label: 'For investors', href: '/' },
 };
 
 export const footer = {

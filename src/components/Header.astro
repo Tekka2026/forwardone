@@ -15,15 +15,25 @@ interface Props {
   dark?: boolean;
   /** Landing pages: no LP login. */
   minimal?: boolean;
+  /** The founders page (owner, 2026-10-26): "For investors" (to the
+   *  homepage) in the place of Pitch us, which would link to the page
+   *  itself. */
+  forFounders?: boolean;
 }
-const { dark = false, minimal = false } = Astro.props;
+const { dark = false, minimal = false, forFounders = false } = Astro.props;
 ---
 
-<header class:list={['site-top', dark && 'site-top--dark theme-dark', minimal && 'site-top--minimal']}>
+<header class:list={['site-top', dark && 'site-top--dark theme-dark', minimal && 'site-top--minimal', forFounders && 'site-top--founders']}>
   <div class="wrap site-top__row">
     <Logo />
     <div class="site-top__actions">
-      <Button href={utilityNav.pitch.href} size="small" class="site-top__pitch">{utilityNav.pitch.label}</Button>
+      {
+        forFounders ? (
+          <Button href={utilityNav.investors.href} size="small" class="site-top__investors">{utilityNav.investors.label}</Button>
+        ) : (
+          <Button href={utilityNav.pitch.href} size="small" class="site-top__pitch">{utilityNav.pitch.label}</Button>
+        )
+      }
       {
         !minimal && (
           <Button href={utilityNav.lpLogin.href} variant="ghost" size="small" external={utilityNav.lpLogin.external}>
@@ -64,6 +74,13 @@ const { dark = false, minimal = false } = Astro.props;
   @media (max-width: 420px) {
     .site-top.site-top--minimal :global(.logo__mark) {
       height: 19px;
+    }
+  }
+  /* Founders page on phones: "For investors" stays (unlike Pitch us), so
+     the logo and the two buttons sit closer to fit down to 320px. */
+  @media (max-width: 640px) {
+    .site-top--founders .site-top__row {
+      gap: var(--gap-half);
     }
   }
   /* Phones: no Pitch us in the top strip (owner, 2026-10-14); founders

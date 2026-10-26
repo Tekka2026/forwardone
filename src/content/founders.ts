@@ -13,7 +13,6 @@ const PH = (what: string) => `[PLACEHOLDER: ${what}]`;
 
 export type FounderStat = { value: string; label: string };
 export type TitledLine = { title: string; body: string };
-export type FounderQuote = { quote: string; name: string; role: string; company: string; photo: string };
 export type PortfolioItem = { name: string; line: string };
 
 export const forFounders = {
@@ -21,9 +20,6 @@ export const forFounders = {
     title: 'For founders | FORWARD.one',
     description: 'We back European deeptech founders, from lab to exit. First checks up to €5M, follow-on up to €100M.',
   },
-
-  /** Back to the investor homepage, above the hero. */
-  investorsLink: { label: 'For investors', href: '/' } as Cta,
 
   hero: {
     eyebrow: 'For founders building the hard stuff',
@@ -71,14 +67,12 @@ export const forFounders = {
     sectors: ['Semicon', 'Quantum', 'Robotics', 'Energy', 'AI', 'Dual-use', 'Space', 'Industrial tech'],
   },
 
+  /** Eyebrow and title for the founders strip (the homepage component, owner
+   * 2026-10-26: its cards come from `founders` in home.ts), then the
+   * portfolio grid and the exits line. */
   backed: {
     eyebrow: 'Founders we back',
     title: 'Hear it from the people building.',
-    quotes: [
-      { quote: PH('founder quote'), name: 'Crijn Bouman', role: 'CEO & Co-founder', company: 'ROCSYS', photo: '/founders/rocsys.jpg' },
-      { quote: PH('founder quote'), name: 'Tom Trill', role: 'CEO', company: 'Qualinx', photo: '/founders/qualinx.jpg' },
-      { quote: PH('founder quote'), name: 'Jacquelien ten Dam', role: 'CEO', company: 'Optics11 Life', photo: '/founders/optics11-life.jpg' },
-    ] as FounderQuote[],
     portfolioTitle: 'In the portfolio',
     portfolio: [
       { name: 'QuantWare', line: 'Quantum processors' },

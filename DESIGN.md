@@ -440,20 +440,25 @@ Built like the "Follow the battery." section on vikka.io
 reuses the homepage's patterns, composed in the page from the shared tokens
 and classes, because the homepage components read their copy from `home.ts`:
 
+- Header: "For investors" (solid, to the homepage) in the place of Pitch
+  us, which would link to the page itself; LP login stays. It stays on
+  phones too, with a tighter 12px gap to the logo so both buttons fit down
+  to 320px (owner, 2026-10-26; `<Base forFounders>`).
 - Black intro (as `.intro` on the homepage, at least one screen high):
-  "← For investors" back link to the homepage, eyebrow (ticks in), H1 (word
-  reveal), lede, "Pitch us" (to the closing, `#pitch`) and "Meet the
+  eyebrow (ticks in), H1 (word reveal), lede, "Pitch us" (to the closing, `#pitch`) and "Meet the
   partners" (`#partners`); the key figures at its bottom in the homepage
-  stats pattern (4 columns, 2 at ≤980px), with room below them for the
-  floating nav. Same intro sequence and timings as the homepage.
+  stats pattern (4 columns, 2 at ≤980px, wrapping to one per row on the
+  narrowest phones), with room below them for the floating nav. Same intro sequence and timings as the homepage.
 - Why founders pick us: H2 and four cards (`.cards` at 4 columns, each a
   `.panel`: card title and muted small body).
 - How we work with you: the homepage Playbook pattern (feature H2 with the
   word reveal on scroll, lede, numbered list in columns 9–12), no button.
 - What we back: H2, lede, sector tags as chips on the 4% tint (as on the
   team profile).
-- Founders we back: three quote cards (4:5 photo, quote, name, role and
-  company), then "In the portfolio" (card title) and a 4-column grid of
+- Founders we back: the homepage founders strip itself (same sliding,
+  docking cards from `founders` in home.ts; owner, 2026-10-26), with this
+  page's eyebrow and title and no intro, passed in as props. Under it,
+  without a hairline, "In the portfolio" (card title) and a 4-column grid of
   companies on hairlines (name, muted one-liner), then the exits line.
 - The partners (`#partners`): the homepage team pattern; the people come
   from `partners` in `home.ts`, so both pages stay in step.

@@ -15,11 +15,23 @@
  * a progress bar, caption, sound line and a Like / Share rail. Like
  * toggles (heart fills and pops); Share opens LinkedIn's share dialog in a
  * new tab, to post the site on the visitor's own feed. Clips play muted when in view. Copy in `founders` (home.ts).
+ * Also on the founders page ("Hear it from the people building."), with its
+ * own head copy passed in as props; the cards are the same.
  */
 import { founders, caseStudies, trackRecord } from '@content/home';
 import Placeholder from '@components/ui/Placeholder.astro';
 import Sentences from '@components/ui/Sentences.astro';
 import { href, isPlaceholder } from '@lib/href';
+
+interface Props {
+  /** Head copy; defaults to the homepage's (`founders` in home.ts). The
+   *  founders page passes its own (owner, 2026-10-26). An empty `intro`
+   *  leaves the intro out. */
+  eyebrow?: string;
+  title?: string;
+  intro?: string;
+}
+const { eyebrow = founders.eyebrow, title = founders.title, intro = founders.intro } = Astro.props;
 
 // Rule (owner, 2026-10-19): the founders strip never shows a Proof company
 // or an exit. Fail the build if one slips in, rather than publish it.
@@ -78,10 +90,10 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
   <div class="wrap">
         <div class="grid founders__head">
           <div class="col-6">
-            <p class="eyebrow">{founders.eyebrow}</p>
-            <h2 class="h-section founders__title" id="founders-title"><Sentences text={founders.title} /></h2>
+            <p class="eyebrow">{eyebrow}</p>
+            <h2 class="h-section founders__title" id="founders-title"><Sentences text={title} /></h2>
           </div>
-          <p class="col-4 start-9 body founders__intro">{founders.intro}</p>
+          {intro && <p class="col-4 start-9 body founders__intro">{intro}</p>}
         </div>
         <div class="founders__rail">
           <ul class="founders__track" data-founders-track>
