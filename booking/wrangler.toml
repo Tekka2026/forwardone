@@ -1,0 +1,34 @@
+# Booking service for The Pitch at Slush (/the-pitch). See README.md.
+name = "forwardone-pitch-booking"
+main = "src/index.ts"
+compatibility_date = "2026-10-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "forwardone-pitch"
+# Filled in at deploy time by .github/workflows/deploy-booking.yml.
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"
+
+# Expire unreviewed requests (only when HOLD_DAYS is set).
+[triggers]
+crons = ["17 * * * *"]
+
+[vars]
+# Pages that may call the API (comma separated origins).
+ALLOWED_ORIGINS = "https://tekka2026.github.io"
+# The pitch page, linked from emails.
+PAGE_URL = "https://tekka2026.github.io/forwardone/the-pitch/"
+EVENT_NAME = "The Pitch at Slush"
+# Shown in the calendar invite; empty until the venue is known (A0016).
+EVENT_LOCATION = ""
+# Sender, e.g. "FORWARD.one <pitch@forward.one>" (domain verified with the
+# email service, A0018). Empty: emails are logged, not sent.
+MAIL_FROM = ""
+# Days an unreviewed request holds its slot; empty: it holds until decided.
+HOLD_DAYS = ""
+
+# Secrets (wrangler secret put; set by .github/workflows/deploy-booking.yml):
+# REVIEWERS (comma separated emails that may log in to /review and are told
+# of new requests; a secret so the addresses stay out of the repository),
+# RESEND_API_KEY, SESSION_SECRET.

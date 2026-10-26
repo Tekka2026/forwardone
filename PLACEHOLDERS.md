@@ -32,7 +32,8 @@ invented; replace the value in the file named and the marker disappears.
 | Where | Key | Needed |
 |---|---|---|
 | Facts | `facts[0]`, `facts[1]`, `facts[2]` | Date and time at Slush, stage or venue, application deadline. |
-| Form | `action` | Where applications go: a form service or CRM endpoint that accepts a POST (e.g. HubSpot, Typeform, Formspree). Until set, the button shows a "not sent yet" note. |
+| Form | `bookingApi` | The booking service's address (`https://forwardone-pitch-booking.<account>.workers.dev`, after its first deploy, see booking/README.md). Until set, the time blank stays empty and the button shows a "not sent yet" note. |
+| Form | `booking/slots.json` | The pitch day and its time slots (start and end, Helsinki time). |
 | Form | `privacy` | Privacy note for the form, with a link to the privacy policy. |
 
 ## Navigation and footer (`src/content/nav.ts`)

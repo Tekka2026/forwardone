@@ -44,7 +44,7 @@ const steps = pitch.steps.map(tokens);
 const firstField = steps[0].findIndex((t) => 'field' in t);
 // Values with an embedded placeholder ("FORWARD.one and [PLACEHOLDER: …]").
 const chunks = (v: string) => v.split(/(\[PLACEHOLDER:[^\]]*\])/).filter(Boolean);
-const ready = !isPlaceholder(pitch.action);
+const ready = !isPlaceholder(pitch.bookingApi);
 // The intro with the partner's name linked to their site.
 const introParts = pitch.intro[0].split(pitch.partner.name);
 // The partners' logos for the header, next to FORWARD.one.
@@ -91,9 +91,13 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
           class="pitch__form"
           data-pitch-form
           data-ready={ready ? 'true' : 'false'}
-          action={ready ? pitch.action : undefined}
+          data-api={ready ? pitch.bookingApi.replace(/\/$/, '') : undefined}
           method="post"
         >
+          {/* Honeypot: hidden from people, filled in by some bots. */}
+          <div class="pitch__trap" aria-hidden="true">
+            <input type="text" name="website" tabindex="-1" autocomplete="off" />
+          </div>
           <p class="pitch__letter reveal-gentle">
             {
               steps.map((toks, si) => (
@@ -114,6 +118,17 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
                           <span class="pitch__blank-wrap">
                             <label class="pitch__field">
                               <span class="visually-hidden">{t.field.label}</span>
+                              {t.field.type === 'slot' ? (
+                                <select
+                                  class="pitch__input pitch__select is-empty"
+                                  name={t.field.name}
+                                  required={ready && t.field.required}
+                                  data-pitch-input
+                                  data-pitch-slot
+                                >
+                                  <option value="" selected>{t.field.hint}</option>
+                                </select>
+                              ) : (
                               <input
                                 class="pitch__input"
                                 type={t.field.type ?? 'text'}
@@ -125,6 +140,7 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
                                 data-pitch-input
                                 data-pitch-company={si === 0 && i === firstField ? '' : undefined}
                               />
+                              )}
                             </label>
                             {t.tail}
                           </span>
@@ -142,7 +158,11 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
           </div>
           <p class="small pitch__privacy" data-pitch-final><Placeholder value={pitch.privacy} /></p>
           <template data-pitch-msg-not-sent>{pitch.notSent}</template>
+          <template data-pitch-msg-sending>{pitch.sending}</template>
           <template data-pitch-msg-sent>{pitch.sent}</template>
+          <template data-pitch-msg-no-slots>{pitch.noSlots}</template>
+          <template data-pitch-msg-slots-failed>{pitch.slotsFailed}</template>
+          <template data-pitch-msg-failed>{pitch.failed}</template>
         </form>
         </div>
       </div>
@@ -271,7 +291,9 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
     meter.setAttribute('aria-hidden', 'true');
     form.querySelector('.pitch__letter').appendChild(meter);
     function size(input) {
-      meter.textContent = input.value || input.placeholder;
+      meter.textContent = input.tagName === 'SELECT'
+        ? (input.selectedOptions[0] ? input.selectedOptions[0].textContent : '')
+        : input.value || input.placeholder;
       // + 2px for the caret at the end.
       input.style.width = Math.ceil(meter.getBoundingClientRect().width) + 2 + 'px';
     }
@@ -291,7 +313,7 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
     var finals = [].slice.call(form.querySelectorAll('[data-pitch-final]'));
     var shownSteps = 1;
     function gate(step) {
-      return step.querySelector('input[required]');
+      return step.querySelector('[data-pitch-input][required]');
     }
     function passed(step) {
       var g = gate(step);
@@ -351,13 +373,81 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
     // A restored or autofilled form opens as far as it is filled.
     advance();
 
-    // ---- Send. Until an endpoint is set, say so instead of posting. -------
     var status = form.querySelector('[data-pitch-status]');
+    function msg(key) {
+      return form.querySelector('[data-pitch-msg-' + key + ']').content.textContent;
+    }
+
+    // ---- Pitch time: the free slots from the booking service. ------------
+    // Loaded on arrival and again when the visitor opens the choice (at most
+    // every 20s), so a time someone else just took disappears. A taken time
+    // the visitor had chosen is cleared.
+    var api = form.dataset.api;
+    var slot = form.querySelector('[data-pitch-slot]');
+    var slotsAt = 0;
+    function slotEmpty() {
+      slot.classList.toggle('is-empty', !slot.value);
+      size(slot);
+    }
+    function loadSlots(force) {
+      if (!api || !slot || (!force && Date.now() - slotsAt < 20000)) return Promise.resolve();
+      slotsAt = Date.now();
+      return fetch(api + '/slots', { headers: { Accept: 'application/json' } })
+        .then(function (r) { if (!r.ok) throw r; return r.json(); })
+        .then(function (data) {
+          var keep = slot.value;
+          var free = data.slots.filter(function (x) { return x.available; });
+          while (slot.options.length > 1) slot.remove(1);
+          free.forEach(function (x) { slot.add(new Option(x.label, x.id)); });
+          slot.value = free.some(function (x) { return x.id === keep; }) ? keep : '';
+          slotEmpty();
+          if (!free.length) status.textContent = msg('no-slots');
+          else if (status.textContent === msg('no-slots') || status.textContent === msg('slots-failed')) status.textContent = '';
+          updateSend();
+        })
+        .catch(function () { status.textContent = msg('slots-failed'); });
+    }
+    if (slot) {
+      slot.addEventListener('change', slotEmpty);
+      ['focus', 'pointerdown'].forEach(function (ev) { slot.addEventListener(ev, function () { loadSlots(false); }); });
+      loadSlots(true);
+    }
+
+    // ---- Send to the booking service. Until it is set, say so instead. ---
     form.addEventListener('submit', function (e) {
-      if (form.dataset.ready !== 'true') {
-        e.preventDefault();
-        status.textContent = form.querySelector('[data-pitch-msg-not-sent]').content.textContent;
-      }
+      e.preventDefault();
+      if (!api) { status.textContent = msg('not-sent'); return; }
+      if (!form.reportValidity()) return;
+      var body = {};
+      new FormData(form).forEach(function (v, k) { body[k] = String(v); });
+      send.disabled = true;
+      status.textContent = msg('sending');
+      fetch(api + '/apply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(body),
+      })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; }); })
+        .then(function (res) {
+          if (res.ok) {
+            status.textContent = msg('sent');
+            form.classList.add('is-sent');
+            [].forEach.call(form.elements, function (el) { el.disabled = true; });
+            return;
+          }
+          status.textContent = (res.d && res.d.message) || msg('failed');
+          if (res.d && (res.d.error === 'slot_taken' || res.d.error === 'unknown_slot')) {
+            loadSlots(true).then(function () { slot.focus(); });
+          } else if (res.d && res.d.field) {
+            var f = form.querySelector('[name="' + res.d.field + '"]');
+            if (f) f.focus();
+          }
+          updateSend();
+        })
+        .catch(function () {
+          status.textContent = msg('failed');
+          updateSend();
+        });
     });
 
     function refit() {
@@ -568,6 +658,33 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
   .pitch__input:user-invalid {
     border-bottom-style: dashed;
     border-bottom-color: var(--error-colour);
+  }
+  /* The pitch time: a choice styled as one more blank (no arrow box); the
+     list of times opens on click. Empty, it shows its hint like the others. */
+  .pitch__select {
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    border-radius: 0;
+  }
+  .pitch__select.is-empty {
+    background: none;
+    -webkit-text-fill-color: var(--muted);
+    color: var(--muted);
+    opacity: 0.75;
+  }
+  .pitch__select option {
+    color: var(--fg);
+    -webkit-text-fill-color: var(--fg);
+    background: var(--bg);
+  }
+  /* Honeypot, off screen (not display: none, which some bots skip). */
+  .pitch__trap {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
   }
   .pitch__send {
     display: flex;

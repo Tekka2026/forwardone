@@ -1,0 +1,6 @@
+{
+  "//": "The Pitch at Slush: one day, time slots in Helsinki time. Fill in from the owner's list (A0018); `npm run slots` turns this into SQL. `offset` is Helsinki's UTC offset on that date (+02:00 in winter).",
+  "date": "",
+  "offset": "+02:00",
+  "slots": []
+}

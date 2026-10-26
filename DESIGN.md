@@ -574,8 +574,9 @@ sheet, wording confirmed by the owner 2026-10-21).
   letter.
 - Form as a fill-in-the-blanks letter at `--fs-metric` (24–32px, Inter,
   line height 1.35, normal text leading, 8 columns max): company name first, then name, role,
-  email, phone, what they build (one line), deck link (no address, owner
-  2026-10-21). Opens "Hi investors, we are …" (owner, 2026-10-22); on
+  email, phone, what they build (one line), the pitch time ("We'd like to
+  pitch at [time], Helsinki time.", owner 2026-10-26), deck link (no
+  address, owner 2026-10-21). Opens "Hi investors, we are …" (owner, 2026-10-22); on
   phones (≤640px) the company blank always starts the second line, so it
   does not jump up when a short name would fit on the first. Blanks
   are inline inputs; what the visitor types is in Inter 500 (a step heavier
@@ -590,7 +591,8 @@ sheet, wording confirmed by the owner 2026-10-21).
   only "Dear FORWARD.one, we are [company name]."; once the company name is
   in, "I'm [name], our [role]."; once the name is in, "Reach me at [email]
   or [phone]."; once a valid email is in, what they build; once that is in,
-  the deck link and closing sentence with the privacy note. The button
+  the pitch time; once a time is chosen, the deck link and closing sentence
+  with the privacy note. The button
   shows from the start, disabled (40% opacity, the global `.btn:disabled`),
   and enables once the whole letter is open and every required blank is
   validly filled (owner, 2026-10-21). A
@@ -614,8 +616,20 @@ sheet, wording confirmed by the owner 2026-10-21).
   at the top and the facts' black starts below.
 - Intro motion: eyebrow, then "The", the blank and "Pitch" snap in like H1
   words; the first sentence of the letter eases in gently.
-- Until a form endpoint is set (`pitch.action`), the button does not post
-  and the status line says applications are not sent yet.
+- The pitch time (owner, 2026-10-26: one day, time slots; FORWARD.one
+  approves or denies, a denied request frees its slot): a `<select>` styled
+  as one more blank (no arrow box, the hint "time" in muted while empty,
+  the chosen time in the gradient). It offers only the free slots, loaded
+  from the booking service (`booking/`, `pitch.bookingApi`) on arrival and
+  again when opened (at most every 20s). Sending posts the letter as JSON
+  to the service, which holds the slot as a pending request; the status
+  line then says the time is on hold and the letter locks. If the time was
+  just taken, the status line says so, the list reloads and the choice
+  gets focus. A hidden honeypot field catches bots. The team decides on
+  the service's `/review` page (see booking/README.md).
+- Until the booking service is set (`pitch.bookingApi`), the time blank
+  stays empty and optional, the button does not post, and the status line
+  says requests are not sent yet.
 
 ## 6. Spacing — Vercel Geist system
 

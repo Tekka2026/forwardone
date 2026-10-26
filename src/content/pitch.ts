@@ -7,7 +7,11 @@
  * written onto it in handwriting as the visitor types. The form is a
  * fill-in-the-blanks letter: `letter` alternates copy and fields.
  *
- * Unknowns (date, venue, deadline, where applications go, the
+ * One field is the pitch time: a choice of the free slots, loaded from the
+ * booking service (booking/, owner 2026-10-26). Sending the letter holds the
+ * slot until FORWARD.one approves or denies the request.
+ *
+ * Unknowns (date, venue, deadline, the booking service's address, the
  * privacy note) are visible placeholders, listed in PLACEHOLDERS.md.
  */
 
@@ -19,7 +23,8 @@ export type PitchField = {
   label: string;
   /** Hint inside the empty blank. */
   hint: string;
-  type?: 'text' | 'email' | 'tel' | 'url';
+  /** `slot`: a choice of the free pitch times (from the booking service). */
+  type?: 'text' | 'email' | 'tel' | 'url' | 'slot';
   autocomplete?: string;
   required?: boolean;
 };
@@ -71,6 +76,7 @@ export const pitch = {
       '.',
     ],
     ['In one line, we are building', { field: { name: 'building', label: 'What you are building, in one line', hint: 'what you are building', required: true } }, '.'],
+    ['We’d like to pitch at', { field: { name: 'slot', label: 'Pitch time, Helsinki time', hint: 'time', type: 'slot', required: true } }, ', Helsinki time.'],
     [
       'Our deck is at',
       { field: { name: 'deck', label: 'Link to your pitch deck (optional)', hint: 'link (optional)', type: 'url' } },
@@ -78,10 +84,16 @@ export const pitch = {
     ],
   ] as LetterPart[][],
   submit: 'Send our pitch',
-  /** Where the form posts (a form service or CRM endpoint). Until set, submitting shows `notSent`. */
-  action: PH('form endpoint'),
-  notSent: 'Applications are not sent yet: the form endpoint still has to be connected.',
-  sent: 'Thank you. We read every application and will be in touch.',
+  /** The booking service (booking/, a Cloudflare Worker): `/slots` lists the
+   * times, `/apply` takes the letter. Until set, the time blank stays empty
+   * and submitting shows `notSent`. */
+  bookingApi: PH('booking service URL'),
+  notSent: 'Requests are not sent yet: the booking service still has to be connected.',
+  sending: 'Sending…',
+  sent: 'Thank you. Your time is on hold while we read your application. We’ll email you whether it is confirmed.',
+  noSlots: 'All times are taken at the moment.',
+  slotsFailed: 'The pitch times could not be loaded. Please try again in a minute.',
+  failed: 'Your request could not be sent. Please try again in a minute.',
   privacy: PH('privacy note: what happens with the details, with a link to the privacy policy'),
   /** Event facts under the form. */
   facts: [
