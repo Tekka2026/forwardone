@@ -23,15 +23,16 @@ export const forFounders = {
 
   hero: {
     eyebrow: 'For founders building the hard stuff',
-    title: 'Backing deeptech from lab to exit.',
+    title: 'Backing deeptech\nfrom lab to exit.',
     lede: 'We’ve sat in your seat. Our partners are former founders and operators, and the ones you meet are the ones who decide.',
     primary: { label: 'Pitch us', href: '#pitch' } as Cta,
     secondary: { label: 'Meet the partners', href: '#partners' } as Cta,
   },
 
   stats: [
-    { value: 'Up to €5M', label: 'first check, pre-seed to Series A' },
-    { value: 'Up to €100M', label: 'follow-on per company' },
+    // "Up to" moved out of the figures, which repeated it (owner, 2026-10-26).
+    { value: '€5M', label: 'maximum first check, pre-seed to Series A' },
+    { value: '€100M', label: 'maximum follow-on per company' },
     { value: '€250M', label: 'Fund III' },
     { value: '5 exits', label: 'to Sonos, ABB, MPS and others' },
   ] as FounderStat[],
