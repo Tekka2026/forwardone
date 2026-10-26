@@ -32,7 +32,9 @@ export const pitch = {
     title: 'The Pitch at Slush | FORWARD.one',
     description: 'Pitch your company live to FORWARD.one and Balnord at Slush in Helsinki. The winner gets a term sheet.',
   },
-  eyebrow: 'Slush, Helsinki',
+  /** Eyebrow: `brand` in the handwriting's gradient (Slush's colours),
+   * `rest` in plain ink (owner, 2026-10-26). */
+  eyebrow: { brand: 'Slush', rest: ', Helsinki' },
   /** H1, either side of the blank line. */
   title: { before: 'The', after: 'Pitch' },
   /** What the event is, under the H1 (owner's wording, 2026-10-22). Only what is known;

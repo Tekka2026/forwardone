@@ -63,7 +63,7 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
     <section class="section section--flush pitch__hero">
       <div class="wrap">
         <div class="pitch__sheet">
-        <p class="eyebrow pitch__eyebrow reveal-snap">{pitch.eyebrow}</p>
+        <p class="eyebrow reveal-snap"><span class="pitch__eyebrow">{pitch.eyebrow.brand}</span>{pitch.eyebrow.rest}</p>
         <h1 class="h-display pitch__title" data-pitch-title>
           <span class="pitch__line" data-pitch-line>
             <span class="pitch__word reveal-snap" style="--i: 0">{pitch.title.before}</span>
@@ -403,11 +403,9 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
   .pitch__blank {
     animation-delay: calc(var(--reveal-start) + var(--i) * var(--reveal-stagger));
   }
-  /* The eyebrow in the handwriting's gradient, so "Slush" reads as the
-     source of the colours (owner, 2026-10-26). As wide as its text, so the
-     gradient spans the words, not the column. */
+  /* "Slush" in the handwriting's gradient, so it reads as the source of
+     the colours; ", Helsinki" stays ink (owner, 2026-10-26). */
   .pitch__eyebrow {
-    width: fit-content;
     background: var(--hand-gradient);
     -webkit-background-clip: text;
     background-clip: text;

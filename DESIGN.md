@@ -533,9 +533,9 @@ sheet, wording confirmed by the owner 2026-10-21).
   hairline was; the event facts sit on black below it (`.theme-dark`,
   owner 2026-10-26), the black footer running on under them.
   No card (owner, 2026-10-26; before: a grey grainy sheet of paper, first
-  with a torn bottom edge): the eyebrow ("Slush, Helsinki", in the
-  handwriting's gradient across its own width so it points to Slush's
-  colours, owner 2026-10-26), H1 and form
+  with a torn bottom edge): the eyebrow ("Slush, Helsinki"; "Slush" in
+  the handwriting's gradient so it points to Slush's colours, ", Helsinki"
+  in ink, owner 2026-10-26), H1 and form
   sit straight on the white, their left edge (and the facts') aligned with
   the logo (the content column), in the site's own light colour tokens.
 - H1 "The ____ Pitch" on one line (no wrap), in Inter at weight 500, a
