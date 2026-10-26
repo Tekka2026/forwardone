@@ -7,7 +7,7 @@
  *   as the visitor types the company name (the form's first field), the name
  *   is written onto it letter by letter in Covered By Your Grace, in red. When the
  *   name is long the whole H1, handwriting included, scales down continuously
- *   so it never runs wider than 90% of the content width.
+ *   so it never runs wider than 60% of the content width (90% on phones).
  * - A short lede on what the event is (Balnord linked).
  * - Under it the form as a fill-in-the-blanks letter (name, address, contact,
  *   what they build, deck), answers in the same handwriting, then the
@@ -172,7 +172,8 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
 
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // ---- Fit: the H1 never runs wider than 90% of the content width. ------
+    // ---- Fit: the H1 never runs wider than --pitch-max of the content ----
+    // width (60%, 90% on phones; owner, 2026-10-26).
     // Font size scales linearly with width, so one measurement is enough:
     // the natural width at the base size, from the current width and size.
     var probe = document.createElement('span');
@@ -185,7 +186,8 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
       var w = line.getBoundingClientRect().width;
       if (!base || !cur || !w) return;
       var natural = (w * base) / cur;
-      var scale = Math.min(1, (0.9 * title.clientWidth) / natural);
+      var max = parseFloat(getComputedStyle(title).getPropertyValue('--pitch-max')) || 0.6;
+      var scale = Math.min(1, (max * title.clientWidth) / natural);
       title.style.setProperty('--pitch-scale', scale.toFixed(4));
     }
 
@@ -404,6 +406,7 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
      the display face. */
   .pitch__title {
     --pitch-scale: 1;
+    --pitch-max: 0.6; /* share of the content width the H1 may take */
     font-family: var(--font-sans);
     font-weight: 500;
     margin: var(--gap-half) 0 0;
@@ -430,7 +433,14 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
     padding-inline: 0.08em;
     border-bottom: max(2px, 0.035em) solid currentColor;
     line-height: 1;
-    transition: min-width 360ms cubic-bezier(0.2, 0.7, 0.2, 1);
+    transition:
+      min-width 360ms cubic-bezier(0.2, 0.7, 0.2, 1),
+      border-color 240ms ease;
+  }
+  /* Once the name is being written the line steps back to light grey
+     (owner, 2026-10-26). */
+  .pitch__title.is-filled .pitch__blank {
+    border-bottom-color: #c4c3be;
   }
   /* From 5 characters (or once the field is left) the line hugs the name. */
   .pitch__title.is-fit .pitch__blank {
@@ -566,8 +576,11 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
     .pitch__hero {
       padding-bottom: var(--gap);
     }
+    .pitch__title {
+      --pitch-max: 0.9; /* 60% would make the H1 smaller than the letter */
+    }
     .pitch__paper {
-      padding: var(--gap) var(--gap) calc(var(--gap));
+      padding: var(--gap);
     }
     .pitch__intro {
       margin-top: var(--space-4x);

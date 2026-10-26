@@ -536,7 +536,8 @@ sheet, wording confirmed by the owner 2026-10-21).
   step heavier than body copy (owner, 2026-10-22; the only heading on the
   site not in the display face), Display size and tracking. The blank is a line on the
   baseline (3.5em long while empty, `max(2px, 0.035em)` thick, heading
-  colour). From 5 typed characters, or once the visitor leaves the field
+  colour; light grey #c4c3be once the first handwritten letter appears,
+  240ms, owner 2026-10-26). From 5 typed characters, or once the visitor leaves the field
   with a shorter name, the line shrinks to the name (360ms; owner,
   2026-10-22), and grows back to 3.5em when the field is cleared. As the
   visitor types the company name (the form's first field) it is written onto
@@ -549,8 +550,9 @@ sheet, wording confirmed by the owner 2026-10-21).
   its slice of a name-wide gradient, re-measured as the name grows): each new letter wipes open left to right in 300ms and
   settles from a slight lift, with a small random tilt (±2°) and baseline
   shift (±0.02em). Pasted text writes in at 45ms per letter.
-- Fit: the whole H1, handwriting included, never runs wider than 90% of the
-  content width. Up to that it keeps the Display size; beyond it the size
+- Fit: the whole H1, handwriting included, never runs wider than 60% of the
+  content width (owner, 2026-10-26; before: 90%), 90% on phones ≤640px
+  (`--pitch-max`). Up to that it keeps the Display size; beyond it the size
   scales down continuously (`--pitch-scale`, font-size transition 240ms).
   On phones the empty heading is already scaled to fit.
 - Under the H1 a short lede on what the event is (owner's wording; if it
