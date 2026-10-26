@@ -13,7 +13,7 @@ const PH = (what: string) => `[PLACEHOLDER: ${what}]`;
 
 export type FounderStat = { value: string; label: string };
 export type TitledLine = { title: string; body: string };
-export type PortfolioItem = { name: string; line: string };
+export type PortfolioItem = { name: string; logo: string };
 
 export const forFounders = {
   meta: {
@@ -74,20 +74,25 @@ export const forFounders = {
     eyebrow: 'Founders we back',
     title: 'Hear it from the people building.',
     portfolioTitle: 'In the portfolio',
+    /** Logo tiles (owner, 2026-10-26): one square per company with its SVG
+     * logo in the middle. Logos go in src/assets/portfolio/<logo>.svg
+     * (single colour, inlined in the text colour); until a file is there the
+     * tile shows the name and a placeholder marker. */
     portfolio: [
-      { name: 'QuantWare', line: 'Quantum processors' },
-      { name: 'QuiX Quantum', line: 'Photonic quantum computers' },
-      { name: 'Optics11', line: 'Fibre-optic sensing for grids and seabed security' },
-      { name: 'ExRobotics', line: 'Inspection robots for hazardous sites' },
-      { name: 'Fizyr', line: 'Vision AI for robot picking' },
-      { name: 'Voltfang', line: 'Grid storage from used EV batteries' },
-      { name: 'ORE Energy', line: 'Iron-air long-duration storage' },
-      { name: 'Sapient Perception', line: 'Sensing and edge AI for drones' },
-      { name: 'Fibersail', line: 'Shape sensing for wind turbine blades' },
-      { name: 'SenseGlove', line: 'Haptic gloves' },
-      { name: 'Collo', line: 'Sensors that fingerprint liquids' },
-      { name: 'ZuriQ', line: PH('one-line description') },
+      { name: 'QuantWare', logo: 'quantware' },
+      { name: 'QuiX Quantum', logo: 'quix-quantum' },
+      { name: 'Optics11', logo: 'optics11' },
+      { name: 'ExRobotics', logo: 'exrobotics' },
+      { name: 'Fizyr', logo: 'fizyr' },
+      { name: 'Voltfang', logo: 'voltfang' },
+      { name: 'ORE Energy', logo: 'ore-energy' },
+      { name: 'Sapient Perception', logo: 'sapient-perception' },
+      { name: 'Fibersail', logo: 'fibersail' },
+      { name: 'SenseGlove', logo: 'senseglove' },
+      { name: 'Collo', logo: 'collo' },
+      { name: 'ZuriQ', logo: 'zuriq' },
     ] as PortfolioItem[],
+    logoMissing: PH('SVG logo'),
     exits: { lead: 'From lab to exit.', text: 'Mayht (acquired by Sonos), Sensorfact (ABB), Axign (MPS), Aito and Nuventura.' },
   },
 

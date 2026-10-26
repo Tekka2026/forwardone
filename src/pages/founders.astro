@@ -31,6 +31,12 @@ import { href, isPlaceholder } from '@lib/href';
 const chunks = (v: string) => v.split(/(\[PLACEHOLDER:[^\]]*\])/).filter(Boolean);
 const h1Words = f.hero.title.split(/\s+/).filter(Boolean).length;
 const two = (i: number) => String(i + 1).padStart(2, '0');
+// Portfolio logos: single-colour SVGs from src/assets/portfolio, inlined so
+// they take the text colour (as the footer's partner logos).
+const logos = import.meta.glob<string>('../assets/portfolio/*.svg', { query: '?raw', import: 'default', eager: true });
+const logo = (name: string) => logos[`../assets/portfolio/${name}.svg`] ?? '';
+const labelled = (svg: string, label: string) =>
+  svg.replace('<svg ', `<svg role="img" aria-label="${label}" class="f-logo__svg" `);
 ---
 
 <Base title={f.meta.title} description={f.meta.description} darkTop forFounders>
@@ -124,14 +130,23 @@ const two = (i: number) => String(i + 1).padStart(2, '0');
   <section class="section f-portfolio-section" aria-labelledby="f-portfolio-title">
     <div class="wrap">
       <h3 class="card-title f-portfolio__title" id="f-portfolio-title">{f.backed.portfolioTitle}</h3>
-      <ul class="cards f-portfolio">
+      <ul class="f-portfolio">
         {
-          f.backed.portfolio.map((c) => (
-            <li class="f-company">
-              <span class="card-title f-company__name">{c.name}</span>
-              <span class="small f-company__line"><Placeholder value={c.line} /></span>
-            </li>
-          ))
+          f.backed.portfolio.map((c) => {
+            const svg = logo(c.logo);
+            return (
+              <li class="f-logo">
+                {svg ? (
+                  <Fragment set:html={labelled(svg, c.name)} />
+                ) : (
+                  <span class="f-logo__missing">
+                    <span class="card-title">{c.name}</span>
+                    <Placeholder value={f.backed.logoMissing} />
+                  </span>
+                )}
+              </li>
+            );
+          })
         }
       </ul>
       <p class="body body--wide f-exits">
@@ -421,22 +436,36 @@ const two = (i: number) => String(i + 1).padStart(2, '0');
   .f-portfolio__title {
     margin: 0;
   }
+  /* Twelve square tiles, logo in the middle (owner, 2026-10-26): six per row
+     (two grid columns each), three at ≤880px, two at ≤640px. */
   .f-portfolio {
-    --cards-cols: 4;
-    gap: 0 var(--gutter);
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: var(--gutter);
     margin: var(--space-4x) 0 0;
     padding: 0;
     list-style: none;
   }
-  .f-company {
+  .f-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+    padding: var(--gap);
+    border: var(--hairline-w) solid var(--hairline);
+    text-align: center;
+  }
+  .f-logo :global(.f-logo__svg) {
+    display: block;
+    width: 70%;
+    height: auto;
+    max-height: 45%;
+  }
+  .f-logo__missing {
     display: flex;
     flex-direction: column;
-    gap: var(--space);
-    padding: var(--space-4x) 0;
-    border-top: var(--hairline-w) solid var(--hairline);
-  }
-  .f-company__line {
-    color: var(--muted);
+    align-items: center;
+    gap: var(--space-2x);
   }
   .f-exits {
     margin: var(--gap) 0 0;
@@ -533,6 +562,9 @@ const two = (i: number) => String(i + 1).padStart(2, '0');
     .f-playbook__list {
       margin-top: var(--gap-double);
     }
+    .f-portfolio {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
   @media (max-width: 640px) {
     .f-stat__value {
@@ -547,6 +579,13 @@ const two = (i: number) => String(i + 1).padStart(2, '0');
     }
     .f-stat {
       flex: 1 1 40%;
+    }
+    .f-portfolio {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--gap-half);
+    }
+    .f-logo {
+      padding: var(--gap-half);
     }
   }
 </style>

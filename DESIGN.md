@@ -458,8 +458,12 @@ and classes, because the homepage components read their copy from `home.ts`:
 - Founders we back: the homepage founders strip itself (same sliding,
   docking cards from `founders` in home.ts; owner, 2026-10-26), with this
   page's eyebrow and title and no intro, passed in as props. Under it,
-  without a hairline, "In the portfolio" (card title) and a 4-column grid of
-  companies on hairlines (name, muted one-liner), then the exits line.
+  without a hairline, "In the portfolio" (card title) and twelve square
+  logo tiles (owner, 2026-10-26): hairline frame, the company's SVG logo in
+  the middle (70% wide, at most 45% high, inlined in the text colour, name
+  as its accessible label); six per row (two grid columns each), three at
+  ≤880px, two at ≤640px. Until a logo file is supplied the tile shows the
+  name and a placeholder marker. Then the exits line.
 - The partners (`#partners`): the homepage team pattern; the people come
   from `partners` in `home.ts`, so both pages stay in step.
 - After you pitch: four numbered steps (mono 01–04, card title, muted small
