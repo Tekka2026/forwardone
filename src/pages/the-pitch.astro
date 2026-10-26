@@ -140,7 +140,10 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
           <template data-pitch-msg-sent>{pitch.sent}</template>
         </form>
         </div>
-
+      </div>
+    </section>
+    <section class="section section--flush pitch__info theme-dark">
+      <div class="wrap">
         <dl class="pitch__facts">
           {
             pitch.facts.map((f) => (
@@ -354,7 +357,7 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
 <style is:global>
   /* White from the header down to the facts (owner, 2026-10-26; before: a
      black block under the header, like the homepage intro). No minimum
-     height: the black footer follows the facts directly and runs on below. */
+     height. */
   .pitch {
     background: var(--bg);
   }
@@ -365,6 +368,13 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
      height is part of every gap around it, so the margins stay small. */
   .pitch__hero {
     padding-top: var(--gap); /* plus the header's own 24px bottom padding */
+    padding-bottom: var(--gap-double);
+  }
+  /* The white ends where the facts' hairline was; the facts sit on black
+     (owner, 2026-10-26), and the black footer runs on below them. */
+  .pitch__info {
+    background: var(--bg);
+    padding-top: var(--gap);
     padding-bottom: var(--gap-double);
   }
 
@@ -518,9 +528,7 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: var(--gutter);
-    margin: var(--gap-double) 0 0;
-    padding-top: var(--gap);
-    border-top: var(--hairline-w) solid var(--hairline);
+    margin: 0;
   }
   .pitch__facts dt {
     color: var(--muted);
@@ -536,6 +544,9 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
   }
   @media (max-width: 640px) {
     .pitch__hero {
+      padding-bottom: var(--space-8x);
+    }
+    .pitch__info {
       padding-bottom: var(--gap);
     }
     .pitch__title {
@@ -553,7 +564,6 @@ const introParts = pitch.intro[0].split(pitch.partner.name);
     .pitch__facts {
       grid-template-columns: minmax(0, 1fr);
       gap: var(--space-4x);
-      margin-top: var(--space-8x);
     }
   }
 </style>

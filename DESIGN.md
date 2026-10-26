@@ -515,18 +515,21 @@ and classes, because the homepage components read their copy from `home.ts`:
 sheet, wording confirmed by the owner 2026-10-21).
 
 - Landing page chrome (owner, 2026-10-22; `<Base minimal>`): the header
-  keeps the logo and Pitch us but drops LP login; the wordmark is a little
-  larger there (24px high, 19px on phones ≤420px; elsewhere 20 / 15px), and
+  keeps the logo and Pitch us but drops LP login; the wordmark there is
+  19.2px high, 15.2px on phones ≤420px (owner, 2026-10-26: 20% smaller than
+  the 24 / 19px before; elsewhere 20 / 15px), and
   the eyebrow starts 24px under the header's own 24px bottom padding; the footer is the
   copyright line only ("© FORWARD.one <year>."), black, down
   to the page end. No floating navigation bar (owner, 2026-10-22), and no
   room kept for it at the bottom.
 - One white block (light theme, header included; owner, 2026-10-26; before:
-  black, like the homepage intro) from the logo down to the event facts.
+  black, like the homepage intro) from the logo down to where the facts'
+  hairline was; the event facts sit on black below it (`.theme-dark`,
+  owner 2026-10-26), the black footer running on under them.
   No card (owner, 2026-10-26; before: a grey grainy sheet of paper, first
-  with a torn bottom edge): the eyebrow ("Slush, Helsinki"), H1, form and
-  event facts sit straight on the white, their left edge aligned with the
-  logo (the content column), in the site's own light colour tokens.
+  with a torn bottom edge): the eyebrow ("Slush, Helsinki"), H1 and form
+  sit straight on the white, their left edge (and the facts') aligned with
+  the logo (the content column), in the site's own light colour tokens.
 - H1 "The ____ Pitch" on one line (no wrap), in Inter at weight 500, a
   step heavier than body copy (owner, 2026-10-22; the only heading on the
   site not in the display face), Display size and tracking. The blank is a line on the
@@ -580,14 +583,15 @@ sheet, wording confirmed by the owner 2026-10-21).
   (`reveal-gentle`); shown sentences stay. A blank keeps its following full
   stop or comma on the same line. Without script the whole letter shows.
 - Then the solid button, a status line, the privacy note (muted, small) and
-  four event facts over a hairline (When, Where, Apply by, The panel; mono
-  labels), 4 columns, 2 at ≤880px, 1 at ≤640px.
+  four event facts on the black, no hairline (When, Where, Apply by, The
+  panel; mono labels), 4 columns, 2 at ≤880px, 1 at ≤640px.
 - Spacing (owner, 2026-10-22, tightened): 24px from the header to the
   eyebrow (on top of the header's own padding); eyebrow to
   H1 12px; H1 to lede 24px; lede to letter 24px; letter to button 24px
   (16/16 on phones, where the letter's line height adds the rest); letter
-  line height 1.35 (normal leading; the blanks sit inside it at 1.15); privacy note 16px under the button; facts 48px under
-  the form (32px on phones) and the footer 48px under the facts (24px).
+  line height 1.35 (normal leading; the blanks sit inside it at 1.15); privacy note 16px under the button; white ends 48px
+  under the form (32px on phones), facts 24px into the black, and the
+  footer 48px under the facts (24px).
   No minimum height on the white block.
 - Intro motion: eyebrow, then "The", the blank and "Pitch" snap in like H1
   words; the first sentence of the letter eases in gently.
