@@ -450,10 +450,12 @@ and classes, because the homepage components read their copy from `home.ts`:
   stats pattern (4 columns, 2 at ≤980px, wrapping to one per row on the
   narrowest phones), with room below them for the floating nav. Same intro sequence and timings as the homepage.
 - Why founders pick us (owner, 2026-10-26, after lassie.ai): H2, then a
-  scroll-driven deck. One visual per card, 8 columns wide and centred
+  scroll-driven deck. One visual per card, 6 columns wide and centred
+  (columns 4–9; was 8)
   (16:10, at most 62% of the screen high, light grey #F5F5F5 with a
   hairline, square corners), the card's title set large in it until the
-  visuals are supplied; beside it, in the outer two columns, the title
+  visuals are supplied; beside it, in the outer three columns (1–3 or
+  10–12), the title
   (display face, metric size) and the muted small body, on the left for
   the first card, the right for the second, and so on. On wider screens
   the visuals lie in a sticky, full-height stage and the page's own

@@ -8,7 +8,7 @@
  *    buttons; the key figures at its bottom (homepage stats pattern). The
  *    header shows "For investors" (back to the homepage) instead of Pitch us.
  * 3. Why founders pick us: a scroll-driven deck after lassie.ai: one
- *    visual (placeholder, 8 columns) per card with its text beside it,
+ *    visual (placeholder, 6 columns) per card with its text beside it,
  *    alternating left and right.
  * 4. How we work with you: the homepage Playbook pattern.
  * 5. What we back: lede and sector tags.
@@ -425,8 +425,8 @@ const labelled = (svg: string, label: string) =>
 
   /* ---- 3. Why founders pick us: the deck -------------------------------- */
   /* Without script, with reduced motion and at ≤880px: one row per card,
-     the visual (8 columns, centred) with its text beside it in the outer two
-     columns, alternating left and right; stacked on phones. With script on
+     the visual (6 columns, centred) with its text beside it in the outer
+     three columns (owner, 2026-10-26), alternating left and right; stacked on phones. With script on
      wider screens (.is-deck) the rows lie on top of each other in a sticky
      stage and the page's own scrolling moves through them (see the script):
      the front card lifts away, the next one comes forward from the stack
@@ -450,7 +450,7 @@ const labelled = (svg: string, label: string) =>
     margin-top: var(--gap-double);
   }
   .f-deck__visual {
-    grid-column: 3 / span 8;
+    grid-column: 4 / span 6;
     grid-row: 1;
     position: relative;
     display: flex;
@@ -464,7 +464,7 @@ const labelled = (svg: string, label: string) =>
     background: #f5f5f5;
   }
   .f-deck__visual-title {
-    max-width: var(--col-5);
+    max-width: var(--col-4);
     font-family: var(--font-display);
     font-size: var(--fs-section);
     line-height: var(--lh-section);
@@ -480,10 +480,10 @@ const labelled = (svg: string, label: string) =>
     grid-row: 1;
   }
   .is-left .f-deck__text {
-    grid-column: 1 / span 2;
+    grid-column: 1 / span 3;
   }
   .is-right .f-deck__text {
-    grid-column: 11 / span 2;
+    grid-column: 10 / span 3;
   }
   .f-deck__title {
     margin: 0;
