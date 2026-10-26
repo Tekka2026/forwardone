@@ -9,6 +9,10 @@
 | `embed.html` | A **Code Embed** element, the only thing on the page |
 | `footer.html` | Page settings → Custom code → **Before `</body>` tag** |
 
+**Without a Code Embed element** (it is missing on some plans): leave the
+page empty and paste `body-all.html` (markup and script together) into
+**Before `</body>` tag** instead of `embed.html` and `footer.html`.
+
 Each file also comes as `.txt` with the same code: `head.html` holds only
 fonts and styles, so opened in a browser it looks empty; copy from the
 `.txt` if that is easier.
