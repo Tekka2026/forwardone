@@ -31,7 +31,7 @@
 ## Stack
 
 - Astro (static output), no UI framework. Content lives in `src/content/`
-  (`home.ts`, `nav.ts`, `pages.ts`, `team.ts`, `pitch.ts`, `redirects.mjs`); components contain no
+  (`home.ts`, `nav.ts`, `pages.ts`, `team.ts`, `pitch.ts`, `founders.ts`, `redirects.mjs`); components contain no
   copy. Internal links go through `href()` from `src/lib/href.ts` so the
   `/forwardone` base path is applied.
 - Unknown values are visible `[PLACEHOLDER …]` markers and are listed in
@@ -62,3 +62,4 @@
 | A0014 | open   | Supply the details for the clip presenter's team profile (`/about/team/presenter`, see `PLACEHOLDERS.md`, Team profiles): name, role, city, bio, focus, year joined, LinkedIn and email, background, the companies they work with, their articles, and a larger portrait. |
 | A0015 | cancelled | Licence for CB Install (Calame Bureau). Withdrawn 2026-10-21: the headings went back to Clash Display and the trial font was removed. |
 | A0016 | open   | The Pitch at Slush (`/the-pitch`, see `PLACEHOLDERS.md`, The ____ Pitch): give the date, venue and deadline; choose where applications go (form service or CRM endpoint) and supply the privacy note. The prize wording "term sheet" was confirmed by the owner on 2026-10-21; the second VC is Balnord (2026-10-22). |
+| A0017 | open   | Founders page (`/founders`, see `PLACEHOLDERS.md`, Founders page): three founder quotes, ZuriQ's one-liner, the reply time (days) and decision time (weeks), the pitch form URL or mailto, and the pitch email. |

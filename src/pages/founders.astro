@@ -1,0 +1,608 @@
+---
+/**
+ * For founders (/founders, owner 2026-10-26). The homepage is written for
+ * investors; this page is written for founders. It reuses the homepage's
+ * section patterns, composed here from the shared tokens and classes because
+ * the homepage components read their copy from home.ts:
+ * 1. Black intro like the homepage: a link back to the investor homepage,
+ *    eyebrow, H1 (word reveal), lede, two buttons; the key figures at its
+ *    bottom (homepage stats pattern).
+ * 3. Why founders pick us: four cards (.cards, .panel).
+ * 4. How we work with you: the homepage Playbook pattern.
+ * 5. What we back: lede and sector tags.
+ * 6. Founders we back: three quote cards (partner card pattern with the
+ *    founders' photos), the portfolio grid and the exits line.
+ * 7. The partners: the homepage team pattern, same people (home.ts).
+ * 8. After you pitch: four numbered steps.
+ * 9. Closing: black band, centred, the pitch button.
+ * Copy and placeholders in src/content/founders.ts.
+ */
+import Base from '@layouts/Base.astro';
+import Button from '@components/ui/Button.astro';
+import Placeholder from '@components/ui/Placeholder.astro';
+import Sentences from '@components/ui/Sentences.astro';
+import { forFounders as f } from '@content/founders';
+import { partners } from '@content/home';
+import { href, isPlaceholder } from '@lib/href';
+
+// Copy with an embedded placeholder ("within [PLACEHOLDER: X days], yes or no").
+const chunks = (v: string) => v.split(/(\[PLACEHOLDER:[^\]]*\])/).filter(Boolean);
+const h1Words = f.hero.title.split(/\s+/).filter(Boolean).length;
+const two = (i: number) => String(i + 1).padStart(2, '0');
+---
+
+<Base title={f.meta.title} description={f.meta.description} darkTop>
+  <!-- 1–2. Black intro: hero and key figures, like the homepage. -->
+  <div class="f-intro theme-dark" data-nav-dark style={`--h1-words: ${h1Words}`}>
+    <section class="section section--flush f-hero">
+      <div class="wrap">
+        <p class="f-hero__back">
+          <a class="f-backlink" href={href(f.investorsLink.href)}>{f.investorsLink.label}</a>
+        </p>
+        <p class="eyebrow"><Sentences text={f.hero.eyebrow} reveal tick /></p>
+        <h1 class="h-display f-hero__title"><Sentences text={f.hero.title} reveal /></h1>
+        <p class="lede f-hero__lede reveal-gentle">{f.hero.lede}</p>
+        <div class="f-hero__actions">
+          <Button href={f.hero.primary.href} class="reveal-block">{f.hero.primary.label}</Button>
+          <Button href={f.hero.secondary.href} variant="ghost" class="reveal-block">{f.hero.secondary.label}</Button>
+        </div>
+      </div>
+    </section>
+    <section class="section section--flush f-stats" aria-label="Key facts">
+      <div class="wrap">
+        <ul class="f-stats__list" style={`--stats: ${f.stats.length}`}>
+          {
+            f.stats.map((s, i) => (
+              <li class="f-stat" style={`--n: ${i}`}>
+                <p class="f-stat__value reveal-snap">{s.value}</p>
+                <p class="f-stat__label small reveal-gentle">{s.label}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <!-- 3. Why founders pick us -->
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">{f.why.eyebrow}</p>
+      <h2 class="h-section f-title"><Sentences text={f.why.title} /></h2>
+      <ul class="cards f-why">
+        {
+          f.why.cards.map((c) => (
+            <li class="panel f-card">
+              <h3 class="card-title f-card__title">{c.title}</h3>
+              <p class="small f-card__body">{c.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- 4. How we work with you: the homepage Playbook pattern -->
+  <section class="section section--feature">
+    <div class="wrap">
+      <p class="eyebrow">{f.how.eyebrow}</p>
+      <div class="grid f-playbook">
+        <div class="col-7">
+          <h2 class="h-feature"><Sentences text={f.how.title} reveal onScroll /></h2>
+          <p class="lede f-playbook__body">{f.how.body}</p>
+        </div>
+        <ol class="col-4 start-9 f-playbook__list">
+          {
+            f.how.steps.map((s) => (
+              <li class="f-playbook__item">
+                <div class="f-playbook__text">
+                  <span class="f-playbook__step">{s.title}</span>
+                  <span class="small f-playbook__line">{s.body}</span>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. What we back -->
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">{f.back.eyebrow}</p>
+      <h2 class="h-section f-title"><Sentences text={f.back.title} /></h2>
+      <p class="lede f-body">{f.back.body}</p>
+      <ul class="f-tags" aria-label="Sectors">
+        {f.back.sectors.map((s) => <li class="f-tag small">{s}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <!-- 6. Founders we back -->
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">{f.backed.eyebrow}</p>
+      <h2 class="h-section f-title"><Sentences text={f.backed.title} /></h2>
+      <ul class="cards f-quotes">
+        {
+          f.backed.quotes.map((q) => (
+            <li class="f-quote">
+              <div class="f-quote__photo">
+                <img src={href(q.photo)} alt={q.name} width="800" height="1120" loading="lazy" decoding="async" />
+              </div>
+              {isPlaceholder(q.quote) ? (
+                <p class="small f-quote__text"><Placeholder value={q.quote} /></p>
+              ) : (
+                <blockquote class="small f-quote__text">
+                  <p>“{q.quote}”</p>
+                </blockquote>
+              )}
+              <h3 class="card-title f-quote__name">{q.name}</h3>
+              <p class="label f-quote__role">{q.role}, {q.company}</p>
+            </li>
+          ))
+        }
+      </ul>
+
+      <h3 class="card-title f-portfolio__title">{f.backed.portfolioTitle}</h3>
+      <ul class="cards f-portfolio">
+        {
+          f.backed.portfolio.map((c) => (
+            <li class="f-company">
+              <span class="card-title f-company__name">{c.name}</span>
+              <span class="small f-company__line"><Placeholder value={c.line} /></span>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="body body--wide f-exits">
+        <strong>{f.backed.exits.lead}</strong> {f.backed.exits.text}
+      </p>
+    </div>
+  </section>
+
+  <!-- 7. The partners: the homepage team pattern -->
+  <section class="section" id="partners">
+    <div class="wrap">
+      <p class="eyebrow">{f.partners.eyebrow}</p>
+      <h2 class="h-section f-title"><Sentences text={f.partners.title} /></h2>
+      <ul class="cards f-partners">
+        {
+          partners.people.map((p) => (
+            <li class="f-partner">
+              <div class="f-partner__photo">
+                {isPlaceholder(p.photo) ? (
+                  <Placeholder value={p.photo} />
+                ) : (
+                  <img src={href(p.photo)} alt={p.name} loading="lazy" />
+                )}
+              </div>
+              <h3 class="card-title f-partner__name">{p.name}</h3>
+              <p class="label f-partner__role">{p.role}</p>
+              {isPlaceholder(p.quote) ? (
+                <p class="small f-partner__quote">
+                  <Placeholder value={p.quote} />
+                </p>
+              ) : (
+                <blockquote class="small f-partner__quote">
+                  <p>“{p.quote}”</p>
+                </blockquote>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- 8. After you pitch -->
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">{f.after.eyebrow}</p>
+      <h2 class="h-section f-title"><Sentences text={f.after.title} /></h2>
+      <ol class="cards f-steps">
+        {
+          f.after.steps.map((s, i) => (
+            <li class="f-step">
+              <span class="label f-step__n" aria-hidden="true">{two(i)}</span>
+              <h3 class="card-title f-step__title">{s.title}</h3>
+              <p class="small f-step__body">
+                {chunks(s.body).map((c) => (
+                  <Placeholder value={c} />
+                ))}
+              </p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- 9. Closing: black band, centred -->
+  <section class="section section--dark theme-dark f-closing" id="pitch" data-nav-dark>
+    <div class="wrap">
+      <h2 class="h-feature f-closing__title"><Sentences text={f.closing.title} /></h2>
+      <div class="f-closing__actions">
+        {
+          isPlaceholder(f.closing.cta.href) ? (
+            <>
+              <span class="btn" aria-disabled="true">{f.closing.cta.label}</span>
+              <Placeholder value={f.closing.cta.href} />
+            </>
+          ) : (
+            <Button href={f.closing.cta.href}>{f.closing.cta.label}</Button>
+          )
+        }
+      </div>
+      <p class="small f-closing__email">
+        {f.closing.emailLead}{' '}
+        {isPlaceholder(f.closing.email) ? (
+          <Placeholder value={f.closing.email} />
+        ) : (
+          <a href={`mailto:${f.closing.email}`}>{f.closing.email}</a>
+        )}
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* ---- 1–2. Black intro (as .intro on the homepage) ---------------------- */
+  .f-intro {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100svh;
+    margin-top: calc(-1 * var(--header-h));
+    padding-top: var(--header-h);
+    background: var(--bg);
+    box-shadow: 0 0 0 100vmax var(--bg);
+    clip-path: inset(-100vmax -100vmax 0);
+    /* Sequence: H1 word by word, then the lede, the buttons, the figures. */
+    --h1-end: calc(var(--reveal-start) + (var(--h1-words) - 1) * var(--reveal-stagger) + 9 * var(--reveal-frame));
+    --buttons-at: calc(var(--h1-end) + 8 * var(--reveal-frame));
+    --figures-at: calc(var(--h1-end) + var(--reveal-gentle) / 2 + 180ms + 4 * var(--reveal-frame));
+  }
+  .f-intro + .section {
+    border-top: 0;
+  }
+  .f-hero {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-block: var(--gap);
+  }
+  /* .wrap centres itself with auto margins; in a flex column that would
+     shrink it to its content. */
+  .f-hero > .wrap {
+    width: calc(100% - 2 * var(--pad));
+  }
+  .f-hero__back {
+    margin: 0 0 var(--gap);
+  }
+  .f-backlink {
+    font-size: var(--fs-small);
+    font-weight: 500;
+    text-decoration-line: none;
+  }
+  .f-backlink::before {
+    content: '\2190  ';
+  }
+  .f-backlink:hover {
+    text-decoration-line: underline;
+    text-underline-offset: 4px;
+  }
+  .f-hero .eyebrow {
+    --reveal-start: 0ms;
+  }
+  .f-hero__title {
+    margin-top: var(--gap-half);
+    max-width: var(--col-10);
+  }
+  .f-hero__lede {
+    margin-top: var(--space-4x);
+    animation-delay: var(--h1-end);
+  }
+  .f-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-half);
+    margin-top: var(--gap-double);
+  }
+  .f-hero__actions > :global(.btn) {
+    animation-delay: var(--buttons-at);
+  }
+  .f-hero__actions > :global(.btn + .btn) {
+    animation-delay: calc(var(--buttons-at) + var(--reveal-stagger-buttons));
+  }
+
+  /* Key figures (homepage stats pattern) */
+  /* The figures sit at the bottom of the first screen; the bottom padding
+     keeps their labels clear of the floating navigation bar. */
+  .f-stats {
+    margin-top: auto;
+    padding-top: var(--gap-double);
+    padding-bottom: calc(var(--nav-height) + 2 * var(--gap));
+  }
+  .f-stats__list {
+    display: grid;
+    grid-template-columns: repeat(var(--stats), minmax(min-content, 1fr));
+    gap: var(--space-8x) var(--gutter);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .f-stat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2x);
+    --stat-at: calc(var(--figures-at) + var(--n) * var(--reveal-stagger-figures));
+  }
+  .f-stat__value {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--fs-section);
+    line-height: var(--lh-section);
+    letter-spacing: var(--ls-section);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    animation-delay: var(--stat-at);
+  }
+  .f-stat__label {
+    margin: 0;
+    color: var(--muted);
+    animation-delay: calc(var(--stat-at) + 3 * var(--reveal-frame));
+  }
+
+  /* ---- Shared section rhythm (as on the homepage) ------------------------ */
+  .f-title {
+    margin-top: var(--gap-half);
+  }
+  .f-body {
+    margin-top: var(--space-4x);
+  }
+
+  /* ---- 3. Why founders pick us ------------------------------------------- */
+  .f-why {
+    --cards-cols: 4;
+    margin: var(--space-8x) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .f-card__title {
+    margin: 0;
+  }
+  .f-card__body {
+    margin: var(--space-2x) 0 0;
+    color: var(--muted);
+  }
+
+  /* ---- 4. Playbook pattern ----------------------------------------------- */
+  .f-playbook {
+    margin-top: var(--gap-half);
+    align-items: start;
+  }
+  .f-playbook__body {
+    margin-top: var(--space-4x);
+  }
+  .f-playbook__list {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+  }
+  .f-playbook__item {
+    display: flex;
+    align-items: baseline;
+    flex: 1 1 auto;
+    gap: var(--space-4x);
+    padding: var(--space-2x) 0;
+    border-top: var(--hairline-w) solid var(--hairline);
+    font-family: var(--font-sans);
+    font-size: var(--fs-card-title);
+    font-weight: 500;
+    letter-spacing: var(--ls-card-title);
+    line-height: var(--lh-card-title);
+  }
+  .f-playbook__item:last-child {
+    border-bottom: var(--hairline-w) solid var(--hairline);
+  }
+  .f-playbook__item::before {
+    counter-increment: step;
+    content: '0' counter(step);
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--ls-label);
+    color: var(--muted);
+  }
+  .f-playbook__text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space);
+  }
+  .f-playbook__line {
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--muted);
+    text-wrap: pretty;
+  }
+
+  /* ---- 5. What we back: sector tags (chips as on the team profile) ------- */
+  .f-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2x);
+    max-width: var(--col-8);
+    margin: var(--space-8x) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .f-tag {
+    padding: var(--space-2x) var(--space-4x);
+    background: var(--bg-tint);
+  }
+
+  /* ---- 6. Founders we back ----------------------------------------------- */
+  .f-quotes {
+    margin: var(--space-8x) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .f-quote {
+    display: flex;
+    flex-direction: column;
+  }
+  .f-quote__photo {
+    aspect-ratio: 4 / 5;
+    margin-bottom: var(--gap-half);
+    border: var(--hairline-w) solid var(--hairline);
+    overflow: hidden;
+  }
+  .f-quote__photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .f-quote__text {
+    margin: 0;
+  }
+  .f-quote__text p {
+    margin: 0;
+  }
+  .f-quote__name {
+    margin: var(--gap-half) 0 0;
+  }
+  .f-quote__role {
+    margin: var(--space) 0 0;
+    color: var(--muted);
+  }
+  .f-portfolio__title {
+    margin: var(--gap-double) 0 0;
+  }
+  .f-portfolio {
+    --cards-cols: 4;
+    gap: 0 var(--gutter);
+    margin: var(--space-4x) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .f-company {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space);
+    padding: var(--space-4x) 0;
+    border-top: var(--hairline-w) solid var(--hairline);
+  }
+  .f-company__line {
+    color: var(--muted);
+  }
+  .f-exits {
+    margin: var(--gap) 0 0;
+  }
+
+  /* ---- 7. Partners (homepage team pattern) ------------------------------- */
+  .f-partners {
+    --cards-cols: 4;
+    margin: var(--space-4x) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .f-partner {
+    display: flex;
+    flex-direction: column;
+  }
+  .f-partner__photo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 4 / 5;
+    margin-bottom: var(--gap-half);
+    border: var(--hairline-w) solid var(--hairline);
+    overflow: hidden;
+  }
+  .f-partner__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .f-partner__name {
+    margin: 0;
+  }
+  .f-partner__role {
+    margin: var(--space) 0 0;
+    color: var(--muted);
+  }
+  .f-partner__quote {
+    margin: var(--gap-half) 0 0;
+  }
+  .f-partner__quote p {
+    margin: 0;
+  }
+
+  /* ---- 8. After you pitch: numbered steps -------------------------------- */
+  .f-steps {
+    --cards-cols: 4;
+    margin: var(--space-8x) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .f-step {
+    padding-top: var(--space-4x);
+    border-top: var(--hairline-w) solid var(--hairline);
+  }
+  .f-step__n {
+    color: var(--muted);
+  }
+  .f-step__title {
+    margin: var(--space-2x) 0 0;
+  }
+  .f-step__body {
+    margin: var(--space-2x) 0 0;
+    color: var(--muted);
+  }
+
+  /* ---- 9. Closing -------------------------------------------------------- */
+  .f-closing {
+    text-align: center;
+  }
+  .f-closing__title {
+    margin-inline: auto;
+  }
+  .f-closing__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-half);
+    margin-top: var(--gap-double);
+  }
+  .f-closing__email {
+    margin: var(--gap) 0 0;
+    color: var(--muted);
+  }
+
+  /* ---- Breakpoints (DESIGN.md §3) ---------------------------------------- */
+  @media (max-width: 980px) {
+    .f-stats__list {
+      grid-template-columns: repeat(2, minmax(min-content, 1fr));
+    }
+  }
+  @media (max-width: 880px) {
+    .f-playbook__list {
+      margin-top: var(--gap-double);
+    }
+  }
+  @media (max-width: 640px) {
+    .f-stat__value {
+      font-size: var(--fs-metric);
+      line-height: var(--lh-metric);
+    }
+  }
+</style>

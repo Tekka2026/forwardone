@@ -158,14 +158,7 @@ export const stubPages: StubPage[] = [
     todos: ['Open roles', 'Application contact'],
   },
 
-  // Founders
-  {
-    path: '/founders',
-    section: 'Founders',
-    title: 'Pitch us',
-    intro: 'Building industrial technology in Europe? Send us your deck.',
-    todos: ['Pitch form or mailto link: [PLACEHOLDER: pitch email or form URL]', 'What we look for', 'What happens after you pitch'],
-  },
+  // Founders: /founders is a full page now (src/pages/founders.astro).
 
   // Legal (footer)
   {
