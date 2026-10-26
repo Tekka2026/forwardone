@@ -58,7 +58,7 @@
 | A0006 | done   | Live homepage checked by the owner on 2026-10-13: Clash Display headings render, no console errors. |
 | A0007 | done   | Button reference supplied by the owner on 2026-10-13 (vercel.com screenshot). Buttons take Geist's shape only (pill, sizes, type size); colours stay the site's own. |
 | A0008 | done   | Pages source switched to GitHub Actions by the owner on 2026-10-13. |
-| A0009 | open   | Run https://pagespeed.web.dev on the live homepage (mobile) and share the LCP. The H1 is the LCP element and its intro animation waits `--reveal-start` (800ms), which adds to LCP; local mobile emulation measured 2.6s (good is 2.5s or less). Decide whether to shorten the delay. |
+| A0009 | done   | Homepage LCP and the H1's `--reveal-start` delay (800ms; local mobile emulation measured 2.6s): accepted as it is by the owner on 2026-10-26, no PageSpeed run or change needed. |
 | A0010 | cancelled | Licence for KMR Apparat. Withdrawn 2026-10-17: the headings went back to Clash Display and the font was removed. |
 | A0011 | done   | Fundrbird logo icon supplied by the owner on 2026-10-19; redrawn as a line icon in the portal preview's top-bar icon row. |
 | A0012 | open   | Supply the founders strip content (see `PLACEHOLDERS.md`, Founders strip): the founders' names and CEO photos, three more companies, brand colours, checked one-liners, five short vertical team videos with a caption and the presenter's photo. |
