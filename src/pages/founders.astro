@@ -69,6 +69,35 @@ const labelled = (svg: string, label: string) =>
         </ul>
       </div>
     </section>
+    <script is:inline>
+      // As on the homepage (Stats.astro): the figures' reveal is held until
+      // they scroll into view, then plays with its one-by-one stagger; if that
+      // happens before the intro sequence reaches them, they keep their place
+      // in it. Unlike the homepage this watches the figures themselves (the
+      // section after the intro is the tall deck): they count as in view
+      // once their top is above the bottom 15% of the window, clear of the
+      // floating nav.
+      (function () {
+        var strip = document.currentScript.previousElementSibling;
+        if (!('IntersectionObserver' in window)) return;
+        strip.classList.add('is-waiting');
+        var io = new IntersectionObserver(function (entries) {
+          if (!entries.some(function (e) { return e.isIntersecting || e.boundingClientRect.bottom < 0; })) return;
+          io.disconnect();
+          var first = strip.querySelector('.f-stat__value');
+          var base = first ? parseFloat(getComputedStyle(first).animationDelay) * 1000 : 0;
+          var elapsed = document.timeline ? document.timeline.currentTime : base;
+          strip.querySelectorAll('.f-stat__value, .f-stat__label').forEach(function (el) {
+            el.getAnimations().forEach(function (a) {
+              a.currentTime = Math.min(elapsed, base);
+              a.play();
+            });
+          });
+          strip.classList.remove('is-waiting');
+        }, { rootMargin: '0px 0px -15% 0px' });
+        io.observe(strip);
+      })();
+    </script>
   </div>
 
   <!-- 3. Why founders pick us: a scroll-driven deck (after lassie.ai) -->
@@ -325,8 +354,10 @@ const labelled = (svg: string, label: string) =>
   .f-intro {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    min-height: 100svh;
+    /* As tall as the homepage intro (owner, 2026-10-26): 130% of the
+       viewport, so the figures start below the fold. */
+    min-height: 130vh;
+    min-height: 130svh;
     margin-top: calc(-1 * var(--header-h));
     padding-top: var(--header-h);
     background: var(--bg);
@@ -377,12 +408,15 @@ const labelled = (svg: string, label: string) =>
   }
 
   /* Key figures (homepage stats pattern) */
-  /* The figures sit at the bottom of the first screen; the bottom padding
-     keeps their labels clear of the floating navigation bar. */
+  /* At the bottom of the intro, below the fold (as on the homepage); held
+     until they scroll into view (script after the intro). */
   .f-stats {
     margin-top: auto;
-    padding-top: var(--gap-double);
-    padding-bottom: calc(var(--nav-height) + 2 * var(--gap));
+    padding-block: var(--gap-double);
+  }
+  .f-stats:global(.is-waiting) .f-stat__value,
+  .f-stats:global(.is-waiting) .f-stat__label {
+    animation-play-state: paused;
   }
   .f-stats__list {
     display: grid;
