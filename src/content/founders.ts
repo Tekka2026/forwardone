@@ -47,8 +47,8 @@ export const forFounders = {
       { title: 'Capital that keeps up.', body: 'We start with up to €5M and have followed on with up to €100M per company, so we can keep backing you when building gets expensive.' },
       { title: 'Terms we would sign ourselves.', body: 'We offer the terms we would have wanted for our own companies: simple, with no surprises.' },
     ] as TitledLine[],
-    /** One visual per card (owner, 2026-10-26): a placeholder with the card's
-     * title in it until the visuals are supplied. */
+    /** One visual per card (owner, 2026-10-26): a placeholder until the
+     * visuals are supplied (no title in it, owner 2026-10-26). */
     visual: PH('visual'),
   },
 

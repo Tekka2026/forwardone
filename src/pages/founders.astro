@@ -89,8 +89,7 @@ const labelled = (svg: string, label: string) =>
                     <p class="small f-deck__body">{c.body}</p>
                   </div>
                   <div class="f-deck__visual" aria-hidden="true">
-                    <span class="f-deck__visual-title">{c.title}</span>
-                    <Placeholder value={f.why.visual} class="f-deck__marker" />
+                    <Placeholder value={f.why.visual} />
                   </div>
                 </li>
               ))
@@ -463,19 +462,6 @@ const labelled = (svg: string, label: string) =>
     padding: var(--gap-double);
     border: var(--hairline-w) solid var(--hairline);
     background: #f5f5f5;
-  }
-  .f-deck__visual-title {
-    max-width: var(--col-4);
-    font-family: var(--font-display);
-    font-size: var(--fs-section);
-    line-height: var(--lh-section);
-    font-weight: var(--fw-heading);
-    text-align: center;
-  }
-  .f-deck__visual :global(.f-deck__marker) {
-    position: absolute;
-    left: var(--gap);
-    bottom: var(--gap);
   }
   .f-deck__text {
     grid-row: 1;
