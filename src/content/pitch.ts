@@ -87,7 +87,7 @@ export const pitch = {
   /** The booking service (booking/, a Cloudflare Worker): `/slots` lists the
    * times, `/apply` takes the letter. Until set, the time blank stays empty
    * and submitting shows `notSent`. */
-  bookingApi: PH('booking service URL'),
+  bookingApi: 'https://forwardone-pitch-booking.jeroen-191.workers.dev',
   notSent: 'Requests are not sent yet: the booking service still has to be connected.',
   sending: 'Sending…',
   sent: 'Thank you. Your time is on hold while we read your application. We’ll email you whether it is confirmed.',
