@@ -444,12 +444,13 @@ and classes, because the homepage components read their copy from `home.ts`:
   us, which would link to the page itself; LP login stays. It stays on
   phones too, with a tighter 12px gap to the logo so both buttons fit down
   to 320px (owner, 2026-10-26; `<Base forFounders>`).
-- Black intro (as `.intro` on the homepage, at least one screen high):
+- Black intro (as `.intro` on the homepage, at least 130% of the viewport
+  high, owner 2026-10-26, so the figures start below the fold):
   eyebrow (ticks in), H1 (word reveal), lede, "Pitch us" (to the closing, `#pitch`) and "Meet the
   partners" (`#partners`); the key figures at its bottom in the homepage
   stats pattern (three figures since 2026-10-26, €250M removed; one
   column each, 2 at ≤980px, wrapping to one per row on the
-  narrowest phones), with room below them for the floating nav. Same intro sequence and timings as the homepage.
+  narrowest phones), held until they scroll into view, as on the homepage. Same intro sequence and timings as the homepage.
 - Why founders pick us (owner, 2026-10-26, after lassie.ai): H2, then a
   scroll-driven deck. One visual per card, 6 columns wide and centred
   (columns 4–9; was 8)
