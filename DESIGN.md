@@ -559,6 +559,11 @@ sheet, wording confirmed by the owner 2026-10-21).
   its slice of a name-wide gradient, re-measured as the name grows): each new letter wipes open left to right in 300ms and
   settles from a slight lift, with a small random tilt (±2°) and baseline
   shift (±0.02em). Pasted text writes in at 45ms per letter.
+- The H1's line is a second way in (owner, 2026-10-26): clicking it
+  (text cursor) focuses the company name field, caret at the end, without
+  scrolling; what is typed shows on both. While that field has focus the
+  line shows a blinking caret after the name (#04EDCD, 1s; steady with
+  reduced motion).
 - Fit: the whole H1, handwriting included, never runs wider than 60% of the
   content width (owner, 2026-10-26; before: 90%), 90% on phones ≤640px
   (`--pitch-max`). Up to that it keeps the Display size; beyond it the size

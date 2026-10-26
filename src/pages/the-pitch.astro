@@ -249,6 +249,19 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
       title.classList.toggle('is-fit', company.value.trim().length >= 5 || (done && company.value.trim().length > 0));
     }
     company.addEventListener('change', function () { done = true; hug(); });
+
+    // The H1's line is a second way in (owner, 2026-10-26): a click on it
+    // types into the company name field, which the line mirrors. While that
+    // field has focus the line shows a blinking caret after the name.
+    if (blank) {
+      blank.addEventListener('click', function () {
+        company.focus({ preventScroll: true });
+        var end = company.value.length;
+        company.setSelectionRange(end, end);
+      });
+    }
+    company.addEventListener('focus', function () { title.classList.add('is-typing'); });
+    company.addEventListener('blur', function () { title.classList.remove('is-typing'); });
     // Re-fit the heading as the line changes length.
     if (blank) blank.addEventListener('transitionend', function () { fit(); });
 
@@ -447,6 +460,30 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
     color: var(--hand-colour);
     transform: translateY(0.04em);
     position: relative; /* offset parent for the letters (gradient slices) */
+  }
+  /* Clicking the line types into the company name (see script). */
+  .pitch__blank {
+    cursor: text;
+  }
+  .pitch__title.is-typing .pitch__hand::after {
+    content: '';
+    display: inline-block;
+    width: max(2px, 0.035em);
+    height: 0.75em;
+    margin-left: 0.04em;
+    vertical-align: -0.05em;
+    background: var(--hand-colour);
+    animation: pitch-caret 1s steps(1) infinite;
+  }
+  @keyframes pitch-caret {
+    50% {
+      opacity: 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pitch__title.is-typing .pitch__hand::after {
+      animation: none;
+    }
   }
 
   /* ---- What the event is ------------------------------------------------ */
