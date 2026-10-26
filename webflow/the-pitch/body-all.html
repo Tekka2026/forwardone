@@ -128,6 +128,13 @@ var inputs = form.querySelectorAll('[data-pitch-input]');
 inputs.forEach(function (input) {
 size(input);
 input.addEventListener('input', function () { size(input); });
+input.addEventListener('animationstart', function (e) {
+if (e.animationName.indexOf('pitch-autofill') === -1) return;
+size(input);
+if (input === company) write();
+clearTimeout(pause);
+pause = setTimeout(advance, 300);
+});
 });
 var steps = [].slice.call(form.querySelectorAll('[data-pitch-step]'));
 var finals = [].slice.call(form.querySelectorAll('[data-pitch-final]'));

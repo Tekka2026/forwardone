@@ -112,6 +112,15 @@
     inputs.forEach(function (input) {
       size(input);
       input.addEventListener('input', function () { size(input); });
+      // Browser autofill (an email address, a name): the CSS starts a no-op
+      // animation on :autofill, so the blank resizes and the letter opens on.
+      input.addEventListener('animationstart', function (e) {
+        if (e.animationName.indexOf('pitch-autofill') === -1) return;
+        size(input);
+        if (input === company) write();
+        clearTimeout(pause);
+        pause = setTimeout(advance, 300);
+      });
     });
 
     // ---- Steps: the letter unfolds sentence by sentence. -----------------

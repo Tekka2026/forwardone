@@ -301,6 +301,15 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
     inputs.forEach(function (input) {
       size(input);
       input.addEventListener('input', function () { size(input); });
+      // Browser autofill (an email address, a name): the CSS starts a no-op
+      // animation on :autofill, so the blank resizes and the letter opens on.
+      input.addEventListener('animationstart', function (e) {
+        if (e.animationName.indexOf('pitch-autofill') === -1) return;
+        size(input);
+        if (input === company) write();
+        clearTimeout(pause);
+        pause = setTimeout(advance, 300);
+      });
     });
 
     // ---- Steps: the letter unfolds sentence by sentence. -----------------
@@ -665,6 +674,32 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
     color: var(--muted);
     -webkit-text-fill-color: var(--muted);
     opacity: 0.75;
+  }
+  /* Browser autofill: browsers paint their own background and drop the
+     gradient, which left the text light grey (owner, 2026-10-26). The
+     answer shows in the gradient's first colour instead, on the page's own
+     background (an inset shadow covers the browser's tint; the underline is
+     outside it). */
+  .pitch__input:-webkit-autofill,
+  .pitch__input:-webkit-autofill:hover,
+  .pitch__input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--hand-colour);
+    caret-color: var(--hand-colour);
+    box-shadow: 0 0 0 1000px var(--bg) inset;
+    transition: background-color 600000s 0s;
+    animation: pitch-autofill 1ms;
+  }
+  .pitch__input:autofill {
+    -webkit-text-fill-color: var(--hand-colour);
+    box-shadow: 0 0 0 1000px var(--bg) inset;
+  }
+  @keyframes pitch-autofill {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 1;
+    }
   }
   .pitch__input:user-invalid {
     border-bottom-style: dashed;

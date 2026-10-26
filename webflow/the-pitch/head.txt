@@ -291,6 +291,11 @@ main:focus{outline:none}
 .pitch__input[data-astro-cid-ikq7lxbc]{font-family:var(--font-answer);font-size:1em;font-weight:var(--fw-answer);letter-spacing:0;height:auto;box-shadow:none;vertical-align:baseline;border:0;border-bottom:var(--hairline-w) solid var(--fg);background:var(--hand-gradient);color:#0000;-webkit-text-fill-color:transparent;max-width:100%;caret-color:var(--hand-colour);line-height:var(--lh-metric);box-sizing:content-box;-webkit-background-clip:text;background-clip:text;border-radius:0;outline:none;margin:0;padding:0 .1em}
 .pitch__input[data-astro-cid-ikq7lxbc]:placeholder-shown{background:0 0}
 .pitch__input[data-astro-cid-ikq7lxbc]::placeholder{color:var(--muted);-webkit-text-fill-color:var(--muted);opacity:.75}
+.pitch__input[data-astro-cid-ikq7lxbc]:-webkit-autofill,.pitch__input[data-astro-cid-ikq7lxbc]:-webkit-autofill:hover,.pitch__input[data-astro-cid-ikq7lxbc]:-webkit-autofill:focus{-webkit-text-fill-color:var(--hand-colour);caret-color:var(--hand-colour);box-shadow:0 0 0 1000px var(--bg) inset;transition:background-color 600000s;animation:1ms pitch-autofill}
+.pitch__input[data-astro-cid-ikq7lxbc]:autofill{-webkit-text-fill-color:var(--hand-colour);box-shadow:0 0 0 1000px var(--bg) inset}
+@keyframes pitch-autofill{0%{opacity:1}
+to{opacity:1}
+}
 .pitch__input[data-astro-cid-ikq7lxbc]:user-invalid{border-bottom-style:dashed;border-bottom-color:var(--error-colour)}
 .pitch__select[data-astro-cid-ikq7lxbc]{-webkit-appearance:none;appearance:none;cursor:pointer;border-radius:0}
 .pitch__select[data-astro-cid-ikq7lxbc].is-empty{-webkit-text-fill-color:var(--muted);color:var(--muted);opacity:.75;background:0 0}
