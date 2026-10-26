@@ -17,7 +17,7 @@ crons = ["17 * * * *", "0 17 * * *"]
 
 [vars]
 # Pages that may call the API (comma separated origins).
-ALLOWED_ORIGINS = "https://tekka2026.github.io"
+ALLOWED_ORIGINS = "https://tekka2026.github.io,https://forward.one,https://www.forward.one"
 # The pitch page, linked from emails.
 PAGE_URL = "https://tekka2026.github.io/forwardone/the-pitch/"
 # The H1's blank as an underline (owner, 2026-10-26).
