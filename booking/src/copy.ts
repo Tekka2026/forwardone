@@ -4,6 +4,10 @@
  */
 import type { Application, Env, Slot } from './env';
 
+/** The event name without the blank ("The Pitch at Slush"): the owner's
+ * wording for the approved and denied emails (2026-10-26). */
+const plain = (env: Env) => env.EVENT_NAME.replace(/\s*_+\s*/, ' ');
+
 export const copy = {
   errors: {
     invalid: 'Some details are missing or not valid.',
@@ -32,7 +36,7 @@ export const copy = {
     text: [
       `Hi ${a.name},`,
       '',
-      `${a.company} pitches at ${env.EVENT_NAME} at ${s.label} (Helsinki time). The calendar invite is attached.`,
+      `${a.company} pitches at ${plain(env)} at ${s.label} (Helsinki time). The calendar invite is attached.`,
       '',
       'FORWARD.one',
     ].join('\n'),
@@ -43,7 +47,7 @@ export const copy = {
     text: [
       `Hi ${a.name},`,
       '',
-      `Thank you for applying to ${env.EVENT_NAME} with ${a.company}. We cannot offer you a pitch slot this time, so we have released the time you asked for.`,
+      `Thank you for applying to ${plain(env)} with ${a.company}. We cannot offer you a pitch slot this time, so we have released the time you asked for.`,
       '',
       'FORWARD.one',
     ].join('\n'),
@@ -70,6 +74,11 @@ export const copy = {
       '',
       `Approve or deny: ${reviewUrl}`,
     ].join('\n'),
+  }),
+
+  cancelled: (a: Application, s: Slot) => ({
+    subject: `Pitch request cancelled: ${a.company}`,
+    text: `${a.company} released the ${s.label} slot. It is free again.`,
   }),
 
   login: (env: Env, link: string) => ({

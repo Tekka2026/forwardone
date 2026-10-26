@@ -151,10 +151,8 @@ async function cancel(env: Env, req: Request, ctx: ExecutionContext) {
     .bind(new Date().toISOString(), t)
     .first<Application>();
   if (!a) return page('Cancel', `<h1>${env.EVENT_NAME}</h1><p>${copy.pages.cancelGone}</p>`);
-  if (reviewers(env).length)
-    ctx.waitUntil(
-      send(env, { to: reviewers(env), subject: `Pitch request cancelled: ${a.company}`, text: `${a.company} released slot ${a.slot_id}. It is free again.` }),
-    );
+  const slot = await env.DB.prepare('SELECT * FROM slots WHERE id = ?').bind(a.slot_id).first<Slot>();
+  if (slot && reviewers(env).length) ctx.waitUntil(send(env, { to: reviewers(env), ...copy.cancelled(a, slot) }));
   return page('Cancelled', `<h1>${env.EVENT_NAME}</h1><p>${copy.pages.cancelled}</p>`);
 }
 

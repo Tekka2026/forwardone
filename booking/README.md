@@ -27,7 +27,7 @@ and one per email address.
 | Request sent | reviewers | Company, founder, one-liner, deck, link to `/review` |
 | Approved | founder | Confirmation with a calendar invite (`.ics`) |
 | Denied | founder | Polite no; the slot is released |
-| Founder cancels | reviewers | Which slot is free again |
+| Founder cancels | reviewers | Which time is free again |
 | Hold expired (`HOLD_DAYS`) | founder | The hold has ended |
 
 All wording is in `src/copy.ts`. Until `MAIL_FROM` and `RESEND_API_KEY` are

@@ -19,7 +19,8 @@ crons = ["17 * * * *"]
 ALLOWED_ORIGINS = "https://tekka2026.github.io"
 # The pitch page, linked from emails.
 PAGE_URL = "https://tekka2026.github.io/forwardone/the-pitch/"
-EVENT_NAME = "The Pitch at Slush"
+# The H1's blank as an underline (owner, 2026-10-26).
+EVENT_NAME = "The _____ Pitch at Slush"
 # Shown in the calendar invite; empty until the venue is known (A0016).
 EVENT_LOCATION = ""
 # Sender, e.g. "FORWARD.one <pitch@forward.one>" (domain verified with the
