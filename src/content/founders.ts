@@ -30,9 +30,8 @@ export const forFounders = {
   },
 
   stats: [
-    // A range across the first two figures, from the first check to
-    // follow-on (owner, 2026-10-26; replaces "Up to …" on both).
-    { value: 'from €5M', label: 'first check, pre-seed to Series A' },
+    // "up to €5M" and "to €100M" (owner, 2026-10-26; lower case).
+    { value: 'up to €5M', label: 'first check, pre-seed to Series A' },
     { value: 'to €100M', label: 'follow-on per company' },
     { value: '5 exits', label: 'to Sonos, ABB, MPS and others' },
   ] as FounderStat[],
