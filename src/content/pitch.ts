@@ -30,7 +30,7 @@ export type LetterPart = string | { field: PitchField } | { placeholder: string 
 export const pitch = {
   meta: {
     title: 'The Pitch at Slush | FORWARD.one',
-    description: 'Pitch your company live to FORWARD.one and Balnord at Slush in Helsinki. The winner gets a term sheet.',
+    description: 'Pitch your company live to FORWARD.one, Balnord and HCVC at Slush in Helsinki. The winner gets a term sheet.',
   },
   /** Eyebrow: `brand` in the handwriting's gradient (Slush's colours),
    * `rest` in plain ink (owner, 2026-10-26). */
@@ -74,7 +74,7 @@ export const pitch = {
     [
       'Our deck is at',
       { field: { name: 'deck', label: 'Link to your pitch deck (optional)', hint: 'link (optional)', type: 'url' } },
-      '. We’d like to pitch live to FORWARD.one and Balnord at Slush, for the term sheet that goes to the winner.',
+      '. We’d like to pitch live to FORWARD.one, Balnord and HCVC at Slush, for the term sheet that goes to the winner.',
     ],
   ] as LetterPart[][],
   submit: 'Send our pitch',
@@ -88,6 +88,6 @@ export const pitch = {
     { label: 'When', value: PH('date and time at Slush') },
     { label: 'Where', value: PH('stage or venue at Slush, Helsinki') },
     { label: 'Apply by', value: PH('deadline') },
-    { label: 'The panel', value: 'FORWARD.one and Balnord' },
+    { label: 'The panel', value: 'FORWARD.one, Balnord and HCVC' },
   ],
 };
