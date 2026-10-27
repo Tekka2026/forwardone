@@ -131,13 +131,6 @@
   /* The homepage's heading reveal (src/components/ui/Sentences.astro,
      css/global.css): set frame by frame from window.frame(). */
   .w { display: inline-block; }
-  .w--last {
-    padding-block: 0.25em;
-    margin-block: -0.25em;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
   .facts {
     flex-shrink: 0;
     background: #000000;
@@ -187,8 +180,8 @@
   // The homepage's reveal (css/global.css, Sentences.astro): frames of 80ms,
   // steps of 0.02em, words 90ms apart; the eyebrow ticks in at once, the
   // heading from 800ms; its last word rises smoothly over 9 frames from 7
-  // steps down while an amber tint slides out to the right over 32 frames.
-  var FRAME = 80, STEP = 0.02, STAGGER = 90, H1_START = 800, TINT = '#db8e00', INK = '#111111';
+  // steps down (the homepage's amber tint left out, owner 2026-10-27).
+  var FRAME = 80, STEP = 0.02, STAGGER = 90, H1_START = 800;
   // Size changes glide over SMOOTH ms (the page: 240ms font-size and 360ms
   // line transitions), so the heading never jumps.
   var SMOOTH = 450, LINE_MIN = 2.7; // em, the empty line's length
@@ -272,7 +265,7 @@
       return at(y1, y2, t);
     };
   }
-  var riseEase = bezier(0.2, 0.7, 0.2, 1), tintEase = bezier(0.45, 0, 0.2, 1);
+  var riseEase = bezier(0.2, 0.7, 0.2, 1);
   // A ticked word: invisible for a frame, then 2 steps down, 1, at rest.
   function tick(el, t) {
     var f = t < 0 ? 0 : Math.floor(t / FRAME);
@@ -291,9 +284,7 @@
     last.style.opacity = t >= FRAME ? '1' : '0';
     var rise = t <= 0 ? 0 : riseEase(Math.min(1, t / (9 * FRAME)));
     last.style.transform = 'translateY(' + (7 * STEP * (1 - rise)).toFixed(4) + 'em)';
-    var sweep = t <= FRAME ? 0 : tintEase(Math.min(1, (t - FRAME) / (32 * FRAME))) * 100;
-    last.style.backgroundImage = 'linear-gradient(90deg, ' + INK + ' ' + sweep.toFixed(2) + '%, ' + TINT + ' ' + (sweep + 100).toFixed(2) + '%)';
-    return key + '|' + rise.toFixed(3) + '|' + sweep.toFixed(1);
+    return key + '|' + rise.toFixed(3);
   }
   var ease = function (x) { return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2; };
 
