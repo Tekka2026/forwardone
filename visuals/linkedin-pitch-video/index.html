@@ -69,37 +69,51 @@
     font-size: 250px;
     line-height: 1.04;
   }
+  /* As on the page (/the-pitch): the line max(2px, 0.035em) thick, black
+     while empty and light grey once a name is on it; at least 2.7em long
+     while the name is short, then hugging it. */
   .blank {
     display: inline-block;
-    position: relative;
-    width: 2.7em;
+    min-width: 2.7em;
     margin-inline: 0.12em;
-    border-bottom: 0.035em solid var(--blank-line);
-    height: 0.8em;
-    vertical-align: baseline;
+    padding-inline: 0.08em;
+    border-bottom: max(2px, 0.035em) solid var(--blank-line);
+    line-height: 1;
   }
-  /* Once a name is being written the line steps back to light grey, as on
-     the page. */
   .blank.is-filled { border-bottom-color: var(--blank-line-filled); }
+  .blank.is-fit { min-width: 0; }
+  /* The handwriting at 1.3em of the H1, each letter with its own slight
+     wobble and its slice of one gradient across the name (page:
+     .pitch__hand, .pitch__letter-hw). */
   .hand {
-    position: absolute;
-    left: 0.06em;
-    bottom: 0.06em;
+    display: inline-block;
     font-family: "Covered By Your Grace", cursive;
+    font-size: 1.3em;
     font-weight: 400;
     line-height: 1;
     white-space: pre;
-    background: var(--hand-gradient);
+    transform: translateY(0.04em);
+  }
+  .hw {
+    --pad: 0.2em;
+    display: inline-block;
+    padding: var(--pad);
+    margin: calc(-1 * var(--pad));
+    background-image: var(--hand-gradient);
+    background-size: var(--hw-w, 1em) 100%;
+    background-position: calc(-1 * var(--hw-x, 0em)) 0;
+    background-repeat: no-repeat;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
   .caret {
-    position: absolute;
-    bottom: 0.12em;
-    width: 0.03em;
-    height: 0.62em;
-    background: var(--hand-gradient);
+    display: inline-block;
+    width: max(2px, 0.035em);
+    height: 0.75em;
+    margin-left: 0.04em;
+    vertical-align: -0.05em;
+    background: #04edcd;
   }
   .line { white-space: nowrap; }
   .facts {
@@ -134,7 +148,7 @@
       </div>
       <div class="title-block">
         <p class="eyebrow"><span class="brand">Slush</span>, Helsinki</p>
-        <h1><span class="line">The<span class="blank" id="blank"><span class="hand" id="hand"></span><span class="caret" id="caret"></span></span></span><br>Pitch</h1>
+        <h1><span class="line">The<span class="blank" id="blank"><span class="hand" id="hand">&#8203;</span></span></span><br>Pitch</h1>
       </div>
     </div>
     <div class="facts">
@@ -146,47 +160,87 @@
   // Ten current portfolio companies (src/content/founders.ts, from
   // forward.one/portfolio, A0013).
   var NAMES = ['QuantWare', 'QuiX Quantum', 'Optics11', 'ExRobotics', 'Fizyr', 'Voltfang', 'ORE Energy', 'Sapient Perception', 'Fibersail', 'SenseGlove'];
-  var TYPE = 85, HOLD = 1500, ERASE = 40, GAP = 450, START = 700; // ms
-  var blank = document.getElementById('blank'), hand = document.getElementById('hand'), caret = document.getElementById('caret');
-  // The handwriting at 1.3em of the H1 (as on the page), smaller only when
-  // a name would not fit the blank.
-  function sizeFor(name) {
-    var max = blank.clientWidth - 0.1 * parseFloat(getComputedStyle(blank).fontSize);
-    hand.style.fontSize = '1.3em';
-    hand.textContent = name;
-    var w = hand.getBoundingClientRect().width;
-    return w > max ? 1.3 * max / w + 'em' : '1.3em';
+  var TYPE = 85, HOLD = 1500, ERASE = 40, GAP = 500, START = 700, WRITE = 300, RESIZE = 350; // ms
+  var BASE = 250, ROOM = 1260; // the H1's size and the width it may take (px)
+  var h1 = document.querySelector('h1'), line = document.querySelector('.line');
+  var blank = document.getElementById('blank'), hand = document.getElementById('hand');
+  var caret = document.createElement('span');
+  caret.className = 'caret';
+  // Same wobble on every run (the page picks it at random).
+  var seed = 7;
+  function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+
+  // Lay out a name's letters; p (0..1 per letter) is how far each is written.
+  function draw(name, n, progress) {
+    hand.textContent = '\u200b';
+    for (var j = 0; j < n; j++) {
+      var s = document.createElement('span'), w = name.wobble[j], q = progress ? progress[j] : 1;
+      s.className = 'hw';
+      s.textContent = name.text[j];
+      s.style.setProperty('--hw-x', name.x[j] + 'em');
+      s.style.setProperty('--hw-w', name.w + 'em');
+      s.style.transform = 'translateY(' + (w.y - 0.06 * (1 - q)) + 'em) rotate(' + w.r + 'deg)';
+      // The page's pitch-write: each letter is uncovered left to right.
+      if (q < 1) s.style.clipPath = 'inset(-0.6em calc(' + (1 - q) * 100 + '% + ' + (q * -0.6) + 'em) -0.6em -0.6em)';
+      hand.appendChild(s);
+    }
+  }
+  // The H1 at full size, smaller only when a name would not fit (the page
+  // does the same, .pitch__title's --pitch-scale).
+  function measure(text) {
+    var name = { text: text, wobble: [], x: [], w: 0 };
+    for (var j = 0; j < text.length; j++) name.wobble.push({ r: (rnd() * 4 - 2).toFixed(2), y: (rnd() * 0.04 - 0.02).toFixed(3) });
+    h1.style.fontSize = BASE + 'px';
+    name.x = text.split('').map(function () { return 0; });
+    draw(name, text.length);
+    var fs = parseFloat(getComputedStyle(hand).fontSize), letters = hand.querySelectorAll('.hw'), x0 = letters[0].offsetLeft, x1 = 0;
+    letters.forEach(function (l, j) { name.x[j] = +((l.offsetLeft - x0) / fs).toFixed(3); x1 = Math.max(x1, l.offsetLeft + l.offsetWidth); });
+    name.w = +((x1 - x0) / fs).toFixed(3);
+    blank.classList.add('is-fit');
+    name.scale = Math.min(1, ROOM / line.getBoundingClientRect().width);
+    blank.classList.remove('is-fit');
+    return name;
   }
   var plan = [], t = START;
-  NAMES.forEach(function (n) {
-    var size = sizeFor(n), typed = t, held = typed + n.length * TYPE, erased = held + HOLD;
-    plan.push({ name: n, size: size, typed: typed, held: held, erased: erased, end: erased + n.length * ERASE });
-    t = erased + n.length * ERASE + GAP;
-  });
-  window.DURATION = t;
-  // The state at time ms: text shown, and whether the caret shows.
+  function build() {
+    seed = 7; plan = []; t = START;
+    NAMES.forEach(function (n) {
+      var p = measure(n);
+      p.typed = t; p.held = t + n.length * TYPE; p.erased = p.held + HOLD; p.end = p.erased + n.length * ERASE;
+      plan.push(p);
+      t = p.end + GAP;
+    });
+    window.DURATION = t;
+  }
+  var ease = function (x) { return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2; };
+
   window.frame = function (ms) {
-    var shown = '', step = null, typing = false;
-    for (var i = 0; i < plan.length; i++) {
-      var p = plan[i];
-      if (ms < p.typed || ms >= p.end) continue;
-      step = p;
-      if (ms < p.held) { shown = p.name.slice(0, Math.floor((ms - p.typed) / TYPE) + 1); typing = true; }
-      else if (ms < p.erased) shown = p.name;
-      else { shown = p.name.slice(0, p.name.length - Math.floor((ms - p.erased) / ERASE) - 1); typing = true; }
-    }
-    hand.style.fontSize = step ? step.size : '1.3em';
-    hand.textContent = shown;
-    blank.classList.toggle('is-filled', shown.length > 0);
-    // The caret blinks while waiting and stays on while writing.
-    var on = typing || Math.floor(ms / 530) % 2 === 0;
-    caret.style.visibility = on ? 'visible' : 'hidden';
-    caret.style.left = (shown ? hand.offsetLeft + hand.getBoundingClientRect().width + 6 : 8) + 'px';
-    return shown + '|' + on + '|' + hand.style.fontSize;
+    // Which name, and how many letters (and how far the newest are written).
+    var i = plan.findIndex(function (p) { return ms < p.end + GAP; });
+    if (i < 0) i = plan.length - 1;
+    var p = plan[i], prev = plan[i - 1] || plan[plan.length - 1];
+    var n = 0, progress = null, typing = false;
+    if (ms >= p.typed && ms < p.held) {
+      n = Math.min(p.text.length, Math.floor((ms - p.typed) / TYPE) + 1);
+      progress = [];
+      for (var j = 0; j < n; j++) progress.push(Math.min(1, ease(Math.min(1, (ms - p.typed - j * TYPE) / WRITE))));
+      typing = true;
+    } else if (ms >= p.held && ms < p.erased) n = p.text.length;
+    else if (ms >= p.erased && ms < p.end) { n = p.text.length - Math.floor((ms - p.erased) / ERASE) - 1; typing = true; }
+    // The heading resizes just before the name is written, in the empty gap.
+    var k = Math.max(0, Math.min(1, (ms - (p.typed - RESIZE - 80)) / RESIZE));
+    var scale = prev.scale + (p.scale - prev.scale) * ease(k);
+    h1.style.fontSize = (BASE * scale).toFixed(2) + 'px';
+    draw(p, n, progress);
+    blank.classList.toggle('is-filled', n > 0);
+    blank.classList.toggle('is-fit', n >= 5);
+    // The caret blinks once a second while waiting, and stays on while writing.
+    var on = typing || ms % 1000 < 500;
+    if (on) hand.appendChild(caret);
+    return [p.text.slice(0, n), progress ? progress.map(function (q) { return q.toFixed(2); }).join() : '', on, scale.toFixed(3)].join('|');
   };
   document.fonts.ready.then(function () {
-    // Measure again once the handwriting font is in.
-    plan.forEach(function (p) { p.size = sizeFor(p.name); });
+    build();
     window.frame(0);
     document.body.dataset.ready = '1';
   });
