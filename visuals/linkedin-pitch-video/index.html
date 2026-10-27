@@ -128,6 +128,16 @@
     background: #04edcd;
   }
   .line { white-space: nowrap; }
+  /* The homepage's heading reveal (src/components/ui/Sentences.astro,
+     css/global.css): set frame by frame from window.frame(). */
+  .w { display: inline-block; }
+  .w--last {
+    padding-block: 0.25em;
+    margin-block: -0.25em;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
   .facts {
     flex-shrink: 0;
     background: #000000;
@@ -160,8 +170,8 @@
         <img src="../../src/assets/brand/hcvc.svg" alt="HCVC">
       </div>
       <div class="title-block">
-        <p class="eyebrow"><span class="brand">Slush</span>, Helsinki</p>
-        <h1><span class="line">The<span class="blank" id="blank"><span class="hand" id="hand">&#8203;</span></span></span><br>Pitch</h1>
+        <p class="eyebrow"><span class="w" data-tick="0"><span class="brand">Slush</span>,</span> <span class="w" data-tick="1">Helsinki</span></p>
+        <h1><span class="line"><span class="w" data-word="0">The</span><span class="blank" id="blank" data-word="1"><span class="hand" id="hand">&#8203;</span></span></span><br><span class="w w--last" data-word="2" id="last">Pitch</span></h1>
       </div>
     </div>
     <div class="facts">
@@ -173,7 +183,12 @@
   // The owner's final list (2026-10-27), spelled as given, shuffled (owner):
   // long and short names take turns.
   var NAMES = ['Optics11', 'Sapient Perception', 'Voltfang', 'ATMOS Space Cargo', 'Quantware', 'Dyna Robotics', 'Alpine Eagle'];
-  var TYPE = 85, HOLD = 1500, ERASE = 40, GAP = 500, START = 700, WRITE = 300; // ms
+  var TYPE = 85, HOLD = 1500, ERASE = 40, GAP = 500, START = 3000, WRITE = 300; // ms
+  // The homepage's reveal (css/global.css, Sentences.astro): frames of 80ms,
+  // steps of 0.02em, words 90ms apart; the eyebrow ticks in at once, the
+  // heading from 800ms; its last word rises smoothly over 9 frames from 7
+  // steps down while an amber tint slides out to the right over 32 frames.
+  var FRAME = 80, STEP = 0.02, STAGGER = 90, H1_START = 800, TINT = '#db8e00', INK = '#111111';
   // Size changes glide over SMOOTH ms (the page: 240ms font-size and 360ms
   // line transitions), so the heading never jumps.
   var SMOOTH = 450, LINE_MIN = 2.7; // em, the empty line's length
@@ -246,6 +261,40 @@
     var l = letters(Math.max(0, ms));
     return { scale: l.p.scales[l.n], minw: l.n >= 5 ? 0 : LINE_MIN };
   }
+  // CSS cubic-bezier(x1, y1, x2, y2) as a function of progress 0..1.
+  function bezier(x1, y1, x2, y2) {
+    function at(a, b, t) { return 3 * a * t * (1 - t) * (1 - t) + 3 * b * t * t * (1 - t) + t * t * t; }
+    return function (x) {
+      if (x <= 0) return 0;
+      if (x >= 1) return 1;
+      var lo = 0, hi = 1, t = x;
+      for (var k = 0; k < 30; k++) { t = (lo + hi) / 2; if (at(x1, x2, t) < x) lo = t; else hi = t; }
+      return at(y1, y2, t);
+    };
+  }
+  var riseEase = bezier(0.2, 0.7, 0.2, 1), tintEase = bezier(0.45, 0, 0.2, 1);
+  // A ticked word: invisible for a frame, then 2 steps down, 1, at rest.
+  function tick(el, t) {
+    var f = t < 0 ? 0 : Math.floor(t / FRAME);
+    el.style.opacity = f >= 1 ? '1' : '0';
+    el.style.transform = 'translateY(' + (f >= 3 ? 0 : f === 2 ? STEP : 2 * STEP) + 'em)';
+    return f >= 3 ? 3 : f;
+  }
+  var ticked = [].slice.call(document.querySelectorAll('[data-tick]'));
+  var words = [].slice.call(document.querySelectorAll('[data-word]:not(.w--last)'));
+  var last = document.getElementById('last');
+  function intro(ms) {
+    var key = '';
+    ticked.forEach(function (el) { key += tick(el, ms - el.dataset.tick * STAGGER); });
+    words.forEach(function (el) { key += tick(el, ms - H1_START - el.dataset.word * STAGGER); });
+    var t = ms - H1_START - last.dataset.word * STAGGER;
+    last.style.opacity = t >= FRAME ? '1' : '0';
+    var rise = t <= 0 ? 0 : riseEase(Math.min(1, t / (9 * FRAME)));
+    last.style.transform = 'translateY(' + (7 * STEP * (1 - rise)).toFixed(4) + 'em)';
+    var sweep = t <= FRAME ? 0 : tintEase(Math.min(1, (t - FRAME) / (32 * FRAME))) * 100;
+    last.style.backgroundImage = 'linear-gradient(90deg, ' + INK + ' ' + sweep.toFixed(2) + '%, ' + TINT + ' ' + (sweep + 100).toFixed(2) + '%)';
+    return key + '|' + rise.toFixed(3) + '|' + sweep.toFixed(1);
+  }
   var ease = function (x) { return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2; };
 
   window.frame = function (ms) {
@@ -274,9 +323,10 @@
     draw(p, n, progress);
     blank.classList.toggle('is-filled', n > 0);
     // The caret blinks once a second while waiting, and stays on while writing.
-    var on = typing || ms % 1000 < 500;
+    var on = ms > H1_START + 3 * STAGGER + 4 * FRAME && (typing || ms % 1000 < 500);
+    var introKey = intro(ms);
     if (on) hand.appendChild(caret);
-    return [p.text.slice(0, n), progress ? progress.map(function (q) { return q.toFixed(2); }).join() : '', on, scale.toFixed(4), blank.style.minWidth].join('|');
+    return [introKey, p.text.slice(0, n), progress ? progress.map(function (q) { return q.toFixed(2); }).join() : '', on, scale.toFixed(4), blank.style.minWidth].join('|');
   };
   document.fonts.ready.then(function () {
     build();
