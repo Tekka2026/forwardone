@@ -19,6 +19,7 @@
   }
   :root {
     --bg: #ffffff;
+    --bg-end: #f6f6f6; /* the white part fades to this at the bottom (owner, 2026-10-27) */
     --fg: #111111;
     --muted: #8a8a8a;
     --blank-line: #111111;
@@ -38,6 +39,7 @@
   }
   .top {
     flex: 1;
+    background: linear-gradient(to bottom, var(--bg), var(--bg-end));
     min-height: 0; /* the band below never moves */
     display: flex;
     flex-direction: column;
