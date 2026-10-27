@@ -574,10 +574,10 @@ sheet, wording confirmed by the owner 2026-10-21).
   (`--pitch-max`). Up to that it keeps the Display size; beyond it the size
   scales down continuously (`--pitch-scale`, font-size transition 240ms).
   On phones the empty heading is already scaled to fit.
-- Under the H1 the lede on what the event is, two paragraphs (owner's
-  wording, 2026-10-27: the three investors, 20 minutes, a possible term
-  sheet; then who we want to meet), 16px apart; Balnord links to
-  balnord.vc. 6 columns max. Fades in with the letter.
+- Under the H1 the lede on what the event is (owner's wording, 2026-10-27:
+  "20 minutes, three deeptech investors, no slides. …"); more paragraphs
+  sit 16px apart, and Balnord links to balnord.vc where named. 6 columns
+  max. Fades in with the letter.
 - Form as a fill-in-the-blanks letter at `--fs-metric` (24–32px, Inter,
   line height 1.35, normal text leading, 8 columns max): company name first, then name, role,
   email, phone, what they build (one line), the pitch time ("We'd like to

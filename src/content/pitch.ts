@@ -42,13 +42,10 @@ export const pitch = {
   eyebrow: { brand: 'Slush', rest: ', Helsinki' },
   /** H1, either side of the blank line. */
   title: { before: 'The', after: 'Pitch' },
-  /** What the event is, under the H1: one paragraph per entry, Balnord
-   * linked (owner's wording, 2026-10-27; before: "Pitch to our investors,
-   * answer their questions on the spot. We pick one winner, who gets a term
-   * sheet.", 2026-10-22). */
+  /** What the event is, under the H1: one paragraph per entry; Balnord is
+   * linked where it is named (owner's wording, 2026-10-27). */
   intro: [
-    'Three early-stage deeptech investors, one pitch. FORWARD.one, Balnord and HCVC will be in the room together. You get 20 minutes to show us what you’re building and how big it can get. We don’t need weeks of meetings to know when something is special, and we’re not afraid to commit early. If we have conviction, you could leave with a term sheet.',
-    'We want to meet founders with outsized ambition, working on robotics, manufacturing, dual-use, energy, space, compute or anything else that’s hard to build.',
+    '20 minutes, three deeptech investors, no slides. Tell us who you are and how big your ambitions are. If we have conviction, you could leave with a term sheet.',
   ],
   /** The second VC on the panel. */
   partner: { name: 'Balnord', href: 'https://www.balnord.vc/' },
