@@ -62,7 +62,7 @@ export const pitch = {
    * 2026-10-26). `logo` names the SVG in src/assets/brand/. */
   hosts: [
     { name: 'Balnord', href: 'https://www.balnord.vc/', logo: 'balnord' },
-    { name: 'HCVC', logo: 'hcvc' },
+    { name: 'HCVC', href: 'https://www.hcvc.co/', logo: 'hcvc' },
   ],
   /** The fill-in letter (owner's wording, 2026-10-27), one step per sentence
    * or line. Only the first step shows at first; each next step appears once

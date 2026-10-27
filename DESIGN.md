@@ -524,7 +524,7 @@ sheet, wording confirmed by the owner 2026-10-21).
   2026-10-26; `noHeaderActions`); the wordmark there is
   19.2px high (owner, 2026-10-26: 20% smaller than
   the 24 / 19px before; elsewhere 20 / 15px). Next to it, a joint effort
-  (owner, 2026-10-26), the Balnord (linked to balnord.vc) and HCVC logos
+  (owner, 2026-10-26), the Balnord (linked to balnord.vc) and HCVC (linked to hcvc.co, owner 2026-10-27) logos
   (`src/assets/brand/`, currentColor), each exactly as high as the
   wordmark, 48px apart (owner, 2026-10-26; before: 24px) (`Header` `partners`, from `pitch.hosts`). The row always
   fits its width, also when pasted into another site (Webflow): the header
