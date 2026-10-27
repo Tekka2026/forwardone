@@ -81,7 +81,6 @@
     line-height: 1;
   }
   .blank.is-filled { border-bottom-color: var(--blank-line-filled); }
-  .blank.is-fit { min-width: 0; }
   /* The handwriting at 1.3em of the H1, each letter with its own slight
      wobble and its slice of one gradient across the name (page:
      .pitch__hand, .pitch__letter-hw). */
@@ -160,7 +159,10 @@
   // Ten current portfolio companies (src/content/founders.ts, from
   // forward.one/portfolio, A0013).
   var NAMES = ['QuantWare', 'QuiX Quantum', 'Optics11', 'ExRobotics', 'Fizyr', 'Voltfang', 'ORE Energy', 'Sapient Perception', 'Fibersail', 'SenseGlove'];
-  var TYPE = 85, HOLD = 1500, ERASE = 40, GAP = 500, START = 700, WRITE = 300, RESIZE = 350; // ms
+  var TYPE = 85, HOLD = 1500, ERASE = 40, GAP = 500, START = 700, WRITE = 300; // ms
+  // Size changes glide over SMOOTH ms (the page: 240ms font-size and 360ms
+  // line transitions), so the heading never jumps.
+  var SMOOTH = 450, LINE_MIN = 2.7; // em, the empty line's length
   var BASE = 250, ROOM = 1260; // the H1's size and the width it may take (px)
   var h1 = document.querySelector('h1'), line = document.querySelector('.line');
   var blank = document.getElementById('blank'), hand = document.getElementById('hand');
@@ -196,9 +198,14 @@
     var fs = parseFloat(getComputedStyle(hand).fontSize), letters = hand.querySelectorAll('.hw'), x0 = letters[0].offsetLeft, x1 = 0;
     letters.forEach(function (l, j) { name.x[j] = +((l.offsetLeft - x0) / fs).toFixed(3); x1 = Math.max(x1, l.offsetLeft + l.offsetWidth); });
     name.w = +((x1 - x0) / fs).toFixed(3);
-    blank.classList.add('is-fit');
-    name.scale = Math.min(1, ROOM / line.getBoundingClientRect().width);
-    blank.classList.remove('is-fit');
+    // The heading's scale for every number of letters written, with the line
+    // at full length below 5 letters and hugging the name from 5 (page rule).
+    name.scales = [];
+    for (var k = 0; k <= text.length; k++) {
+      draw(name, k);
+      blank.style.minWidth = (k >= 5 ? 0 : LINE_MIN) + 'em';
+      name.scales.push(Math.min(1, ROOM / line.getBoundingClientRect().width));
+    }
     return name;
   }
   var plan = [], t = START;
@@ -211,6 +218,19 @@
       t = p.end + GAP;
     });
     window.DURATION = t;
+  }
+  // Where scale and line length are heading at time ms.
+  function letters(ms) {
+    var i = plan.findIndex(function (p) { return ms < p.end + GAP; });
+    var p = plan[i < 0 ? plan.length - 1 : i], n = 0;
+    if (ms >= p.typed && ms < p.held) n = Math.min(p.text.length, Math.floor((ms - p.typed) / TYPE) + 1);
+    else if (ms >= p.held && ms < p.erased) n = p.text.length;
+    else if (ms >= p.erased && ms < p.end) n = p.text.length - Math.floor((ms - p.erased) / ERASE) - 1;
+    return { p: p, n: Math.max(0, n) };
+  }
+  function target(ms) {
+    var l = letters(Math.max(0, ms));
+    return { scale: l.p.scales[l.n], minw: l.n >= 5 ? 0 : LINE_MIN };
   }
   var ease = function (x) { return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2; };
 
@@ -227,17 +247,22 @@
       typing = true;
     } else if (ms >= p.held && ms < p.erased) n = p.text.length;
     else if (ms >= p.erased && ms < p.end) { n = p.text.length - Math.floor((ms - p.erased) / ERASE) - 1; typing = true; }
-    // The heading resizes just before the name is written, in the empty gap.
-    var k = Math.max(0, Math.min(1, (ms - (p.typed - RESIZE - 80)) / RESIZE));
-    var scale = prev.scale + (p.scale - prev.scale) * ease(k);
+    // Scale and line length follow the letters on the line, eased over
+    // SMOOTH ms (a triangle-weighted average of where they are heading).
+    var sum = 0, sc = 0, mw = 0;
+    for (var q = -14; q <= 0; q++) {
+      var w = 15 + q, tt = target(ms + q * SMOOTH / 14);
+      sum += w; sc += w * tt.scale; mw += w * tt.minw;
+    }
+    var scale = sc / sum;
     h1.style.fontSize = (BASE * scale).toFixed(2) + 'px';
+    blank.style.minWidth = (mw / sum).toFixed(3) + 'em';
     draw(p, n, progress);
     blank.classList.toggle('is-filled', n > 0);
-    blank.classList.toggle('is-fit', n >= 5);
     // The caret blinks once a second while waiting, and stays on while writing.
     var on = typing || ms % 1000 < 500;
     if (on) hand.appendChild(caret);
-    return [p.text.slice(0, n), progress ? progress.map(function (q) { return q.toFixed(2); }).join() : '', on, scale.toFixed(3)].join('|');
+    return [p.text.slice(0, n), progress ? progress.map(function (q) { return q.toFixed(2); }).join() : '', on, scale.toFixed(4), blank.style.minWidth].join('|');
   };
   document.fonts.ready.then(function () {
     build();
