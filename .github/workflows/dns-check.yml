@@ -30,3 +30,8 @@ jobs:
           echo "== resend records"; dig +short @8.8.8.8 TXT resend._domainkey.forward.one; dig +short @8.8.8.8 MX send.forward.one; dig +short @8.8.8.8 TXT send.forward.one
           echo "== whois"; whois forward.one | grep -iE "expir|status|name server|registrar:|updated" | head -20
           echo "== http"; curl -sS -o /dev/null -w "%{http_code} %{redirect_url}\n" https://www.forward.one/ || true
+          echo "== SOA at TransIP (serial = last zone change)"; dig +short @ns0.transip.net forward.one SOA
+          echo "== www at TransIP directly"; dig @ns0.transip.net www.forward.one ANY +norecurse | grep -E "status|IN" | head
+          echo "== forward.one redirects"; curl -sS -o /dev/null -w "http://forward.one -> %{http_code} %{redirect_url}\n" http://forward.one/ || true
+          curl -sS -o /dev/null -w "https://forward.one -> %{http_code} %{redirect_url}\n" https://forward.one/ || true
+          curl -sS -o /dev/null -w "https://forward.one/events/2026/the-pitch-at-slush-2026 -> %{http_code} %{redirect_url}\n" https://forward.one/events/2026/the-pitch-at-slush-2026 || true
