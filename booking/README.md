@@ -33,8 +33,10 @@ Owner's letter of 2026-10-27 (`src/content/pitch.ts` on the site;
 migration 0004): company, building, name, role, linkedin, surprise (what
 LinkedIn does not tell), why (why they belong in the room), slot, email,
 phone (the only optional one), first_name (the sign-off). `/apply` checks
-lengths and requires the rest; LinkedIn gets `https://` when sent without
-it. The deck link is no longer asked for. The dashboard shows why and
+lengths and requires the rest. LinkedIn arrives as the handle (the page
+shows "jeroendelange1976" for a pasted profile address) and is stored as
+`https://www.linkedin.com/in/<handle>`; another link gets `https://` when
+sent without it. The deck link is no longer asked for. The dashboard shows why and
 "not on LinkedIn" under the company, LinkedIn with the founder; the CSV
 has every field; emails can greet with `{first_name}`.
 

@@ -79,7 +79,13 @@ function clean(input: Record<string, unknown>) {
   for (const k of REQUIRED) if (!out[k]) return { field: k };
   out.email = out.email.toLowerCase();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(out.email)) return { field: 'email' };
-  if (out.linkedin && !/^https?:\/\//i.test(out.linkedin)) out.linkedin = 'https://' + out.linkedin;
+  // LinkedIn: the page sends the handle ("jeroendelange1976", owner
+  // 2026-10-27); stored as the full profile address. A full address or any
+  // other link is kept, with https:// added when left out.
+  const li = out.linkedin.match(/linkedin\.com\/in\/([^\/?#\s]+)/i);
+  if (li) out.linkedin = `https://www.linkedin.com/in/${li[1]}`;
+  else if (/^[\w\-%]+$/.test(out.linkedin)) out.linkedin = `https://www.linkedin.com/in/${out.linkedin}`;
+  else if (!/^https?:\/\//i.test(out.linkedin)) out.linkedin = 'https://' + out.linkedin;
   if (!/^https?:\/\/[^\s.]+\.\S+$/i.test(out.linkedin)) return { field: 'linkedin' };
   return { data: out };
 }

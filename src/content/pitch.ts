@@ -81,7 +81,7 @@ export const pitch = {
       { field: { name: 'role', label: 'Your role', hint: 'role', autocomplete: 'organization-title', required: true, maxlength: 120 } },
       '.',
     ],
-    ['\n\nMy LinkedIn:', { field: { name: 'linkedin', label: 'Your LinkedIn profile', hint: 'link', type: 'link', autocomplete: 'url', required: true, maxlength: 300 } }],
+    ['\n\nMy LinkedIn:', { field: { name: 'linkedin', label: 'Your LinkedIn profile (link or name)', hint: 'link', type: 'link', autocomplete: 'url', required: true, maxlength: 300 } }],
     ['\nWhat my LinkedIn doesn’t tell you:', { field: { name: 'surprise', label: 'What your LinkedIn doesn’t tell us', hint: 'something we wouldn’t guess', type: 'long', required: true, maxlength: 400 } }],
     // After a long answer (a block of its own) the next line starts below it
     // anyway, so no \n here; one \n there gives the empty line.

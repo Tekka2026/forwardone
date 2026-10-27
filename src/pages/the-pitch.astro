@@ -441,12 +441,23 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
         size(firstName);
       }
     }
-    // A LinkedIn address typed without https:// gets it added.
+    // LinkedIn: a pasted, typed or autofilled profile address shows as just
+    // the handle (owner, 2026-10-27): "https://www.linkedin.com/in/name/"
+    // becomes "name". The booking service turns a handle back into the full
+    // address. Any other address gets https:// when it was left out.
+    function tidyLink(l) {
+      var v = l.value.trim();
+      var m = v.match(/linkedin\.com\/in\/([^\/?#\s]+)/i);
+      if (m) {
+        try { v = decodeURIComponent(m[1]); } catch (e) { v = m[1]; }
+      } else if (v && /\./.test(v) && !/^https?:\/\//i.test(v)) {
+        v = 'https://' + v;
+      }
+      if (v !== l.value) { l.value = v; size(l); updateSend(); }
+    }
     form.querySelectorAll('[data-pitch-link]').forEach(function (l) {
-      l.addEventListener('blur', function () {
-        var v = l.value.trim();
-        if (v && !/^https?:\/\//i.test(v) && /\./.test(v)) { l.value = 'https://' + v; size(l); updateSend(); }
-      });
+      l.addEventListener('input', function () { if (/linkedin\.com\/in\/[^\/?#\s]+/i.test(l.value)) tidyLink(l); });
+      l.addEventListener('blur', function () { tidyLink(l); });
     });
     function advance() {
       while (shownSteps < steps.length && passed(steps[shownSteps - 1])) {

@@ -599,8 +599,10 @@ sheet, wording confirmed by the owner 2026-10-21).
 
   Every blank is required except phone. The two long answers are blocks of
   their own under their line, full width, growing in height (textarea,
-  `.pitch__input--long`). LinkedIn gets "https://" added when typed without
-  it. The sign-off name is filled in from the first word of the full name
+  `.pitch__input--long`). A LinkedIn profile address (pasted, typed or
+  autofilled) shows as just the handle, e.g. "jeroendelange1976" (owner,
+  2026-10-27); the booking service stores the full address. Another link
+  gets "https://" when typed without it. The sign-off name is filled in from the first word of the full name
   when its line opens, and can be changed. No deck link any more (no
   slides, owner 2026-10-27). Blanks
   are inline inputs; what the visitor types is in Inter 500 (a step heavier
