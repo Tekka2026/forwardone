@@ -18,11 +18,13 @@ interface Props {
   forFounders?: boolean;
   /** Partner logos next to the wordmark (see Header.astro). */
   partners?: Partner[];
+  /** Links in the minimal footer (see Footer.astro). */
+  footerLinks?: { label: string; href: string }[];
   /** Header without its buttons (see Header.astro). */
   noHeaderActions?: boolean;
 }
 
-const { title, description = site.description, darkTop = false, minimal = false, forFounders = false, partners = [], noHeaderActions = false } = Astro.props;
+const { title, description = site.description, darkTop = false, minimal = false, forFounders = false, partners = [], noHeaderActions = false, footerLinks = [] } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 
@@ -66,7 +68,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       <main id="main" tabindex="-1">
         <slot />
       </main>
-      <Footer minimal={minimal} />
+      <Footer minimal={minimal} links={footerLinks} />
     </div>
     {!minimal && <Nav />}
   </body>

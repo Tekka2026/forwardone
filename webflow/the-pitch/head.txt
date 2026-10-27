@@ -224,8 +224,8 @@ to{opacity:1;transform:none}
 .footer-col__title[data-astro-cid-jo6i4kqk] a[data-astro-cid-jo6i4kqk]{text-decoration-line:none}
 .footer-col__title[data-astro-cid-jo6i4kqk] a[data-astro-cid-jo6i4kqk]:hover{text-underline-offset:4px;text-decoration-line:underline}
 .footer-col__list[data-astro-cid-jo6i4kqk]{gap:var(--space-2x);flex-direction:column;margin:0;padding:0;list-style:none;display:flex}
-.footer-link[data-astro-cid-jo6i4kqk]{font-size:var(--fs-small);line-height:var(--lh-small);text-decoration-line:none}
-.footer-link[data-astro-cid-jo6i4kqk]:hover{text-underline-offset:4px;text-decoration-line:underline}
+.fo-footer-link[data-astro-cid-jo6i4kqk]{font-size:var(--fs-small);line-height:var(--lh-small);text-decoration-line:none}
+.fo-footer-link[data-astro-cid-jo6i4kqk]:hover{text-underline-offset:4px;text-decoration-line:underline}
 .footer-contact__label[data-astro-cid-jo6i4kqk]{font-size:var(--fs-small-tight);color:var(--muted);display:block}
 .footer-address[data-astro-cid-jo6i4kqk]{margin-top:var(--gap);font-style:normal}
 .footer-partners[data-astro-cid-jo6i4kqk]{align-items:center;gap:var(--gap-half);margin-top:var(--space-16x);display:flex}
@@ -237,10 +237,11 @@ to{opacity:1;transform:none}
 .footer-partners__list[data-astro-cid-jo6i4kqk]{justify-content:center;gap:var(--space-4x) var(--gap);margin-top:var(--space-4x)}
 .footer-partner[data-astro-cid-jo6i4kqk] .footer-partner__logo{height:32px}
 }
+.fo-footer-minimal[data-astro-cid-jo6i4kqk]{justify-content:space-between;align-items:baseline;gap:var(--space-4x) var(--space-8x);flex-wrap:wrap;display:flex}
 .footer-bottom[data-astro-cid-jo6i4kqk]{justify-content:space-between;gap:var(--space-4x) var(--space-8x);margin-top:var(--gap-double);padding-top:var(--gap);border-top:var(--hairline-w) solid var(--hairline);flex-wrap:wrap;display:flex}
 .fo-footer-tagline[data-astro-cid-jo6i4kqk]{margin:0}
 .footer-slogan[data-astro-cid-jo6i4kqk]{color:var(--muted)}
-.footer-legal[data-astro-cid-jo6i4kqk]{gap:var(--gap);margin:0;padding:0;list-style:none;display:flex}
+.fo-footer-legal[data-astro-cid-jo6i4kqk]{gap:var(--gap);margin:0;padding:0;list-style:none;display:flex}
 @media (width<=980px){.footer-grid[data-astro-cid-jo6i4kqk]{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 @media (width<=640px){.footer-grid[data-astro-cid-jo6i4kqk]{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -280,7 +281,7 @@ main:focus{outline:none}
 .fo-pitch__letter[data-astro-cid-ikq7lxbc]{max-width:var(--col-8);font-size:var(--fs-metric);margin:0;line-height:1.35;position:relative}
 .fo-pitch__field[data-astro-cid-ikq7lxbc]{font:inherit;letter-spacing:inherit;color:inherit;margin:0;display:inline}
 .fo-pitch__blank-wrap[data-astro-cid-ikq7lxbc]{white-space:nowrap}
-.pitch__break[data-astro-cid-ikq7lxbc],.fo-pitch__send[data-astro-cid-ikq7lxbc][hidden],.fo-pitch__privacy[data-astro-cid-ikq7lxbc][hidden]{display:none}
+.pitch__break[data-astro-cid-ikq7lxbc],.fo-pitch__send[data-astro-cid-ikq7lxbc][hidden],.fo-pitch__privacy[data-astro-cid-ikq7lxbc]:empty,.fo-pitch__privacy[data-astro-cid-ikq7lxbc][hidden]{display:none}
 .fo-pitch__input[data-astro-cid-ikq7lxbc]{font-family:var(--font-answer);font-size:1em;font-weight:var(--fw-answer);letter-spacing:0;height:auto;box-shadow:none;vertical-align:baseline;border:0;border-bottom:var(--hairline-w) solid var(--fg);background:var(--hand-gradient);color:#0000;-webkit-text-fill-color:transparent;max-width:100%;caret-color:var(--hand-colour);line-height:var(--lh-metric);box-sizing:content-box;-webkit-background-clip:text;background-clip:text;border-radius:0;outline:none;margin:0;padding:0 .1em}
 .fo-pitch__blank-wrap--long[data-astro-cid-ikq7lxbc],.fo-pitch__blank-wrap--long[data-astro-cid-ikq7lxbc] .fo-pitch__field[data-astro-cid-ikq7lxbc]{white-space:normal;display:block}
 .fo-pitch__input--long[data-astro-cid-ikq7lxbc]{box-sizing:border-box;width:100%;margin-block:var(--space-2x);padding:0 0 var(--space);resize:none;line-height:1.35;display:block;overflow:hidden}

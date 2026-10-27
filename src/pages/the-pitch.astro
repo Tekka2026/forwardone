@@ -56,7 +56,7 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
 
 ---
 
-<Base title={pitch.meta.title} description={pitch.meta.description} minimal partners={partners} noHeaderActions>
+<Base title={pitch.meta.title} description={pitch.meta.description} minimal partners={partners} noHeaderActions footerLinks={pitch.footerLinks}>
   <link
     slot="head"
     rel="stylesheet"
@@ -175,7 +175,7 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
             <Button type="submit">{pitch.submit}</Button>
             <p class="small pitch__status" data-pitch-status role="status" aria-live="polite"></p>
           </div>
-          <p class="small pitch__privacy" data-pitch-final data-copy="privacy"><Placeholder value={pitch.privacy} /></p>
+          <p class="small pitch__privacy" data-pitch-final data-copy="privacy">{pitch.privacy}</p>
           <template data-pitch-msg-not-sent>{pitch.notSent}</template>
           <template data-pitch-msg-sending>{pitch.sending}</template>
           <template data-pitch-msg-sent data-copy="sent">{pitch.sent}</template>
@@ -758,6 +758,8 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
     display: none;
   }
   .pitch__send[hidden],
+  /* No privacy note while it is empty (owner, 2026-10-27). */
+  .pitch__privacy:empty,
   .pitch__privacy[hidden] {
     display: none;
   }

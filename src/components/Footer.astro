@@ -13,14 +13,28 @@ const year = new Date().getFullYear();
 interface Props {
   /** Landing pages: the copyright line only. */
   minimal?: boolean;
+  /** Landing pages: links after the copyright line (owner, 2026-10-27,
+   *  /the-pitch: Privacy). Full addresses, used as given. */
+  links?: { label: string; href: string }[];
 }
-const { minimal = false } = Astro.props;
+const { minimal = false, links = [] } = Astro.props;
 ---
 
 <footer class:list={['site-footer', minimal && 'site-footer--minimal theme-dark']}>
   <div class="wrap">
     {minimal ? (
-      <p class="footer-tagline small"><span class="footer-copy">&copy; {footer.company} {year}.</span></p>
+      <div class="footer-minimal">
+        <p class="footer-tagline small"><span class="footer-copy">&copy; {footer.company} {year}.</span></p>
+        {links.length > 0 && (
+          <ul class="footer-legal">
+            {links.map((item) => (
+              <li>
+                <a class="footer-link small" href={item.href}>{item.label}</a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     ) : (
     <>
     <div class="footer-grid">
@@ -210,6 +224,15 @@ const { minimal = false } = Astro.props;
     .footer-partner :global(.footer-partner__logo) {
       height: 32px;
     }
+  }
+
+  /* Landing pages: copyright on the left, links on the right. */
+  .footer-minimal {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4x) var(--space-8x);
   }
 
   .footer-bottom {

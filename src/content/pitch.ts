@@ -12,7 +12,7 @@
  * slot until FORWARD.one approves or denies the request.
  *
  * Unknowns (date, venue, deadline, the booking service's address, the
- * privacy note) are visible placeholders, listed in PLACEHOLDERS.md.
+ * ) are visible placeholders, listed in PLACEHOLDERS.md.
  */
 
 const PH = (what: string) => `[PLACEHOLDER: ${what}]`;
@@ -53,6 +53,8 @@ export const pitch = {
   ],
   /** The second VC on the panel. */
   partner: { name: 'Balnord', href: 'https://www.balnord.vc/' },
+  /** Links in the footer, after the copyright line (owner, 2026-10-27). */
+  footerLinks: [{ label: 'Privacy', href: 'https://www.forward.one/privacy-policy' }],
   /** Logos next to FORWARD.one in the header: a joint effort (owner,
    * 2026-10-26). `logo` names the SVG in src/assets/brand/. */
   hosts: [
@@ -108,7 +110,9 @@ export const pitch = {
   noSlots: 'All times are taken at the moment.',
   slotsFailed: 'The pitch times could not be loaded. Please try again in a minute.',
   failed: 'Your request could not be sent. Please try again in a minute.',
-  privacy: PH('privacy note: what happens with the details, with a link to the privacy policy'),
+  /** Small note under the button. Empty: no note (owner, 2026-10-27, the
+   * placeholder removed); it can be added on the dashboard (Page text). */
+  privacy: '',
   /** Event facts under the form. A \n in a value starts a new line.
    * Texts marked editable can be changed on the booking dashboard
    * (/review/page, owner 2026-10-27): the page loads the saved versions on

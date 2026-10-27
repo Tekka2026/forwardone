@@ -532,7 +532,9 @@ sheet, wording confirmed by the owner 2026-10-21).
   height min(19.2px, (row − 2 gaps) / 19), e.g. about 16px on a 390px
   phone, 12.6px at 320px (owner, 2026-10-26: the logos ran off on phones). Then
   the eyebrow starts 24px under the header's own 24px bottom padding; the footer is the
-  copyright line only ("© FORWARD.one <year>."), black, down
+  copyright line ("© FORWARD.one <year>.") with a Privacy link on the right
+  (forward.one/privacy-policy, owner 2026-10-27; `footerLinks` in
+  `pitch.ts`), black, down
   to the page end. No floating navigation bar (owner, 2026-10-22), and no
   room kept for it at the bottom.
 - One white block (light theme, header included; owner, 2026-10-26; before:
@@ -636,7 +638,8 @@ sheet, wording confirmed by the owner 2026-10-21).
   last one). Each new sentence fades in like the body copy
   (`reveal-gentle`); shown sentences stay. A blank keeps its following full
   stop or comma on the same line. Without script the whole letter shows.
-- Then the solid button, a status line, the privacy note (muted, small) and
+- Then the solid button, a status line, the privacy note (muted, small;
+  not shown while empty, owner 2026-10-27, set on Page text) and
   four event facts on the black, no hairline (When, Where, Apply by, The
   panel; mono labels 12px, values in the small size, 15px, like the privacy
   note: owner 2026-10-27, before 17px), 4 columns, 2 at ≤880px, 1 at ≤640px.
