@@ -107,6 +107,8 @@ export const copy = {
   errors: {
     invalid: 'Some details are missing or not valid.',
     slot_taken: 'That time was just taken. Please pick another one.',
+    too_many: 'Too many requests from this connection. Please try again in an hour.',
+    robot: 'We could not check that this request comes from a person. Please try again.',
     already_applied: 'There is already a request with this email address.',
     unknown_slot: 'That time is not available.',
     server: 'Something went wrong on our side. Please try again in a minute.',

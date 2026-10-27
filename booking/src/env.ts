@@ -9,6 +9,13 @@ export interface Env {
   HOLD_DAYS: string;
   RESEND_API_KEY?: string;
   SESSION_SECRET?: string;
+  /** Turnstile (src/guard.ts): the public site key, a deploy variable. */
+  TURNSTILE_SITE_KEY?: string;
+  TURNSTILE_SECRET?: string;
+  /** Resend's webhook signing secret (bounces, src/alerts.ts). */
+  RESEND_WEBHOOK_SECRET?: string;
+  /** YYYY-MM-DD: from this day every request is deleted. */
+  DELETE_AFTER: string;
 }
 
 export type Status = 'pending' | 'approved' | 'denied' | 'expired' | 'cancelled';

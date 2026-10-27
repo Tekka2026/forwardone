@@ -644,8 +644,13 @@ sheet, wording confirmed by the owner 2026-10-21).
   last one). Each new sentence fades in like the body copy
   (`reveal-gentle`); shown sentences stay. A blank keeps its following full
   stop or comma on the same line. Without script the whole letter shows.
-- Then the solid button, a status line, the privacy note (muted, small;
-  not shown while empty, owner 2026-10-27, set on Page text) and
+- Cloudflare Turnstile, the bot check, sits just above the button. It is
+  invisible unless Cloudflare has a question for the visitor, and only
+  there when the booking service sends its key (booking/README.md).
+- Then the solid button, a status line, the privacy note (muted, small:
+  what the details are used for and when they are deleted, then a
+  "Privacy policy" link; owner 2026-10-27, CTO check; editable on Page
+  text) and
   four event facts on the black, no hairline (When, Where, Apply by, The
   panel; mono labels 12px, values in the small size, 15px, like the privacy
   note: owner 2026-10-27, before 17px), 4 columns, 2 at ≤880px, 1 at ≤640px.

@@ -113,9 +113,11 @@ export const pitch = {
   noSlots: 'All times are taken at the moment.',
   slotsFailed: 'The pitch times could not be loaded. Please try again in a minute.',
   failed: 'Your request could not be sent. Please try again in a minute.',
-  /** Small note under the button. Empty: no note (owner, 2026-10-27, the
-   * placeholder removed); it can be added on the dashboard (Page text). */
-  privacy: '',
+  /** Small note under the button, followed by the privacy policy link
+   * (owner, 2026-10-27, CTO check). Editable on the dashboard (Page text);
+   * the deletion date is DELETE_AFTER in booking/wrangler.toml. */
+  privacy: 'We use your details only to organise this pitch and delete them three months after Slush.',
+  privacyLink: { label: 'Privacy policy', href: 'https://www.forward.one/privacy-policy' },
   /** Event facts under the form. A \n in a value starts a new line.
    * Texts marked editable can be changed on the booking dashboard
    * (/review/page, owner 2026-10-27): the page loads the saved versions on

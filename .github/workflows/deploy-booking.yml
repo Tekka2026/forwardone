@@ -68,18 +68,30 @@ jobs:
         run: npm run defaults
       - if: steps.gate.outputs.go == 'true'
         name: Deploy
-        run: npx wrangler deploy
+        env:
+          # Public (it is in every page that shows the check), so a variable.
+          TURNSTILE_SITE_KEY: ${{ vars.PITCH_TURNSTILE_SITE_KEY }}
+        run: |
+          if [ -n "$TURNSTILE_SITE_KEY" ]; then
+            npx wrangler deploy --var "TURNSTILE_SITE_KEY:$TURNSTILE_SITE_KEY"
+          else
+            npx wrangler deploy
+          fi
       - if: steps.gate.outputs.go == 'true'
         name: Secrets
         env:
           REVIEWERS: ${{ secrets.PITCH_REVIEWERS }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           SESSION_SECRET: ${{ secrets.PITCH_SESSION_SECRET }}
+          TURNSTILE_SECRET: ${{ secrets.PITCH_TURNSTILE_SECRET }}
+          RESEND_WEBHOOK_SECRET: ${{ secrets.PITCH_RESEND_WEBHOOK_SECRET }}
         run: |
           have=$(npx wrangler secret list --format json || echo '[]')
           put() { printf '%s' "$2" | npx wrangler secret put "$1"; }
           [ -n "$REVIEWERS" ] && put REVIEWERS "$REVIEWERS"
           [ -n "$RESEND_API_KEY" ] && put RESEND_API_KEY "$RESEND_API_KEY"
+          [ -n "$TURNSTILE_SECRET" ] && put TURNSTILE_SECRET "$TURNSTILE_SECRET"
+          [ -n "$RESEND_WEBHOOK_SECRET" ] && put RESEND_WEBHOOK_SECRET "$RESEND_WEBHOOK_SECRET"
           if [ -n "$SESSION_SECRET" ]; then
             put SESSION_SECRET "$SESSION_SECRET"
           elif ! printf '%s' "$have" | grep -q '"SESSION_SECRET"'; then

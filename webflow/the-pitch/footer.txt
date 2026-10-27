@@ -32,6 +32,21 @@
         p.appendChild(document.createTextNode(part));
       });
     }
+    // ---- Bot check: loaded only when the service sends its key. ----------
+    var checkId = null;
+    function check(key) {
+      var box = form.querySelector('[data-pitch-check]');
+      if (!box || window.turnstile) return;
+      window.pitchCheckReady = function () {
+        checkId = window.turnstile.render(box, {
+          sitekey: key, appearance: 'interaction-only', size: 'flexible', 'response-field-name': 'turnstile',
+        });
+      };
+      var s = document.createElement('script');
+      s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=pitchCheckReady';
+      s.async = true;
+      document.head.appendChild(s);
+    }
     var SETTERS = {
       intro: function (el, v) {
         el.textContent = '';
@@ -46,6 +61,7 @@
       fetch(form.dataset.api + '/copy', { headers: { Accept: 'application/json' } })
         .then(function (r) { return r.ok ? r.json() : { values: {} }; })
         .then(function (d) {
+          if (d.turnstile) check(d.turnstile);
           Object.keys(d.values || {}).forEach(function (k) {
             var v = d.values[k];
             if (k === 'submit') return SETTERS.submit(null, v);
@@ -367,6 +383,8 @@
             return;
           }
           status.textContent = (res.d && res.d.message) || msg('failed');
+          // A check token works once: get a fresh one for the next try.
+          if (window.turnstile && checkId !== null) window.turnstile.reset(checkId);
           if (res.d && (res.d.error === 'slot_taken' || res.d.error === 'unknown_slot')) {
             loadSlots(true).then(function () { slot.focus(); });
           } else if (res.d && res.d.field) {

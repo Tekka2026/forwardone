@@ -28,7 +28,8 @@ import { currentReviewer, LOGIN_MS, logoutCookie, sessionCookie, sign, verify } 
 import { copy, fill, isTemplateKey, SAMPLE, TEMPLATES, unknownVars } from './copy';
 import { digest, founderEmail, template, templates, values } from './emails';
 import { reviewers, type Application, type Env, type Slot, type Status } from './env';
-import { ics, send } from './mail';
+import { ics, resendEvent, send } from './mail';
+import { human, tidy, tooMany, turnstileOn } from './guard';
 import { BUSY_JS, emailEditPage, emailsPage, esc, loginPage, page, pageTextPage, reviewPage } from './review';
 import { PAGE_DEFAULTS, PAGE_KEYS, pageField } from './pagecopy';
 
@@ -99,6 +100,8 @@ async function apply(env: Env, req: Request, ctx: ExecutionContext) {
   }
   // Honeypot: a field people never see.
   if (typeof body.website === 'string' && body.website) return json({ ok: true }, 201);
+  if (await tooMany(env, req)) return json({ error: 'too_many', message: copy.errors.too_many }, 429);
+  if (!(await human(env, req, body.turnstile))) return json({ error: 'robot', message: copy.errors.robot }, 400);
   const c = clean(body);
   if (!c.data) return json({ error: 'invalid', field: c.field, message: copy.errors.invalid }, 400);
   const d = c.data;
@@ -411,7 +414,10 @@ export default {
       if (url.pathname === '/copy') {
         const h = cors(env, req);
         if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: h });
-        return json({ values: (await pageCopy(env)).values }, 200, { ...h, 'Cache-Control': 'public, max-age=60' });
+        // The bot check's public key goes with the texts, so the page shows
+        // the check exactly when the service asks for it.
+        const check = turnstileOn(env) ? { turnstile: env.TURNSTILE_SITE_KEY } : {};
+        return json({ values: (await pageCopy(env)).values, ...check }, 200, { ...h, 'Cache-Control': 'public, max-age=60' });
       }
       if (url.pathname === '/slots' || url.pathname === '/apply') {
         const h = cors(env, req);
@@ -424,6 +430,7 @@ export default {
         }
         return json({ error: 'method' }, 405, h);
       }
+      if (url.pathname === '/resend-events' && req.method === 'POST') return await resendEvent(env, req);
       if (url.pathname === '/cancel') return req.method === 'POST' ? cancel(env, req, ctx) : cancelPage(env, url);
       if (url.pathname === '/review' || url.pathname.startsWith('/review/')) return await review(env, req, url, ctx);
       if (url.pathname === '/') return redirect(env.PAGE_URL);
@@ -435,6 +442,9 @@ export default {
   },
   async scheduled(controller: ScheduledController, env: Env) {
     if (controller.cron === DIGEST_CRON) await dailyOverview(env);
-    else await expire(env);
+    else {
+      await expire(env);
+      await tidy(env);
+    }
   },
 } satisfies ExportedHandler<Env>;

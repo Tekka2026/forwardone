@@ -538,10 +538,16 @@ document.getElementById('logout').addEventListener('click', function () {
   });
 
   // ---- Export: the table as it is filtered now.
+  // A founder's answer that starts like a formula (=, +, -, @) would run in
+  // Excel; a leading ' keeps it text. Phone numbers (+358 …) stay as they are.
+  function cell(v) {
+    var s = String(v == null ? '' : v);
+    return /^[=@\t\r]/.test(s) || /^[+-](?![\d\s()./-]*$)/.test(s) ? "'" + s : s;
+  }
   document.getElementById('export').addEventListener('click', function () {
     var cols = ['label', 'company', 'building', 'why', 'surprise', 'name', 'first_name', 'role', 'linkedin', 'email', 'phone', 'status', 'created_at', 'decided_by'];
     var csv = [cols.join(',')].concat(shown.map(function (a) {
-      return cols.map(function (c) { return '"' + String(a[c] == null ? '' : a[c]).replace(/"/g, '""') + '"'; }).join(',');
+      return cols.map(function (c) { return '"' + cell(a[c]).replace(/"/g, '""') + '"'; }).join(',');
     })).join('\n');
     var link = document.createElement('a');
     link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));

@@ -17,6 +17,7 @@ A Cloudflare Worker with a D1 (SQLite) database; email through Resend.
 | `GET /cancel?t=…` | The founder's link from the confirmation email |
 | `GET /copy` | Saved page texts; the pitch page loads them on every visit |
 | `GET /review/page` | The team edits the pitch page's texts (Page text) |
+| `POST /resend-events` | Resend's webhook: bounces and spam complaints |
 
 Rules the database enforces: one live (pending or approved) request per slot,
 and one per email address.
@@ -39,6 +40,25 @@ shows "jeroendelange1976" for a pasted profile address) and is stored as
 sent without it. The deck link is no longer asked for. The dashboard shows why and
 "not on LinkedIn" under the company, LinkedIn with the founder; the CSV
 has every field; emails can greet with `{first_name}`.
+
+## Spam, privacy and failures (CTO check, owner 2026-10-27)
+
+- **Per sender:** at most 5 letters an hour from one internet connection
+  (`src/guard.ts`; the IP address is stored only as a keyed hash, and only
+  for a day). More gets "Too many requests…".
+- **Bot check:** Cloudflare Turnstile. On when the GitHub variable
+  `PITCH_TURNSTILE_SITE_KEY` and the secret `PITCH_TURNSTILE_SECRET` are
+  both set; the page gets the key from `GET /copy`, so switching it on
+  needs no Webflow paste. If Cloudflare's check cannot be reached, a
+  letter goes through (the limit still applies).
+- **Deletion:** on `DELETE_AFTER` (`wrangler.toml`, 18 February 2027, three
+  months after Slush) the hourly run deletes every request. The page's
+  privacy note promises this; download the CSV before that day.
+- **Failed emails:** when Resend refuses an email, or (with the webhook
+  below) an email bounces or is marked as spam, the reviewers get one email
+  naming the address and the reason. Never about the reviewers' own mail.
+- **CSV:** answers that start like a spreadsheet formula (`=`, `+`, `-`,
+  `@`) get a leading `'`, so Excel shows them as text; phone numbers stay.
 
 ## Page text
 
@@ -81,6 +101,14 @@ link too, so the team can log in during setup via `wrangler tail`).
    - `PITCH_REVIEWERS`: the reviewers' emails, comma separated
    - `RESEND_API_KEY` (step 3)
    - `PITCH_SESSION_SECRET` is optional: without it the first deploy makes one.
+   - `PITCH_TURNSTILE_SECRET` and the **variable** (Variables tab)
+     `PITCH_TURNSTILE_SITE_KEY`: Cloudflare → Turnstile → Add widget
+     (hostnames `forward.one`, `www.forward.one`, `tekka2026.github.io`;
+     mode Managed).
+   - `PITCH_RESEND_WEBHOOK_SECRET`: Resend → Webhooks → Add endpoint
+     `https://forwardone-pitch-booking.jeroen-191.workers.dev/resend-events`,
+     events `email.bounced` and `email.complained`; the signing secret
+     (`whsec_…`).
 3. **Email**: a Resend account; verify the sending domain (DNS records on
    forward.one). Put the sender in `wrangler.toml` as `MAIL_FROM`, e.g.
    `FORWARD.one <pitch@forward.one>`.

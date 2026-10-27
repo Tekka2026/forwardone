@@ -10,7 +10,8 @@ database_name = "forwardone-pitch"
 database_id = "00000000-0000-0000-0000-000000000000"
 migrations_dir = "migrations"
 
-# Hourly: expire unreviewed requests (only when HOLD_DAYS is set).
+# Hourly: expire unreviewed requests (only when HOLD_DAYS is set), drop old
+# per-sender counts, and after DELETE_AFTER delete every request.
 # 17:00 UTC (18:00 Amsterdam in winter): the daily overview to the reviewers.
 [triggers]
 crons = ["17 * * * *", "0 17 * * *"]
@@ -30,8 +31,14 @@ EVENT_LOCATION = ""
 MAIL_FROM = "FORWARD.one <cailin.greiner@forward.one>"
 # Days an unreviewed request holds its slot; empty: it holds until decided.
 HOLD_DAYS = ""
+# The privacy promise on the page: requests are deleted three months after
+# Slush (owner, 2026-10-27, CTO check). Download the CSV before this day.
+DELETE_AFTER = "2027-02-18"
+# TURNSTILE_SITE_KEY (the bot check's public key) is set at deploy time from
+# the GitHub variable PITCH_TURNSTILE_SITE_KEY; empty: no bot check.
 
 # Secrets (wrangler secret put; set by .github/workflows/deploy-booking.yml):
 # REVIEWERS (comma separated emails that may log in to /review and are told
 # of new requests; a secret so the addresses stay out of the repository),
-# RESEND_API_KEY, SESSION_SECRET.
+# RESEND_API_KEY, SESSION_SECRET, TURNSTILE_SECRET (the bot check),
+# RESEND_WEBHOOK_SECRET (bounce warnings).
