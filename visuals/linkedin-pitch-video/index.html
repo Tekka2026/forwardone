@@ -25,7 +25,7 @@
     --blank-line: #111111;
     --blank-line-filled: #c4c3be;
     --hand-gradient: linear-gradient(to top right, #04edcd, #05f46b);
-    --pad: 75px; /* 120 before; owner 2026-10-27: "from 80 to 50" as seen, so x 5/8 */
+    --pad: 120px; /* tried 75px on 2026-10-27; the owner kept 120 */
   }
   * { margin: 0; box-sizing: border-box; }
   body { background: var(--bg); }
@@ -57,7 +57,7 @@
   .logos img { height: var(--logo-h); display: block; }
   /* "Slush, Helsinki" stays put where it sits in the still (owner,
      2026-10-27); the heading hangs from it and shrinks upward-anchored. */
-  .title-block { margin-top: 951px; }
+  .title-block { margin-top: 784px; }
   .eyebrow {
     font-family: "Geist Mono", monospace;
     font-weight: 500;
@@ -135,7 +135,7 @@
     flex-shrink: 0;
     background: #000000;
     color: #ffffff;
-    padding: 60px var(--pad) var(--pad);
+    padding: 96px var(--pad) 120px;
   }
   .label {
     font-family: "Geist Mono", monospace;
@@ -185,7 +185,7 @@
   // Size changes glide over SMOOTH ms (the page: 240ms font-size and 360ms
   // line transitions), so the heading never jumps.
   var SMOOTH = 450, LINE_MIN = 2.7; // em, the empty line's length
-  var BASE = 250, ROOM = 1350; // the H1's size and the width it may take (px)
+  var BASE = 250, ROOM = 1260; // the H1's size and the width it may take (px)
   var h1 = document.querySelector('h1'), line = document.querySelector('.line');
   var blank = document.getElementById('blank'), hand = document.getElementById('hand');
   var caret = document.createElement('span');
