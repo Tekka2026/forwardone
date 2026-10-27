@@ -636,7 +636,8 @@ sheet, wording confirmed by the owner 2026-10-21).
   stop or comma on the same line. Without script the whole letter shows.
 - Then the solid button, a status line, the privacy note (muted, small) and
   four event facts on the black, no hairline (When, Where, Apply by, The
-  panel; mono labels), 4 columns, 2 at ≤880px, 1 at ≤640px.
+  panel; mono labels 12px, values in the small size, 15px, like the privacy
+  note: owner 2026-10-27, before 17px), 4 columns, 2 at ≤880px, 1 at ≤640px.
 - Spacing (owner, 2026-10-22, tightened): 24px from the header to the
   eyebrow (on top of the header's own padding); eyebrow to
   H1 12px; H1 to lede 24px; lede to letter 24px; letter to button 24px

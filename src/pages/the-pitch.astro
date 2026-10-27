@@ -193,7 +193,7 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
             pitch.facts.map((f) => (
               <div>
                 <dt class="label">{f.label}</dt>
-                <dd class="body" data-copy={f.key}>
+                <dd class="small" data-copy={f.key}>
                   {f.value.split('\n').map((line, li) => (
                     <>
                       {li > 0 && <br />}
