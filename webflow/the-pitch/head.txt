@@ -141,8 +141,7 @@ to{opacity:1;transform:translateY(0)}
 .fo-site-top__brands[data-astro-cid-nen7h5rs]{--brand-gap:min(var(--gap-double), 6cqw);--brand-h:min(19.2px, (100cqw - 2 * var(--brand-gap)) / 19);align-items:center;gap:var(--brand-gap);min-width:0;display:flex}
 .fo-site-top__partner[data-astro-cid-nen7h5rs],.fo-site-top__brands[data-astro-cid-nen7h5rs] .fo-logo{color:inherit;flex-shrink:0;display:inline-flex}
 .fo-site-top[data-astro-cid-nen7h5rs] .fo-site-top__brands[data-astro-cid-nen7h5rs] .fo-logo__mark,.fo-site-top[data-astro-cid-nen7h5rs] .fo-site-top__brands[data-astro-cid-nen7h5rs] .fo-site-top__partner-mark{height:var(--brand-h);width:auto;display:block}
-@media (width<=640px){.site-top--founders[data-astro-cid-nen7h5rs] .fo-site-top__row[data-astro-cid-nen7h5rs]{gap:var(--gap-half)}
-.site-top__actions[data-astro-cid-nen7h5rs] .site-top__pitch{display:none}
+@media (width<=640px){.site-top__actions[data-astro-cid-nen7h5rs] .site-top__pitch{display:none}
 }
 .nav[data-astro-cid-wpvy4v7s]{--nav-open-ms:.42s;--nav-open-ease:cubic-bezier(.22, 1, .36, 1);--nav-close-ms:var(--nav-open-ms);--nav-close-ease:var(--nav-open-ease);bottom:var(--gap);z-index:60;pointer-events:none;color:var(--nav-fg);justify-content:center;display:flex;position:fixed;left:0;right:0}
 .nav__shade[data-astro-cid-wpvy4v7s]{z-index:-2;height:calc(var(--nav-height) + var(--gap) + 20px);opacity:0;pointer-events:none;background:linear-gradient(#0000,#0000004d);transition:opacity .32s .48s;position:fixed;bottom:0;left:0;right:0}

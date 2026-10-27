@@ -83,7 +83,7 @@ export const pitch = {
       '. We’d like to pitch live to FORWARD.one, Balnord and HCVC at Slush, for the term sheet that goes to the winner.',
     ],
   ] as LetterPart[][],
-  submit: 'Send our pitch',
+  submit: 'Send pitch',
   /** The booking service (booking/, a Cloudflare Worker): `/slots` lists the
    * times, `/apply` takes the letter. Until set, the time blank stays empty
    * and submitting shows `notSent`. */
