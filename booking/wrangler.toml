@@ -18,8 +18,9 @@ crons = ["17 * * * *", "0 17 * * *"]
 [vars]
 # Pages that may call the API (comma separated origins).
 ALLOWED_ORIGINS = "https://tekka2026.github.io,https://forward.one,https://www.forward.one"
-# The pitch page, linked from emails.
-PAGE_URL = "https://tekka2026.github.io/forwardone/the-pitch/"
+# The live pitch page on Webflow (owner, 2026-10-27), linked from the
+# dashboard and the emails.
+PAGE_URL = "https://www.forward.one/events/2026/the-pitch-at-slush-2026"
 # The H1's blank as an underline (owner, 2026-10-26).
 EVENT_NAME = "The _____ Pitch at Slush"
 # Shown in the calendar invite; empty until the venue is known (A0016).

@@ -169,7 +169,8 @@ async function cancel(env: Env, req: Request, ctx: ExecutionContext) {
 const sameOrigin = (req: Request) => req.headers.get('Origin') === new URL(req.url).origin;
 
 async function review(env: Env, req: Request, url: URL, ctx: ExecutionContext) {
-  const path = url.pathname;
+  // /review/ and /review are the same page (the menu links with a slash).
+  const path = url.pathname.replace(/\/+$/, '') || '/';
 
   if (path === '/review/login' && req.method === 'POST') {
     if (!sameOrigin(req)) return new Response('Forbidden', { status: 403 });
