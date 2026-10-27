@@ -440,10 +440,9 @@ Built like the "Follow the battery." section on vikka.io
 reuses the homepage's patterns, composed in the page from the shared tokens
 and classes, because the homepage components read their copy from `home.ts`:
 
-- Header: "For investors" (solid, to the homepage) in the place of Pitch
-  us, which would link to the page itself; LP login stays. It stays on
-  phones too, with a tighter 12px gap to the logo so both buttons fit down
-  to 320px (owner, 2026-10-26; `<Base forFounders>`).
+- Header: logo and LP login only. No Pitch us (it would link to the page
+  itself) and no "For investors" (removed by the owner, 2026-10-27;
+  `<Base forFounders>`).
 - Black intro (as `.intro` on the homepage, at least 130% of the viewport
   high, owner 2026-10-26, so the figures start below the fold):
   eyebrow (ticks in), H1 (word reveal), lede, "Pitch us" (to the closing, `#pitch`) and "Meet the
