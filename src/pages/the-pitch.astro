@@ -45,8 +45,8 @@ const firstField = steps[0].findIndex((t) => 'field' in t);
 // Values with an embedded placeholder ("FORWARD.one and [PLACEHOLDER: …]").
 const chunks = (v: string) => v.split(/(\[PLACEHOLDER:[^\]]*\])/).filter(Boolean);
 const ready = !isPlaceholder(pitch.bookingApi);
-// The intro with the partner's name linked to their site.
-const introParts = pitch.intro[0].split(pitch.partner.name);
+// The intro paragraphs, with the partner's name linked to their site.
+const introParas = pitch.intro.map((p) => p.split(pitch.partner.name));
 // The partners' logos for the header, next to FORWARD.one.
 const logos: Record<string, string> = { balnord: balnordLogo, hcvc: hcvcLogo };
 const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logos[h.logo] }));
@@ -76,15 +76,16 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
         </h1>
 
         <div class="pitch__intro reveal-gentle">
-          <p class="lede">
-            {introParts.map((t, i) => (
-              <>
-                {t}
-                {i < introParts.length - 1 && <a href={pitch.partner.href} rel="noopener">{pitch.partner.name}</a>}
-              </>
-            ))}
-          </p>
-          {pitch.intro.slice(1).map((p) => <p class="small"><Placeholder value={p} /></p>)}
+          {introParas.map((parts) => (
+            <p class="lede">
+              {parts.map((t, i) => (
+                <>
+                  {t}
+                  {i < parts.length - 1 && <a href={pitch.partner.href} rel="noopener">{pitch.partner.name}</a>}
+                </>
+              ))}
+            </p>
+          ))}
         </div>
 
         <form
@@ -625,7 +626,7 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
     margin: 0;
   }
   .pitch__intro p + p {
-    margin-top: var(--space-2x);
+    margin-top: var(--space-4x);
   }
   .pitch__intro a {
     text-underline-offset: 3px;
