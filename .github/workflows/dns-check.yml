@@ -1,0 +1,32 @@
+name: DNS check
+
+# Looks up forward.one's DNS from outside (Claude's environment cannot):
+# nameservers, records and the registration (A0021, 2026-10-27).
+
+on:
+  push:
+    branches: [claude/forwardone-web-gl4kz9]
+    paths: ['.github/workflows/dns-check.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Look up
+        run: |
+          sudo apt-get install -y -qq dnsutils whois >/dev/null 2>&1 || true
+          for name in forward.one www.forward.one; do
+            for type in NS A AAAA CNAME; do
+              echo "== $name $type (Google)"; dig +short @8.8.8.8 "$name" "$type"
+            done
+          done
+          echo "== status (Google)"; dig @8.8.8.8 www.forward.one A | grep -E "status|ANSWER SECTION" -A2 | head
+          echo "== parent nameservers for forward.one"; dig +short NS one.
+          dig @"$(dig +short NS one. | head -1)" forward.one NS +norecurse | sed -n '/AUTHORITY/,/^$/p'
+          echo "== resend records"; dig +short @8.8.8.8 TXT resend._domainkey.forward.one; dig +short @8.8.8.8 MX send.forward.one; dig +short @8.8.8.8 TXT send.forward.one
+          echo "== whois"; whois forward.one | grep -iE "expir|status|name server|registrar:|updated" | head -20
+          echo "== http"; curl -sS -o /dev/null -w "%{http_code} %{redirect_url}\n" https://www.forward.one/ || true
