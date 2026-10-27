@@ -258,12 +258,12 @@ tr[data-href] { cursor: pointer; }
             <label class="t-label" for="body">Text</label>
             <textarea class="field" id="body" name="body" maxlength="5000" required>Hi {first_name},
 
-Thank you for applying to {event} with {company}.
+Thank you for applying to The {company} Pitch at Slush.
 We have put the {time} slot (Helsinki time) on hold for you while we read your application. You will hear from us by email whether it is confirmed.
 
 Can no longer make it? Release the slot here: {cancel_link}
 
-FORWARD.one</textarea>
+FORWARD.one, Balnord, HCVC</textarea>
             <p class="t-help">Placeholders in braces, like {name}, are filled in for each founder. The list is on the right.</p>
           </div>
           <div class="form-actions">
@@ -345,7 +345,7 @@ FORWARD.one</textarea>
     if (tr && !e.target.closest('a, button')) location.href = tr.dataset.href;
   });
   window.UI = { toast: toast, confirm: confirmAsk, busy: busy };
-})();</script><script>window.PREVIEW_DEFAULTS = {"received":{"subject":"{event}: your request for {time}","body":"Hi {first_name},\n\nThank you for applying to {event} with {company}.\nWe have put the {time} slot (Helsinki time) on hold for you while we read your application. You will hear from us by email whether it is confirmed.\n\nCan no longer make it? Release the slot here: {cancel_link}\n\nFORWARD.one"},"approved":{"subject":"{event}: you pitch at {time}","body":"Hi {first_name},\n\n{company} pitches at {event_plain} at {time} (Helsinki time). The calendar invite is attached.\n\nFORWARD.one"},"denied":{"subject":"{event}: your request","body":"Hi {first_name},\n\nThank you for applying to {event_plain} with {company}. We cannot offer you a pitch slot this time, so we have released the time you asked for.\n\nFORWARD.one"},"expired":{"subject":"{event}: your request for {time}","body":"Hi {first_name},\n\nWe could not confirm the {time} slot for {company} in time, so the hold has ended. You are welcome to request a time again on {page_link}\n\nFORWARD.one"}};
+})();</script><script>window.PREVIEW_DEFAULTS = {"received":{"subject":"{event}: your request for {time}","body":"Hi {first_name},\n\nThank you for applying to The {company} Pitch at Slush.\nWe have put the {time} slot (Helsinki time) on hold for you while we read your application. You will hear from us by email whether it is confirmed.\n\nCan no longer make it? Release the slot here: {cancel_link}\n\nFORWARD.one, Balnord, HCVC"},"approved":{"subject":"{event}: you pitch at {time}","body":"Hi {first_name},\n\n{company} pitches at {event_plain} at {time} (Helsinki time). The calendar invite is attached.\n\nFORWARD.one, Balnord, HCVC"},"denied":{"subject":"{event}: your request","body":"Hi {first_name},\n\nThank you for applying to {event_plain}. Unfortunately, we aren’t able to offer you a pitch slot, and our schedules at Slush are fully booked, so we won’t be able to meet this time.\n\nThanks again for your interest, and best of luck with {company}.\n\nFORWARD.one, Balnord, HCVC"},"expired":{"subject":"{event}: your request for {time}","body":"Hi {first_name},\n\nWe could not confirm the {time} slot for {company} in time, so the hold has ended. You are welcome to request a time again on {page_link}\n\nFORWARD.one, Balnord, HCVC"}};
 var PREVIEW_KEY = 'pitch-preview-emails';
 function previewEmails() { try { return JSON.parse(localStorage.getItem(PREVIEW_KEY) || '{}'); } catch (e) { return {}; } }
 function previewSave(all) { try { localStorage.setItem(PREVIEW_KEY, JSON.stringify(all)); } catch (e) {} }

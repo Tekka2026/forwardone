@@ -13,6 +13,14 @@ const root = new URL('..', import.meta.url);
 const read = (p) => readFileSync(new URL(p, root), 'utf8');
 const html = read('dist/the-pitch/index.html');
 
+// A build made for local testing points at a booking service on this machine;
+// on Webflow that loads no times and sends nothing (2026-10-27).
+const api = html.match(/data-api="([^"]*)"/)?.[1] ?? '';
+if (!api.startsWith('https://')) {
+  console.error(`The build's booking address is "${api}", not the live service. Run npm run build again first.`);
+  process.exit(1);
+}
+
 // Stylesheets the page links to, from the build output, in order.
 const css = [...html.matchAll(/<link rel="stylesheet" href="(\/forwardone\/_astro\/[^"]+\.css)">/g)]
   .map((m) => read('dist' + m[1].slice(BASE.length)))

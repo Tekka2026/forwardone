@@ -33,12 +33,12 @@ export const TEMPLATES: Record<
     body: [
       'Hi {first_name},',
       '',
-      'Thank you for applying to {event} with {company}.',
+      'Thank you for applying to The {company} Pitch at Slush.',
       'We have put the {time} slot (Helsinki time) on hold for you while we read your application. You will hear from us by email whether it is confirmed.',
       '',
       'Can no longer make it? Release the slot here: {cancel_link}',
       '',
-      'FORWARD.one',
+      'FORWARD.one, Balnord, HCVC',
     ].join('\n'),
   },
   approved: {
@@ -52,7 +52,7 @@ export const TEMPLATES: Record<
       '',
       '{company} pitches at {event_plain} at {time} (Helsinki time). The calendar invite is attached.',
       '',
-      'FORWARD.one',
+      'FORWARD.one, Balnord, HCVC',
     ].join('\n'),
   },
   denied: {
@@ -63,9 +63,11 @@ export const TEMPLATES: Record<
     body: [
       'Hi {first_name},',
       '',
-      'Thank you for applying to {event_plain} with {company}. We cannot offer you a pitch slot this time, so we have released the time you asked for.',
+      'Thank you for applying to {event_plain}. Unfortunately, we aren’t able to offer you a pitch slot, and our schedules at Slush are fully booked, so we won’t be able to meet this time.',
       '',
-      'FORWARD.one',
+      'Thanks again for your interest, and best of luck with {company}.',
+      '',
+      'FORWARD.one, Balnord, HCVC',
     ].join('\n'),
   },
   expired: {
@@ -78,7 +80,7 @@ export const TEMPLATES: Record<
       '',
       'We could not confirm the {time} slot for {company} in time, so the hold has ended. You are welcome to request a time again on {page_link}',
       '',
-      'FORWARD.one',
+      'FORWARD.one, Balnord, HCVC',
     ].join('\n'),
   },
 };

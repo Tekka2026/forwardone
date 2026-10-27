@@ -593,7 +593,7 @@ sheet, wording confirmed by the owner 2026-10-21).
       What my LinkedIn doesn't tell you: [something we wouldn't guess]
       Why we belong in that room: [one or two sentences]
 
-      I'd like to grab the [pitch time] slot, Helsinki time. Find me at
+      I'd like to grab the [pitch time] slot, Helsinki time. Reach me at
       [email] or [phone].
 
       See you at Slush,

@@ -94,7 +94,7 @@ export const pitch = {
     [
       '\n\nI’d like to grab the',
       { field: { name: 'slot', label: 'Pitch time, Helsinki time', hint: 'pitch time', type: 'slot', required: true } },
-      'slot, Helsinki time. Find me at',
+      'slot, Helsinki time. Reach me at',
       { field: { name: 'email', label: 'Email address', hint: 'email', type: 'email', autocomplete: 'email', required: true, maxlength: 200 } },
       'or',
       { field: { name: 'phone', label: 'Phone number (optional)', hint: 'phone', type: 'tel', autocomplete: 'tel', maxlength: 40 } },
