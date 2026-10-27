@@ -229,6 +229,7 @@ async function review(env: Env, req: Request, url: URL, ctx: ExecutionContext) {
       .first<Application>();
     if (a) {
       const slot = (await env.DB.prepare('SELECT * FROM slots WHERE id = ?').bind(a.slot_id).first<Slot>())!;
+      const place = await venue(env);
       ctx.waitUntil(
         founderEmail(env, decision, a, slot).then((m) =>
           send(env, {
@@ -236,7 +237,7 @@ async function review(env: Env, req: Request, url: URL, ctx: ExecutionContext) {
             ...m,
             attachments:
               decision === 'approved'
-                ? [{ filename: 'the-pitch.ics', content: ics(env, a.id, slot.starts_at, slot.ends_at, `${plainTitle(env)}: ${a.company}`), content_type: 'text/calendar' }]
+                ? [{ filename: 'the-pitch.ics', content: ics(env, a.id, slot.starts_at, slot.ends_at, `${plainTitle(env)}: ${a.company}`, place), content_type: 'text/calendar' }]
                 : undefined,
           }),
         ),
@@ -375,6 +376,17 @@ async function pageCopy(env: Env) {
     values: Object.fromEntries(known.map((r) => [r.key, r.value])) as Record<string, string>,
     meta: Object.fromEntries(known.map((r) => [r.key, { updated_at: r.updated_at, updated_by: r.updated_by }])),
   };
+}
+
+/** Where the pitch is, for the calendar invite: the Where fact as saved on
+ * Page text (CTO re-check, 2026-10-27: the invite had no venue), else
+ * EVENT_LOCATION; and the map link. */
+async function venue(env: Env) {
+  const saved = (await pageCopy(env)).values;
+  const where = saved.fact_where ?? PAGE_DEFAULTS.fact_where ?? '';
+  const map = saved.fact_where_link ?? PAGE_DEFAULTS.fact_where_link ?? '';
+  const location = /\[PLACEHOLDER/.test(where) ? env.EVENT_LOCATION : where.replace(/\s*\n+\s*/g, ', ');
+  return { location, map };
 }
 
 const plainTitle = (env: Env) => env.EVENT_NAME.replace(/\s*_+\s*/, ' ');

@@ -79,7 +79,7 @@ not editable here.
 | When | To | What |
 |------|----|------|
 | Request sent | founder | "Your slot is on hold", with a cancel link |
-| Approved | founder | Confirmation with a calendar invite (`.ics`) |
+| Approved | founder | Confirmation with a calendar invite (`.ics`; venue from the Where fact on Page text, map link in the notes) |
 | Denied | founder | Polite no; the slot is released |
 | Hold expired (`HOLD_DAYS`) | founder | The hold has ended |
 | Every day at 18:00 Amsterdam | reviewers | One overview: new requests of the day (company, founder, what they build, why they belong, what LinkedIn does not tell, LinkedIn), cancellations, who is waiting, slots taken. Not sent when there is nothing new and nothing waiting. |

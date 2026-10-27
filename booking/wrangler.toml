@@ -24,7 +24,8 @@ ALLOWED_ORIGINS = "https://tekka2026.github.io,https://forward.one,https://www.f
 PAGE_URL = "https://www.forward.one/events/2026/the-pitch-at-slush-2026"
 # The H1's blank as an underline (owner, 2026-10-26).
 EVENT_NAME = "The _____ Pitch at Slush"
-# Shown in the calendar invite; empty until the venue is known (A0016).
+# The calendar invite's venue when Page text has no Where (the invite uses
+# the Where fact from Page text first).
 EVENT_LOCATION = ""
 # Sender (owner, 2026-10-26; forward.one verified with Resend). Replies go
 # to this address. Empty: emails are logged, not sent.

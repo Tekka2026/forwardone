@@ -73,7 +73,7 @@ export async function resendEvent(env: Env, req: Request) {
 }
 
 /** A one-event calendar file for an approved slot (times in UTC). */
-export function ics(env: Env, uid: string, start: string, end: string, title: string) {
+export function ics(env: Env, uid: string, start: string, end: string, title: string, place: { location: string; map: string }) {
   const t = (iso: string) => iso.replace(/[-:]/g, '').replace(/\.\d{3}/, '');
   const esc = (s: string) => s.replace(/[\\;,]/g, (c) => `\\${c}`).replace(/\n/g, '\\n');
   const lines = [
@@ -87,10 +87,13 @@ export function ics(env: Env, uid: string, start: string, end: string, title: st
     `DTSTART:${t(start)}`,
     `DTEND:${t(end)}`,
     `SUMMARY:${esc(title)}`,
-    env.EVENT_LOCATION ? `LOCATION:${esc(env.EVENT_LOCATION)}` : '',
+    place.location ? `LOCATION:${esc(place.location)}` : '',
+    place.map ? `DESCRIPTION:${esc(`Map: ${place.map}`)}` : '',
     `URL:${env.PAGE_URL}`,
     'END:VEVENT',
     'END:VCALENDAR',
   ].filter(Boolean);
-  return btoa(unescape(encodeURIComponent(lines.join('\r\n') + '\r\n')));
+  // Lines longer than 75 characters continue on the next with a space (RFC 5545).
+  const fold = (l: string) => l.match(/.{1,74}/gu)!.join('\r\n ');
+  return btoa(unescape(encodeURIComponent(lines.map(fold).join('\r\n') + '\r\n')));
 }
