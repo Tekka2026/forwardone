@@ -33,3 +33,9 @@ jobs:
           show "POST /resend-events unsigned"; curl -sS -X POST -d '{}' -w "\nHTTP %{http_code}\n" "$API/resend-events"
           show "GET /cancel with a bad token"; curl -sS "$API/cancel?t=bad" | grep -o "no longer active" || true
           show "GET /"; curl -sS -o /dev/null -w "HTTP %{http_code} -> %{redirect_url}\n" "$API/"
+          show "Webflow page: which pasted version"
+          curl -sS "https://www.forward.one/events/2026/the-pitch-at-slush-2026" -o page.html -w "HTTP %{http_code}\n"
+          echo "booking address: $(grep -o 'data-api="[^"]*"' page.html | head -1)"
+          for mark in "Reach me at" "delete them three months" "data-pitch-check" "fo-pitch__fact-link"; do
+            if grep -q "$mark" page.html; then echo "has: $mark"; else echo "MISSING: $mark"; fi
+          done
