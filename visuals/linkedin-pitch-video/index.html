@@ -38,6 +38,7 @@
   }
   .top {
     flex: 1;
+    min-height: 0; /* the band below never moves */
     display: flex;
     flex-direction: column;
     padding: var(--pad);
@@ -48,7 +49,9 @@
     gap: 96px;
   }
   .logos img { height: 44px; display: block; }
-  .title-block { margin-top: auto; }
+  /* "Slush, Helsinki" stays put where it sits at full size (owner,
+     2026-10-27); the heading hangs from it and shrinks upward-anchored. */
+  .title-block { margin-top: 736px; }
   .eyebrow {
     font-family: "Geist Mono", monospace;
     font-weight: 500;
@@ -116,6 +119,7 @@
   }
   .line { white-space: nowrap; }
   .facts {
+    flex-shrink: 0;
     background: #000000;
     color: #ffffff;
     padding: 96px var(--pad) 120px;
