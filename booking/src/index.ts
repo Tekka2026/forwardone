@@ -62,8 +62,12 @@ async function slots(env: Env) {
   return results.map((s) => ({ id: s.id, label: s.label, available: !!s.free }));
 }
 
-const LIMITS: Record<string, number> = { company: 120, name: 120, role: 120, email: 200, phone: 40, building: 280, deck: 500, slot: 8 };
-const REQUIRED = ['company', 'name', 'email', 'building', 'slot'];
+// The letter's fields (owner, 2026-10-27); phone is the only optional one.
+const LIMITS: Record<string, number> = {
+  company: 120, building: 280, name: 120, role: 120, linkedin: 300, surprise: 400, why: 800,
+  slot: 8, email: 200, phone: 40, first_name: 60,
+};
+const REQUIRED = ['company', 'building', 'name', 'role', 'linkedin', 'surprise', 'why', 'slot', 'email', 'first_name'];
 
 function clean(input: Record<string, unknown>) {
   const out: Record<string, string> = {};
@@ -75,7 +79,8 @@ function clean(input: Record<string, unknown>) {
   for (const k of REQUIRED) if (!out[k]) return { field: k };
   out.email = out.email.toLowerCase();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(out.email)) return { field: 'email' };
-  if (out.deck && !/^https?:\/\/\S+$/i.test(out.deck)) return { field: 'deck' };
+  if (out.linkedin && !/^https?:\/\//i.test(out.linkedin)) out.linkedin = 'https://' + out.linkedin;
+  if (!/^https?:\/\/[^\s.]+\.\S+$/i.test(out.linkedin)) return { field: 'linkedin' };
   return { data: out };
 }
 
@@ -105,17 +110,21 @@ async function apply(env: Env, req: Request, ctx: ExecutionContext) {
     email: d.email,
     phone: d.phone || null,
     building: d.building,
-    deck: d.deck || null,
+    deck: null,
+    linkedin: d.linkedin,
+    surprise: d.surprise,
+    why: d.why,
+    first_name: d.first_name,
     decided_at: null,
     decided_by: null,
     cancel_token: crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, ''),
   };
   try {
     await env.DB.prepare(
-      `INSERT INTO applications (id, created_at, slot_id, status, company, name, role, email, phone, building, deck, cancel_token)
-       VALUES (?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO applications (id, created_at, slot_id, status, company, name, role, email, phone, building, linkedin, surprise, why, first_name, cancel_token)
+       VALUES (?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
-      .bind(a.id, a.created_at, a.slot_id, a.company, a.name, a.role, a.email, a.phone, a.building, a.deck, a.cancel_token)
+      .bind(a.id, a.created_at, a.slot_id, a.company, a.name, a.role, a.email, a.phone, a.building, a.linkedin, a.surprise, a.why, a.first_name, a.cancel_token)
       .run();
   } catch (e) {
     const msg = String((e as Error).message);

@@ -31,7 +31,11 @@ export interface Application {
   email: string;
   phone: string | null;
   building: string;
-  deck: string | null;
+  deck: string | null; // earlier letters only (owner, 2026-10-27: no slides)
+  linkedin: string | null;
+  surprise: string | null;
+  why: string | null;
+  first_name: string | null;
   decided_at: string | null;
   decided_by: string | null;
   cancel_token: string;

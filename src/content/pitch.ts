@@ -23,8 +23,12 @@ export type PitchField = {
   label: string;
   /** Hint inside the empty blank. */
   hint: string;
-  /** `slot`: a choice of the free pitch times (from the booking service). */
-  type?: 'text' | 'email' | 'tel' | 'url' | 'slot';
+  /** `slot`: a choice of the free pitch times (from the booking service).
+   * `long`: a blank for a sentence or two, on its own line below the copy
+   * before it, growing with the text. `link`: a web address; "https://" is
+   * added when left out. */
+  type?: 'text' | 'email' | 'tel' | 'link' | 'slot' | 'long';
+  maxlength?: number;
   autocomplete?: string;
   required?: boolean;
 };
@@ -55,33 +59,43 @@ export const pitch = {
     { name: 'Balnord', href: 'https://www.balnord.vc/', logo: 'balnord' },
     { name: 'HCVC', logo: 'hcvc' },
   ],
-  /** The fill-in letter, one sentence per step. Only the first step shows at
-   * first; each next step appears once the first required field of the step
-   * before is filled (owner, 2026-10-21). The first field is the company
-   * name: it is written on the H1's line. The button comes with the last step. */
+  /** The fill-in letter (owner's wording, 2026-10-27), one step per sentence
+   * or line. Only the first step shows at first; each next step appears once
+   * every required blank of the step before is filled (owner, 2026-10-21).
+   * A \n in the copy starts a new line, \n\n an empty line between
+   * paragraphs. The first field is the company name: it is written on the
+   * H1's line. The sign-off name is filled in from the full name when its
+   * step opens, and can be changed. The button comes with the last step. */
   steps: [
-    ['Hi investors, we are', { field: { name: 'company', label: 'Company name', hint: 'company name', autocomplete: 'organization', required: true } }, '.'],
+    [
+      'Hi investors,\n\nWe’re',
+      { field: { name: 'company', label: 'Company name', hint: 'company name', autocomplete: 'organization', required: true, maxlength: 120 } },
+      'and we’re building',
+      { field: { name: 'building', label: 'What you’re building, in one line', hint: 'what you’re building, in one line', required: true, maxlength: 280 } },
+      '.',
+    ],
     [
       'I’m',
-      { field: { name: 'name', label: 'Your full name', hint: 'your name', autocomplete: 'name', required: true } },
-      ', our',
-      { field: { name: 'role', label: 'Your role', hint: 'role', autocomplete: 'organization-title' } },
+      { field: { name: 'name', label: 'Your full name', hint: 'full name', autocomplete: 'name', required: true, maxlength: 120 } },
+      ',',
+      { field: { name: 'role', label: 'Your role', hint: 'role', autocomplete: 'organization-title', required: true, maxlength: 120 } },
       '.',
     ],
+    ['\n\nMy LinkedIn:', { field: { name: 'linkedin', label: 'Your LinkedIn profile', hint: 'link', type: 'link', autocomplete: 'url', required: true, maxlength: 300 } }],
+    ['\nWhat my LinkedIn doesn’t tell you:', { field: { name: 'surprise', label: 'What your LinkedIn doesn’t tell us', hint: 'something we wouldn’t guess', type: 'long', required: true, maxlength: 400 } }],
+    // After a long answer (a block of its own) the next line starts below it
+    // anyway, so no \n here; one \n there gives the empty line.
+    ['Why we belong in that room:', { field: { name: 'why', label: 'Why you belong in that room', hint: 'one or two sentences', type: 'long', required: true, maxlength: 800 } }],
     [
-      'Reach me at',
-      { field: { name: 'email', label: 'Email address', hint: 'email', type: 'email', autocomplete: 'email', required: true } },
+      '\nI’d like to grab the',
+      { field: { name: 'slot', label: 'Pitch time, Helsinki time', hint: 'pitch time', type: 'slot', required: true } },
+      'slot, Helsinki time. Find me at',
+      { field: { name: 'email', label: 'Email address', hint: 'email', type: 'email', autocomplete: 'email', required: true, maxlength: 200 } },
       'or',
-      { field: { name: 'phone', label: 'Phone number', hint: 'phone', type: 'tel', autocomplete: 'tel' } },
+      { field: { name: 'phone', label: 'Phone number (optional)', hint: 'phone', type: 'tel', autocomplete: 'tel', maxlength: 40 } },
       '.',
     ],
-    ['In one line, we are building', { field: { name: 'building', label: 'What you are building, in one line', hint: 'what you are building', required: true } }, '.'],
-    ['We’d like to pitch at', { field: { name: 'slot', label: 'Pitch time, Helsinki time', hint: 'time', type: 'slot', required: true } }, ', Helsinki time.'],
-    [
-      'Our deck is at',
-      { field: { name: 'deck', label: 'Link to your pitch deck (optional)', hint: 'link (optional)', type: 'url' } },
-      '. We’d like to pitch live to FORWARD.one, Balnord and HCVC at Slush, for the term sheet that goes to the winner.',
-    ],
+    ['\n\nSee you at Slush,\n', { field: { name: 'first_name', label: 'Your first name', hint: 'first name', autocomplete: 'given-name', required: true, maxlength: 60 } }],
   ] as LetterPart[][],
   submit: 'Send pitch',
   /** The booking service (booking/, a Cloudflare Worker): `/slots` lists the

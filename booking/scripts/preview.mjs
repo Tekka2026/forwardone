@@ -23,7 +23,10 @@ const slots = Array.from({ length: 16 }, (_, i) => {
 const at = (h, m) => `2026-10-26T${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00.000Z`;
 const app = (id, label, status, company, building, name, role, email, created, extra = {}) => ({
   id, slot_id: label.replace(':', ''), label, status, company, building, name, role, email,
-  phone: null, deck: 'https://example.com/deck.pdf', created_at: created, decided_by: null, ...extra,
+  first_name: name.split(' ')[0], linkedin: `https://www.linkedin.com/in/${name.toLowerCase().replace(/\s+/g, '-')}-example`,
+  surprise: 'Example answer: something LinkedIn would not tell you.',
+  why: 'Example answer: one or two sentences on why this team belongs in the room.',
+  phone: null, deck: null, created_at: created, decided_by: null, ...extra,
 });
 const data = {
   base: BASE,
@@ -35,7 +38,7 @@ const data = {
   apps: [
     app('a1', '09:00', 'pending', 'Northwind Robotics', 'robots that fold laundry', 'Ann Example', 'CEO', 'ann@northwind.example', at(8, 12)),
     app('a2', '10:30', 'approved', 'Lumen Labs', 'batteries from seaweed', 'Bo Sample', 'Founder', 'bo@lumen.example', at(9, 40), { phone: '+358 40 000 0000', decided_by: 'reviewer@forward.one' }),
-    app('a3', '11:00', 'pending', 'Quill', 'contracts that read themselves', 'Cy Demo', 'CTO', 'cy@quill.example', at(10, 3), { deck: null }),
+    app('a3', '11:00', 'pending', 'Quill', 'contracts that read themselves', 'Cy Demo', 'CTO', 'cy@quill.example', at(10, 3)),
     app('a4', '13:30', 'pending', 'Fjord Sensors', 'wind turbine blades that report their own cracks', 'Dee Placeholder', 'CEO', 'dee@fjord.example', at(10, 31)),
     app('a5', '08:30', 'denied', 'Tundra Foods', 'protein from forest fungi', 'Eli Test', 'Founder', 'eli@tundra.example', at(7, 55), { decided_by: 'reviewer@forward.one' }),
   ],

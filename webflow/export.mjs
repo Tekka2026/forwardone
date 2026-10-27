@@ -31,6 +31,21 @@ let body = html.slice(html.indexOf('>', html.indexOf('<body')) + 1, html.lastInd
 body = body.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, '');
 body = body.replace(/(href|src)="\/forwardone\//g, '$1="/');
 
+// Smaller logos: fewer decimals in the SVG drawing data. Wide artwork (the
+// HCVC logo is 1727 units across, shown about 90px wide) loses nothing
+// visible at whole numbers; small artwork keeps one decimal.
+body = body.replace(/<svg\b[^>]*viewBox="[\d.\s-]*?\s([\d.]+)\s[\d.]+"[\s\S]*?<\/svg>/g, (svg, width) => {
+  const digits = Number(width) > 500 ? 0 : 1;
+  return svg.replace(/\sd="([^"]*)"/g, (_, d) => {
+    const short = d.replace(/-?\d*\.?\d+(?:e-?\d+)?/gi, (num, at, all) => {
+      const out = String(Number(Number(num).toFixed(digits)));
+      // Keep numbers apart where the original relied on "1.5.5" style joins.
+      return at > 0 && /[\d.]/.test(all[at - 1]) ? ' ' + out : out;
+    });
+    return ` d="${short}"`;
+  });
+});
+
 // Unique class names: the host site may use the same generic names
 // (section, wrap, label, body…) with its own styles (owner, 2026-10-26:
 // Webflow's spacing leaked into the page). Every class the page uses gets

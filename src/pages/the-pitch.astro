@@ -9,9 +9,11 @@
  *   name is long the whole H1, handwriting included, scales down continuously
  *   so it never runs wider than 60% of the content width (90% on phones).
  * - A short lede on what the event is (Balnord linked).
- * - Under it the form as a fill-in-the-blanks letter (name, address, contact,
- *   what they build, deck), answers in the same handwriting, then the
- *   button and the privacy note. The event facts sit under it.
+ * - Under it the form as a fill-in-the-blanks letter (owner's wording,
+ *   2026-10-27: company and what they build, name and role, LinkedIn, what
+ *   LinkedIn does not tell, why they belong, pitch time, email or phone,
+ *   sign-off), answers in the gradient, then the button and the privacy
+ *   note. The event facts sit under it.
  * Copy and placeholders in src/content/pitch.ts.
  */
 import Base from '@layouts/Base.astro';
@@ -33,7 +35,8 @@ const tokens = (parts: LetterPart[]): Token[] => {
     if (typeof part === 'string') {
       const m = prev && 'field' in prev ? part.match(/^[.,;:]+/) : null;
       if (m && prev && 'field' in prev) prev.tail = m[0];
-      const rest = m ? part.slice(m[0].length).trim() : part;
+      // Trim spaces only: a \n at either end is a line break and stays.
+      const rest = (m ? part.slice(m[0].length) : part).replace(/^[ \t]+|[ \t]+$/g, '');
       if (rest) out.push({ text: rest });
     } else if ('field' in part) out.push({ field: part.field, tail: '' });
     else out.push({ placeholder: part.placeholder });
@@ -108,15 +111,17 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
                     {toks.map((t, i) => (
                       <>
                         {i > 0 && ' '}
-                        {/* Phones: the company blank always starts the second line, so it
-                            does not jump up once a short name fits on the first. */}
-                        {si === 0 && i === firstField && <br class="pitch__break" />}
                         {'text' in t ? (
-                          t.text
+                          t.text.split('\n').map((l, li) => (
+                            <>
+                              {li > 0 && <br />}
+                              {l}
+                            </>
+                          ))
                         ) : 'placeholder' in t ? (
                           <Placeholder value={t.placeholder} />
                         ) : (
-                          <span class="pitch__blank-wrap">
+                          <span class:list={['pitch__blank-wrap', t.field.type === 'long' && 'pitch__blank-wrap--long']}>
                             <label class="pitch__field">
                               <span class="visually-hidden">{t.field.label}</span>
                               {t.field.type === 'slot' ? (
@@ -129,16 +134,29 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
                                 >
                                   <option value="" selected>{t.field.hint}</option>
                                 </select>
+                              ) : t.field.type === 'long' ? (
+                                <textarea
+                                  class="pitch__input pitch__input--long"
+                                  name={t.field.name}
+                                  placeholder={t.field.hint}
+                                  required={t.field.required}
+                                  maxlength={t.field.maxlength}
+                                  rows="1"
+                                  data-pitch-input
+                                ></textarea>
                               ) : (
                               <input
                                 class="pitch__input"
-                                type={t.field.type ?? 'text'}
+                                type={t.field.type === 'link' ? 'text' : t.field.type ?? 'text'}
+                                inputmode={t.field.type === 'link' ? 'url' : undefined}
                                 name={t.field.name}
                                 placeholder={t.field.hint}
                                 autocomplete={t.field.autocomplete}
                                 required={t.field.required}
+                                maxlength={t.field.maxlength}
                                 spellcheck="false"
                                 data-pitch-input
+                                data-pitch-link={t.field.type === 'link' ? '' : undefined}
                                 data-pitch-company={si === 0 && i === firstField ? '' : undefined}
                               />
                               )}
@@ -342,6 +360,12 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
     meter.setAttribute('aria-hidden', 'true');
     form.querySelector('.pitch__letter').appendChild(meter);
     function size(input) {
+      // A long answer is a block that grows in height with its text.
+      if (input.tagName === 'TEXTAREA') {
+        input.style.height = 'auto';
+        input.style.height = input.scrollHeight + 'px';
+        return;
+      }
       meter.textContent = input.tagName === 'SELECT'
         ? (input.selectedOptions[0] ? input.selectedOptions[0].textContent : '')
         : input.value || input.placeholder;
@@ -392,12 +416,13 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
     var steps = [].slice.call(form.querySelectorAll('[data-pitch-step]'));
     var finals = [].slice.call(form.querySelectorAll('[data-pitch-final]'));
     var shownSteps = 1;
-    function gate(step) {
-      return step.querySelector('[data-pitch-input][required]');
+    // A step counts as filled once every required blank in it is (owner,
+    // 2026-10-27: a sentence can hold two required blanks).
+    function gates(step) {
+      return [].slice.call(step.querySelectorAll('[data-pitch-input][required]'));
     }
     function passed(step) {
-      var g = gate(step);
-      return !g || (g.value.trim() !== '' && g.checkValidity());
+      return gates(step).every(function (g) { return g.value.trim() !== '' && g.checkValidity(); });
     }
     function showEl(el) {
       if (!el.hidden) return;
@@ -408,8 +433,24 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
         el.classList.add('is-entering');
       }
     }
+    // The sign-off name starts as the first word of the full name.
+    var fullName = form.querySelector('[name="name"]'), firstName = form.querySelector('[name="first_name"]');
+    function signOff() {
+      if (firstName && fullName && !firstName.value && fullName.value.trim()) {
+        firstName.value = fullName.value.trim().split(/\s+/)[0];
+        size(firstName);
+      }
+    }
+    // A LinkedIn address typed without https:// gets it added.
+    form.querySelectorAll('[data-pitch-link]').forEach(function (l) {
+      l.addEventListener('blur', function () {
+        var v = l.value.trim();
+        if (v && !/^https?:\/\//i.test(v) && /\./.test(v)) { l.value = 'https://' + v; size(l); updateSend(); }
+      });
+    });
     function advance() {
       while (shownSteps < steps.length && passed(steps[shownSteps - 1])) {
+        if (steps[shownSteps].contains(firstName)) signOff();
         showEl(steps[shownSteps]);
         steps[shownSteps].querySelectorAll('[data-pitch-input]').forEach(size);
         shownSteps++;
@@ -428,13 +469,13 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
     finals.forEach(function (el) { el.hidden = true; });
     var pause;
     steps.forEach(function (st) {
-      var g = gate(st);
-      if (!g) return;
-      g.addEventListener('input', function () {
-        clearTimeout(pause);
-        pause = setTimeout(advance, 900);
+      gates(st).forEach(function (g) {
+        g.addEventListener('input', function () {
+          clearTimeout(pause);
+          pause = setTimeout(advance, 900);
+        });
+        g.addEventListener('change', advance);
       });
-      g.addEventListener('change', advance);
     });
     // Enter moves on to the next empty blank instead of sending early.
     form.addEventListener('keydown', function (e) {
@@ -737,6 +778,24 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
     line-height: var(--lh-metric); /* inside the letter's line, so it does not push lines apart */
     outline: none;
     box-sizing: content-box;
+  }
+  /* A long answer (a sentence or two, owner 2026-10-27): its own block under
+     the copy before it, full width, growing in height with the text (set by
+     script); same type and underline as the other blanks. */
+  .pitch__blank-wrap--long,
+  .pitch__blank-wrap--long .pitch__field {
+    display: block;
+    white-space: normal;
+  }
+  .pitch__input--long {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    margin-block: var(--space-2x);
+    padding: 0 0 var(--space);
+    line-height: 1.35; /* the letter's own leading */
+    resize: none;
+    overflow: hidden;
   }
   /* While empty, no gradient: it would tint the placeholder too. */
   .pitch__input:placeholder-shown {

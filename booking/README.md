@@ -27,6 +27,17 @@ Approve, Deny; nothing sent or saved) is on the site at
 `npm run preview` (not linked, `noindex`). Dashboard design rules:
 `DESIGN.md` in this folder.
 
+## The letter's fields
+
+Owner's letter of 2026-10-27 (`src/content/pitch.ts` on the site;
+migration 0004): company, building, name, role, linkedin, surprise (what
+LinkedIn does not tell), why (why they belong in the room), slot, email,
+phone (the only optional one), first_name (the sign-off). `/apply` checks
+lengths and requires the rest; LinkedIn gets `https://` when sent without
+it. The deck link is no longer asked for. The dashboard shows why and
+"not on LinkedIn" under the company, LinkedIn with the founder; the CSV
+has every field; emails can greet with `{first_name}`.
+
 ## Page text
 
 The team edits the pitch page's texts on the dashboard (**Page text**): the
@@ -48,7 +59,7 @@ not editable here.
 | Approved | founder | Confirmation with a calendar invite (`.ics`) |
 | Denied | founder | Polite no; the slot is released |
 | Hold expired (`HOLD_DAYS`) | founder | The hold has ended |
-| Every day at 18:00 Amsterdam | reviewers | One overview: new requests and cancellations of the day, who is waiting, slots taken. Not sent when there is nothing new and nothing waiting. |
+| Every day at 18:00 Amsterdam | reviewers | One overview: new requests of the day (company, founder, what they build, why they belong, what LinkedIn does not tell, LinkedIn), cancellations, who is waiting, slots taken. Not sent when there is nothing new and nothing waiting. |
 
 The team edits the four founder emails on the dashboard (`/review/emails`):
 subject and text with placeholders (`{name}`, `{company}`, `{time}`, …), a

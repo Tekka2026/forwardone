@@ -280,8 +280,10 @@ main:focus{outline:none}
 .fo-pitch__letter[data-astro-cid-ikq7lxbc]{max-width:var(--col-8);font-size:var(--fs-metric);margin:0;line-height:1.35;position:relative}
 .fo-pitch__field[data-astro-cid-ikq7lxbc]{font:inherit;letter-spacing:inherit;color:inherit;margin:0;display:inline}
 .fo-pitch__blank-wrap[data-astro-cid-ikq7lxbc]{white-space:nowrap}
-.fo-pitch__break[data-astro-cid-ikq7lxbc],.fo-pitch__send[data-astro-cid-ikq7lxbc][hidden],.fo-pitch__privacy[data-astro-cid-ikq7lxbc][hidden]{display:none}
+.pitch__break[data-astro-cid-ikq7lxbc],.fo-pitch__send[data-astro-cid-ikq7lxbc][hidden],.fo-pitch__privacy[data-astro-cid-ikq7lxbc][hidden]{display:none}
 .fo-pitch__input[data-astro-cid-ikq7lxbc]{font-family:var(--font-answer);font-size:1em;font-weight:var(--fw-answer);letter-spacing:0;height:auto;box-shadow:none;vertical-align:baseline;border:0;border-bottom:var(--hairline-w) solid var(--fg);background:var(--hand-gradient);color:#0000;-webkit-text-fill-color:transparent;max-width:100%;caret-color:var(--hand-colour);line-height:var(--lh-metric);box-sizing:content-box;-webkit-background-clip:text;background-clip:text;border-radius:0;outline:none;margin:0;padding:0 .1em}
+.fo-pitch__blank-wrap--long[data-astro-cid-ikq7lxbc],.fo-pitch__blank-wrap--long[data-astro-cid-ikq7lxbc] .fo-pitch__field[data-astro-cid-ikq7lxbc]{white-space:normal;display:block}
+.fo-pitch__input--long[data-astro-cid-ikq7lxbc]{box-sizing:border-box;width:100%;margin-block:var(--space-2x);padding:0 0 var(--space);resize:none;line-height:1.35;display:block;overflow:hidden}
 .fo-pitch__input[data-astro-cid-ikq7lxbc]:placeholder-shown{background:0 0}
 .fo-pitch__input[data-astro-cid-ikq7lxbc]::placeholder{color:var(--muted);-webkit-text-fill-color:var(--muted);opacity:.75}
 .fo-pitch__input[data-astro-cid-ikq7lxbc].fo-is-autofilled{color:var(--hand-colour);-webkit-text-fill-color:var(--hand-colour);caret-color:var(--hand-colour);box-shadow:0 0 0 1000px var(--bg) inset;background:0 0;-webkit-background-clip:border-box;background-clip:border-box}
@@ -308,7 +310,7 @@ to{opacity:1}
 .fo-pitch__info[data-astro-cid-ikq7lxbc]{padding-bottom:var(--gap)}
 .fo-pitch__title[data-astro-cid-ikq7lxbc]{--pitch-max:.9}
 .fo-pitch__intro[data-astro-cid-ikq7lxbc],.fo-pitch__form[data-astro-cid-ikq7lxbc]{margin-top:var(--space-4x)}
-.fo-pitch__break[data-astro-cid-ikq7lxbc]{display:inline}
+.pitch__break[data-astro-cid-ikq7lxbc]{display:inline}
 .fo-pitch__facts[data-astro-cid-ikq7lxbc]{gap:var(--space-4x);grid-template-columns:minmax(0,1fr)}
 }
 .fo-pitch{--font-hand:"Covered By Your Grace", "Marker Felt", "Segoe Print", cursive;--fs-hand:1.3em;--font-answer:var(--font-sans);--fw-answer:500;--hand-colour:#04edcd;--hand-gradient:linear-gradient(to top right, #04edcd, #05f46b);--error-colour:#e0251b}

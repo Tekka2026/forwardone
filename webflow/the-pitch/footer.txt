@@ -147,6 +147,12 @@
     meter.setAttribute('aria-hidden', 'true');
     form.querySelector('.fo-pitch__letter').appendChild(meter);
     function size(input) {
+      // A long answer is a block that grows in height with its text.
+      if (input.tagName === 'TEXTAREA') {
+        input.style.height = 'auto';
+        input.style.height = input.scrollHeight + 'px';
+        return;
+      }
       meter.textContent = input.tagName === 'SELECT'
         ? (input.selectedOptions[0] ? input.selectedOptions[0].textContent : '')
         : input.value || input.placeholder;
@@ -197,12 +203,13 @@
     var steps = [].slice.call(form.querySelectorAll('[data-pitch-step]'));
     var finals = [].slice.call(form.querySelectorAll('[data-pitch-final]'));
     var shownSteps = 1;
-    function gate(step) {
-      return step.querySelector('[data-pitch-input][required]');
+    // A step counts as filled once every required blank in it is (owner,
+    // 2026-10-27: a sentence can hold two required blanks).
+    function gates(step) {
+      return [].slice.call(step.querySelectorAll('[data-pitch-input][required]'));
     }
     function passed(step) {
-      var g = gate(step);
-      return !g || (g.value.trim() !== '' && g.checkValidity());
+      return gates(step).every(function (g) { return g.value.trim() !== '' && g.checkValidity(); });
     }
     function showEl(el) {
       if (!el.hidden) return;
@@ -213,8 +220,24 @@
         el.classList.add('fo-is-entering');
       }
     }
+    // The sign-off name starts as the first word of the full name.
+    var fullName = form.querySelector('[name="name"]'), firstName = form.querySelector('[name="first_name"]');
+    function signOff() {
+      if (firstName && fullName && !firstName.value && fullName.value.trim()) {
+        firstName.value = fullName.value.trim().split(/\s+/)[0];
+        size(firstName);
+      }
+    }
+    // A LinkedIn address typed without https:// gets it added.
+    form.querySelectorAll('[data-pitch-link]').forEach(function (l) {
+      l.addEventListener('blur', function () {
+        var v = l.value.trim();
+        if (v && !/^https?:\/\//i.test(v) && /\./.test(v)) { l.value = 'https://' + v; size(l); updateSend(); }
+      });
+    });
     function advance() {
       while (shownSteps < steps.length && passed(steps[shownSteps - 1])) {
+        if (steps[shownSteps].contains(firstName)) signOff();
         showEl(steps[shownSteps]);
         steps[shownSteps].querySelectorAll('[data-pitch-input]').forEach(size);
         shownSteps++;
@@ -233,13 +256,13 @@
     finals.forEach(function (el) { el.hidden = true; });
     var pause;
     steps.forEach(function (st) {
-      var g = gate(st);
-      if (!g) return;
-      g.addEventListener('input', function () {
-        clearTimeout(pause);
-        pause = setTimeout(advance, 900);
+      gates(st).forEach(function (g) {
+        g.addEventListener('input', function () {
+          clearTimeout(pause);
+          pause = setTimeout(advance, 900);
+        });
+        g.addEventListener('change', advance);
       });
-      g.addEventListener('change', advance);
     });
     // Enter moves on to the next empty blank instead of sending early.
     form.addEventListener('keydown', function (e) {

@@ -135,8 +135,10 @@ tbody tr:hover { box-shadow: inset 0 0 0 1px var(--border-strong); }
 .num { text-align: right; font-variant-numeric: tabular-nums; }
 .cell-sub { color: var(--fg-muted); font-size: 12.5px; }
 .row-actions { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; }
-.only-sm { display: none; }
+.only-sm, .only-sm-block { display: none; }
 .answer { font-weight: 500; }
+.cell-note { font-size: 13px; margin-top: 6px; max-width: 60ch; }
+.cell-note .t-eyebrow { margin-right: 4px; }
 
 /* Empty state (§4). */
 .empty {
@@ -221,6 +223,7 @@ tr[data-href] { cursor: pointer; }
   .side-foot { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
   .hide-sm { display: none; }
   .only-sm { display: flex; }
+  .only-sm-block { display: block; }
   .row-actions { justify-content: flex-start; margin-top: 8px; }
   td, th { padding-left: 10px; padding-right: 10px; }
 }
@@ -324,7 +327,7 @@ tr[data-href] { cursor: pointer; }
     if (tr && !e.target.closest('a, button')) location.href = tr.dataset.href;
   });
   window.UI = { toast: toast, confirm: confirmAsk, busy: busy };
-})();</script><script>window.PREVIEW_DEFAULTS = {"received":{"subject":"{event}: your request for {time}","body":"Hi {name},\n\nThank you for applying to {event} with {company}.\nWe have put the {time} slot (Helsinki time) on hold for you while we read your application. You will hear from us by email whether it is confirmed.\n\nCan no longer make it? Release the slot here: {cancel_link}\n\nFORWARD.one"},"approved":{"subject":"{event}: you pitch at {time}","body":"Hi {name},\n\n{company} pitches at {event_plain} at {time} (Helsinki time). The calendar invite is attached.\n\nFORWARD.one"},"denied":{"subject":"{event}: your request","body":"Hi {name},\n\nThank you for applying to {event_plain} with {company}. We cannot offer you a pitch slot this time, so we have released the time you asked for.\n\nFORWARD.one"},"expired":{"subject":"{event}: your request for {time}","body":"Hi {name},\n\nWe could not confirm the {time} slot for {company} in time, so the hold has ended. You are welcome to request a time again on {page_link}\n\nFORWARD.one"}};
+})();</script><script>window.PREVIEW_DEFAULTS = {"received":{"subject":"{event}: your request for {time}","body":"Hi {first_name},\n\nThank you for applying to {event} with {company}.\nWe have put the {time} slot (Helsinki time) on hold for you while we read your application. You will hear from us by email whether it is confirmed.\n\nCan no longer make it? Release the slot here: {cancel_link}\n\nFORWARD.one"},"approved":{"subject":"{event}: you pitch at {time}","body":"Hi {first_name},\n\n{company} pitches at {event_plain} at {time} (Helsinki time). The calendar invite is attached.\n\nFORWARD.one"},"denied":{"subject":"{event}: your request","body":"Hi {first_name},\n\nThank you for applying to {event_plain} with {company}. We cannot offer you a pitch slot this time, so we have released the time you asked for.\n\nFORWARD.one"},"expired":{"subject":"{event}: your request for {time}","body":"Hi {first_name},\n\nWe could not confirm the {time} slot for {company} in time, so the hold has ended. You are welcome to request a time again on {page_link}\n\nFORWARD.one"}};
 var PREVIEW_KEY = 'pitch-preview-emails';
 function previewEmails() { try { return JSON.parse(localStorage.getItem(PREVIEW_KEY) || '{}'); } catch (e) { return {}; } }
 function previewSave(all) { try { localStorage.setItem(PREVIEW_KEY, JSON.stringify(all)); } catch (e) {} }

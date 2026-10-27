@@ -41,6 +41,18 @@
 - Unknown values are visible `[PLACEHOLDER …]` markers and are listed in
   `PLACEHOLDERS.md`. Never invent a number, quote or outcome.
 
+## Changes
+
+- Always check the project as a whole before finishing a change (owner,
+  2026-10-27): what else depends on it. For `/the-pitch` that is the page
+  (`src/content/pitch.ts`, `src/pages/the-pitch.astro`), the booking service
+  (`booking/`: `/apply` validation, database migrations, emails and their
+  placeholders, the daily overview, the dashboard and its CSV), the dashboard
+  preview (`npm run preview` in `booking/`), the Webflow export
+  (`node webflow/export.mjs`, and tell the owner to paste it again when
+  layout or behaviour changed), and the docs (`DESIGN.md`,
+  `booking/README.md`, `booking/DESIGN.md`, `PLACEHOLDERS.md`).
+
 ## Design
 
 - `DESIGN.md` and `css/global.css` are the layout source of truth. Read

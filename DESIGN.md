@@ -579,12 +579,30 @@ sheet, wording confirmed by the owner 2026-10-21).
   sit 16px apart, and Balnord links to balnord.vc where named. 6 columns
   max. Fades in with the letter.
 - Form as a fill-in-the-blanks letter at `--fs-metric` (24–32px, Inter,
-  line height 1.35, normal text leading, 8 columns max): company name first, then name, role,
-  email, phone, what they build (one line), the pitch time ("We'd like to
-  pitch at [time], Helsinki time.", owner 2026-10-26), deck link (no
-  address, owner 2026-10-21). Opens "Hi investors, we are …" (owner, 2026-10-22); on
-  phones (≤640px) the company blank always starts the second line, so it
-  does not jump up when a short name would fit on the first. Blanks
+  line height 1.35, normal text leading, 8 columns max), in the owner's
+  wording of 2026-10-27:
+
+      Hi investors,
+
+      We're [company name] and we're building [what you're building, in
+      one line]. I'm [full name], [role].
+
+      My LinkedIn: [link]
+      What my LinkedIn doesn't tell you: [something we wouldn't guess]
+      Why we belong in that room: [one or two sentences]
+
+      I'd like to grab the [pitch time] slot, Helsinki time. Find me at
+      [email] or [phone].
+
+      See you at Slush,
+      [first name]
+
+  Every blank is required except phone. The two long answers are blocks of
+  their own under their line, full width, growing in height (textarea,
+  `.pitch__input--long`). LinkedIn gets "https://" added when typed without
+  it. The sign-off name is filled in from the first word of the full name
+  when its line opens, and can be changed. No deck link any more (no
+  slides, owner 2026-10-27). Blanks
   are inline inputs; what the visitor types is in Inter 500 (a step heavier
   than the letter, `--fw-answer`) in the handwriting's gradient (#04EDCD to
   #05F46B, bottom left to top right per blank, `--hand-gradient`; owner
@@ -603,12 +621,11 @@ sheet, wording confirmed by the owner 2026-10-21).
   where it reports it, else an input event that is not typing); typing in
   it brings the gradient back. An autofill also resizes the blank and opens
   the letter on.
-- The letter unfolds sentence by sentence (owner, 2026-10-21): at first
-  only "Dear FORWARD.one, we are [company name]."; once the company name is
-  in, "I'm [name], our [role]."; once the name is in, "Reach me at [email]
-  or [phone]."; once a valid email is in, what they build; once that is in,
-  the pitch time; once a time is chosen, the deck link and closing sentence
-  with the privacy note. The button
+- The letter unfolds step by step (owner, 2026-10-21): first the greeting
+  and "We're … and we're building …"; then "I'm …, …"; then each of the
+  three lines; then the pitch time and contact sentence; then the sign-off
+  with the privacy note. A step opens once every required blank of the
+  step before is validly filled. The button
   shows from the start, disabled (40% opacity, the global `.btn:disabled`),
   and enables once the whole letter is open and every required blank is
   validly filled (owner, 2026-10-21). A

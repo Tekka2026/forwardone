@@ -135,8 +135,10 @@ tbody tr:hover { box-shadow: inset 0 0 0 1px var(--border-strong); }
 .num { text-align: right; font-variant-numeric: tabular-nums; }
 .cell-sub { color: var(--fg-muted); font-size: 12.5px; }
 .row-actions { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; }
-.only-sm { display: none; }
+.only-sm, .only-sm-block { display: none; }
 .answer { font-weight: 500; }
+.cell-note { font-size: 13px; margin-top: 6px; max-width: 60ch; }
+.cell-note .t-eyebrow { margin-right: 4px; }
 
 /* Empty state (§4). */
 .empty {
@@ -221,6 +223,7 @@ tr[data-href] { cursor: pointer; }
   .side-foot { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
   .hide-sm { display: none; }
   .only-sm { display: flex; }
+  .only-sm-block { display: block; }
   .row-actions { justify-content: flex-start; margin-top: 8px; }
   td, th { padding-left: 10px; padding-right: 10px; }
 }
@@ -284,7 +287,7 @@ tr[data-href] { cursor: pointer; }
       <button class="btn btn--sm" type="button" id="export">Export CSV</button>
     </div>
     <div id="list"></div>
-    <script type="application/json" id="review-data">{"base":"/forwardone/the-pitch/review-preview","event":"The _____ Pitch at Slush","who":"you@forward.one","emailConfigured":true,"pageUrl":"https://tekka2026.github.io/forwardone/the-pitch/","slots":[{"id":"0800","label":"08:00"},{"id":"0830","label":"08:30"},{"id":"0900","label":"09:00"},{"id":"0930","label":"09:30"},{"id":"1000","label":"10:00"},{"id":"1030","label":"10:30"},{"id":"1100","label":"11:00"},{"id":"1130","label":"11:30"},{"id":"1200","label":"12:00"},{"id":"1230","label":"12:30"},{"id":"1300","label":"13:00"},{"id":"1330","label":"13:30"},{"id":"1400","label":"14:00"},{"id":"1430","label":"14:30"},{"id":"1500","label":"15:00"},{"id":"1530","label":"15:30"}],"apps":[{"id":"a1","slot_id":"0900","label":"09:00","status":"pending","company":"Northwind Robotics","building":"robots that fold laundry","name":"Ann Example","role":"CEO","email":"ann@northwind.example","phone":null,"deck":"https://example.com/deck.pdf","created_at":"2026-10-26T08:12:00.000Z","decided_by":null},{"id":"a2","slot_id":"1030","label":"10:30","status":"approved","company":"Lumen Labs","building":"batteries from seaweed","name":"Bo Sample","role":"Founder","email":"bo@lumen.example","phone":"+358 40 000 0000","deck":"https://example.com/deck.pdf","created_at":"2026-10-26T09:40:00.000Z","decided_by":"reviewer@forward.one"},{"id":"a3","slot_id":"1100","label":"11:00","status":"pending","company":"Quill","building":"contracts that read themselves","name":"Cy Demo","role":"CTO","email":"cy@quill.example","phone":null,"deck":null,"created_at":"2026-10-26T10:03:00.000Z","decided_by":null},{"id":"a4","slot_id":"1330","label":"13:30","status":"pending","company":"Fjord Sensors","building":"wind turbine blades that report their own cracks","name":"Dee Placeholder","role":"CEO","email":"dee@fjord.example","phone":null,"deck":"https://example.com/deck.pdf","created_at":"2026-10-26T10:31:00.000Z","decided_by":null},{"id":"a5","slot_id":"0830","label":"08:30","status":"denied","company":"Tundra Foods","building":"protein from forest fungi","name":"Eli Test","role":"Founder","email":"eli@tundra.example","phone":null,"deck":"https://example.com/deck.pdf","created_at":"2026-10-26T07:55:00.000Z","decided_by":"reviewer@forward.one"}]}</script></main>
+    <script type="application/json" id="review-data">{"base":"/forwardone/the-pitch/review-preview","event":"The _____ Pitch at Slush","who":"you@forward.one","emailConfigured":true,"pageUrl":"https://tekka2026.github.io/forwardone/the-pitch/","slots":[{"id":"0800","label":"08:00"},{"id":"0830","label":"08:30"},{"id":"0900","label":"09:00"},{"id":"0930","label":"09:30"},{"id":"1000","label":"10:00"},{"id":"1030","label":"10:30"},{"id":"1100","label":"11:00"},{"id":"1130","label":"11:30"},{"id":"1200","label":"12:00"},{"id":"1230","label":"12:30"},{"id":"1300","label":"13:00"},{"id":"1330","label":"13:30"},{"id":"1400","label":"14:00"},{"id":"1430","label":"14:30"},{"id":"1500","label":"15:00"},{"id":"1530","label":"15:30"}],"apps":[{"id":"a1","slot_id":"0900","label":"09:00","status":"pending","company":"Northwind Robotics","building":"robots that fold laundry","name":"Ann Example","role":"CEO","email":"ann@northwind.example","first_name":"Ann","linkedin":"https://www.linkedin.com/in/ann-example-example","surprise":"Example answer: something LinkedIn would not tell you.","why":"Example answer: one or two sentences on why this team belongs in the room.","phone":null,"deck":null,"created_at":"2026-10-26T08:12:00.000Z","decided_by":null},{"id":"a2","slot_id":"1030","label":"10:30","status":"approved","company":"Lumen Labs","building":"batteries from seaweed","name":"Bo Sample","role":"Founder","email":"bo@lumen.example","first_name":"Bo","linkedin":"https://www.linkedin.com/in/bo-sample-example","surprise":"Example answer: something LinkedIn would not tell you.","why":"Example answer: one or two sentences on why this team belongs in the room.","phone":"+358 40 000 0000","deck":null,"created_at":"2026-10-26T09:40:00.000Z","decided_by":"reviewer@forward.one"},{"id":"a3","slot_id":"1100","label":"11:00","status":"pending","company":"Quill","building":"contracts that read themselves","name":"Cy Demo","role":"CTO","email":"cy@quill.example","first_name":"Cy","linkedin":"https://www.linkedin.com/in/cy-demo-example","surprise":"Example answer: something LinkedIn would not tell you.","why":"Example answer: one or two sentences on why this team belongs in the room.","phone":null,"deck":null,"created_at":"2026-10-26T10:03:00.000Z","decided_by":null},{"id":"a4","slot_id":"1330","label":"13:30","status":"pending","company":"Fjord Sensors","building":"wind turbine blades that report their own cracks","name":"Dee Placeholder","role":"CEO","email":"dee@fjord.example","first_name":"Dee","linkedin":"https://www.linkedin.com/in/dee-placeholder-example","surprise":"Example answer: something LinkedIn would not tell you.","why":"Example answer: one or two sentences on why this team belongs in the room.","phone":null,"deck":null,"created_at":"2026-10-26T10:31:00.000Z","decided_by":null},{"id":"a5","slot_id":"0830","label":"08:30","status":"denied","company":"Tundra Foods","building":"protein from forest fungi","name":"Eli Test","role":"Founder","email":"eli@tundra.example","first_name":"Eli","linkedin":"https://www.linkedin.com/in/eli-test-example","surprise":"Example answer: something LinkedIn would not tell you.","why":"Example answer: one or two sentences on why this team belongs in the room.","phone":null,"deck":null,"created_at":"2026-10-26T07:55:00.000Z","decided_by":"reviewer@forward.one"}]}</script></main>
   </div>
   <div class="toasts" id="toasts" aria-live="polite"></div>
   <dialog id="confirm" aria-labelledby="confirm-h">
@@ -344,7 +347,7 @@ tr[data-href] { cursor: pointer; }
     if (tr && !e.target.closest('a, button')) location.href = tr.dataset.href;
   });
   window.UI = { toast: toast, confirm: confirmAsk, busy: busy };
-})();</script><script>window.PREVIEW_DEFAULTS = {"received":{"subject":"{event}: your request for {time}","body":"Hi {name},\n\nThank you for applying to {event} with {company}.\nWe have put the {time} slot (Helsinki time) on hold for you while we read your application. You will hear from us by email whether it is confirmed.\n\nCan no longer make it? Release the slot here: {cancel_link}\n\nFORWARD.one"},"approved":{"subject":"{event}: you pitch at {time}","body":"Hi {name},\n\n{company} pitches at {event_plain} at {time} (Helsinki time). The calendar invite is attached.\n\nFORWARD.one"},"denied":{"subject":"{event}: your request","body":"Hi {name},\n\nThank you for applying to {event_plain} with {company}. We cannot offer you a pitch slot this time, so we have released the time you asked for.\n\nFORWARD.one"},"expired":{"subject":"{event}: your request for {time}","body":"Hi {name},\n\nWe could not confirm the {time} slot for {company} in time, so the hold has ended. You are welcome to request a time again on {page_link}\n\nFORWARD.one"}};
+})();</script><script>window.PREVIEW_DEFAULTS = {"received":{"subject":"{event}: your request for {time}","body":"Hi {first_name},\n\nThank you for applying to {event} with {company}.\nWe have put the {time} slot (Helsinki time) on hold for you while we read your application. You will hear from us by email whether it is confirmed.\n\nCan no longer make it? Release the slot here: {cancel_link}\n\nFORWARD.one"},"approved":{"subject":"{event}: you pitch at {time}","body":"Hi {first_name},\n\n{company} pitches at {event_plain} at {time} (Helsinki time). The calendar invite is attached.\n\nFORWARD.one"},"denied":{"subject":"{event}: your request","body":"Hi {first_name},\n\nThank you for applying to {event_plain} with {company}. We cannot offer you a pitch slot this time, so we have released the time you asked for.\n\nFORWARD.one"},"expired":{"subject":"{event}: your request for {time}","body":"Hi {first_name},\n\nWe could not confirm the {time} slot for {company} in time, so the hold has ended. You are welcome to request a time again on {page_link}\n\nFORWARD.one"}};
 var PREVIEW_KEY = 'pitch-preview-emails';
 function previewEmails() { try { return JSON.parse(localStorage.getItem(PREVIEW_KEY) || '{}'); } catch (e) { return {}; } }
 function previewSave(all) { try { localStorage.setItem(PREVIEW_KEY, JSON.stringify(all)); } catch (e) {} }
@@ -413,6 +416,12 @@ document.getElementById('logout').addEventListener('click', function () {
   var actions = function (a, cls) {
     return a.status === 'pending' ? '<div class="row-actions ' + cls + '"><button class="btn btn--sm" type="button" data-approve="' + esc(a.id) + '">Approve</button><button class="btn btn--sm btn--warn" type="button" data-deny="' + esc(a.id) + '">Deny</button></div>' : '';
   };
+  // Founder: name, role, LinkedIn, email, phone. On phones it sits in the company cell.
+  var founder = function (a) {
+    return esc(a.name) + (a.role ? ', ' + esc(a.role) : '') +
+      (a.linkedin ? '<div class="cell-sub"><a href="' + esc(a.linkedin) + '" target="_blank" rel="noopener noreferrer">LinkedIn</a></div>' : '') +
+      '<div class="cell-sub mono">' + esc(a.email) + '</div>' + (a.phone ? '<div class="cell-sub mono">' + esc(a.phone) + '</div>' : '');
+  };
   var pill = function (s) { return '<span class="pill pill--' + STATUS[s][1] + '">' + STATUS[s][0] + '</span>'; };
   var live = function (a) { return a.status === 'pending' || a.status === 'approved'; };
   var when = function (iso) { var d = new Date(iso); return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ', ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); };
@@ -479,7 +488,7 @@ document.getElementById('logout').addEventListener('click', function () {
     var rows = data.apps.filter(function (a) {
       if (state.status && a.status !== state.status) return false;
       if (!needle) return true;
-      return [a.company, a.name, a.email, a.building].join(' ').toLowerCase().indexOf(needle) > -1;
+      return [a.company, a.name, a.email, a.building, a.why, a.surprise].join(' ').toLowerCase().indexOf(needle) > -1;
     });
     var key = KEYS[state.sort] || KEYS.time;
     rows.sort(function (x, y) { var a = key(x), b = key(y); return a < b ? -state.dir : a > b ? state.dir : 0; });
@@ -505,8 +514,11 @@ document.getElementById('logout').addEventListener('click', function () {
         return '<tr>' +
           '<td class="mono">' + esc(a.label) + '</td>' +
           '<td><div class="answer">' + esc(a.company) + '</div><div class="cell-sub">' + esc(a.building) + '</div>' +
+            '<div class="cell-note only-sm-block">' + founder(a) + '</div>' +
+            (a.why ? '<div class="cell-note"><span class="t-eyebrow">Why us</span> ' + esc(a.why) + '</div>' : '') +
+            (a.surprise ? '<div class="cell-note"><span class="t-eyebrow">Not on LinkedIn</span> ' + esc(a.surprise) + '</div>' : '') +
             (a.deck ? '<div class="cell-sub"><a href="' + esc(a.deck) + '" target="_blank" rel="noopener noreferrer">Deck</a></div>' : '') + '</td>' +
-          '<td class="hide-sm">' + esc(a.name) + (a.role ? ', ' + esc(a.role) : '') + '<div class="cell-sub mono">' + esc(a.email) + '</div>' + (a.phone ? '<div class="cell-sub mono">' + esc(a.phone) + '</div>' : '') + '</td>' +
+          '<td class="hide-sm">' + founder(a) + '</td>' +
           '<td class="hide-sm cell-sub">' + esc(when(a.created_at)) + '</td>' +
           '<td>' + pill(a.status) + (a.decided_by && a.status !== 'pending' ? '<div class="cell-sub">' + esc(a.decided_by) + '</div>' : '') + actions(a, 'only-sm') + '</td>' +
           '<td class="hide-sm">' + actions(a, '') + '</td>' +
@@ -527,7 +539,7 @@ document.getElementById('logout').addEventListener('click', function () {
 
   // ---- Export: the table as it is filtered now.
   document.getElementById('export').addEventListener('click', function () {
-    var cols = ['label', 'company', 'building', 'name', 'role', 'email', 'phone', 'deck', 'status', 'created_at', 'decided_by'];
+    var cols = ['label', 'company', 'building', 'why', 'surprise', 'name', 'first_name', 'role', 'linkedin', 'email', 'phone', 'status', 'created_at', 'decided_by'];
     var csv = [cols.join(',')].concat(shown.map(function (a) {
       return cols.map(function (c) { return '"' + String(a[c] == null ? '' : a[c]).replace(/"/g, '""') + '"'; }).join(',');
     })).join('\n');

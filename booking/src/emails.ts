@@ -31,8 +31,10 @@ export async function template(env: Env, key: TemplateKey) {
   return (await templates(env)).find((t) => t.key === key)!;
 }
 
-export function values(env: Env, a: Pick<Application, 'name' | 'company'>, time: string, cancelLink = '') {
+export function values(env: Env, a: Pick<Application, 'name' | 'company'> & { first_name?: string | null }, time: string, cancelLink = '') {
   return {
+    // Earlier letters had no sign-off name: the first word of the full name.
+    first_name: a.first_name || a.name.trim().split(/\s+/)[0],
     name: a.name,
     company: a.company,
     time,
@@ -68,14 +70,22 @@ export async function digest(env: Env, since: string, reviewUrl: string) {
   const taken = all.filter((a) => a.status === 'pending' || a.status === 'approved').length;
   if (!fresh.length && !cancelled.length && !waiting.length) return null;
 
-  const line = (a: Listed) => `${a.label}  ${a.company}, ${a.name}${a.role ? ` (${a.role})` : ''}: ${a.building}`;
+  const line = (a: Listed) =>
+    [
+      `${a.label}  ${a.company}, ${a.name}${a.role ? ` (${a.role})` : ''}: ${a.building}`,
+      a.why ? `       Why they belong: ${a.why}` : '',
+      a.surprise ? `       Not on LinkedIn: ${a.surprise}` : '',
+      a.linkedin ? `       ${a.linkedin}` : '',
+    ]
+      .filter(Boolean)
+      .join('\n');
   const n = (k: number, one: string, many: string) => `${k} ${k === 1 ? one : many}`;
   const text = [
     `Today: ${n(fresh.length, 'new request', 'new requests')}, ${n(cancelled.length, 'cancellation', 'cancellations')}.`,
     `Waiting for review: ${waiting.length}. Slots taken: ${taken} of ${slotCount}.`,
     ...(fresh.length ? ['', 'New today (Helsinki time):', ...fresh.map(line)] : []),
     ...(cancelled.length ? ['', 'Cancelled today:', ...cancelled.map((a) => `${a.label}  ${a.company}`)] : []),
-    ...(waiting.length ? ['', 'Waiting for review:', ...waiting.map(line)] : []),
+    ...(waiting.length ? ['', 'Waiting for review:', ...waiting.map((a) => `${a.label}  ${a.company}, ${a.name}`)] : []),
     '',
     `Approve or deny: ${reviewUrl}`,
   ].join('\n');

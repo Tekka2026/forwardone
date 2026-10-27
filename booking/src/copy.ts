@@ -11,6 +11,7 @@ export type TemplateKey = 'received' | 'approved' | 'denied' | 'expired';
 
 /** What each placeholder means, shown next to the editor. */
 export const VARIABLES: Record<string, string> = {
+  first_name: 'Founder’s first name, as they signed the letter',
   name: 'Founder’s full name',
   company: 'Company name',
   time: 'Their slot, e.g. 09:30',
@@ -27,10 +28,10 @@ export const TEMPLATES: Record<
   received: {
     title: 'Request received',
     when: 'Right after a founder sends the letter',
-    vars: ['name', 'company', 'time', 'event', 'event_plain', 'cancel_link', 'page_link'],
+    vars: ['first_name', 'name', 'company', 'time', 'event', 'event_plain', 'cancel_link', 'page_link'],
     subject: '{event}: your request for {time}',
     body: [
-      'Hi {name},',
+      'Hi {first_name},',
       '',
       'Thank you for applying to {event} with {company}.',
       'We have put the {time} slot (Helsinki time) on hold for you while we read your application. You will hear from us by email whether it is confirmed.',
@@ -43,11 +44,11 @@ export const TEMPLATES: Record<
   approved: {
     title: 'Approved',
     when: 'When a reviewer approves the request',
-    vars: ['name', 'company', 'time', 'event', 'event_plain', 'page_link'],
+    vars: ['first_name', 'name', 'company', 'time', 'event', 'event_plain', 'page_link'],
     note: 'A calendar invite for the slot is attached automatically.',
     subject: '{event}: you pitch at {time}',
     body: [
-      'Hi {name},',
+      'Hi {first_name},',
       '',
       '{company} pitches at {event_plain} at {time} (Helsinki time). The calendar invite is attached.',
       '',
@@ -57,10 +58,10 @@ export const TEMPLATES: Record<
   denied: {
     title: 'Denied',
     when: 'When a reviewer denies the request',
-    vars: ['name', 'company', 'time', 'event', 'event_plain', 'page_link'],
+    vars: ['first_name', 'name', 'company', 'time', 'event', 'event_plain', 'page_link'],
     subject: '{event}: your request',
     body: [
-      'Hi {name},',
+      'Hi {first_name},',
       '',
       'Thank you for applying to {event_plain} with {company}. We cannot offer you a pitch slot this time, so we have released the time you asked for.',
       '',
@@ -70,10 +71,10 @@ export const TEMPLATES: Record<
   expired: {
     title: 'Hold ended',
     when: 'When nobody decided within the hold period (only if one is set)',
-    vars: ['name', 'company', 'time', 'event', 'event_plain', 'page_link'],
+    vars: ['first_name', 'name', 'company', 'time', 'event', 'event_plain', 'page_link'],
     subject: '{event}: your request for {time}',
     body: [
-      'Hi {name},',
+      'Hi {first_name},',
       '',
       'We could not confirm the {time} slot for {company} in time, so the hold has ended. You are welcome to request a time again on {page_link}',
       '',
@@ -98,7 +99,7 @@ export function fill(text: string, values: Record<string, string>) {
 export const plain = (env: Env) => env.EVENT_NAME.replace(/\s*_+\s*/, ' ');
 
 /** Values for a sample email (Send test). */
-export const SAMPLE = { name: 'Ann Example', company: 'Northwind Robotics', time: '09:30' };
+export const SAMPLE = { first_name: 'Ann', name: 'Ann Example', company: 'Northwind Robotics', time: '09:30' };
 
 export const copy = {
   errors: {

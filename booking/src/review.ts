@@ -150,8 +150,10 @@ tbody tr:hover { box-shadow: inset 0 0 0 1px var(--border-strong); }
 .num { text-align: right; font-variant-numeric: tabular-nums; }
 .cell-sub { color: var(--fg-muted); font-size: 12.5px; }
 .row-actions { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; }
-.only-sm { display: none; }
+.only-sm, .only-sm-block { display: none; }
 .answer { font-weight: 500; }
+.cell-note { font-size: 13px; margin-top: 6px; max-width: 60ch; }
+.cell-note .t-eyebrow { margin-right: 4px; }
 
 /* Empty state (§4). */
 .empty {
@@ -236,6 +238,7 @@ tr[data-href] { cursor: pointer; }
   .side-foot { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
   .hide-sm { display: none; }
   .only-sm { display: flex; }
+  .only-sm-block { display: block; }
   .row-actions { justify-content: flex-start; margin-top: 8px; }
   td, th { padding-left: 10px; padding-right: 10px; }
 }
@@ -329,7 +332,7 @@ export type ReviewData = {
   emailConfigured: boolean;
   pageUrl: string;
   slots: Pick<Slot, 'id' | 'label'>[];
-  apps: (Pick<Application, 'id' | 'slot_id' | 'status' | 'company' | 'name' | 'role' | 'email' | 'phone' | 'building' | 'deck' | 'created_at' | 'decided_by'> & { label: string })[];
+  apps: (Pick<Application, 'id' | 'slot_id' | 'status' | 'company' | 'name' | 'role' | 'email' | 'phone' | 'building' | 'deck' | 'linkedin' | 'surprise' | 'why' | 'first_name' | 'created_at' | 'decided_by'> & { label: string })[];
 };
 
 /** The dashboard's markup: a shell the client script fills in. */
@@ -386,6 +389,12 @@ export const CLIENT_JS = String.raw`(function () {
   // Row actions; on phones they sit under the status instead of in their own column.
   var actions = function (a, cls) {
     return a.status === 'pending' ? '<div class="row-actions ' + cls + '"><button class="btn btn--sm" type="button" data-approve="' + esc(a.id) + '">Approve</button><button class="btn btn--sm btn--warn" type="button" data-deny="' + esc(a.id) + '">Deny</button></div>' : '';
+  };
+  // Founder: name, role, LinkedIn, email, phone. On phones it sits in the company cell.
+  var founder = function (a) {
+    return esc(a.name) + (a.role ? ', ' + esc(a.role) : '') +
+      (a.linkedin ? '<div class="cell-sub"><a href="' + esc(a.linkedin) + '" target="_blank" rel="noopener noreferrer">LinkedIn</a></div>' : '') +
+      '<div class="cell-sub mono">' + esc(a.email) + '</div>' + (a.phone ? '<div class="cell-sub mono">' + esc(a.phone) + '</div>' : '');
   };
   var pill = function (s) { return '<span class="pill pill--' + STATUS[s][1] + '">' + STATUS[s][0] + '</span>'; };
   var live = function (a) { return a.status === 'pending' || a.status === 'approved'; };
@@ -453,7 +462,7 @@ export const CLIENT_JS = String.raw`(function () {
     var rows = data.apps.filter(function (a) {
       if (state.status && a.status !== state.status) return false;
       if (!needle) return true;
-      return [a.company, a.name, a.email, a.building].join(' ').toLowerCase().indexOf(needle) > -1;
+      return [a.company, a.name, a.email, a.building, a.why, a.surprise].join(' ').toLowerCase().indexOf(needle) > -1;
     });
     var key = KEYS[state.sort] || KEYS.time;
     rows.sort(function (x, y) { var a = key(x), b = key(y); return a < b ? -state.dir : a > b ? state.dir : 0; });
@@ -479,8 +488,11 @@ export const CLIENT_JS = String.raw`(function () {
         return '<tr>' +
           '<td class="mono">' + esc(a.label) + '</td>' +
           '<td><div class="answer">' + esc(a.company) + '</div><div class="cell-sub">' + esc(a.building) + '</div>' +
+            '<div class="cell-note only-sm-block">' + founder(a) + '</div>' +
+            (a.why ? '<div class="cell-note"><span class="t-eyebrow">Why us</span> ' + esc(a.why) + '</div>' : '') +
+            (a.surprise ? '<div class="cell-note"><span class="t-eyebrow">Not on LinkedIn</span> ' + esc(a.surprise) + '</div>' : '') +
             (a.deck ? '<div class="cell-sub"><a href="' + esc(a.deck) + '" target="_blank" rel="noopener noreferrer">Deck</a></div>' : '') + '</td>' +
-          '<td class="hide-sm">' + esc(a.name) + (a.role ? ', ' + esc(a.role) : '') + '<div class="cell-sub mono">' + esc(a.email) + '</div>' + (a.phone ? '<div class="cell-sub mono">' + esc(a.phone) + '</div>' : '') + '</td>' +
+          '<td class="hide-sm">' + founder(a) + '</td>' +
           '<td class="hide-sm cell-sub">' + esc(when(a.created_at)) + '</td>' +
           '<td>' + pill(a.status) + (a.decided_by && a.status !== 'pending' ? '<div class="cell-sub">' + esc(a.decided_by) + '</div>' : '') + actions(a, 'only-sm') + '</td>' +
           '<td class="hide-sm">' + actions(a, '') + '</td>' +
@@ -501,7 +513,7 @@ export const CLIENT_JS = String.raw`(function () {
 
   // ---- Export: the table as it is filtered now.
   document.getElementById('export').addEventListener('click', function () {
-    var cols = ['label', 'company', 'building', 'name', 'role', 'email', 'phone', 'deck', 'status', 'created_at', 'decided_by'];
+    var cols = ['label', 'company', 'building', 'why', 'surprise', 'name', 'first_name', 'role', 'linkedin', 'email', 'phone', 'status', 'created_at', 'decided_by'];
     var csv = [cols.join(',')].concat(shown.map(function (a) {
       return cols.map(function (c) { return '"' + String(a[c] == null ? '' : a[c]).replace(/"/g, '""') + '"'; }).join(',');
     })).join('\n');
