@@ -95,11 +95,16 @@ export const pitch = {
   slotsFailed: 'The pitch times could not be loaded. Please try again in a minute.',
   failed: 'Your request could not be sent. Please try again in a minute.',
   privacy: PH('privacy note: what happens with the details, with a link to the privacy policy'),
-  /** Event facts under the form. A \n in a value starts a new line. */
+  /** Event facts under the form. A \n in a value starts a new line.
+   * Texts marked editable can be changed on the booking dashboard
+   * (/review/page, owner 2026-10-27): the page loads the saved versions on
+   * every visit (booking/src/pagecopy.ts lists them). These values are the
+   * originals, shown until a change is saved and whenever the service is
+   * unreachable. */
   facts: [
-    { label: 'When', value: '18 November\n08:00–16:00 Helsinki time' },
-    { label: 'Where', value: PH('stage or venue at Slush, Helsinki') },
-    { label: 'Apply by', value: PH('deadline') },
-    { label: 'The panel', value: 'FORWARD.one, Balnord and HCVC' },
+    { key: 'fact_when', label: 'When', value: '18 November\n08:00–16:00 Helsinki time' },
+    { key: 'fact_where', label: 'Where', value: PH('stage or venue at Slush, Helsinki') },
+    { key: 'fact_apply_by', label: 'Apply by', value: PH('deadline') },
+    { key: 'fact_panel', label: 'The panel', value: 'FORWARD.one, Balnord and HCVC' },
   ],
 };

@@ -15,6 +15,8 @@ A Cloudflare Worker with a D1 (SQLite) database; email through Resend.
 | `POST /apply` | The letter as JSON; `409 slot_taken` if someone was quicker |
 | `GET /review` | The team's page: slots, requests, Approve / Deny |
 | `GET /cancel?t=…` | The founder's link from the confirmation email |
+| `GET /copy` | Saved page texts; the pitch page loads them on every visit |
+| `GET /review/page` | The team edits the pitch page's texts (Page text) |
 
 Rules the database enforces: one live (pending or approved) request per slot,
 and one per email address.
@@ -24,6 +26,19 @@ Approve, Deny; nothing sent or saved) is on the site at
 `/the-pitch/review-preview/`, generated from `src/review.ts` by
 `npm run preview` (not linked, `noindex`). Dashboard design rules:
 `DESIGN.md` in this folder.
+
+## Page text
+
+The team edits the pitch page's texts on the dashboard (**Page text**): the
+eyebrow, the text under the heading, the button, the privacy note, the
+thank-you message and the four event facts (owner, 2026-10-27). The page,
+on Webflow and on the preview site, fetches `GET /copy` on every visit and
+swaps the saved texts in, so no republishing is needed (answers are cached
+for a minute). Without an answer it keeps the texts it was built with. The
+originals come from the site's `src/content/pitch.ts` (`npm run defaults`
+writes `src/page-defaults.json`; the deploy workflow runs it); a text equal
+to its original or left empty is not stored. The heading and the letter are
+not editable here.
 
 ## Emails
 

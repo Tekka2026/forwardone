@@ -630,6 +630,12 @@ sheet, wording confirmed by the owner 2026-10-21).
   The white block (header included) is at least 80% of the viewport high
   (`80svh`, owner 2026-10-26; before: no minimum height); the content sits
   at the top and the facts' black starts below.
+- Editable texts (owner, 2026-10-27): the eyebrow, the text under the
+  heading, the button, the privacy note, the thank-you message and the
+  event facts carry `data-copy` and are swapped for the versions saved on
+  the booking dashboard (Page text, `GET /copy`) on every visit; the built
+  texts stay when the service does not answer. Paragraphs and links added
+  that way are styled through `:global` rules.
 - Intro motion: eyebrow, then "The", the blank and "Pitch" snap in like H1
   words; the first sentence of the letter eases in gently.
 - The pitch time (owner, 2026-10-26: one day, time slots; FORWARD.one

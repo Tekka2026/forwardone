@@ -10,6 +10,7 @@
  * the real dashboard cannot drift apart.
  */
 import { VARIABLES, TEMPLATES, type TemplateKey } from './copy.ts'; // .ts: also loaded by Node in scripts/preview.mjs
+import { PAGE_DEFAULTS, PAGE_FIELDS } from './pagecopy.ts';
 import type { Application, Slot } from './env';
 
 export const esc = (s: unknown) =>
@@ -204,6 +205,15 @@ dialog::backdrop { background: var(--scrim); }
 .crumb { font-size: 13px; color: var(--fg-muted); text-decoration: none; }
 .crumb:hover { color: var(--fg); }
 
+/* Page text. */
+.page-row { display: grid; gap: 8px; }
+.page-row + .page-row { border-top: 1px solid var(--border); padding-top: 16px; }
+.page-row textarea.field { min-height: 0; }
+.save-bar {
+  position: sticky; bottom: 0; display: flex; gap: 12px; align-items: center; padding: 12px 0;
+  background: var(--bg); border-top: 1px solid var(--border);
+}
+
 /* Email editor. */
 .form { display: grid; gap: 16px; }
 textarea.field { min-height: 280px; resize: vertical; line-height: 1.55; width: 100%; font-family: var(--font); }
@@ -244,6 +254,7 @@ export const NAV = [
   { group: 'The Pitch', items: [
     { label: 'Requests', path: '/' },
     { label: 'Emails', path: '/emails/' },
+    { label: 'Page text', path: '/page/' },
   ] },
 ];
 
@@ -693,4 +704,87 @@ export const EMAIL_JS = String.raw`(function () {
     });
   });
   preview();
+})();`;
+
+
+// ---- Page text: the pitch page's editable texts (owner, 2026-10-27). -------
+
+export type PageText = { base: string; pageUrl: string; values: Record<string, string>; meta: Record<string, { updated_at: string; updated_by: string }> };
+
+export function pageTextHtml(o: PageText) {
+  const data = JSON.stringify({ base: o.base, defaults: PAGE_DEFAULTS }).replace(/</g, '\\u003c');
+  const field = (f: (typeof PAGE_FIELDS)[number]['fields'][number]) => {
+    const value = o.values[f.key] ?? PAGE_DEFAULTS[f.key];
+    const changed = f.key in o.values;
+    const m = o.meta[f.key];
+    const input = f.rows
+      ? `<textarea class="field block page-field" id="pf-${f.key}" name="${f.key}" rows="${f.rows}" maxlength="${f.max}">${esc(value)}</textarea>`
+      : `<input class="field block page-field" id="pf-${f.key}" name="${f.key}" maxlength="${f.max}" value="${esc(value)}">`;
+    return `<div class="page-row" data-key="${f.key}">
+        <div class="card-head"><label class="t-label flush" for="pf-${f.key}">${esc(f.label)}</label>
+          <span class="row-actions"><span data-state>${changed ? '<span class="pill pill--ok">Changed</span>' : '<span class="pill pill--neutral">Original</span>'}</span>
+          <button class="btn btn--sm" type="button" data-original${changed ? '' : ' hidden'}>Use original</button></span></div>
+        ${input}
+        <p class="t-help">${esc(f.help)}${m ? ` Last changed by ${esc(m.updated_by)}, ${esc(m.updated_at.slice(0, 16).replace('T', ' '))} UTC.` : ''}</p>
+      </div>`;
+  };
+  return `<div>
+      <h1 class="t-title">Page text</h1>
+      <p class="t-intro">The texts on the pitch page. After you save, the live page shows them within a minute, on Webflow and on the preview site, without republishing. The heading and the letter itself are not editable here.</p>
+    </div>
+    <div class="toolbar"><span></span><a class="btn btn--sm" href="${esc(o.pageUrl)}" target="_blank" rel="noopener">Open the pitch page</a></div>
+    <form class="form" id="page-form">
+      ${PAGE_FIELDS.map((g) => `<section class="card" aria-label="${esc(g.group)}"><h2 class="t-section">${esc(g.group)}</h2>${g.fields.map(field).join('')}</section>`).join('')}
+      <div class="save-bar"><button class="btn btn--primary" type="submit" id="page-save">Save</button><span class="t-help flush" id="page-dirty"></span></div>
+    </form>
+    <script type="application/json" id="page-data">${data}</script>`;
+}
+
+export function pageTextPage(o: PageText & { who: string }) {
+  return appPage('Page text', { who: o.who, base: o.base, active: 'Page text' }, pageTextHtml(o), PAGE_JS);
+}
+
+/** The page text form: save all changed fields, use original per field, warn on leaving unsaved. */
+export const PAGE_JS = String.raw`(function () {
+  var d = JSON.parse(document.getElementById('page-data').textContent);
+  var api = window.PAGE_API || {
+    save: function (values) {
+      return fetch(d.base + '/page/save', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ values: values }) })
+        .then(function (r) { return r.json().then(function (x) { if (!r.ok) throw new Error(x.message || 'Not saved. Try again.'); return x; }); });
+    },
+  };
+  var form = document.getElementById('page-form');
+  var fields = [].slice.call(form.querySelectorAll('.page-field'));
+  var saved = {}; fields.forEach(function (f) { saved[f.name] = f.value; });
+  var dirty = function () { return fields.some(function (f) { return f.value !== saved[f.name]; }); };
+  function mark() {
+    var n = fields.filter(function (f) { return f.value !== saved[f.name]; }).length;
+    document.getElementById('page-dirty').textContent = n ? n + (n === 1 ? ' unsaved change' : ' unsaved changes') : '';
+    fields.forEach(function (f) {
+      var row = f.closest('.page-row'), changed = f.value.trim() !== d.defaults[f.name];
+      row.querySelector('[data-original]').hidden = !changed;
+    });
+  }
+  form.addEventListener('input', mark);
+  form.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-original]'); if (!b) return;
+    var f = b.closest('.page-row').querySelector('.page-field');
+    f.value = d.defaults[f.name]; mark(); f.focus();
+  });
+  window.addEventListener('beforeunload', function (e) { if (dirty()) { e.preventDefault(); e.returnValue = ''; } });
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var values = {}; fields.forEach(function (f) { values[f.name] = f.value; });
+    var done = UI.busy(document.getElementById('page-save'), 'Saving…');
+    api.save(values).then(function (x) {
+      fields.forEach(function (f) {
+        var v = f.name in x.values ? x.values[f.name] : d.defaults[f.name];
+        f.value = v; saved[f.name] = v;
+        f.closest('.page-row').querySelector('[data-state]').innerHTML = f.name in x.values ? '<span class="pill pill--ok">Changed</span>' : '<span class="pill pill--neutral">Original</span>';
+      });
+      mark();
+      UI.toast('Saved. The pitch page shows the new texts within a minute.');
+    }).catch(function (err) { UI.toast(err.message, true); }).then(done);
+  });
+  mark();
 })();`;

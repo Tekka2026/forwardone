@@ -63,7 +63,7 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
     <section class="section section--flush pitch__hero">
       <div class="wrap">
         <div class="pitch__sheet">
-        <p class="eyebrow reveal-snap"><span class="pitch__eyebrow">{pitch.eyebrow.brand}</span>{pitch.eyebrow.rest}</p>
+        <p class="eyebrow reveal-snap"><span class="pitch__eyebrow" data-copy="eyebrow_brand">{pitch.eyebrow.brand}</span><span data-copy="eyebrow_rest">{pitch.eyebrow.rest}</span></p>
         <h1 class="h-display pitch__title" data-pitch-title>
           <span class="pitch__line" data-pitch-line>
             <span class="pitch__word reveal-snap" style="--i: 0">{pitch.title.before}</span>
@@ -75,7 +75,7 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
           </span>
         </h1>
 
-        <div class="pitch__intro reveal-gentle">
+        <div class="pitch__intro reveal-gentle" data-copy="intro" data-partner-name={pitch.partner.name} data-partner-href={pitch.partner.href}>
           {introParas.map((parts) => (
             <p class="lede">
               {parts.map((t, i) => (
@@ -157,10 +157,10 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
             <Button type="submit">{pitch.submit}</Button>
             <p class="small pitch__status" data-pitch-status role="status" aria-live="polite"></p>
           </div>
-          <p class="small pitch__privacy" data-pitch-final><Placeholder value={pitch.privacy} /></p>
+          <p class="small pitch__privacy" data-pitch-final data-copy="privacy"><Placeholder value={pitch.privacy} /></p>
           <template data-pitch-msg-not-sent>{pitch.notSent}</template>
           <template data-pitch-msg-sending>{pitch.sending}</template>
-          <template data-pitch-msg-sent>{pitch.sent}</template>
+          <template data-pitch-msg-sent data-copy="sent">{pitch.sent}</template>
           <template data-pitch-msg-no-slots>{pitch.noSlots}</template>
           <template data-pitch-msg-slots-failed>{pitch.slotsFailed}</template>
           <template data-pitch-msg-failed>{pitch.failed}</template>
@@ -175,7 +175,7 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
             pitch.facts.map((f) => (
               <div>
                 <dt class="label">{f.label}</dt>
-                <dd class="body">
+                <dd class="body" data-copy={f.key}>
                   {f.value.split('\n').map((line, li) => (
                     <>
                       {li > 0 && <br />}
@@ -203,6 +203,51 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
     var company = document.querySelector('[data-pitch-company]');
     var form = document.querySelector('[data-pitch-form]');
     if (!title || !line || !hand || !company || !form) return;
+
+    // ---- Texts edited on the booking dashboard (owner, 2026-10-27). -------
+    // The page asks the booking service for saved versions of its editable
+    // texts ([data-copy]) and swaps them in; without an answer it keeps the
+    // texts it was built with. Paragraphs are separated by an empty line; a
+    // single line break stays a line break; Balnord stays linked.
+    var introEl = document.querySelector('[data-copy="intro"]');
+    var PARTNER = { name: introEl.dataset.partnerName, href: introEl.dataset.partnerHref };
+    function lines(el, text) {
+      el.textContent = '';
+      text.split('\n').forEach(function (l, i) {
+        if (i) el.appendChild(document.createElement('br'));
+        el.appendChild(document.createTextNode(l));
+      });
+    }
+    function linked(p, text) {
+      text.split(PARTNER.name).forEach(function (part, i) {
+        if (i) { var a = document.createElement('a'); a.href = PARTNER.href; a.rel = 'noopener'; a.textContent = PARTNER.name; p.appendChild(a); }
+        p.appendChild(document.createTextNode(part));
+      });
+    }
+    var SETTERS = {
+      intro: function (el, v) {
+        el.textContent = '';
+        v.split(/\n\s*\n/).forEach(function (para) {
+          var p = document.createElement('p'); p.className = 'lede'; linked(p, para.trim()); el.appendChild(p);
+        });
+      },
+      sent: function (el, v) { el.innerHTML = ''; el.content.textContent = v; },
+      submit: function (_, v) { var b = form.querySelector('button[type="submit"]'); if (b) b.textContent = v; },
+    };
+    if (form.dataset.api) {
+      fetch(form.dataset.api + '/copy', { headers: { Accept: 'application/json' } })
+        .then(function (r) { return r.ok ? r.json() : { values: {} }; })
+        .then(function (d) {
+          Object.keys(d.values || {}).forEach(function (k) {
+            var v = d.values[k];
+            if (k === 'submit') return SETTERS.submit(null, v);
+            var el = document.querySelector('[data-copy="' + k + '"]');
+            if (!el) return;
+            (SETTERS[k] || lines)(el, v);
+          });
+        })
+        .catch(function () {});
+    }
 
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -622,13 +667,14 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
     margin-top: var(--gap);
     animation-delay: calc(var(--reveal-start) + 3 * var(--reveal-stagger) + 2 * var(--reveal-frame));
   }
-  .pitch__intro p {
+  /* :global: paragraphs and links may come from the dashboard (script). */
+  .pitch__intro :global(p) {
     margin: 0;
   }
-  .pitch__intro p + p {
+  .pitch__intro :global(p + p) {
     margin-top: var(--space-4x);
   }
-  .pitch__intro a {
+  .pitch__intro :global(a) {
     text-underline-offset: 3px;
   }
 

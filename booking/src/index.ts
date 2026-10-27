@@ -17,6 +17,8 @@
  *   POST /review/decide    approve / deny a pending request
  *   GET  /review/emails    the founder emails; /review/emails/<key> edits one
  *   POST /review/emails/save | test | reset
+ *   GET  /review/page      the pitch page's editable texts; POST /review/page/save
+ *   GET  /copy             saved page texts (public, CORS; the page loads them)
  *   POST /review/logout
  *
  * Cron: hourly, expiry (only with HOLD_DAYS); 17:00 UTC (18:00 Amsterdam in
@@ -27,7 +29,8 @@ import { copy, fill, isTemplateKey, SAMPLE, TEMPLATES, unknownVars } from './cop
 import { digest, founderEmail, template, templates, values } from './emails';
 import { reviewers, type Application, type Env, type Slot, type Status } from './env';
 import { ics, send } from './mail';
-import { BUSY_JS, emailEditPage, emailsPage, esc, loginPage, page, reviewPage } from './review';
+import { BUSY_JS, emailEditPage, emailsPage, esc, loginPage, page, pageTextPage, reviewPage } from './review';
+import { PAGE_DEFAULTS, PAGE_KEYS, pageField } from './pagecopy';
 
 /** 18:00 Amsterdam in winter (UTC+1); keep in step with wrangler.toml. */
 const DIGEST_CRON = '0 17 * * *';
@@ -223,6 +226,42 @@ async function review(env: Env, req: Request, url: URL, ctx: ExecutionContext) {
     return a ? json({ ok: true, status: decision }) : json({ error: 'stale', message: 'This request was already decided. Reload to see the latest state.' }, 409);
   }
 
+  // ---- Page text: the pitch page's editable texts.
+  const pagePath = path.replace(/\/+$/, '');
+  if (pagePath === '/review/page' && req.method === 'GET') {
+    const { values, meta } = await pageCopy(env);
+    return pageTextPage({ who, base: '/review', pageUrl: env.PAGE_URL, values, meta });
+  }
+  if (pagePath === '/review/page/save' && req.method === 'POST') {
+    if (!sameOrigin(req)) return json({ error: 'forbidden', message: 'Forbidden.' }, 403);
+    let body: { values?: Record<string, unknown> } = {};
+    try {
+      body = await req.json();
+    } catch {
+      /* checked below */
+    }
+    const values = body.values ?? {};
+    const now = new Date().toISOString();
+    const stmts: D1PreparedStatement[] = [];
+    for (const key of PAGE_KEYS) {
+      if (!(key in values)) continue;
+      const v = String(values[key] ?? '').replace(/\r\n/g, '\n').trim();
+      const f = pageField(key)!;
+      if (v.length > f.max) return json({ error: 'invalid', message: `${f.label} is too long (at most ${f.max} characters).` }, 400);
+      stmts.push(
+        !v || v === PAGE_DEFAULTS[key]
+          ? env.DB.prepare('DELETE FROM page_copy WHERE key = ?').bind(key)
+          : env.DB.prepare(
+              `INSERT INTO page_copy (key, value, updated_at, updated_by) VALUES (?, ?, ?, ?)
+               ON CONFLICT (key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at, updated_by = excluded.updated_by
+               WHERE page_copy.value <> excluded.value`,
+            ).bind(key, v, now, who),
+      );
+    }
+    if (stmts.length) await env.DB.batch(stmts);
+    return json({ ok: true, values: (await pageCopy(env)).values });
+  }
+
   // ---- Founder emails: list, edit, save, test, reset.
   const emailPath = path.replace(/\/+$/, '');
   if (emailPath === '/review/emails' && req.method === 'GET') return emailsPage({ who, base: '/review', templates: await templates(env) });
@@ -308,6 +347,16 @@ async function expire(env: Env) {
   }
 }
 
+/** Saved page texts (only the ones that differ from the page's originals). */
+async function pageCopy(env: Env) {
+  const { results } = await env.DB.prepare('SELECT * FROM page_copy').all<{ key: string; value: string; updated_at: string; updated_by: string }>();
+  const known = results.filter((r) => PAGE_KEYS.includes(r.key));
+  return {
+    values: Object.fromEntries(known.map((r) => [r.key, r.value])) as Record<string, string>,
+    meta: Object.fromEntries(known.map((r) => [r.key, { updated_at: r.updated_at, updated_by: r.updated_by }])),
+  };
+}
+
 const plainTitle = (env: Env) => env.EVENT_NAME.replace(/\s*_+\s*/, ' ');
 
 // ---- Daily overview to the reviewers -------------------------------------------
@@ -342,6 +391,11 @@ export default {
       ctx.waitUntil(setMeta(env, 'origin', url.origin).catch(() => {}));
     }
     try {
+      if (url.pathname === '/copy') {
+        const h = cors(env, req);
+        if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: h });
+        return json({ values: (await pageCopy(env)).values }, 200, { ...h, 'Cache-Control': 'public, max-age=60' });
+      }
       if (url.pathname === '/slots' || url.pathname === '/apply') {
         const h = cors(env, req);
         if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: h });

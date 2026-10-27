@@ -190,6 +190,15 @@ dialog::backdrop { background: var(--scrim); }
 .crumb { font-size: 13px; color: var(--fg-muted); text-decoration: none; }
 .crumb:hover { color: var(--fg); }
 
+/* Page text. */
+.page-row { display: grid; gap: 8px; }
+.page-row + .page-row { border-top: 1px solid var(--border); padding-top: 16px; }
+.page-row textarea.field { min-height: 0; }
+.save-bar {
+  position: sticky; bottom: 0; display: flex; gap: 12px; align-items: center; padding: 12px 0;
+  background: var(--bg); border-top: 1px solid var(--border);
+}
+
 /* Email editor. */
 .form { display: grid; gap: 16px; }
 textarea.field { min-height: 280px; resize: vertical; line-height: 1.55; width: 100%; font-family: var(--font); }
@@ -225,7 +234,7 @@ tr[data-href] { cursor: pointer; }
         <label class="sr-only" for="nav-q">Go to</label>
         <input class="field side-search" id="nav-q" type="search" placeholder="Go to…  ⌘K" autocomplete="off">
       </div>
-      <nav class="side-nav" id="nav"><p class="t-eyebrow nav-head">The Pitch</p><a class="nav-item" data-nav="Requests" href="/forwardone/the-pitch/review-preview/">Requests</a><a class="nav-item" data-nav="Emails" href="/forwardone/the-pitch/review-preview/emails/" aria-current="page">Emails</a></nav>
+      <nav class="side-nav" id="nav"><p class="t-eyebrow nav-head">The Pitch</p><a class="nav-item" data-nav="Requests" href="/forwardone/the-pitch/review-preview/">Requests</a><a class="nav-item" data-nav="Emails" href="/forwardone/the-pitch/review-preview/emails/" aria-current="page">Emails</a><a class="nav-item" data-nav="Page text" href="/forwardone/the-pitch/review-preview/page/">Page text</a></nav>
       <div class="side-foot"><span id="who">you@forward.one</span><button class="btn btn--sm" type="button" id="logout">Log out</button></div>
     </aside>
     <main><p class="banner banner--neutral">Preview with invented sample data. Everything works on this page only: nothing is sent, decisions are not saved, and email changes stay in your own browser. Any email address gets in.</p><div>
@@ -349,6 +358,14 @@ window.EMAIL_API = {
   },
 };
 try { var w = sessionStorage.getItem('pitch-preview-who'); if (w) document.getElementById('who').textContent = w; } catch (e) {}
+window.PAGE_API = {
+  save: function (values) {
+    var defaults = JSON.parse(document.getElementById('page-data').textContent).defaults, out = {};
+    Object.keys(values).forEach(function (k) { var v = values[k].trim(); if (v && v !== defaults[k]) out[k] = v; });
+    try { localStorage.setItem('pitch-preview-page', JSON.stringify(out)); } catch (e) {}
+    return later({ ok: true, values: out });
+  },
+};
 document.getElementById('logout').addEventListener('click', function () {
   try { sessionStorage.removeItem('pitch-preview-in'); } catch (e) {}
   location.href = '/forwardone/the-pitch/review-preview/';

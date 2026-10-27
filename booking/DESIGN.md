@@ -12,7 +12,7 @@ colours only as tokens in `:root`, no inline `style` attributes).
   token each for the placeholder colour (#b3b3b3, §4), the dialog backdrop and
   the field focus ring (§4), button heights, toast duration and page width.
 - Single light theme (the rules define no dark values).
-- Two screens (Requests, Emails) and the email editor, so the sidebar of §4:
+- Three screens (Requests, Emails, Page text) and the email editor, so the sidebar of §4:
   menu from one source (`NAV`), which also feeds the ⌘K / Ctrl+K search.
   On phones (≤720px) the sidebar becomes a block above the content.
 - Email editor: the form card (Save black 40px, Send test to me white,
@@ -29,6 +29,10 @@ colours only as tokens in `:root`, no inline `style` attributes).
 - Toasts: black, top right, success 4.5 s, errors stay until closed.
 - Language: the interface is English, so §6 applies in spirit: no em dashes,
   no exclamation marks, one word per concept ("request", "slot", "reviewer").
+- Page text: one form, a card per group (Top of the page, Form, Event
+  facts), per field a label, Changed/Original pill, "Use original" (32px,
+  white) and help text; a sticky save bar at the bottom (§5) with the count
+  of unsaved changes; warns when leaving with unsaved changes.
 - Preview: `npm run preview` builds `public/the-pitch/review-preview/`
   (requests, emails, one editor per email) from this same code with sample
   data.

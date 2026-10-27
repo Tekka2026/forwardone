@@ -9,6 +9,51 @@
     var form = document.querySelector('[data-pitch-form]');
     if (!title || !line || !hand || !company || !form) return;
 
+    // ---- Texts edited on the booking dashboard (owner, 2026-10-27). -------
+    // The page asks the booking service for saved versions of its editable
+    // texts ([data-copy]) and swaps them in; without an answer it keeps the
+    // texts it was built with. Paragraphs are separated by an empty line; a
+    // single line break stays a line break; Balnord stays linked.
+    var introEl = document.querySelector('[data-copy="intro"]');
+    var PARTNER = { name: introEl.dataset.partnerName, href: introEl.dataset.partnerHref };
+    function lines(el, text) {
+      el.textContent = '';
+      text.split('\n').forEach(function (l, i) {
+        if (i) el.appendChild(document.createElement('br'));
+        el.appendChild(document.createTextNode(l));
+      });
+    }
+    function linked(p, text) {
+      text.split(PARTNER.name).forEach(function (part, i) {
+        if (i) { var a = document.createElement('a'); a.href = PARTNER.href; a.rel = 'noopener'; a.textContent = PARTNER.name; p.appendChild(a); }
+        p.appendChild(document.createTextNode(part));
+      });
+    }
+    var SETTERS = {
+      intro: function (el, v) {
+        el.textContent = '';
+        v.split(/\n\s*\n/).forEach(function (para) {
+          var p = document.createElement('p'); p.className = 'fo-lede'; linked(p, para.trim()); el.appendChild(p);
+        });
+      },
+      sent: function (el, v) { el.innerHTML = ''; el.content.textContent = v; },
+      submit: function (_, v) { var b = form.querySelector('button[type="submit"]'); if (b) b.textContent = v; },
+    };
+    if (form.dataset.api) {
+      fetch(form.dataset.api + '/copy', { headers: { Accept: 'application/json' } })
+        .then(function (r) { return r.ok ? r.json() : { values: {} }; })
+        .then(function (d) {
+          Object.keys(d.values || {}).forEach(function (k) {
+            var v = d.values[k];
+            if (k === 'submit') return SETTERS.submit(null, v);
+            var el = document.querySelector('[data-copy="' + k + '"]');
+            if (!el) return;
+            (SETTERS[k] || lines)(el, v);
+          });
+        })
+        .catch(function () {});
+    }
+
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // ---- Fit: the H1 never runs wider than --pitch-max of the content ----

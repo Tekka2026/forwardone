@@ -7,7 +7,8 @@ name: Deploy the pitch booking service
 on:
   push:
     branches: [claude/forwardone-web-gl4kz9]
-    paths: ['booking/**', '.github/workflows/deploy-booking.yml']
+    # src/content/pitch.ts: the page's original texts, shown on the dashboard.
+    paths: ['booking/**', 'src/content/pitch.ts', '.github/workflows/deploy-booking.yml']
   workflow_dispatch:
 
 permissions:
@@ -62,6 +63,9 @@ jobs:
         run: |
           node scripts/slots-sql.mjs > slots.sql
           npx wrangler d1 execute forwardone-pitch --remote --file slots.sql
+      - if: steps.gate.outputs.go == 'true'
+        name: Page texts' originals (from src/content/pitch.ts)
+        run: npm run defaults
       - if: steps.gate.outputs.go == 'true'
         name: Deploy
         run: npx wrangler deploy

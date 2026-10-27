@@ -8,7 +8,7 @@
 // Usage: node --experimental-strip-types scripts/preview.mjs [fragment-out.html]
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { TEMPLATES, TEMPLATE_KEYS, SAMPLE, plain } from '../src/copy.ts';
-import { CLIENT_JS, CSS, EMAIL_JS, FONTS, appHtml, dashboardHtml, emailEditHtml, emailsHtml, loginHtml } from '../src/review.ts';
+import { CLIENT_JS, CSS, EMAIL_JS, FONTS, PAGE_JS, appHtml, dashboardHtml, emailEditHtml, emailsHtml, loginHtml, pageTextHtml } from '../src/review.ts';
 
 const BASE = '/forwardone/the-pitch/review-preview';
 const EVENT = 'The _____ Pitch at Slush';
@@ -69,6 +69,14 @@ window.EMAIL_API = {
   },
 };
 try { var w = sessionStorage.getItem('pitch-preview-who'); if (w) document.getElementById('who').textContent = w; } catch (e) {}
+window.PAGE_API = {
+  save: function (values) {
+    var defaults = JSON.parse(document.getElementById('page-data').textContent).defaults, out = {};
+    Object.keys(values).forEach(function (k) { var v = values[k].trim(); if (v && v !== defaults[k]) out[k] = v; });
+    try { localStorage.setItem('pitch-preview-page', JSON.stringify(out)); } catch (e) {}
+    return later({ ok: true, values: out });
+  },
+};
 document.getElementById('logout').addEventListener('click', function () {
   try { sessionStorage.removeItem('pitch-preview-in'); } catch (e) {}
   location.href = '${BASE}/';
@@ -150,6 +158,17 @@ const editors = defaults.map((t) => {
   return [t.key, doc(TEMPLATES[t.key].title, appHtml(shell('Emails'), notice + emailEditHtml({ base: BASE, template: t, emailConfigured: true, sample })), loadJs + `<script>${EMAIL_JS}</script>`)];
 });
 
+// Page text: saved preview texts (this browser only) replace the originals on load.
+const pageLoadJs = String.raw`<script>(function () {
+  var saved = {}; try { saved = JSON.parse(localStorage.getItem('pitch-preview-page') || '{}'); } catch (e) {}
+  Object.keys(saved).forEach(function (k) {
+    var f = document.getElementById('pf-' + k); if (!f) return;
+    f.value = saved[k];
+    f.closest('.page-row').querySelector('[data-state]').innerHTML = '<span class="pill pill--ok">Changed</span>';
+  });
+})();</script>`;
+const pageText = doc('Page text', appHtml(shell('Page text'), notice + pageTextHtml({ base: BASE, pageUrl: PAGE, values: {}, meta: {} })), pageLoadJs + `<script>${PAGE_JS}</script>`);
+
 const root = new URL('../../public/the-pitch/review-preview/', import.meta.url);
 const write = (rel, html) => {
   const dir = new URL(rel, root);
@@ -158,8 +177,9 @@ const write = (rel, html) => {
 };
 write('./', requests);
 write('emails/', emails);
+write('page/', pageText);
 for (const [key, html] of editors) write(`emails/${key}/`, html);
-console.log(`preview: public/the-pitch/review-preview/ (requests, emails, ${editors.length} editors)`);
+console.log(`preview: public/the-pitch/review-preview/ (requests, emails, ${editors.length} editors, page text)`);
 
 if (process.argv[2]) {
   // The Requests screen without the document skeleton (for a claude.ai artifact).

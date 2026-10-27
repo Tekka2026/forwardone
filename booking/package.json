@@ -8,7 +8,8 @@
     "check": "tsc --noEmit && node scripts/design-lint.mjs",
     "test": "node --test test/",
     "deploy": "wrangler deploy",
-    "preview": "node --experimental-strip-types --no-warnings scripts/preview.mjs"
+    "preview": "node --experimental-strip-types --no-warnings scripts/preview.mjs",
+    "defaults": "node --experimental-strip-types --no-warnings scripts/page-defaults.mjs"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20261019.1",
