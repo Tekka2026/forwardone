@@ -22,7 +22,7 @@
     --muted: #8a8a8a;
     --blank-line: #111111;
     --hand-gradient: linear-gradient(to top right, #04edcd, #05f46b);
-    --pad: 120px;
+    --pad: 75px; /* 120 before; owner 2026-10-27: "from 80 to 50" as seen, so x 5/8 */
   }
   * { margin: 0; box-sizing: border-box; }
   body { background: var(--bg); }
@@ -86,7 +86,7 @@
   .facts {
     background: #000000;
     color: #ffffff;
-    padding: 96px var(--pad) 120px;
+    padding: 60px var(--pad) var(--pad);
   }
   .label {
     font-family: "Geist Mono", monospace;

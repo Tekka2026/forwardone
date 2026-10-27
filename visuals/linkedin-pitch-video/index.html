@@ -25,7 +25,7 @@
     --blank-line: #111111;
     --blank-line-filled: #c4c3be;
     --hand-gradient: linear-gradient(to top right, #04edcd, #05f46b);
-    --pad: 120px;
+    --pad: 75px; /* 120 before; owner 2026-10-27: "from 80 to 50" as seen, so x 5/8 */
   }
   * { margin: 0; box-sizing: border-box; }
   body { background: var(--bg); }
@@ -57,7 +57,7 @@
   .logos img { height: var(--logo-h); display: block; }
   /* "Slush, Helsinki" stays put where it sits in the still (owner,
      2026-10-27); the heading hangs from it and shrinks upward-anchored. */
-  .title-block { margin-top: 784px; }
+  .title-block { margin-top: 951px; }
   .eyebrow {
     font-family: "Geist Mono", monospace;
     font-weight: 500;
@@ -135,7 +135,7 @@
     flex-shrink: 0;
     background: #000000;
     color: #ffffff;
-    padding: 96px var(--pad) 120px;
+    padding: 60px var(--pad) var(--pad);
   }
   .label {
     font-family: "Geist Mono", monospace;
@@ -185,7 +185,7 @@
   // Size changes glide over SMOOTH ms (the page: 240ms font-size and 360ms
   // line transitions), so the heading never jumps.
   var SMOOTH = 450, LINE_MIN = 2.7; // em, the empty line's length
-  var BASE = 250, ROOM = 1260; // the H1's size and the width it may take (px)
+  var BASE = 250, ROOM = 1350; // the H1's size and the width it may take (px)
   var h1 = document.querySelector('h1'), line = document.querySelector('.line');
   var blank = document.getElementById('blank'), hand = document.getElementById('hand');
   var caret = document.createElement('span');
@@ -226,7 +226,10 @@
     for (var k = 0; k <= text.length; k++) {
       draw(name, k);
       blank.style.minWidth = (k >= 5 ? 0 : LINE_MIN) + 'em';
-      name.scales.push(Math.min(1, ROOM / line.getBoundingClientRect().width));
+      // The handwriting's last stroke can reach past the line: measure both.
+      var lr = line.getBoundingClientRect(), right = lr.right;
+      hand.querySelectorAll('.hw').forEach(function (l) { right = Math.max(right, l.getBoundingClientRect().right - 0.2 * parseFloat(getComputedStyle(l).fontSize)); });
+      name.scales.push(Math.min(1, ROOM / (right - lr.left)));
     }
     return name;
   }
@@ -303,10 +306,17 @@
     else if (ms >= p.erased && ms < p.end) { n = p.text.length - Math.floor((ms - p.erased) / ERASE) - 1; typing = true; }
     // Scale and line length follow the letters on the line, eased over
     // SMOOTH ms (a triangle-weighted average of where they are heading).
+    // The scale looks ahead (the smallest it will need within SMOOTH ms),
+    // so a name never runs past the padding while the heading catches up.
+    function ahead(t) {
+      var m = Infinity;
+      for (var k = 0; k <= 14; k++) m = Math.min(m, target(t + k * SMOOTH / 14).scale);
+      return m;
+    }
     var sum = 0, sc = 0, mw = 0;
     for (var q = -14; q <= 0; q++) {
       var w = 15 + q, tt = target(ms + q * SMOOTH / 14);
-      sum += w; sc += w * tt.scale; mw += w * tt.minw;
+      sum += w; sc += w * ahead(ms + q * SMOOTH / 14); mw += w * tt.minw;
     }
     var scale = sc / sum;
     h1.style.fontSize = (BASE * scale).toFixed(2) + 'px';
