@@ -36,6 +36,6 @@ jobs:
           show "Webflow page: which pasted version"
           curl -sS "https://www.forward.one/events/2026/the-pitch-at-slush-2026" -o page.html -w "HTTP %{http_code}\n"
           echo "booking address: $(grep -o 'data-api="[^"]*"' page.html | head -1)"
-          for mark in "Reach me at" "delete them three months" "data-pitch-check" "fo-pitch__fact-link"; do
+          for mark in "Reach me at" "delete them three months" "data-pitch-check" "fo-pitch__fact-link" "https://www.hcvc.co/"; do
             if grep -q "$mark" page.html; then echo "has: $mark"; else echo "MISSING: $mark"; fi
           done
