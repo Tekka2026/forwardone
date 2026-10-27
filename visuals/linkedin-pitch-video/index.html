@@ -1,0 +1,195 @@
+<!doctype html>
+<!-- LinkedIn video for The ____ Pitch at Slush (owner, 2026-10-27): the
+     still (../linkedin-pitch) with ten portfolio names typed and erased on
+     the blank, in the page's handwriting. Frames come from window.frame(ms);
+     visuals/animate.mjs records them to MP4. 5:7, 1500 x 2100. Rendered to PNG by visuals/render.mjs (GitHub Actions,
+     .github/workflows/render-visuals.yml). Type and colours follow the
+     page (/the-pitch, DESIGN.md): Inter 500 like its H1 (owner, 2026-10-27). -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Pitch at Slush: LinkedIn</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..600&family=Covered+By+Your+Grace&display=block">
+<style>
+  @font-face {
+    font-family: "Geist Mono";
+    src: url("../../src/assets/fonts/geist-mono/GeistMono-Medium.woff2") format("woff2");
+    font-weight: 500;
+    font-display: block;
+  }
+  :root {
+    --bg: #ffffff;
+    --fg: #111111;
+    --muted: #8a8a8a;
+    --blank-line: #111111;
+    --blank-line-filled: #c4c3be;
+    --hand-gradient: linear-gradient(to top right, #04edcd, #05f46b);
+    --pad: 120px;
+  }
+  * { margin: 0; box-sizing: border-box; }
+  body { background: var(--bg); }
+  .card {
+    width: 1500px;
+    height: 2100px;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    color: var(--fg);
+  }
+  .top {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: var(--pad);
+  }
+  .logos {
+    display: flex;
+    align-items: center;
+    gap: 96px;
+  }
+  .logos img { height: 44px; display: block; }
+  .title-block { margin-top: auto; }
+  .eyebrow {
+    font-family: "Geist Mono", monospace;
+    font-weight: 500;
+    font-size: 40px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+  .eyebrow .brand {
+    background: var(--hand-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  h1 {
+    font-family: "Inter", sans-serif;
+    font-weight: 500;
+    font-size: 250px;
+    line-height: 1.04;
+  }
+  .blank {
+    display: inline-block;
+    position: relative;
+    width: 2.7em;
+    margin-inline: 0.12em;
+    border-bottom: 0.035em solid var(--blank-line);
+    height: 0.8em;
+    vertical-align: baseline;
+  }
+  /* Once a name is being written the line steps back to light grey, as on
+     the page. */
+  .blank.is-filled { border-bottom-color: var(--blank-line-filled); }
+  .hand {
+    position: absolute;
+    left: 0.06em;
+    bottom: 0.06em;
+    font-family: "Covered By Your Grace", cursive;
+    font-weight: 400;
+    line-height: 1;
+    white-space: pre;
+    background: var(--hand-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .caret {
+    position: absolute;
+    bottom: 0.12em;
+    width: 0.03em;
+    height: 0.62em;
+    background: var(--hand-gradient);
+  }
+  .line { white-space: nowrap; }
+  .facts {
+    background: #000000;
+    color: #ffffff;
+    padding: 96px var(--pad) 120px;
+  }
+  .label {
+    font-family: "Geist Mono", monospace;
+    font-weight: 500;
+    font-size: 32px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+  .date {
+    font-family: "Inter", sans-serif;
+    font-weight: 500;
+    font-size: 150px;
+    line-height: 1.04;
+  }
+</style>
+</head>
+<body data-video>
+  <div class="card" id="card">
+    <div class="top">
+      <div class="logos">
+        <img src="../../src/assets/brand/forwardone.svg" alt="FORWARD.one">
+        <img src="../../src/assets/brand/balnord.svg" alt="Balnord">
+        <img src="../../src/assets/brand/hcvc.svg" alt="HCVC">
+      </div>
+      <div class="title-block">
+        <p class="eyebrow"><span class="brand">Slush</span>, Helsinki</p>
+        <h1><span class="line">The<span class="blank" id="blank"><span class="hand" id="hand"></span><span class="caret" id="caret"></span></span></span><br>Pitch</h1>
+      </div>
+    </div>
+    <div class="facts">
+      <p class="label">When</p>
+      <p class="date">18 November</p>
+    </div>
+  </div>
+<script>
+  // Ten current portfolio companies (src/content/founders.ts, from
+  // forward.one/portfolio, A0013).
+  var NAMES = ['QuantWare', 'QuiX Quantum', 'Optics11', 'ExRobotics', 'Fizyr', 'Voltfang', 'ORE Energy', 'Sapient Perception', 'Fibersail', 'SenseGlove'];
+  var TYPE = 85, HOLD = 1500, ERASE = 40, GAP = 450, START = 700; // ms
+  var blank = document.getElementById('blank'), hand = document.getElementById('hand'), caret = document.getElementById('caret');
+  // The handwriting at 1.3em of the H1 (as on the page), smaller only when
+  // a name would not fit the blank.
+  function sizeFor(name) {
+    var max = blank.clientWidth - 0.1 * parseFloat(getComputedStyle(blank).fontSize);
+    hand.style.fontSize = '1.3em';
+    hand.textContent = name;
+    var w = hand.getBoundingClientRect().width;
+    return w > max ? 1.3 * max / w + 'em' : '1.3em';
+  }
+  var plan = [], t = START;
+  NAMES.forEach(function (n) {
+    var size = sizeFor(n), typed = t, held = typed + n.length * TYPE, erased = held + HOLD;
+    plan.push({ name: n, size: size, typed: typed, held: held, erased: erased, end: erased + n.length * ERASE });
+    t = erased + n.length * ERASE + GAP;
+  });
+  window.DURATION = t;
+  // The state at time ms: text shown, and whether the caret shows.
+  window.frame = function (ms) {
+    var shown = '', step = null, typing = false;
+    for (var i = 0; i < plan.length; i++) {
+      var p = plan[i];
+      if (ms < p.typed || ms >= p.end) continue;
+      step = p;
+      if (ms < p.held) { shown = p.name.slice(0, Math.floor((ms - p.typed) / TYPE) + 1); typing = true; }
+      else if (ms < p.erased) shown = p.name;
+      else { shown = p.name.slice(0, p.name.length - Math.floor((ms - p.erased) / ERASE) - 1); typing = true; }
+    }
+    hand.style.fontSize = step ? step.size : '1.3em';
+    hand.textContent = shown;
+    blank.classList.toggle('is-filled', shown.length > 0);
+    // The caret blinks while waiting and stays on while writing.
+    var on = typing || Math.floor(ms / 530) % 2 === 0;
+    caret.style.visibility = on ? 'visible' : 'hidden';
+    caret.style.left = (shown ? hand.offsetLeft + hand.getBoundingClientRect().width + 6 : 8) + 'px';
+    return shown + '|' + on + '|' + hand.style.fontSize;
+  };
+  document.fonts.ready.then(function () {
+    // Measure again once the handwriting font is in.
+    plan.forEach(function (p) { p.size = sizeFor(p.name); });
+    window.frame(0);
+    document.body.dataset.ready = '1';
+  });
+</script>
+</body>
+</html>

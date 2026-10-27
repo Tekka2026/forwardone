@@ -1,8 +1,8 @@
 name: Render visuals
 
-# Social visuals (visuals/<name>/index.html) to PNG, with the real fonts
-# (Fontshare is not reachable from Claude's environment). The PNGs are
-# committed to the branch claude/visuals as visuals/<name>.png.
+# Social visuals (visuals/<name>/index.html) to PNG, and the ones marked
+# <body data-video> to MP4 (visuals/animate.mjs, ffmpeg). The files are
+# committed to the branch claude/visuals as visuals/<name>.png / .mp4.
 
 on:
   push:
@@ -34,9 +34,10 @@ jobs:
           python3 -m http.server 4600 >/dev/null 2>&1 &
           until curl -s localhost:4600 >/dev/null; do sleep 1; done
           node visuals/render.mjs
+          node visuals/animate.mjs
       - name: Commit to claude/visuals
         run: |
-          mkdir -p /tmp/png && cp visuals/out/*.png /tmp/png/
+          mkdir -p /tmp/png && cp visuals/out/*.png visuals/out/*.mp4 /tmp/png/
           git config user.name "github-actions[bot]"
           git config user.email "41898732+github-actions[bot]@users.noreply.github.com"
           if git fetch origin claude/visuals; then
@@ -44,7 +45,7 @@ jobs:
           else
             git checkout -f --orphan claude/visuals && git rm -rqf .
           fi
-          mkdir -p visuals && cp /tmp/png/*.png visuals/
-          git add visuals/*.png
+          mkdir -p visuals && cp /tmp/png/* visuals/
+          git add visuals/
           git diff --cached --quiet || git commit -m "Visuals from ${GITHUB_SHA::7}"
           git push origin claude/visuals

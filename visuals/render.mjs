@@ -2,11 +2,13 @@
 // size of its #card element, once its fonts have loaded. Runs in GitHub
 // Actions (.github/workflows/render-visuals.yml).
 // Usage: node visuals/render.mjs   (serve the repository root on :4600 first)
-import { readdirSync, existsSync, mkdirSync } from 'node:fs';
+import { readdirSync, existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { chromium } from 'playwright';
 
 const names = readdirSync(new URL('.', import.meta.url), { withFileTypes: true })
   .filter((d) => d.isDirectory() && existsSync(new URL(`${d.name}/index.html`, import.meta.url)))
+  // Videos are recorded by animate.mjs.
+  .filter((d) => !/<body data-video>/.test(readFileSync(new URL(`${d.name}/index.html`, import.meta.url), 'utf8')))
   .map((d) => d.name);
 mkdirSync(new URL('out/', import.meta.url), { recursive: true });
 const browser = await chromium.launch();
