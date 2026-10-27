@@ -39,17 +39,21 @@
     flex-direction: column;
     padding: var(--pad);
   }
+  /* The three logos at one height, filling the width inside the padding
+     (owner, 2026-10-27). Widths per unit of height: FORWARD.one 9.95,
+     Balnord 4.28, HCVC 4.53; gaps of 2 heights: 22.76 heights in all. */
   .logos {
+    --logo-h: calc((1500px - 2 * var(--pad)) / 22.76);
     display: flex;
     align-items: center;
-    gap: 96px;
+    justify-content: space-between;
   }
-  .logos img { height: 44px; display: block; }
+  .logos img { height: var(--logo-h); display: block; }
   .title-block { margin-top: auto; }
   .eyebrow {
     font-family: "Geist Mono", monospace;
     font-weight: 500;
-    font-size: 40px;
+    font-size: 34px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     margin-bottom: 40px;
@@ -72,7 +76,9 @@
     margin-inline: 0.12em;
     border-bottom: 0.035em solid var(--blank-line);
     height: 0.8em;
-    vertical-align: baseline;
+    /* Where the line sits on the page and in the video: a little under the
+       letters' baseline, room for the handwriting's descenders. */
+    vertical-align: -0.164em;
   }
   .line { white-space: nowrap; }
   .facts {
@@ -83,7 +89,7 @@
   .label {
     font-family: "Geist Mono", monospace;
     font-weight: 500;
-    font-size: 32px;
+    font-size: 27px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--muted);
@@ -92,7 +98,7 @@
   .date {
     font-family: "Inter", sans-serif;
     font-weight: 500;
-    font-size: 150px;
+    font-size: 110px;
     line-height: 1.04;
   }
 </style>

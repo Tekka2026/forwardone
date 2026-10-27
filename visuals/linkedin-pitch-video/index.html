@@ -43,19 +43,23 @@
     flex-direction: column;
     padding: var(--pad);
   }
+  /* The three logos at one height, filling the width inside the padding
+     (owner, 2026-10-27). Widths per unit of height: FORWARD.one 9.95,
+     Balnord 4.28, HCVC 4.53; gaps of 2 heights: 22.76 heights in all. */
   .logos {
+    --logo-h: calc((1500px - 2 * var(--pad)) / 22.76);
     display: flex;
     align-items: center;
-    gap: 96px;
+    justify-content: space-between;
   }
-  .logos img { height: 44px; display: block; }
-  /* "Slush, Helsinki" stays put where it sits at full size (owner,
+  .logos img { height: var(--logo-h); display: block; }
+  /* "Slush, Helsinki" stays put where it sits in the still (owner,
      2026-10-27); the heading hangs from it and shrinks upward-anchored. */
-  .title-block { margin-top: 736px; }
+  .title-block { margin-top: 811px; }
   .eyebrow {
     font-family: "Geist Mono", monospace;
     font-weight: 500;
-    font-size: 40px;
+    font-size: 34px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     margin-bottom: 40px;
@@ -95,6 +99,10 @@
     line-height: 1;
     white-space: pre;
     transform: translateY(0.04em);
+    /* Taller than the heading's letters: without this the handwriting would
+       push the heading down from where the still has it. */
+    margin-top: -1em;
+    margin-bottom: -0.2em;
   }
   .hw {
     --pad: 0.2em;
@@ -127,7 +135,7 @@
   .label {
     font-family: "Geist Mono", monospace;
     font-weight: 500;
-    font-size: 32px;
+    font-size: 27px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--muted);
@@ -136,7 +144,7 @@
   .date {
     font-family: "Inter", sans-serif;
     font-weight: 500;
-    font-size: 150px;
+    font-size: 110px;
     line-height: 1.04;
   }
 </style>
