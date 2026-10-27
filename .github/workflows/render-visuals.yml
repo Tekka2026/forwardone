@@ -1,0 +1,50 @@
+name: Render visuals
+
+# Social visuals (visuals/<name>/index.html) to PNG, with the real fonts
+# (Fontshare is not reachable from Claude's environment). The PNGs are
+# committed to the branch claude/visuals as visuals/<name>.png.
+
+on:
+  push:
+    branches: [claude/forwardone-web-gl4kz9]
+    paths: ['visuals/**', '.github/workflows/render-visuals.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: visuals
+  cancel-in-progress: false
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Playwright
+        run: |
+          npm install --no-save --no-package-lock playwright
+          npx playwright install --with-deps chromium
+      - name: Render
+        run: |
+          python3 -m http.server 4600 >/dev/null 2>&1 &
+          until curl -s localhost:4600 >/dev/null; do sleep 1; done
+          node visuals/render.mjs
+      - name: Commit to claude/visuals
+        run: |
+          mkdir -p /tmp/png && cp visuals/out/*.png /tmp/png/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898732+github-actions[bot]@users.noreply.github.com"
+          if git fetch origin claude/visuals; then
+            git checkout -f -B claude/visuals origin/claude/visuals
+          else
+            git checkout -f --orphan claude/visuals && git rm -rqf .
+          fi
+          mkdir -p visuals && cp /tmp/png/*.png visuals/
+          git add visuals/*.png
+          git diff --cached --quiet || git commit -m "Visuals from ${GITHUB_SHA::7}"
+          git push origin claude/visuals
