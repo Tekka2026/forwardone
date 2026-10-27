@@ -649,6 +649,9 @@ sheet, wording confirmed by the owner 2026-10-21).
   four event facts on the black, no hairline (When, Where, Apply by, The
   panel; mono labels 12px, values in the small size, 15px, like the privacy
   note: owner 2026-10-27, before 17px), 4 columns, 2 at ≤880px, 1 at ≤640px.
+  The Where value links to the map (owner, 2026-10-27,
+  https://maps.app.goo.gl/SiHnx1zd7Eh2fTnD7; opens in a new tab, underlined
+  1px; the link is editable on Page text as "Where, map link").
 - Spacing (owner, 2026-10-22, tightened): 24px from the header to the
   eyebrow (on top of the header's own padding); eyebrow to
   H1 12px; H1 to lede 24px; lede to letter 24px; letter to button 24px

@@ -44,7 +44,8 @@ has every field; emails can greet with `{first_name}`.
 
 The team edits the pitch page's texts on the dashboard (**Page text**): the
 eyebrow, the text under the heading, the button, the privacy note, the
-thank-you message and the four event facts (owner, 2026-10-27). The page,
+thank-you message, the four event facts and the map link behind Where
+(owner, 2026-10-27). The page,
 on Webflow and on the preview site, fetches `GET /copy` on every visit and
 swaps the saved texts in, so no republishing is needed (answers are cached
 for a minute). Without an answer it keeps the texts it was built with. The

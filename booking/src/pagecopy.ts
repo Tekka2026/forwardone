@@ -6,7 +6,7 @@
  */
 import DEFAULTS from './page-defaults.json' with { type: 'json' };
 
-export type PageField = { key: keyof typeof DEFAULTS; label: string; help: string; rows?: number; max: number };
+export type PageField = { key: keyof typeof DEFAULTS; label: string; help: string; rows?: number; max: number; link?: boolean };
 
 export const PAGE_FIELDS: { group: string; fields: PageField[] }[] = [
   {
@@ -30,6 +30,7 @@ export const PAGE_FIELDS: { group: string; fields: PageField[] }[] = [
     fields: [
       { key: 'fact_when', label: 'When', help: 'A new line starts a new line on the page.', rows: 2, max: 200 },
       { key: 'fact_where', label: 'Where', help: 'A new line starts a new line on the page.', rows: 2, max: 200 },
+      { key: 'fact_where_link', label: 'Where, map link', help: 'The address on the page links here, e.g. a Google Maps link. Starts with https://.', max: 500, link: true },
       { key: 'fact_apply_by', label: 'Apply by', help: 'A new line starts a new line on the page.', rows: 2, max: 200 },
       { key: 'fact_panel', label: 'The panel', help: 'A new line starts a new line on the page.', rows: 2, max: 200 },
     ],

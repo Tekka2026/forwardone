@@ -12,6 +12,7 @@ const defaults = {
   sent: pitch.sent,
   privacy: pitch.privacy,
   ...Object.fromEntries(pitch.facts.map((f) => [f.key, f.value])),
+  ...Object.fromEntries(pitch.facts.filter((f) => 'href' in f && f.href).map((f) => [`${f.key}_link`, f.href])),
 };
 writeFileSync(new URL('../src/page-defaults.json', import.meta.url), JSON.stringify(defaults, null, 2) + '\n');
 console.log('page-defaults:', Object.keys(defaults).length, 'texts');

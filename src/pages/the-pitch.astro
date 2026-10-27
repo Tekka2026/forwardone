@@ -218,14 +218,21 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
               <div>
                 <dt class="label">{f.label}</dt>
                 <dd class="small" data-copy={f.key}>
-                  {f.value.split('\n').map((line, li) => (
-                    <>
-                      {li > 0 && <br />}
-                      {chunks(line).map((c) => (
-                        <Placeholder value={c} />
-                      ))}
-                    </>
-                  ))}
+                  {(() => {
+                    const value = f.value.split('\n').map((line, li) => (
+                      <>
+                        {li > 0 && <br />}
+                        {chunks(line).map((c) => (
+                          <Placeholder value={c} />
+                        ))}
+                      </>
+                    ));
+                    return 'href' in f && f.href ? (
+                      <a class="pitch__fact-link" href={f.href} target="_blank" rel="noopener" data-copy-link={`${f.key}_link`}>{value}</a>
+                    ) : (
+                      value
+                    );
+                  })()}
                 </dd>
               </div>
             ))
@@ -254,6 +261,9 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
     var introEl = document.querySelector('[data-copy="intro"]');
     var PARTNER = { name: introEl.dataset.partnerName, href: introEl.dataset.partnerHref };
     function lines(el, text) {
+      // A linked fact (the address) keeps its link around the new text.
+      var a = el.querySelector('a[data-copy-link]');
+      if (a) el = a;
       el.textContent = '';
       text.split('\n').forEach(function (l, i) {
         if (i) el.appendChild(document.createElement('br'));
@@ -283,6 +293,8 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
           Object.keys(d.values || {}).forEach(function (k) {
             var v = d.values[k];
             if (k === 'submit') return SETTERS.submit(null, v);
+            var link = document.querySelector('[data-copy-link="' + k + '"]');
+            if (link) { link.href = v; return; }
             var el = document.querySelector('[data-copy="' + k + '"]');
             if (!el) return;
             (SETTERS[k] || lines)(el, v);
@@ -976,6 +988,13 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
   }
   .pitch__facts dd {
     margin: var(--space-2x) 0 0;
+  }
+  /* The address links to the map (owner, 2026-10-27). */
+  .pitch__fact-link {
+    color: inherit;
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
   }
 
   @media (max-width: 880px) {

@@ -311,6 +311,7 @@ to{opacity:1}
 .fo-pitch__facts[data-astro-cid-ikq7lxbc]{gap:var(--gutter);grid-template-columns:repeat(4,minmax(0,1fr));margin:0;display:grid}
 .fo-pitch__facts[data-astro-cid-ikq7lxbc] dt[data-astro-cid-ikq7lxbc]{color:var(--muted)}
 .fo-pitch__facts[data-astro-cid-ikq7lxbc] dd[data-astro-cid-ikq7lxbc]{margin:var(--space-2x) 0 0}
+.fo-pitch__fact-link[data-astro-cid-ikq7lxbc]{color:inherit;text-underline-offset:3px;text-decoration-line:underline;text-decoration-thickness:1px}
 @media (width<=880px){.fo-pitch__facts[data-astro-cid-ikq7lxbc]{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (width<=640px){.fo-pitch__hero[data-astro-cid-ikq7lxbc]{padding-bottom:var(--space-8x)}

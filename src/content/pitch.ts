@@ -124,7 +124,9 @@ export const pitch = {
    * unreachable. */
   facts: [
     { key: 'fact_when', label: 'When', value: '18 November\n08:00–16:00 Helsinki time' },
-    { key: 'fact_where', label: 'Where', value: PH('stage or venue at Slush, Helsinki') },
+    // The address links to the map (owner, 2026-10-27); the link can be
+    // changed on the dashboard (Page text, "Where, map link").
+    { key: 'fact_where', label: 'Where', value: PH('stage or venue at Slush, Helsinki'), href: 'https://maps.app.goo.gl/SiHnx1zd7Eh2fTnD7' },
     { key: 'fact_apply_by', label: 'Apply by', value: PH('deadline') },
     { key: 'fact_panel', label: 'The panel', value: 'FORWARD.one, Balnord and HCVC' },
   ],

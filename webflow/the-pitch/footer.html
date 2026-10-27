@@ -17,6 +17,9 @@
     var introEl = document.querySelector('[data-copy="intro"]');
     var PARTNER = { name: introEl.dataset.partnerName, href: introEl.dataset.partnerHref };
     function lines(el, text) {
+      // A linked fact (the address) keeps its link around the new text.
+      var a = el.querySelector('a[data-copy-link]');
+      if (a) el = a;
       el.textContent = '';
       text.split('\n').forEach(function (l, i) {
         if (i) el.appendChild(document.createElement('br'));
@@ -46,6 +49,8 @@
           Object.keys(d.values || {}).forEach(function (k) {
             var v = d.values[k];
             if (k === 'submit') return SETTERS.submit(null, v);
+            var link = document.querySelector('[data-copy-link="' + k + '"]');
+            if (link) { link.href = v; return; }
             var el = document.querySelector('[data-copy="' + k + '"]');
             if (!el) return;
             (SETTERS[k] || lines)(el, v);

@@ -264,6 +264,7 @@ async function review(env: Env, req: Request, url: URL, ctx: ExecutionContext) {
       const v = String(values[key] ?? '').replace(/\r\n/g, '\n').trim();
       const f = pageField(key)!;
       if (v.length > f.max) return json({ error: 'invalid', message: `${f.label} is too long (at most ${f.max} characters).` }, 400);
+      if (f.link && v && !/^https:\/\/\S+$/i.test(v)) return json({ error: 'invalid', message: `${f.label} must be a web address starting with https://.` }, 400);
       stmts.push(
         !v || v === PAGE_DEFAULTS[key]
           ? env.DB.prepare('DELETE FROM page_copy WHERE key = ?').bind(key)

@@ -295,6 +295,12 @@ tr[data-href] { cursor: pointer; }
           <button class="btn btn--sm" type="button" data-original hidden>Use original</button></span></div>
         <textarea class="field block page-field" id="pf-fact_where" name="fact_where" rows="2" maxlength="200">[PLACEHOLDER: stage or venue at Slush, Helsinki]</textarea>
         <p class="t-help">A new line starts a new line on the page.</p>
+      </div><div class="page-row" data-key="fact_where_link">
+        <div class="card-head"><label class="t-label flush" for="pf-fact_where_link">Where, map link</label>
+          <span class="row-actions"><span data-state><span class="pill pill--neutral">Original</span></span>
+          <button class="btn btn--sm" type="button" data-original hidden>Use original</button></span></div>
+        <input class="field block page-field" id="pf-fact_where_link" name="fact_where_link" maxlength="500" value="https://maps.app.goo.gl/SiHnx1zd7Eh2fTnD7">
+        <p class="t-help">The address on the page links here, e.g. a Google Maps link. Starts with https://.</p>
       </div><div class="page-row" data-key="fact_apply_by">
         <div class="card-head"><label class="t-label flush" for="pf-fact_apply_by">Apply by</label>
           <span class="row-actions"><span data-state><span class="pill pill--neutral">Original</span></span>
@@ -310,7 +316,7 @@ tr[data-href] { cursor: pointer; }
       </div></section>
       <div class="save-bar"><button class="btn btn--primary" type="submit" id="page-save">Save</button><span class="t-help flush" id="page-dirty"></span></div>
     </form>
-    <script type="application/json" id="page-data">{"base":"/forwardone/the-pitch/review-preview","defaults":{"eyebrow_brand":"Slush","eyebrow_rest":", Helsinki","intro":"20 minutes, three deeptech investors, no slides. Tell us who you are and how big your ambitions are. If we have conviction, you could leave with a term sheet.","submit":"Send pitch","sent":"Thank you. Your time is on hold while we read your application. We’ll email you whether it is confirmed.","privacy":"","fact_when":"18 November\n08:00–16:00 Helsinki time","fact_where":"[PLACEHOLDER: stage or venue at Slush, Helsinki]","fact_apply_by":"[PLACEHOLDER: deadline]","fact_panel":"FORWARD.one, Balnord and HCVC"}}</script></main>
+    <script type="application/json" id="page-data">{"base":"/forwardone/the-pitch/review-preview","defaults":{"eyebrow_brand":"Slush","eyebrow_rest":", Helsinki","intro":"20 minutes, three deeptech investors, no slides. Tell us who you are and how big your ambitions are. If we have conviction, you could leave with a term sheet.","submit":"Send pitch","sent":"Thank you. Your time is on hold while we read your application. We’ll email you whether it is confirmed.","privacy":"","fact_when":"18 November\n08:00–16:00 Helsinki time","fact_where":"[PLACEHOLDER: stage or venue at Slush, Helsinki]","fact_apply_by":"[PLACEHOLDER: deadline]","fact_panel":"FORWARD.one, Balnord and HCVC","fact_where_link":"https://maps.app.goo.gl/SiHnx1zd7Eh2fTnD7"}}</script></main>
   </div>
   <div class="toasts" id="toasts" aria-live="polite"></div>
   <dialog id="confirm" aria-labelledby="confirm-h">
