@@ -596,8 +596,12 @@ sheet, wording confirmed by the owner 2026-10-21).
   height, shadow), so the letter looks the same on Webflow (owner,
   2026-10-26, see webflow/README.md).
   Autofilled answers (the browser's saved email, name) show in solid
-  #04EDCD on the page background, since browsers drop the gradient there;
-  an autofill also resizes the blank and opens the letter on.
+  #04EDCD on the page background, since the browser's own fill colour would
+  show through gradient text and turn it pale (owner, 2026-10-27, iPhone).
+  Script marks such a blank `.is-autofilled` (the browser's autofill state
+  where it reports it, else an input event that is not typing); typing in
+  it brings the gradient back. An autofill also resizes the blank and opens
+  the letter on.
 - The letter unfolds sentence by sentence (owner, 2026-10-21): at first
   only "Dear FORWARD.one, we are [company name]."; once the company name is
   in, "I'm [name], our [role]."; once the name is in, "Reach me at [email]

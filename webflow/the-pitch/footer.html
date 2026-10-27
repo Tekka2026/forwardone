@@ -111,16 +111,36 @@
     var inputs = form.querySelectorAll('[data-pitch-input]');
     inputs.forEach(function (input) {
       size(input);
-      input.addEventListener('input', function () { size(input); });
+      input.addEventListener('input', function (e) { size(input); autofilled(input, e); });
       // Browser autofill (an email address, a name): the CSS starts a no-op
       // animation on :autofill, so the blank resizes and the letter opens on.
       input.addEventListener('animationstart', function (e) {
         if (e.animationName.indexOf('pitch-autofill') === -1) return;
         size(input);
+        autofilled(input);
         if (input === company) write();
         clearTimeout(pause);
         pause = setTimeout(advance, 300);
       });
+    });
+    // Autofilled answers lose the gradient: the browser paints its own
+    // background, which shows through gradient text and turns it pale
+    // (owner, 2026-10-27, iPhone). Such a blank gets .is-autofilled and
+    // shows solid teal; typing in it brings the gradient back. Detected by
+    // the browser's own state where it reports it, else by the kind of input
+    // (autofill sends no typing event).
+    var TYPED = /^(insert(Text|CompositionText|FromPaste|FromDrop|LineBreak)|delete|history|format)/;
+    function autofilled(input, e) {
+      if (input.tagName === 'SELECT') return;
+      var on = false;
+      try { on = input.matches(':-webkit-autofill'); } catch (err) {}
+      if (!on) { try { on = input.matches(':autofill'); } catch (err) {} }
+      if (!on && e && input.value) on = !e.inputType || !TYPED.test(e.inputType);
+      input.classList.toggle('fo-is-autofilled', on && !!input.value);
+    }
+    // Some browsers fill on load without any event.
+    [300, 1000, 2500].forEach(function (ms) {
+      setTimeout(function () { inputs.forEach(function (i) { if (i.value) { autofilled(i); size(i); } }); }, ms);
     });
 
     // ---- Steps: the letter unfolds sentence by sentence. -----------------

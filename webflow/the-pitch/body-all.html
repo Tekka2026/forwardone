@@ -127,14 +127,27 @@ input.style.width = Math.ceil(meter.getBoundingClientRect().width) + 2 + 'px';
 var inputs = form.querySelectorAll('[data-pitch-input]');
 inputs.forEach(function (input) {
 size(input);
-input.addEventListener('input', function () { size(input); });
+input.addEventListener('input', function (e) { size(input); autofilled(input, e); });
 input.addEventListener('animationstart', function (e) {
 if (e.animationName.indexOf('pitch-autofill') === -1) return;
 size(input);
+autofilled(input);
 if (input === company) write();
 clearTimeout(pause);
 pause = setTimeout(advance, 300);
 });
+});
+var TYPED = /^(insert(Text|CompositionText|FromPaste|FromDrop|LineBreak)|delete|history|format)/;
+function autofilled(input, e) {
+if (input.tagName === 'SELECT') return;
+var on = false;
+try { on = input.matches(':-webkit-autofill'); } catch (err) {}
+if (!on) { try { on = input.matches(':autofill'); } catch (err) {} }
+if (!on && e && input.value) on = !e.inputType || !TYPED.test(e.inputType);
+input.classList.toggle('fo-is-autofilled', on && !!input.value);
+}
+[300, 1000, 2500].forEach(function (ms) {
+setTimeout(function () { inputs.forEach(function (i) { if (i.value) { autofilled(i); size(i); } }); }, ms);
 });
 var steps = [].slice.call(form.querySelectorAll('[data-pitch-step]'));
 var finals = [].slice.call(form.querySelectorAll('[data-pitch-final]'));

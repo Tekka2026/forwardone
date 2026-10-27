@@ -284,8 +284,9 @@ main:focus{outline:none}
 .fo-pitch__input[data-astro-cid-ikq7lxbc]{font-family:var(--font-answer);font-size:1em;font-weight:var(--fw-answer);letter-spacing:0;height:auto;box-shadow:none;vertical-align:baseline;border:0;border-bottom:var(--hairline-w) solid var(--fg);background:var(--hand-gradient);color:#0000;-webkit-text-fill-color:transparent;max-width:100%;caret-color:var(--hand-colour);line-height:var(--lh-metric);box-sizing:content-box;-webkit-background-clip:text;background-clip:text;border-radius:0;outline:none;margin:0;padding:0 .1em}
 .fo-pitch__input[data-astro-cid-ikq7lxbc]:placeholder-shown{background:0 0}
 .fo-pitch__input[data-astro-cid-ikq7lxbc]::placeholder{color:var(--muted);-webkit-text-fill-color:var(--muted);opacity:.75}
-.fo-pitch__input[data-astro-cid-ikq7lxbc]:-webkit-autofill,.fo-pitch__input[data-astro-cid-ikq7lxbc]:-webkit-autofill:hover,.fo-pitch__input[data-astro-cid-ikq7lxbc]:-webkit-autofill:focus{-webkit-text-fill-color:var(--hand-colour);caret-color:var(--hand-colour);box-shadow:0 0 0 1000px var(--bg) inset;transition:background-color 600000s;animation:1ms pitch-autofill}
-.fo-pitch__input[data-astro-cid-ikq7lxbc]:autofill{-webkit-text-fill-color:var(--hand-colour);box-shadow:0 0 0 1000px var(--bg) inset}
+.fo-pitch__input[data-astro-cid-ikq7lxbc].fo-is-autofilled{color:var(--hand-colour);-webkit-text-fill-color:var(--hand-colour);caret-color:var(--hand-colour);box-shadow:0 0 0 1000px var(--bg) inset;background:0 0;-webkit-background-clip:border-box;background-clip:border-box}
+.fo-pitch__input[data-astro-cid-ikq7lxbc]:-webkit-autofill{-webkit-text-fill-color:var(--hand-colour);caret-color:var(--hand-colour);box-shadow:0 0 0 1000px var(--bg) inset;-webkit-background-clip:border-box;background-clip:border-box;transition:background-color 600000s;animation:1ms pitch-autofill}
+.fo-pitch__input[data-astro-cid-ikq7lxbc]:autofill{-webkit-text-fill-color:var(--hand-colour);box-shadow:0 0 0 1000px var(--bg) inset;-webkit-background-clip:border-box;background-clip:border-box}
 @keyframes pitch-autofill{0%{opacity:1}
 to{opacity:1}
 }
