@@ -147,17 +147,19 @@
     meter.setAttribute('aria-hidden', 'true');
     form.querySelector('.fo-pitch__letter').appendChild(meter);
     function size(input) {
-      // A long answer is a block that grows in height with its text.
+      // A long answer is a block that grows in height with its text; a
+      // block blank keeps the full width.
       if (input.tagName === 'TEXTAREA') {
         input.style.height = 'auto';
         input.style.height = input.scrollHeight + 'px';
         return;
       }
+      if (input.classList.contains('fo-pitch__input--block')) return;
       meter.textContent = input.tagName === 'SELECT'
         ? (input.selectedOptions[0] ? input.selectedOptions[0].textContent : '')
         : input.value || input.placeholder;
-      // + 2px for the caret at the end.
-      input.style.width = Math.ceil(meter.getBoundingClientRect().width) + 2 + 'px';
+      // + 1px for the caret at the end: the line ends with the text.
+      input.style.width = Math.ceil(meter.getBoundingClientRect().width) + 1 + 'px';
     }
     var inputs = form.querySelectorAll('[data-pitch-input]');
     inputs.forEach(function (input) {
@@ -212,6 +214,8 @@
       return gates(step).every(function (g) { return g.value.trim() !== '' && g.checkValidity(); });
     }
     function showEl(el) {
+      // A paragraph shows with its first step.
+      if (el.parentElement && el.parentElement.hasAttribute('data-pitch-para')) el.parentElement.hidden = false;
       if (!el.hidden) return;
       el.hidden = false;
       if (!reduce) {
@@ -264,6 +268,9 @@
     }
     form.addEventListener('input', updateSend);
     steps.slice(1).forEach(function (st) { st.hidden = true; });
+    form.querySelectorAll('[data-pitch-para]').forEach(function (p) {
+      p.hidden = !p.querySelector('[data-pitch-step]:not([hidden])');
+    });
     finals.forEach(function (el) { el.hidden = true; });
     var pause;
     steps.forEach(function (st) {

@@ -43,8 +43,28 @@ const tokens = (parts: LetterPart[]): Token[] => {
   });
   return out;
 };
-const steps = pitch.steps.map(tokens);
-const firstField = steps[0].findIndex((t) => 'field' in t);
+// A step whose copy starts with an empty line (\n\n) starts a paragraph: a
+// block with the paragraph gap above it. A step right after a block answer
+// is a block too, with a smaller gap (owner, 2026-10-27: even spacing).
+const isBlock = (t: Token) => 'field' in t && (t.field.type === 'long' || !!t.field.block);
+const steps = pitch.steps.map((parts) => {
+  const first = parts[0];
+  const para = typeof first === 'string' && first.startsWith('\n\n');
+  return { para, toks: tokens(para ? [(first as string).slice(2), ...parts.slice(1)] : parts) };
+});
+const stepKind = steps.map((s, i) =>
+  s.para ? 'para' : i > 0 && steps[i - 1].toks.length && isBlock(steps[i - 1].toks[steps[i - 1].toks.length - 1]) ? 'after-block' : '',
+);
+// Paragraphs: a paragraph or a question after a block answer starts a new
+// group; the steps in between flow on in the same group, as sentences do.
+const groups: { kind: string; steps: number[] }[] = [];
+steps.forEach((_, si) => {
+  if (si === 0 || stepKind[si]) groups.push({ kind: stepKind[si], steps: [si] });
+  else groups[groups.length - 1].steps.push(si);
+});
+// The company name (mirrored on the H1's line) is the first field.
+const firstStep = steps.findIndex((s) => s.toks.some((t) => 'field' in t));
+const firstField = steps[firstStep].toks.findIndex((t) => 'field' in t);
 // Values with an embedded placeholder ("FORWARD.one and [PLACEHOLDER: …]").
 const chunks = (v: string) => v.split(/(\[PLACEHOLDER:[^\]]*\])/).filter(Boolean);
 const ready = !isPlaceholder(pitch.bookingApi);
@@ -104,11 +124,13 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
           </div>
           <p class="pitch__letter reveal-gentle">
             {
-              steps.map((toks, si) => (
+              groups.map((g) => (
+                <span class:list={['pitch__para', g.kind && `pitch__para--${g.kind}`]} data-pitch-para>
+                {g.steps.map((si, k) => (
                 <>
-                  {si > 0 && ' '}
+                  {k > 0 && ' '}
                   <span class="pitch__step" data-pitch-step>
-                    {toks.map((t, i) => (
+                    {steps[si].toks.map((t, i) => (
                       <>
                         {i > 0 && ' '}
                         {'text' in t ? (
@@ -121,7 +143,7 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
                         ) : 'placeholder' in t ? (
                           <Placeholder value={t.placeholder} />
                         ) : (
-                          <span class:list={['pitch__blank-wrap', t.field.type === 'long' && 'pitch__blank-wrap--long']}>
+                          <span class:list={['pitch__blank-wrap', (t.field.type === 'long' || t.field.block) && 'pitch__blank-wrap--block']}>
                             <label class="pitch__field">
                               <span class="visually-hidden">{t.field.label}</span>
                               {t.field.type === 'slot' ? (
@@ -136,7 +158,7 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
                                 </select>
                               ) : t.field.type === 'long' ? (
                                 <textarea
-                                  class="pitch__input pitch__input--long"
+                                  class="pitch__input pitch__input--block pitch__input--long"
                                   name={t.field.name}
                                   placeholder={t.field.hint}
                                   required={t.field.required}
@@ -146,7 +168,7 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
                                 ></textarea>
                               ) : (
                               <input
-                                class="pitch__input"
+                                class:list={['pitch__input', t.field.block && 'pitch__input--block']}
                                 type={t.field.type === 'link' ? 'text' : t.field.type ?? 'text'}
                                 inputmode={t.field.type === 'link' ? 'url' : undefined}
                                 name={t.field.name}
@@ -157,7 +179,7 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
                                 spellcheck="false"
                                 data-pitch-input
                                 data-pitch-link={t.field.type === 'link' ? '' : undefined}
-                                data-pitch-company={si === 0 && i === firstField ? '' : undefined}
+                                data-pitch-company={si === firstStep && i === firstField ? '' : undefined}
                               />
                               )}
                             </label>
@@ -168,6 +190,8 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
                     ))}
                   </span>
                 </>
+                ))}
+                </span>
               ))
             }
           </p>
@@ -360,17 +384,19 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
     meter.setAttribute('aria-hidden', 'true');
     form.querySelector('.pitch__letter').appendChild(meter);
     function size(input) {
-      // A long answer is a block that grows in height with its text.
+      // A long answer is a block that grows in height with its text; a
+      // block blank keeps the full width.
       if (input.tagName === 'TEXTAREA') {
         input.style.height = 'auto';
         input.style.height = input.scrollHeight + 'px';
         return;
       }
+      if (input.classList.contains('pitch__input--block')) return;
       meter.textContent = input.tagName === 'SELECT'
         ? (input.selectedOptions[0] ? input.selectedOptions[0].textContent : '')
         : input.value || input.placeholder;
-      // + 2px for the caret at the end.
-      input.style.width = Math.ceil(meter.getBoundingClientRect().width) + 2 + 'px';
+      // + 1px for the caret at the end: the line ends with the text.
+      input.style.width = Math.ceil(meter.getBoundingClientRect().width) + 1 + 'px';
     }
     var inputs = form.querySelectorAll('[data-pitch-input]');
     inputs.forEach(function (input) {
@@ -425,6 +451,8 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
       return gates(step).every(function (g) { return g.value.trim() !== '' && g.checkValidity(); });
     }
     function showEl(el) {
+      // A paragraph shows with its first step.
+      if (el.parentElement && el.parentElement.hasAttribute('data-pitch-para')) el.parentElement.hidden = false;
       if (!el.hidden) return;
       el.hidden = false;
       if (!reduce) {
@@ -477,6 +505,9 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
     }
     form.addEventListener('input', updateSend);
     steps.slice(1).forEach(function (st) { st.hidden = true; });
+    form.querySelectorAll('[data-pitch-para]').forEach(function (p) {
+      p.hidden = !p.querySelector('[data-pitch-step]:not([hidden])');
+    });
     finals.forEach(function (el) { el.hidden = true; });
     var pause;
     steps.forEach(function (st) {
@@ -671,7 +702,7 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
   /* Once the name is being written the line steps back to light grey
      (owner, 2026-10-26). */
   .pitch__title.is-filled .pitch__blank {
-    border-bottom-color: #c4c3be;
+    border-bottom-color: var(--blank-line);
   }
   /* From 5 characters (or once the field is left) the line hugs the name. */
   .pitch__title.is-fit .pitch__blank {
@@ -778,9 +809,12 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
     box-shadow: none;
     vertical-align: baseline;
     max-width: 100%;
-    padding: 0 0.1em;
+    padding: 0;
     border: 0;
-    border-bottom: var(--hairline-w) solid var(--fg); /* the line stays black (owner, 2026-10-22) */
+    /* A light line that turns black while typing (owner, 2026-10-27; before:
+       always black). As wide as the text, so punctuation sits right after. */
+    border-bottom: var(--hairline-w) solid var(--blank-line);
+    transition: border-color 160ms ease;
     border-radius: 0;
     background: var(--hand-gradient);
     -webkit-background-clip: text;
@@ -792,20 +826,40 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
     outline: none;
     box-sizing: content-box;
   }
-  /* A long answer (a sentence or two, owner 2026-10-27): its own block under
-     the copy before it, full width, growing in height with the text (set by
-     script); same type and underline as the other blanks. */
-  .pitch__blank-wrap--long,
-  .pitch__blank-wrap--long .pitch__field {
+  .pitch__input:focus {
+    border-bottom-color: var(--fg);
+  }
+  /* The three questions in the middle (owner, 2026-10-27): each answer on
+     its own line under its question, full width, 8px below the question and
+     16px above the next one. Long answers grow in height (script). */
+  .pitch__blank-wrap--block,
+  .pitch__blank-wrap--block .pitch__field {
     display: block;
     white-space: normal;
   }
-  .pitch__input--long {
+  .pitch__input--block {
     display: block;
     box-sizing: border-box;
     width: 100%;
-    margin-block: var(--space-2x);
-    padding: 0 0 var(--space);
+    margin-top: var(--space-2x);
+    padding-bottom: var(--space);
+  }
+  /* Even spacing (owner, 2026-10-27): one paragraph gap before "We're",
+     "My LinkedIn", "I'd like" and the sign-off; a smaller gap between the
+     three questions. */
+  .pitch__para {
+    display: block;
+  }
+  .pitch__para--para {
+    margin-top: var(--letter-para);
+  }
+  .pitch__para--after-block {
+    margin-top: var(--space-4x);
+  }
+  .pitch__para[hidden] {
+    display: none;
+  }
+  .pitch__input--long {
     line-height: 1.35; /* the letter's own leading */
     resize: none;
     overflow: hidden;
@@ -971,6 +1025,10 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
        owner's reference of 2026-10-21). Red stays for an invalid answer. */
     --hand-colour: #04edcd;
     --hand-gradient: linear-gradient(to top right, #04edcd, #05f46b);
+    /* The blanks' underline at rest (the H1's filled line uses it too). */
+    --blank-line: #c4c3be;
+    /* Gap between the letter's paragraphs. */
+    --letter-para: 0.75em;
     --error-colour: #e0251b;
   }
   /* Measuring helpers made in script (so outside the scoped styles): the

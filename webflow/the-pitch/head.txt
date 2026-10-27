@@ -264,7 +264,7 @@ main:focus{outline:none}
 .fo-pitch__eyebrow[data-astro-cid-ikq7lxbc]{background:var(--hand-gradient);color:#0000;-webkit-text-fill-color:transparent;-webkit-background-clip:text;background-clip:text}
 .fo-eyebrow[data-astro-cid-ikq7lxbc].fo-reveal-snap{animation-delay:calc(var(--reveal-start) - 4 * var(--reveal-frame))}
 .fo-pitch__blank[data-astro-cid-ikq7lxbc]{border-bottom:max(2px,.035em) solid;min-width:3.5em;margin-inline:.12em;padding-inline:.08em;line-height:1;transition:min-width .36s cubic-bezier(.2,.7,.2,1),border-color .24s;display:inline-block}
-.fo-pitch__title[data-astro-cid-ikq7lxbc].fo-is-filled .fo-pitch__blank[data-astro-cid-ikq7lxbc]{border-bottom-color:#c4c3be}
+.fo-pitch__title[data-astro-cid-ikq7lxbc].fo-is-filled .fo-pitch__blank[data-astro-cid-ikq7lxbc]{border-bottom-color:var(--blank-line)}
 .fo-pitch__title[data-astro-cid-ikq7lxbc].fo-is-fit .fo-pitch__blank[data-astro-cid-ikq7lxbc]{min-width:0}
 .fo-pitch__hand[data-astro-cid-ikq7lxbc]{font-family:var(--font-hand);font-size:var(--fs-hand);white-space:pre;color:var(--hand-colour);font-weight:400;line-height:1;display:inline-block;position:relative;transform:translateY(.04em)}
 .fo-pitch__blank[data-astro-cid-ikq7lxbc]{cursor:text}
@@ -282,9 +282,15 @@ main:focus{outline:none}
 .fo-pitch__field[data-astro-cid-ikq7lxbc]{font:inherit;letter-spacing:inherit;color:inherit;margin:0;display:inline}
 .fo-pitch__blank-wrap[data-astro-cid-ikq7lxbc]{white-space:nowrap}
 .pitch__break[data-astro-cid-ikq7lxbc],.fo-pitch__send[data-astro-cid-ikq7lxbc][hidden],.fo-pitch__privacy[data-astro-cid-ikq7lxbc]:empty,.fo-pitch__privacy[data-astro-cid-ikq7lxbc][hidden]{display:none}
-.fo-pitch__input[data-astro-cid-ikq7lxbc]{font-family:var(--font-answer);font-size:1em;font-weight:var(--fw-answer);letter-spacing:0;height:auto;box-shadow:none;vertical-align:baseline;border:0;border-bottom:var(--hairline-w) solid var(--fg);background:var(--hand-gradient);color:#0000;-webkit-text-fill-color:transparent;max-width:100%;caret-color:var(--hand-colour);line-height:var(--lh-metric);box-sizing:content-box;-webkit-background-clip:text;background-clip:text;border-radius:0;outline:none;margin:0;padding:0 .1em}
-.fo-pitch__blank-wrap--long[data-astro-cid-ikq7lxbc],.fo-pitch__blank-wrap--long[data-astro-cid-ikq7lxbc] .fo-pitch__field[data-astro-cid-ikq7lxbc]{white-space:normal;display:block}
-.fo-pitch__input--long[data-astro-cid-ikq7lxbc]{box-sizing:border-box;width:100%;margin-block:var(--space-2x);padding:0 0 var(--space);resize:none;line-height:1.35;display:block;overflow:hidden}
+.fo-pitch__input[data-astro-cid-ikq7lxbc]{font-family:var(--font-answer);font-size:1em;font-weight:var(--fw-answer);letter-spacing:0;height:auto;box-shadow:none;vertical-align:baseline;border:0;border-bottom:var(--hairline-w) solid var(--blank-line);background:var(--hand-gradient);color:#0000;-webkit-text-fill-color:transparent;max-width:100%;caret-color:var(--hand-colour);line-height:var(--lh-metric);box-sizing:content-box;-webkit-background-clip:text;background-clip:text;border-radius:0;outline:none;margin:0;padding:0;transition:border-color .16s}
+.fo-pitch__input[data-astro-cid-ikq7lxbc]:focus{border-bottom-color:var(--fg)}
+.fo-pitch__blank-wrap--block[data-astro-cid-ikq7lxbc],.fo-pitch__blank-wrap--block[data-astro-cid-ikq7lxbc] .fo-pitch__field[data-astro-cid-ikq7lxbc]{white-space:normal;display:block}
+.fo-pitch__input--block[data-astro-cid-ikq7lxbc]{box-sizing:border-box;width:100%;margin-top:var(--space-2x);padding-bottom:var(--space);display:block}
+.fo-pitch__para[data-astro-cid-ikq7lxbc]{display:block}
+.fo-pitch__para--para[data-astro-cid-ikq7lxbc]{margin-top:var(--letter-para)}
+.fo-pitch__para--after-block[data-astro-cid-ikq7lxbc]{margin-top:var(--space-4x)}
+.fo-pitch__para[data-astro-cid-ikq7lxbc][hidden]{display:none}
+.fo-pitch__input--long[data-astro-cid-ikq7lxbc]{resize:none;line-height:1.35;overflow:hidden}
 .fo-pitch__input[data-astro-cid-ikq7lxbc]:placeholder-shown{background:0 0}
 .fo-pitch__input[data-astro-cid-ikq7lxbc]::placeholder{color:var(--muted);-webkit-text-fill-color:var(--muted);opacity:.75}
 .fo-pitch__input[data-astro-cid-ikq7lxbc].fo-is-autofilled{color:var(--hand-colour);-webkit-text-fill-color:var(--hand-colour);caret-color:var(--hand-colour);box-shadow:0 0 0 1000px var(--bg) inset;background:0 0;-webkit-background-clip:border-box;background-clip:border-box}
@@ -314,7 +320,7 @@ to{opacity:1}
 .pitch__break[data-astro-cid-ikq7lxbc]{display:inline}
 .fo-pitch__facts[data-astro-cid-ikq7lxbc]{gap:var(--space-4x);grid-template-columns:minmax(0,1fr)}
 }
-.fo-pitch{--font-hand:"Covered By Your Grace", "Marker Felt", "Segoe Print", cursive;--fs-hand:1.3em;--font-answer:var(--font-sans);--fw-answer:500;--hand-colour:#04edcd;--hand-gradient:linear-gradient(to top right, #04edcd, #05f46b);--error-colour:#e0251b}
+.fo-pitch{--font-hand:"Covered By Your Grace", "Marker Felt", "Segoe Print", cursive;--fs-hand:1.3em;--font-answer:var(--font-sans);--fw-answer:500;--hand-colour:#04edcd;--hand-gradient:linear-gradient(to top right, #04edcd, #05f46b);--blank-line:#c4c3be;--letter-para:.75em;--error-colour:#e0251b}
 .fo-pitch__probe,.fo-pitch__meter{visibility:hidden;pointer-events:none;white-space:pre;position:absolute;top:0;left:0}
 .fo-pitch__probe{font-size:var(--fs-display)}
 .fo-pitch__meter{font-family:var(--font-answer);font-size:1em;font-weight:var(--fw-answer)}

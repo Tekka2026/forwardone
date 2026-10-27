@@ -28,6 +28,9 @@ export type PitchField = {
    * before it, growing with the text. `link`: a web address; "https://" is
    * added when left out. */
   type?: 'text' | 'email' | 'tel' | 'link' | 'slot' | 'long';
+  /** On its own line under its question, full width (owner, 2026-10-27:
+   * the three questions in the middle share one shape). `long` always is. */
+  block?: boolean;
   maxlength?: number;
   autocomplete?: string;
   required?: boolean;
@@ -64,13 +67,15 @@ export const pitch = {
   /** The fill-in letter (owner's wording, 2026-10-27), one step per sentence
    * or line. Only the first step shows at first; each next step appears once
    * every required blank of the step before is filled (owner, 2026-10-21).
-   * A \n in the copy starts a new line, \n\n an empty line between
-   * paragraphs. The first field is the company name: it is written on the
+   * A step whose copy starts with \n\n starts a paragraph (an even gap
+   * above it); a step after a block answer starts on its own line; any
+   * other \n is a line break. The first field is the company name: it is written on the
    * H1's line. The sign-off name is filled in from the full name when its
    * step opens, and can be changed. The button comes with the last step. */
   steps: [
+    ['Hi investors,'],
     [
-      'Hi investors,\n\nWe’re',
+      '\n\nWe’re',
       { field: { name: 'company', label: 'Company name', hint: 'company name', autocomplete: 'organization', required: true, maxlength: 120 } },
       'and we’re building',
       { field: { name: 'building', label: 'What you’re building, in one line', hint: 'what you’re building, in one line', required: true, maxlength: 280 } },
@@ -83,13 +88,11 @@ export const pitch = {
       { field: { name: 'role', label: 'Your role', hint: 'role', autocomplete: 'organization-title', required: true, maxlength: 120 } },
       '.',
     ],
-    ['\n\nMy LinkedIn:', { field: { name: 'linkedin', label: 'Your LinkedIn profile (link or name)', hint: 'link', type: 'link', autocomplete: 'url', required: true, maxlength: 300 } }],
-    ['\nWhat my LinkedIn doesn’t tell you:', { field: { name: 'surprise', label: 'What your LinkedIn doesn’t tell us', hint: 'something we wouldn’t guess', type: 'long', required: true, maxlength: 400 } }],
-    // After a long answer (a block of its own) the next line starts below it
-    // anyway, so no \n here; one \n there gives the empty line.
+    ['\n\nMy LinkedIn:', { field: { name: 'linkedin', label: 'Your LinkedIn profile (link or name)', hint: 'link', type: 'link', block: true, autocomplete: 'url', required: true, maxlength: 300 } }],
+    ['What my LinkedIn doesn’t tell you:', { field: { name: 'surprise', label: 'What your LinkedIn doesn’t tell us', hint: 'something we wouldn’t guess', type: 'long', required: true, maxlength: 400 } }],
     ['Why we belong in that room:', { field: { name: 'why', label: 'Why you belong in that room', hint: 'one or two sentences', type: 'long', required: true, maxlength: 800 } }],
     [
-      '\nI’d like to grab the',
+      '\n\nI’d like to grab the',
       { field: { name: 'slot', label: 'Pitch time, Helsinki time', hint: 'pitch time', type: 'slot', required: true } },
       'slot, Helsinki time. Find me at',
       { field: { name: 'email', label: 'Email address', hint: 'email', type: 'email', autocomplete: 'email', required: true, maxlength: 200 } },

@@ -599,9 +599,15 @@ sheet, wording confirmed by the owner 2026-10-21).
       See you at Slush,
       [first name]
 
-  Every blank is required except phone. The two long answers are blocks of
-  their own under their line, full width, growing in height (textarea,
-  `.pitch__input--long`). A LinkedIn profile address (pasted, typed or
+  Every blank is required except phone. Tidied 2026-10-27 (owner): the
+  three questions in the middle share one shape, the question on its own
+  line and the answer full width below it (8px), 16px to the next question;
+  the two long answers grow in height (textarea, `.pitch__input--long`).
+  Paragraphs ("We're…", "My LinkedIn", "I'd like…", the sign-off) are
+  blocks with an even gap of 0.75em above them (`--letter-para`); sentences
+  in a paragraph flow on. Underlines are a light line (`--blank-line`,
+  #c4c3be) that turns black on the field being typed in, exactly as wide
+  as the answer, so the punctuation sits right after it. A LinkedIn profile address (pasted, typed or
   autofilled) shows as just the handle, e.g. "jeroendelange1976" (owner,
   2026-10-27); the booking service stores the full address. Another link
   gets "https://" when typed without it. The sign-off name is filled in from the first word of the full name
@@ -611,9 +617,9 @@ sheet, wording confirmed by the owner 2026-10-21).
   than the letter, `--fw-answer`) in the handwriting's gradient (#04EDCD to
   #05F46B, bottom left to top right per blank, `--hand-gradient`; owner
   2026-10-26, before: red), not handwriting (owner,
-  2026-10-22: only the name on the H1's line is handwritten), on a black
-  hairline (stays black on focus, owner 2026-10-22; dashed red #E0251B when
-  invalid after interaction); the
+  2026-10-22: only the name on the H1's line is handwritten), on a light
+  hairline (black while typing; dashed red #E0251B when invalid after
+  interaction); the
   hint shows in muted Inter while empty; each blank grows with its text. Each input has a visually hidden label.
   Labels and blanks reset the host page's form styles (font, margin,
   height, shadow), so the letter looks the same on Webflow (owner,
