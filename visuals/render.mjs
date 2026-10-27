@@ -1,6 +1,6 @@
 // Renders each visuals/<name>/index.html to visuals/out/<name>.png at the
-// size of its #card element. Needs the fonts' hosts (Fontshare), so it runs
-// in GitHub Actions (.github/workflows/render-visuals.yml).
+// size of its #card element, once its fonts have loaded. Runs in GitHub
+// Actions (.github/workflows/render-visuals.yml).
 // Usage: node visuals/render.mjs   (serve the repository root on :4600 first)
 import { readdirSync, existsSync, mkdirSync } from 'node:fs';
 import { chromium } from 'playwright';
@@ -14,7 +14,7 @@ for (const name of names) {
   const page = await browser.newPage({ viewport: { width: 1600, height: 2200 } });
   await page.goto(`http://localhost:4600/visuals/${name}/`, { waitUntil: 'networkidle' });
   await page.evaluate(() => document.fonts.ready);
-  const ok = await page.evaluate(() => document.fonts.check('450 100px "Clash Display"') && document.fonts.check('500 40px "Geist Mono"'));
+  const ok = await page.evaluate(() => document.fonts.check('500 100px "Inter"') && document.fonts.check('500 40px "Geist Mono"'));
   if (!ok) throw new Error(`${name}: fonts did not load`);
   await (await page.$('#card')).screenshot({ path: new URL(`out/${name}.png`, import.meta.url).pathname });
   console.log('rendered', name);
