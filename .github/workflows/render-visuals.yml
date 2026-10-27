@@ -29,6 +29,8 @@ jobs:
         run: |
           npm install --no-save --no-package-lock playwright
           npx playwright install --with-deps chromium
+          # The runner image has no ffmpeg (needed for the videos).
+          sudo apt-get install -y -qq ffmpeg >/dev/null
       - name: Render
         run: |
           python3 -m http.server 4600 >/dev/null 2>&1 &
