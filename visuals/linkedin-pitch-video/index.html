@@ -341,7 +341,8 @@
     draw(p, n, progress);
     blank.classList.toggle('is-filled', n > 0);
     // The caret blinks once a second while waiting, and stays on while writing.
-    var on = ms > INTRO_END && (typing || ms % 1000 < 500);
+    // The cursor arrives with When (owner, 2026-10-28) and blinks from there.
+    var on = ms >= WHEN_START + FRAME && (typing || (ms - WHEN_START - FRAME) % 1000 < 500);
     var introKey = intro(ms);
     if (on) hand.appendChild(caret);
     return [introKey, p.text.slice(0, n), progress ? progress.map(function (q) { return q.toFixed(2); }).join() : '', on, scale.toFixed(4), blank.style.minWidth].join('|');
