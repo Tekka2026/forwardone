@@ -187,7 +187,7 @@
   //   Balnord: Sapient Perception, ATMOS Space Cargo
   //   HCVC: Alpine Eagle, Dyna Robotics
   var NAMES = ['Quantware', 'Sapient Perception', 'Alpine Eagle', 'Voltfang', 'ATMOS Space Cargo', 'Dyna Robotics', 'Optics11'];
-  var TYPE = 85, HOLD = 1500, ERASE = 40, GAP = 500, START = 3700, WRITE = 300; // ms
+  var TYPE = 85, HOLD = 1500, ERASE = 40, GAP = 500, START = 1000, WRITE = 300; // ms
   // The homepage's reveal (css/global.css, Sentences.astro): frames of 80ms,
   // steps of 0.02em, words 90ms apart; the eyebrow ticks in at once, the
   // heading from 800ms; its last word rises smoothly over 9 frames from 7
@@ -347,9 +347,11 @@
     draw(p, n, progress);
     blank.classList.toggle('is-filled', n > 0);
     // The caret blinks once a second while waiting, and stays on while writing.
-    // The cursor arrives with When (owner, 2026-10-28) and blinks from there.
-    var on = ms >= WHEN_START + FRAME && (typing || (ms - WHEN_START - FRAME) % 1000 < 500);
-    var introKey = intro(ms);
+    // No entrance any more (owner, 2026-10-28): everything is in place from
+    // the first frame; only the writing and the heading's scaling move.
+    // The intro code stays, set to its end state, in case it is wanted back.
+    var on = typing || ms % 1000 < 500;
+    var introKey = intro(Infinity);
     if (on) hand.appendChild(caret);
     return [introKey, p.text.slice(0, n), progress ? progress.map(function (q) { return q.toFixed(2); }).join() : '', on, scale.toFixed(4), blank.style.minWidth].join('|');
   };
