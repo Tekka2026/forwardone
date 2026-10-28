@@ -175,9 +175,12 @@
     </div>
   </div>
 <script>
-  // The owner's final list (2026-10-27), spelled as given, shuffled (owner):
-  // long and short names take turns.
-  var NAMES = ['Optics11', 'Sapient Perception', 'Voltfang', 'ATMOS Space Cargo', 'Quantware', 'Dyna Robotics', 'Alpine Eagle'];
+  // The owner's final names (2026-10-28), spelled as given, taking turns:
+  // FORWARD.one, Balnord, HCVC, FORWARD.one, … (three, two and two names).
+  //   FORWARD.one: Quantware, Voltfang, Optics11
+  //   Balnord: Sapient Perception, ATMOS Space Cargo
+  //   HCVC: Alpine Eagle, Dyna Robotics
+  var NAMES = ['Quantware', 'Sapient Perception', 'Alpine Eagle', 'Voltfang', 'ATMOS Space Cargo', 'Dyna Robotics', 'Optics11'];
   var TYPE = 85, HOLD = 1500, ERASE = 40, GAP = 500, START = 3000, WRITE = 300; // ms
   // The homepage's reveal (css/global.css, Sentences.astro): frames of 80ms,
   // steps of 0.02em, words 90ms apart; the eyebrow ticks in at once, the
