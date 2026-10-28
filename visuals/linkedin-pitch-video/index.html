@@ -5,7 +5,7 @@
      visuals/animate.mjs records them to MP4. 5:7, 1500 x 2100. Rendered to PNG by visuals/render.mjs (GitHub Actions,
      .github/workflows/render-visuals.yml). Type and colours follow the
      page (/the-pitch, DESIGN.md): Inter 500 like its H1 (owner, 2026-10-27). -->
-<html lang="en">
+<html lang="en" data-formats="5x7:2100 4x5:1875">
 <head>
 <meta charset="utf-8">
 <title>The Pitch at Slush: LinkedIn</title>
@@ -31,7 +31,7 @@
   body { background: var(--bg); }
   .card {
     width: 1500px;
-    height: 2100px;
+    height: var(--card-h, 2100px);
     display: flex;
     flex-direction: column;
     background: var(--bg);
@@ -56,8 +56,9 @@
   }
   .logos img { height: var(--logo-h); display: block; }
   /* "Slush, Helsinki" stays put where it sits in the still (owner,
-     2026-10-27); the heading hangs from it and shrinks upward-anchored. */
-  .title-block { margin-top: 812.3px; }
+     2026-10-27): bottom-aligned at load like the still, then pinned there
+     by the script; the heading hangs from it and shrinks upward-anchored. */
+  .title-block { margin-top: auto; }
   .eyebrow {
     font-family: "Geist Mono", monospace;
     font-weight: 500;
@@ -155,6 +156,11 @@
     line-height: 1.04;
   }
 </style>
+<script>
+  // The format (owner, 2026-10-28): 5:7 (1500 x 2100) by default, ?h=1875
+  // for 4:5. render.mjs and animate.mjs render every format in data-formats.
+  (function () { var h = Number(new URLSearchParams(location.search).get('h')); if (h > 0) document.documentElement.style.setProperty('--card-h', h + 'px'); })();
+</script>
 </head>
 <body data-video>
   <div class="card" id="card">
@@ -348,6 +354,10 @@
     return [introKey, p.text.slice(0, n), progress ? progress.map(function (q) { return q.toFixed(2); }).join() : '', on, scale.toFixed(4), blank.style.minWidth].join('|');
   };
   document.fonts.ready.then(function () {
+    // Pin the title block where the still has it (bottom-aligned with the
+    // heading empty), so the heading's resizing never moves it.
+    var tb = document.querySelector('.title-block'), logos = document.querySelector('.logos');
+    tb.style.marginTop = (tb.getBoundingClientRect().top - logos.getBoundingClientRect().bottom) + 'px';
     build();
     window.frame(0);
     document.body.dataset.ready = '1';
