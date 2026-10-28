@@ -170,8 +170,8 @@
       </div>
     </div>
     <div class="facts">
-      <p class="label">When</p>
-      <p class="date">November 18th, 2026</p>
+      <p class="label"><span class="w" data-when>When</span></p>
+      <p class="date"><span class="w" data-date="0">November</span> <span class="w" data-date="1">18th,</span> <span class="w" data-date="2" id="date-last">2026</span></p>
     </div>
   </div>
 <script>
@@ -181,12 +181,17 @@
   //   Balnord: Sapient Perception, ATMOS Space Cargo
   //   HCVC: Alpine Eagle, Dyna Robotics
   var NAMES = ['Quantware', 'Sapient Perception', 'Alpine Eagle', 'Voltfang', 'ATMOS Space Cargo', 'Dyna Robotics', 'Optics11'];
-  var TYPE = 85, HOLD = 1500, ERASE = 40, GAP = 500, START = 3000, WRITE = 300; // ms
+  var TYPE = 85, HOLD = 1500, ERASE = 40, GAP = 500, START = 3700, WRITE = 300; // ms
   // The homepage's reveal (css/global.css, Sentences.astro): frames of 80ms,
   // steps of 0.02em, words 90ms apart; the eyebrow ticks in at once, the
   // heading from 800ms; its last word rises smoothly over 9 frames from 7
   // steps down (the homepage's amber tint left out, owner 2026-10-27).
   var FRAME = 80, STEP = 0.02, STAGGER = 90, H1_START = 800;
+  // Then, once Pitch has risen, the band below the same way (owner,
+  // 2026-10-28): the mono tag When ticks in, then the date's words, its
+  // last one rising smoothly; the handwriting starts after that.
+  var WHEN_START = H1_START + 2 * STAGGER + 10 * FRAME, DATE_START = WHEN_START + 4 * FRAME;
+  var INTRO_END = DATE_START + 2 * STAGGER + 10 * FRAME;
   // Size changes glide over SMOOTH ms (the page: 240ms font-size and 360ms
   // line transitions), so the heading never jumps.
   var SMOOTH = 450, LINE_MIN = 2.7; // em, the empty line's length
@@ -283,16 +288,23 @@
   }
   var ticked = [].slice.call(document.querySelectorAll('[data-tick]'));
   var words = [].slice.call(document.querySelectorAll('[data-word]:not(.w--last)'));
-  var last = document.getElementById('last');
+  var last = document.getElementById('last'), when = document.querySelector('[data-when]');
+  var dateWords = [].slice.call(document.querySelectorAll('[data-date]')), dateLast = document.getElementById('date-last');
+  // A last word: invisible for a frame, then a smooth rise from 7 steps down.
+  function rise(el, t) {
+    el.style.opacity = t >= FRAME ? '1' : '0';
+    var r = t <= 0 ? 0 : riseEase(Math.min(1, t / (9 * FRAME)));
+    el.style.transform = 'translateY(' + (7 * STEP * (1 - r)).toFixed(4) + 'em)';
+    return r.toFixed(3);
+  }
   function intro(ms) {
     var key = '';
     ticked.forEach(function (el) { key += tick(el, ms - el.dataset.tick * STAGGER); });
     words.forEach(function (el) { key += tick(el, ms - H1_START - el.dataset.word * STAGGER); });
-    var t = ms - H1_START - last.dataset.word * STAGGER;
-    last.style.opacity = t >= FRAME ? '1' : '0';
-    var rise = t <= 0 ? 0 : riseEase(Math.min(1, t / (9 * FRAME)));
-    last.style.transform = 'translateY(' + (7 * STEP * (1 - rise)).toFixed(4) + 'em)';
-    return key + '|' + rise.toFixed(3);
+    key += '|' + rise(last, ms - H1_START - last.dataset.word * STAGGER);
+    key += tick(when, ms - WHEN_START);
+    dateWords.forEach(function (el) { if (el !== dateLast) key += tick(el, ms - DATE_START - el.dataset.date * STAGGER); });
+    return key + '|' + rise(dateLast, ms - DATE_START - dateLast.dataset.date * STAGGER);
   }
   var ease = function (x) { return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2; };
 
@@ -329,7 +341,7 @@
     draw(p, n, progress);
     blank.classList.toggle('is-filled', n > 0);
     // The caret blinks once a second while waiting, and stays on while writing.
-    var on = ms > H1_START + 3 * STAGGER + 4 * FRAME && (typing || ms % 1000 < 500);
+    var on = ms > INTRO_END && (typing || ms % 1000 < 500);
     var introKey = intro(ms);
     if (on) hand.appendChild(caret);
     return [introKey, p.text.slice(0, n), progress ? progress.map(function (q) { return q.toFixed(2); }).join() : '', on, scale.toFixed(4), blank.style.minWidth].join('|');
