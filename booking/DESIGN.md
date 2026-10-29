@@ -33,7 +33,7 @@ colours only as tokens in `:root`, no inline `style` attributes).
   facts), per field a label, Changed/Original pill, "Use original" (32px,
   white) and help text; a sticky save bar at the bottom (§5) with the count
   of unsaved changes; warns when leaving with unsaved changes.
-- Preview: `npm run preview` builds `public/the-pitch/review-preview/`
+- Preview: `npm run preview` builds `booking/preview-site/` (local only; offline since the campaign went live, 2026-10-29)
   (requests, emails, one editor per email) from this same code with sample
   data.
 

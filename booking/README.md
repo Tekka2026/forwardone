@@ -23,9 +23,10 @@ Rules the database enforces: one live (pending or approved) request per slot,
 and one per email address.
 
 A click-through preview of `/review` with invented sample data (login,
-Approve, Deny; nothing sent or saved) is on the site at
-`/the-pitch/review-preview/`, generated from `src/review.ts` by
-`npm run preview` (not linked, `noindex`). Dashboard design rules:
+Approve, Deny; nothing sent or saved) is built by `npm run preview` from
+`src/review.ts` into `preview-site/` (not in git). It was on the site until
+the campaign went live and was taken offline then (owner, 2026-10-29); view
+it locally with `npx serve preview-site`. Dashboard design rules:
 `DESIGN.md` in this folder.
 
 ## The letter's fields

@@ -5,7 +5,7 @@
  * The server sends a shell with the data as JSON; the client script below
  * renders the table, filters, sorting, dialog and toasts, and calls
  * `window.REVIEW_API` for decisions. The preview on the site
- * (scripts/preview.mjs → public/the-pitch/review-preview/) uses this same
+ * (scripts/preview.mjs → booking/preview-site/, local only) uses this same
  * file with sample data and a local stand-in for the API, so the preview and
  * the real dashboard cannot drift apart.
  */

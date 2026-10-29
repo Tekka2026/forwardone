@@ -1,4 +1,5 @@
-// Builds the dashboard preview on the site (public/the-pitch/review-preview/)
+// Builds the dashboard preview locally (booking/preview-site/, not in git and
+// not on the site: taken offline when the campaign went live, owner 2026-10-29)
 // from src/review.ts itself, with invented sample data and a local stand-in
 // for the API, so the preview always matches the real dashboard.
 //   index.html                  Requests (with the login step first)
@@ -172,7 +173,8 @@ const pageLoadJs = String.raw`<script>(function () {
 })();</script>`;
 const pageText = doc('Page text', appHtml(shell('Page text'), notice + pageTextHtml({ base: BASE, pageUrl: PAGE, values: {}, meta: {} })), pageLoadJs + `<script>${PAGE_JS}</script>`);
 
-const root = new URL('../../public/the-pitch/review-preview/', import.meta.url);
+// Served at the same path as before: npx serve booking/preview-site
+const root = new URL('../preview-site/forwardone/the-pitch/review-preview/', import.meta.url);
 const write = (rel, html) => {
   const dir = new URL(rel, root);
   mkdirSync(dir, { recursive: true });
@@ -182,7 +184,7 @@ write('./', requests);
 write('emails/', emails);
 write('page/', pageText);
 for (const [key, html] of editors) write(`emails/${key}/`, html);
-console.log(`preview: public/the-pitch/review-preview/ (requests, emails, ${editors.length} editors, page text)`);
+console.log(`preview: booking/preview-site/ (npx serve booking/preview-site, then /forwardone/the-pitch/review-preview/)`, ` (requests, emails, ${editors.length} editors, page text)`);
 
 if (process.argv[2]) {
   // The Requests screen without the document skeleton (for a claude.ai artifact).
