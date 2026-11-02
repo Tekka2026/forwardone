@@ -102,12 +102,23 @@ All queries are `max-width`, desktop-first.
 
 ## 5. Type scale (marketing pages)
 
-Three families, all loaded in `src/layouts/Base.astro`:
+Four families, loaded in `src/layouts/Base.astro` and `css/global.css`:
 
+- `--font-heading`: **KMR Apparat** (owner, 2026-11-02, for the MVP; first
+  tried 2026-10-17 and withdrawn then). Self-hosted WOFF2 from
+  `src/assets/fonts/kmr-apparat`, declared in `css/global.css` as Light 300,
+  Regular 400, Book 450, Medium 500, Bold 700, Heavy 800, Black 900; the
+  heading weight 450 picks Book. Used for all display headings: Display
+  (H1), Section (H2) and Feature headings, bare `h1`/`h2`, and the headings
+  set in the display face (case names in the Proof slider, the founders
+  page deck titles). Commercial font: buy a web licence before the site
+  goes public (A0030). Clash Display is the fallback, so going back is a
+  one-line change in `--font-heading`. Exception: the pitch page H1 stays
+  in Inter 500 (owner, 2026-10-22).
 - `--font-display`: **Clash Display** (Fontshare; variable font, weight axis
-  200–700, plus static 400/500/600 as fallback). Used for Display (H1),
-  Section (H2) and Feature headings, stat values, card metrics and the
-  wordmark only.
+  200–700, plus static 400/500/600 as fallback). Stat values, headline
+  figures (the €388M), card metrics, company names on the founders strip
+  cards, and the heading fallback.
 - `--font-sans`: **Inter** (Google Fonts, variable 400–600). H3 and below
   (card titles, the Playbook list) and all body and UI text: lede, body,
   small, buttons, navigation, forms, footer.

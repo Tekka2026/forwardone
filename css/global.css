@@ -105,14 +105,21 @@
   --nav-hairline: rgba(255, 255, 255, 0.18);
 
   /* Type: families, loaded in src/layouts/Base.astro.
-     --font-display: Clash Display (Fontshare) for Display (H1), Section (H2)
-                     and Feature headings, stat values and the wordmark.
+     --font-heading: KMR Apparat (self-hosted, src/assets/fonts/kmr-apparat;
+                     owner 2026-11-02, for the MVP) for all display headings:
+                     Display (H1), Section (H2), Feature, and the headings set
+                     in the display face (case names, deck titles). Clash
+                     Display is the fallback.
+     --font-display: Clash Display (Fontshare) for stat values, headline
+                     figures and other display numbers.
      --font-sans:    Inter (Google Fonts) for H3 and below, body copy and
                      all UI text.
      --font-mono:    Geist Mono (self-hosted, src/assets/fonts/geist-mono) for
                      eyebrows, labels and code. */
   --font-display: "Clash Display", "Inter", system-ui, -apple-system,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-heading: "KMR Apparat", "Clash Display", "Inter", system-ui,
+    -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, "SF Mono", SFMono-Regular, Menlo,
@@ -217,6 +224,60 @@
   src: url("../src/assets/fonts/geist-mono/GeistMono-Medium.woff2") format("woff2");
 }
 
+/* KMR Apparat (owner, 2026-11-02; first tried 2026-10-17) for the headings.
+   Commercial font, used for the MVP; buy a web licence before the site goes
+   public (A0021). The CSS weights follow the cut names (the files' own
+   weight classes are non-standard); the heading weight 450 picks Book. */
+@font-face {
+  font-family: "KMR Apparat";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("../src/assets/fonts/kmr-apparat/KMR-Apparat-Light.woff2") format("woff2");
+}
+@font-face {
+  font-family: "KMR Apparat";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../src/assets/fonts/kmr-apparat/KMR-Apparat-Regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "KMR Apparat";
+  font-style: normal;
+  font-weight: 450;
+  font-display: swap;
+  src: url("../src/assets/fonts/kmr-apparat/KMR-Apparat-Book.woff2") format("woff2");
+}
+@font-face {
+  font-family: "KMR Apparat";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../src/assets/fonts/kmr-apparat/KMR-Apparat-Medium.woff2") format("woff2");
+}
+@font-face {
+  font-family: "KMR Apparat";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../src/assets/fonts/kmr-apparat/KMR-Apparat-Bold.woff2") format("woff2");
+}
+@font-face {
+  font-family: "KMR Apparat";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("../src/assets/fonts/kmr-apparat/KMR-Apparat-Heavy.woff2") format("woff2");
+}
+@font-face {
+  font-family: "KMR Apparat";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("../src/assets/fonts/kmr-apparat/KMR-Apparat-Black.woff2") format("woff2");
+}
+
 /* --------------------------------------------------------------------------
    2. Reset / base
    -------------------------------------------------------------------------- */
@@ -281,8 +342,8 @@ button, input, select, textarea {
 /* Headings: sentence case, never all-caps (UPPERCASE is reserved for mono
    eyebrow/label). Default heading element styles map to the scale so that
    semantic markup without classes still lands on-grid. */
-h1 { font-family: var(--font-display); font-size: var(--fs-display); line-height: var(--lh-display); letter-spacing: var(--ls-display); font-weight: var(--fw-heading); }
-h2 { font-family: var(--font-display); font-size: var(--fs-section); line-height: var(--lh-section); letter-spacing: var(--ls-section); font-weight: var(--fw-heading); max-width: var(--measure-heading); }
+h1 { font-family: var(--font-heading); font-size: var(--fs-display); line-height: var(--lh-display); letter-spacing: var(--ls-display); font-weight: var(--fw-heading); }
+h2 { font-family: var(--font-heading); font-size: var(--fs-section); line-height: var(--lh-section); letter-spacing: var(--ls-section); font-weight: var(--fw-heading); max-width: var(--measure-heading); }
 h3 { font-family: var(--font-sans); font-size: var(--fs-card-title); line-height: var(--lh-card-title); letter-spacing: var(--ls-card-title); font-weight: var(--fw-card-title); }
 
 code, kbd, samp, pre {
@@ -397,7 +458,7 @@ code, kbd, samp, pre {
    5. Type classes
    -------------------------------------------------------------------------- */
 .h-display {
-  font-family: var(--font-display);
+  font-family: var(--font-heading);
   font-size: var(--fs-display);
   line-height: var(--lh-display);
   letter-spacing: var(--ls-display);
@@ -406,7 +467,7 @@ code, kbd, samp, pre {
 }
 
 .h-section {
-  font-family: var(--font-display);
+  font-family: var(--font-heading);
   font-size: var(--fs-section);
   line-height: var(--lh-section);
   letter-spacing: var(--ls-section);
@@ -416,7 +477,7 @@ code, kbd, samp, pre {
 }
 
 .h-feature {
-  font-family: var(--font-display);
+  font-family: var(--font-heading);
   font-size: var(--fs-feature);
   line-height: var(--lh-feature);
   letter-spacing: var(--ls-feature);
