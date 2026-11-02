@@ -117,7 +117,9 @@ Four families, loaded in `src/layouts/Base.astro` and `css/global.css`:
   one-line change in `--font-heading`. Exception: the pitch page H1 stays
   in Inter 500 (owner, 2026-10-22).
 - `--font-display`: **KMR Apparat** as well since 2026-11-02 (owner), Light
-  (`--fw-display: 300`): stat values (homepage and founders page), the
+  (`--fw-display: 300`; the key figure values one step heavier, Regular,
+  `--fw-stat: 400`, owner 2026-11-02): stat values (homepage and founders
+  page), the
   €388M headline figure, card metrics and the company names on the
   founders strip cards. Clash Display (Fontshare, variable) stays loaded as
   the fallback for both families.
