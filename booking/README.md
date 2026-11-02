@@ -83,7 +83,7 @@ not editable here.
 | Approved | founder | Confirmation with a calendar invite (`.ics`; venue from the Where fact on Page text, map link in the notes) |
 | Denied | founder | Polite no; the slot is released |
 | Hold expired (`HOLD_DAYS`) | founder | The hold has ended |
-| Every day at 18:00 Amsterdam | reviewers | One overview: new requests of the day (company, founder, what they build, why they belong, what LinkedIn does not tell, LinkedIn), cancellations, who is waiting, slots taken. Not sent when there is nothing new and nothing waiting. |
+| Every day at 18:00 Amsterdam | reviewers | One short overview: how many new and waiting, the time and company of each new request (or of those waiting, on a day with none new), cancellations, the dashboard link, slots taken. The letters themselves are read on the dashboard (owner, 2026-11-02). Not sent when there is nothing new and nothing waiting. |
 
 The team edits the four founder emails on the dashboard (`/review/emails`):
 subject and text with placeholders (`{name}`, `{company}`, `{time}`, …), a

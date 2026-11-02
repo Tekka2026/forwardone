@@ -70,24 +70,19 @@ export async function digest(env: Env, since: string, reviewUrl: string) {
   const taken = all.filter((a) => a.status === 'pending' || a.status === 'approved').length;
   if (!fresh.length && !cancelled.length && !waiting.length) return null;
 
-  const line = (a: Listed) =>
-    [
-      `${a.label}  ${a.company}, ${a.name}${a.role ? ` (${a.role})` : ''}: ${a.building}`,
-      a.why ? `       Why they belong: ${a.why}` : '',
-      a.surprise ? `       Not on LinkedIn: ${a.surprise}` : '',
-      a.linkedin ? `       ${a.linkedin}` : '',
-    ]
-      .filter(Boolean)
-      .join('\n');
+  // Short on purpose (owner, 2026-11-02): who and when only; the letters
+  // themselves are read on the dashboard.
   const n = (k: number, one: string, many: string) => `${k} ${k === 1 ? one : many}`;
+  const row = (a: Listed) => `${a.label}  ${a.company}`;
   const text = [
-    `Today: ${n(fresh.length, 'new request', 'new requests')}, ${n(cancelled.length, 'cancellation', 'cancellations')}.`,
-    `Waiting for review: ${waiting.length}. Slots taken: ${taken} of ${slotCount}.`,
-    ...(fresh.length ? ['', 'New today (Helsinki time):', ...fresh.map(line)] : []),
-    ...(cancelled.length ? ['', 'Cancelled today:', ...cancelled.map((a) => `${a.label}  ${a.company}`)] : []),
-    ...(waiting.length ? ['', 'Waiting for review:', ...waiting.map((a) => `${a.label}  ${a.company}, ${a.name}`)] : []),
+    `${n(fresh.length, 'new pitch request', 'new pitch requests')} today. ${waiting.length} waiting for your review.`,
+    ...(fresh.length ? ['', 'New today (Helsinki time):', ...fresh.map(row)] : []),
+    ...(!fresh.length && waiting.length ? ['', 'Waiting (Helsinki time):', ...waiting.map(row)] : []),
+    ...(cancelled.length ? ['', 'Cancelled today:', ...cancelled.map(row)] : []),
     '',
-    `Approve or deny: ${reviewUrl}`,
+    `Read and decide on the dashboard: ${reviewUrl}`,
+    '',
+    `Slots taken: ${taken} of ${slotCount}.`,
   ].join('\n');
   return {
     subject: `${env.EVENT_NAME}: ${n(fresh.length, 'new request', 'new requests')} today, ${waiting.length} waiting`,
