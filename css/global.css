@@ -154,8 +154,9 @@
 
   /* Type: heading weights. Intermediate values need the variable font,
      loaded in src/layouts/Base.astro; static fallback snaps to 500/600. */
-  --fw-heading: 450;     /* Display, Section, Feature */
-  --fw-figure: var(--fw-heading); /* headline figures (Track record €383M): same as the H1 */
+  --fw-heading: 300;     /* Display, Section, Feature: KMR Apparat Light (owner, 2026-11-02; was 450) */
+  --fw-display: 450;     /* Clash Display numbers and names (figures, metrics, strip company names) */
+  --fw-figure: var(--fw-display); /* headline figures (Track record €388M), Clash Display */
   --ls-figure: 0;            /* headline figure tracking */
   --fw-card-title: 550;  /* Card title */
 
@@ -227,7 +228,7 @@
 /* KMR Apparat (owner, 2026-11-02; first tried 2026-10-17) for the headings.
    Commercial font, used for the MVP; buy a web licence before the site goes
    public (A0021). The CSS weights follow the cut names (the files' own
-   weight classes are non-standard); the heading weight 450 picks Book. */
+   weight classes are non-standard); the heading weight (--fw-heading, 300) picks Light. */
 @font-face {
   font-family: "KMR Apparat";
   font-style: normal;

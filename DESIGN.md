@@ -107,8 +107,9 @@ Four families, loaded in `src/layouts/Base.astro` and `css/global.css`:
 - `--font-heading`: **KMR Apparat** (owner, 2026-11-02, for the MVP; first
   tried 2026-10-17 and withdrawn then). Self-hosted WOFF2 from
   `src/assets/fonts/kmr-apparat`, declared in `css/global.css` as Light 300,
-  Regular 400, Book 450, Medium 500, Bold 700, Heavy 800, Black 900; the
-  heading weight 450 picks Book. Used for all display headings: Display
+  Regular 400, Book 450, Medium 500, Bold 700, Heavy 800, Black 900. The
+  headings use Light (`--fw-heading: 300`, owner 2026-11-02); Clash Display
+  numbers and names keep 450 (`--fw-display`). Used for all display headings: Display
   (H1), Section (H2) and Feature headings, bare `h1`/`h2`, and the headings
   set in the display face (case names in the Proof slider, the founders
   page deck titles). Commercial font: buy a web licence before the site
@@ -193,8 +194,10 @@ Rules:
 - Every size, line height, tracking and heading weight value exists as a token
   (`--fs-*`, `--lh-*`, `--ls-*`, `--fw-heading`, `--fw-card-title`). New
   components reference tokens, never literal values. Heading weights are
-  450 / 550 (set 2026-10-12), which requires the Clash Display variable font
-  loaded in `src/layouts/Base.astro`; without it they snap to 500 / 600.
+  300 (KMR Apparat Light, display headings, `--fw-heading`; owner
+  2026-11-02) / 550 (card titles, Inter variable); Clash Display numbers
+  and names use 450 (`--fw-display`), which needs the Clash Display
+  variable font loaded in `src/layouts/Base.astro`.
 
 ### Figures and tables
 
