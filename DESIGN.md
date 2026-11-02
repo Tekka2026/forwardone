@@ -108,18 +108,19 @@ Four families, loaded in `src/layouts/Base.astro` and `css/global.css`:
   tried 2026-10-17 and withdrawn then). Self-hosted WOFF2 from
   `src/assets/fonts/kmr-apparat`, declared in `css/global.css` as Light 300,
   Regular 400, Book 450, Medium 500, Bold 700, Heavy 800, Black 900. The
-  headings use Light (`--fw-heading: 300`, owner 2026-11-02); Clash Display
-  numbers and names keep 450 (`--fw-display`). Used for all display headings: Display
+  headings use Light (`--fw-heading: 300`, owner 2026-11-02); Display numbers
+  and names use Light as well (`--fw-display`, 300). Used for all display headings: Display
   (H1), Section (H2) and Feature headings, bare `h1`/`h2`, and the headings
   set in the display face (case names in the Proof slider, the founders
   page deck titles). Commercial font: buy a web licence before the site
   goes public (A0030). Clash Display is the fallback, so going back is a
   one-line change in `--font-heading`. Exception: the pitch page H1 stays
   in Inter 500 (owner, 2026-10-22).
-- `--font-display`: **Clash Display** (Fontshare; variable font, weight axis
-  200–700, plus static 400/500/600 as fallback). Stat values, headline
-  figures (the €388M), card metrics, company names on the founders strip
-  cards, and the heading fallback.
+- `--font-display`: **KMR Apparat** as well since 2026-11-02 (owner), Light
+  (`--fw-display: 300`): stat values (homepage and founders page), the
+  €388M headline figure, card metrics and the company names on the
+  founders strip cards. Clash Display (Fontshare, variable) stays loaded as
+  the fallback for both families.
 - `--font-sans`: **Inter** (Google Fonts, variable 400–600). H3 and below
   (card titles, the Playbook list) and all body and UI text: lede, body,
   small, buttons, navigation, forms, footer.
@@ -195,9 +196,8 @@ Rules:
   (`--fs-*`, `--lh-*`, `--ls-*`, `--fw-heading`, `--fw-card-title`). New
   components reference tokens, never literal values. Heading weights are
   300 (KMR Apparat Light, display headings, `--fw-heading`; owner
-  2026-11-02) / 550 (card titles, Inter variable); Clash Display numbers
-  and names use 450 (`--fw-display`), which needs the Clash Display
-  variable font loaded in `src/layouts/Base.astro`.
+  2026-11-02) / 550 (card titles, Inter variable); display numbers
+  and names (KMR Apparat as well) use 300 too (`--fw-display`).
 
 ### Figures and tables
 
