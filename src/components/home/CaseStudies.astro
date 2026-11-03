@@ -235,7 +235,7 @@ const dateParts = (d: string) => d.split(/(?<=\d)(st|nd|rd|th)\b/);
     font-size: var(--fs-metric);
     line-height: var(--lh-metric);
     font-weight: var(--fw-display);
-    font-variant-numeric: normal; /* proportional: the display face's tabular figures space digits and commas too wide (2026-11-03) */
+    font-variant-numeric: tabular-nums;
   }
   .case__visual {
     grid-column: 2;
