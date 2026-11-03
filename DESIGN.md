@@ -104,6 +104,15 @@ All queries are `max-width`, desktop-first.
 
 Four families, loaded in `src/layouts/Base.astro` and `css/global.css`:
 
+- **Test, 2026-11-03 (owner):** **Regola Pro S Light** (one cut, self-hosted
+  from `src/assets/fonts/regola`, declared for the whole weight range) sits
+  in front of KMR Apparat in both `--font-heading` and `--font-display`, so
+  all display headings and the display numbers (key figures, €388M, card
+  metrics, strip company names) use it. The display numbers use normal
+  (proportional) figures, because tabular figures spaced digits and commas
+  too wide. Going back to KMR Apparat: remove "Regola Pro" from both
+  variables. Licence: A0031.
+
 - `--font-heading`: **KMR Apparat** (owner, 2026-11-02, for the MVP; first
   tried 2026-10-17 and withdrawn then). Self-hosted WOFF2 from
   `src/assets/fonts/kmr-apparat`, declared in `css/global.css` as Light 300,

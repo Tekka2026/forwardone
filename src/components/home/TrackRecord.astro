@@ -93,7 +93,7 @@ const keys = ['size', 'companies', 'status'] as const;
     font-family: var(--font-display);
     font-weight: var(--fw-figure);
     line-height: var(--lh-display);
-    font-variant-numeric: tabular-nums;
+    font-variant-numeric: normal; /* proportional: the display face's tabular figures space digits and commas too wide (2026-11-03) */
     white-space: nowrap;
   }
   /* € and M at H1 size, the number at twice that, on one baseline. */

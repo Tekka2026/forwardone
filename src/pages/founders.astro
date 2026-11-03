@@ -446,7 +446,7 @@ const labelled = (svg: string, label: string) =>
     line-height: var(--lh-section);
     letter-spacing: var(--ls-section);
     font-weight: var(--fw-stat);
-    font-variant-numeric: tabular-nums;
+    font-variant-numeric: normal; /* proportional: the display face's tabular figures space digits and commas too wide (2026-11-03) */
     white-space: nowrap;
     animation-delay: var(--stat-at);
   }
