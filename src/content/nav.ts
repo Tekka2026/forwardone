@@ -101,8 +101,8 @@ export const navGreeting = {
   audience: {
     question: 'I am a',
     label: 'I am a founder or an investor',
-    founder: { label: 'Founder', word: 'founder' },
-    investor: { label: 'Investor', word: 'investor' },
+    founder: { label: 'founder', word: 'founder' },
+    investor: { label: 'investor', word: 'investor' },
     /** After a choice the bar goes back to full width and greets by time of
      *  day (the visitor's clock): "Good afternoon, founder!" (owner,
      *  2026-11-04; was "…, how are you?"). Morning 05–12, afternoon 12–18, evening after. */

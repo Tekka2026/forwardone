@@ -241,17 +241,20 @@ const onFounders = current === href('/founders');
   .nav[data-compact] .nav__menu {
     display: none;
   }
-  /* The switch unfolds from its left edge once the question is typed. */
-  /* Rectangular, in the AI mark's colour (owner, 2026-11-04): yellow on the
-     black bar, the dark text colour on the white one. */
+  /* The switch unfolds from its left edge once the question is typed.
+     Look after the owner's reference (2026-11-04): a dark segmented block
+     with slightly rounded corners; the chosen option on pale yellow with
+     black text, the other in grey. Black on the white bar, a lifted dark
+     on the black one. */
   .nav__switch {
-    --switch-colour: var(--brand-yellow);
+    --switch-bg: rgba(255, 255, 255, 0.12);
+    --switch-active: color-mix(in srgb, var(--brand-yellow) 15%, #ffffff);
     display: flex;
     flex: 0 0 auto;
-    gap: 2px;
-    padding: 2px;
-    border: 1px solid var(--switch-colour);
-    clip-path: inset(0 100% 0 0);
+    padding: 3px;
+    border-radius: 3px;
+    background: var(--switch-bg);
+    clip-path: inset(0 100% 0 0 round 3px);
     opacity: 0;
     transition:
       clip-path 420ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -261,38 +264,34 @@ const onFounders = current === href('/founders');
     display: none;
   }
   .nav__switch.is-open {
-    clip-path: inset(0 0 0 0);
+    clip-path: inset(0 0 0 0 round 3px);
     opacity: 1;
   }
   .nav__switch-opt {
     margin: 0;
     border: 0;
+    border-radius: 2px;
     background: none;
     font-family: inherit;
     cursor: pointer;
-    padding: var(--space) var(--gap-half);
+    padding: var(--space-2x) var(--space-4x);
     font-size: var(--fs-small);
-    line-height: 1.2;
-    font-weight: 500;
+    line-height: 1;
+    font-weight: 400;
     text-decoration-line: none;
     white-space: nowrap;
-    color: var(--switch-colour);
+    color: #a1a1a1;
+    transition: background-color 160ms ease, color 160ms ease;
   }
   .nav__switch-opt:hover {
-    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
   }
   .nav__switch-opt.is-current {
-    background: var(--switch-colour);
-    color: var(--nav-bg);
+    background: var(--switch-active);
+    color: #111111;
   }
   .nav[data-inverse]:not([data-open]) .nav__switch {
-    --switch-colour: var(--nav-fg-inverse);
-  }
-  .nav[data-inverse]:not([data-open]) .nav__switch-opt:hover {
-    background: rgba(0, 0, 0, 0.08);
-  }
-  .nav[data-inverse]:not([data-open]) .nav__switch-opt.is-current {
-    color: var(--nav-bg-inverse);
+    --switch-bg: #000000;
   }
   .nav__switch-opt:focus-visible {
     outline: 2px solid currentColor;
@@ -1120,8 +1119,35 @@ const onFounders = current === href('/founders');
           o.classList.toggle('is-current', o === opt);
           o.setAttribute('aria-pressed', String(o === opt));
         }
-        if (compact) toFull();
+        // Not at once (owner, 2026-11-04): the bar opens up again once the
+        // pointer has left it and the 25px around it. Without a mouse
+        // (touch, keyboard) after a short pause.
+        if (compact) {
+          const viaMouse = (e as PointerEvent).pointerType === 'mouse' || (e.detail > 0 && matchMedia('(hover: hover)').matches);
+          if (viaMouse) waitForLeave();
+          else window.setTimeout(() => { if (compact) toFull(); }, 1200);
+        }
       });
+    }
+    const LEAVE_MARGIN = 25;
+    function waitForLeave() {
+      const onMove = (ev: PointerEvent) => {
+        const r = bar.getBoundingClientRect();
+        const out =
+          ev.clientX < r.left - LEAVE_MARGIN || ev.clientX > r.right + LEAVE_MARGIN ||
+          ev.clientY < r.top - LEAVE_MARGIN || ev.clientY > r.bottom + LEAVE_MARGIN;
+        if (!out) return;
+        document.removeEventListener('pointermove', onMove);
+        document.documentElement.removeEventListener('pointerleave', onLeaveWindow);
+        if (compact) toFull();
+      };
+      const onLeaveWindow = () => {
+        document.removeEventListener('pointermove', onMove);
+        document.documentElement.removeEventListener('pointerleave', onLeaveWindow);
+        if (compact) toFull();
+      };
+      document.addEventListener('pointermove', onMove);
+      document.documentElement.addEventListener('pointerleave', onLeaveWindow);
     }
     if (audienceAfter) {
       const queueCompact = () => {

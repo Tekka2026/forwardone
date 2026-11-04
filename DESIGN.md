@@ -888,15 +888,17 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
 - Compact: the bar shrinks to 360px (or the screen width minus the page
   margins) over 560ms, the AI mark plays its swap, "Welcome to FORWARD.one"
   erases and "I am a" types in (was "Are you a:"), the hamburger goes and the bar no
-  longer opens the panel. Then a rectangular switch (square corners, owner
-  2026-11-04) unfolds from the left on the right of the bar: Founder and
-  Investor (buttons), the page's own audience filled (Investor on
-  the homepage) until the visitor chooses. The switch takes the AI mark's colour: frame,
-  the other option's word and the filled option's background in yellow
-  #FFEA6D on the black bar (the filled word black), in the dark text colour
-  on the white bar over dark sections.
+  longer opens the panel. Then a switch unfolds from the left on the right
+  of the bar (look after the owner's reference, 2026-11-04): a dark block
+  with 3px corners (black on the white bar, white 12% on the black bar),
+  two lower-case options, "founder" and "investor" (buttons, 15px). The
+  chosen option (before a choice: the page's own audience, investor on the
+  homepage) sits on pale yellow (#FFEA6D at 15% into white, 2px corners)
+  in black; the other is grey #A1A1A1, white on hover.
 - Choosing (owner, 2026-11-04): a press on either option does not leave
-  the page. The bar goes back to full width (AI swap, hamburger back), the
+  the page. The pill moves to it at once; the bar opens up again only once
+  the mouse has left the bar and the 25px around it (or the window), and
+  after 1.2s for touch and keyboard. Then the bar goes back to full width (AI swap, hamburger back), the
   line erases and types a greeting by the visitor's time of day: "Good
   morning / afternoon / evening, founder!" (or investor; was "…, how are
   you?")
