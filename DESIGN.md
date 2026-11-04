@@ -212,6 +212,16 @@ Rules:
   each row restacks into a block between hairlines (no box) with mono
   labels taken from `data-label`; tables never scroll horizontally.
 
+### Homepage curtain
+
+- (Owner, 2026-11-04, as on the founders page.) The black intro is sticky:
+  once the top of the founders strip is 30px above the floating nav bar,
+  the intro stops moving and the strip (opaque white, on top) scrolls over
+  it. The intro's sticky top is measured by script (window height minus
+  the nav's space and 30px, minus the intro's height) and again on resize;
+  the intro and the strip share a wrapper (`.curtain` in
+  `src/pages/index.astro`), so the effect ends with the strip.
+
 ### Founders strip (between the intro and the track record)
 
 `src/components/home/Founders.astro`; copy in `founders` (home.ts). Owner,

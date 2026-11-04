@@ -18,12 +18,38 @@ const h1Words = hero.title.split(/\s+/).filter(Boolean).length;
 ---
 
 <Base title={meta.title} description={meta.description} darkTop>
-  <!-- Black intro: header, hero and figures, 130% of the viewport high. -->
-  <div class="intro theme-dark" data-nav-dark style={`--h1-words: ${h1Words}`}>
-    <Hero />
-    <Stats />
+  <!-- The intro and the founders strip share a wrapper: the intro stays put
+       once the strip is 30px above the floating nav, and the strip scrolls
+       over it (owner, 2026-11-04; as on the founders page). -->
+  <div class="curtain" data-curtain>
+    <!-- Black intro: header, hero and figures, 130% of the viewport high. -->
+    <div class="intro theme-dark" data-nav-dark style={`--h1-words: ${h1Words}`}>
+      <Hero />
+      <Stats />
+    </div>
+    <Founders />
   </div>
-  <Founders />
+  <script is:inline>
+    // The curtain: the intro is sticky with a negative top, so it stops
+    // moving when its bottom edge (where the strip starts) is 30px above the
+    // floating nav bar; the strip, opaque and on top, then scrolls over it.
+    // Measured here and on resize (window and intro height).
+    (function () {
+      var wrap = document.querySelector('[data-curtain]');
+      if (!wrap) return;
+      var intro = wrap.querySelector('.intro');
+      var probe = document.createElement('div');
+      probe.style.cssText = 'position:absolute;visibility:hidden;height:calc(var(--nav-height) + var(--gap))';
+      wrap.appendChild(probe);
+      function place() {
+        var line = window.innerHeight - probe.offsetHeight - 30;
+        intro.style.setProperty('--curtain-top', Math.min(0, line - intro.offsetHeight) + 'px');
+      }
+      place();
+      window.addEventListener('resize', place);
+      window.addEventListener('load', place);
+    })();
+  </script>
   <TrackRecord />
   <WhatWeDo />
   <CaseStudies />
@@ -106,6 +132,20 @@ const h1Words = hero.title.split(/\s+/).filter(Boolean).length;
   }
   .intro + .section {
     border-top: 0;
+  }
+  /* The curtain (see the script after the wrapper). */
+  .curtain {
+    position: relative;
+  }
+  .curtain > .intro {
+    position: sticky;
+    top: var(--curtain-top, 0);
+    z-index: 0;
+  }
+  .curtain > .section {
+    position: relative;
+    z-index: 1;
+    background: var(--bg);
   }
 
   /* Shared inline text link with arrow, used for section links. */
