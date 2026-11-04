@@ -42,6 +42,10 @@ const labelled = (svg: string, label: string) =>
 ---
 
 <Base title={f.meta.title} description={f.meta.description} darkTop forFounders>
+  <!-- The intro and "Why founders pick us" share a wrapper: the intro stays
+       put once the next section is 30px above the floating nav, and that
+       section scrolls over it (owner, 2026-11-04). -->
+  <div class="f-curtain" data-curtain>
   <!-- 1–2. Black intro: hero and key figures, like the homepage. -->
   <div class="f-intro theme-dark" data-nav-dark style={`--h1-words: ${h1Words}`}>
     <section class="section section--flush f-hero">
@@ -135,6 +139,30 @@ const labelled = (svg: string, label: string) =>
       </div>
     </div>
   </section>
+  </div>
+  <script is:inline>
+    // The curtain: the intro is sticky with a negative top, so it stops
+    // moving when its bottom edge (where the next section starts) is 30px
+    // above the floating nav bar; the next section, opaque and on top, then
+    // scrolls over it. The top depends on the window and intro height, so
+    // it is measured here and on resize.
+    (function () {
+      var wrap = document.querySelector('[data-curtain]');
+      if (!wrap) return;
+      var intro = wrap.querySelector('.f-intro');
+      var probe = document.createElement('div');
+      probe.style.cssText = 'position:absolute;visibility:hidden;height:calc(var(--nav-height) + var(--gap))';
+      wrap.appendChild(probe);
+      function place() {
+        var navSpace = probe.offsetHeight; // the bar and its gap to the bottom edge
+        var line = window.innerHeight - navSpace - 30;
+        intro.style.setProperty('--curtain-top', Math.min(0, line - intro.offsetHeight) + 'px');
+      }
+      place();
+      window.addEventListener('resize', place);
+      window.addEventListener('load', place);
+    })();
+  </script>
 
   <!-- 4. How we work with you: the homepage Playbook pattern -->
   <section class="section section--feature">
@@ -377,6 +405,20 @@ const labelled = (svg: string, label: string) =>
   }
   .f-intro + .section {
     border-top: 0;
+  }
+  /* The curtain (see the script after the wrapper). */
+  .f-curtain {
+    position: relative;
+  }
+  .f-intro {
+    position: sticky;
+    top: var(--curtain-top, 0);
+    z-index: 0;
+  }
+  .f-why-section {
+    position: relative;
+    z-index: 1;
+    background: var(--bg);
   }
   .f-hero {
     flex: 1 0 auto;

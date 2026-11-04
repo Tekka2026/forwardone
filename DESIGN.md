@@ -466,6 +466,12 @@ and classes, because the homepage components read their copy from `home.ts`:
   stats pattern (three figures since 2026-10-26, €250M removed; one
   column each, 2 at ≤980px, wrapping to one per row on the
   narrowest phones), held until they scroll into view, as on the homepage. Same intro sequence and timings as the homepage.
+- Curtain (owner, 2026-11-04): the intro is sticky. Once the top of "Why
+  founders pick us" is 30px above the floating nav bar, the intro stops
+  moving and that section (opaque white, on top) scrolls over it. The
+  intro's sticky top is measured by script (window height minus the nav's
+  space and 30px, minus the intro's height) and again on resize; the
+  intro and that section share a wrapper, so the effect ends with it.
 - Why founders pick us (owner, 2026-10-26, after lassie.ai): H2, then a
   scroll-driven deck. One visual per card, 6 columns wide and centred
   (columns 4–9; was 8)
