@@ -884,12 +884,20 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   margins) over 560ms, the AI mark plays its swap, "Welcome to FORWARD.one"
   erases and "Are you a:" types in, the hamburger goes and the bar no
   longer opens the panel. Then a rectangular switch (square corners, owner
-  2026-11-04) unfolds from the left on the right of the bar: Founder (to
-  `/founders`) and Investor (to the homepage), the current audience filled
-  (Investor on the homepage). The switch takes the AI mark's colour: frame,
+  2026-11-04) unfolds from the left on the right of the bar: Founder and
+  Investor (buttons), the page's own audience filled (Investor on
+  the homepage) until the visitor chooses. The switch takes the AI mark's colour: frame,
   the other option's word and the filled option's background in yellow
   #FFEA6D on the black bar (the filled word black), in the dark text colour
   on the white bar over dark sections.
+- Choosing (owner, 2026-11-04): a press on either option does not leave
+  the page. The bar goes back to full width (AI swap, hamburger back), the
+  line erases and types a greeting by the visitor's time of day: "Good
+  morning / afternoon / evening, founder (or investor), how are you?"
+  (morning 05–12, afternoon 12–18, evening otherwise). The choice is kept
+  for the visit (sessionStorage): the bar does not ask again, and the
+  greeting replaces "Welcome to FORWARD.one" as the closed line on every
+  page of the site.
 - Copy in `navGreeting.audience` (`src/content/nav.ts`). Reduced motion:
   the line and switch change without typing or unfolding.
 

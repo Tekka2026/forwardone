@@ -25,7 +25,9 @@ import { href, isActive } from '@lib/href';
 
 const current = Astro.url.pathname;
 const aud = navGreeting.audience;
-const onFounders = current === href(aud.founder.href);
+// Before a choice the page's own audience is filled: Founder on the founders
+// page, Investor elsewhere.
+const onFounders = current === href('/founders');
 ---
 
 <div class="nav" data-nav>
@@ -121,9 +123,20 @@ const onFounders = current === href(aud.founder.href);
         />
       </form>
 
-      <div class="nav__switch" role="group" aria-label={aud.label} data-nav-switch data-question={aud.question} hidden>
-        <a class="nav__switch-opt" href={href(aud.founder.href)} aria-current={onFounders ? 'page' : undefined}>{aud.founder.label}</a>
-        <a class="nav__switch-opt" href={href(aud.investor.href)} aria-current={!onFounders ? 'page' : undefined}>{aud.investor.label}</a>
+      <div
+        class="nav__switch"
+        role="group"
+        aria-label={aud.label}
+        data-nav-switch
+        data-question={aud.question}
+        data-greet-morning={aud.greeting.morning}
+        data-greet-afternoon={aud.greeting.afternoon}
+        data-greet-evening={aud.greeting.evening}
+        data-greet-template={aud.greeting.template}
+        hidden
+      >
+        <button class:list={['nav__switch-opt', onFounders && 'is-current']} type="button" aria-pressed="false" data-audience={aud.founder.word}>{aud.founder.label}</button>
+        <button class:list={['nav__switch-opt', !onFounders && 'is-current']} type="button" aria-pressed="false" data-audience={aud.investor.word}>{aud.investor.label}</button>
       </div>
 
       <button
@@ -252,6 +265,11 @@ const onFounders = current === href(aud.founder.href);
     opacity: 1;
   }
   .nav__switch-opt {
+    margin: 0;
+    border: 0;
+    background: none;
+    font-family: inherit;
+    cursor: pointer;
     padding: var(--space) var(--gap-half);
     font-size: var(--fs-small);
     line-height: 1.2;
@@ -263,7 +281,7 @@ const onFounders = current === href(aud.founder.href);
   .nav__switch-opt:hover {
     background: rgba(255, 255, 255, 0.15);
   }
-  .nav__switch-opt[aria-current='page'] {
+  .nav__switch-opt.is-current {
     background: var(--switch-colour);
     color: var(--nav-bg);
   }
@@ -273,7 +291,7 @@ const onFounders = current === href(aud.founder.href);
   .nav[data-inverse]:not([data-open]) .nav__switch-opt:hover {
     background: rgba(0, 0, 0, 0.08);
   }
-  .nav[data-inverse]:not([data-open]) .nav__switch-opt[aria-current='page'] {
+  .nav[data-inverse]:not([data-open]) .nav__switch-opt.is-current {
     color: var(--nav-bg-inverse);
   }
   .nav__switch-opt:focus-visible {
@@ -758,6 +776,20 @@ const onFounders = current === href(aud.founder.href);
        Closing again types the welcome line back. Every sequence gets a run
        id; starting a new one cancels whatever was still typing. */
     const first = greeting.dataset.first || '';
+    // After the visitor has said who they are (the compact bar's switch),
+    // the closed line greets them by time of day instead of "Welcome to
+    // FORWARD.one". Remembered for the visit (sessionStorage).
+    const switchEl = root.querySelector<HTMLElement>('[data-nav-switch]')!;
+    const AUDIENCE_KEY = 'forwardone-audience';
+    let audience = '';
+    try { audience = sessionStorage.getItem(AUDIENCE_KEY) || ''; } catch { /* storage blocked */ }
+    function welcomeLine() {
+      if (!audience) return first;
+      const h = new Date().getHours();
+      const d = switchEl.dataset;
+      const daytime = h >= 5 && h < 12 ? d.greetMorning : h >= 12 && h < 18 ? d.greetAfternoon : d.greetEvening;
+      return (d.greetTemplate || '').replace('{daytime}', daytime || '').replace('{audience}', audience);
+    }
     const second = greeting.dataset.second || '';
     const TYPE_MS = 55;
     const ERASE_MS = 30;
@@ -813,7 +845,7 @@ const onFounders = current === href(aud.founder.href);
       showPrompt();
       if (!animate || reduceMotion.matches) {
         prompt.classList.remove('is-placeholder');
-        setTyped(first);
+        setTyped(welcomeLine());
         idle();
         return;
       }
@@ -826,7 +858,7 @@ const onFounders = current === href(aud.founder.href);
         if (!alive(id)) return;
       }
       prompt.classList.remove('is-placeholder');
-      await typeText(first, id);
+      await typeText(welcomeLine(), id);
       if (alive(id)) idle();
     }
     // Open state, idle: the grey placeholder.
@@ -1029,7 +1061,7 @@ const onFounders = current === href(aud.founder.href);
        its bottom has scrolled above the bar's centre line the bar shrinks
        and asks, and scrolling back above it restores the welcome line. */
     const audienceAfter = document.querySelector<HTMLElement>('[data-nav-audience-after]');
-    const switcher = root.querySelector<HTMLElement>('[data-nav-switch]')!;
+    const switcher = switchEl;
     const question = switcher.dataset.question || '';
     let compact = false;
     async function toCompact() {
@@ -1072,10 +1104,24 @@ const onFounders = current === href(aud.founder.href);
       if (!audienceAfter) return;
       const bottom = parseFloat(getComputedStyle(root).bottom) || 0;
       const y = window.innerHeight - bottom - bar.offsetHeight / 2;
-      const want = audienceAfter.getBoundingClientRect().bottom < y;
+      // Once the visitor has chosen, the bar does not ask again.
+      const want = !audience && audienceAfter.getBoundingClientRect().bottom < y;
       if (want === compact) return;
       if (want) toCompact();
       else toFull();
+    }
+    // Choosing: remember it, back to the full bar, greet.
+    for (const opt of Array.from(switcher.querySelectorAll<HTMLButtonElement>('[data-audience]'))) {
+      opt.addEventListener('click', (e) => {
+        e.stopPropagation();
+        audience = opt.dataset.audience || '';
+        try { sessionStorage.setItem(AUDIENCE_KEY, audience); } catch { /* storage blocked */ }
+        for (const o of Array.from(switcher.querySelectorAll<HTMLButtonElement>('[data-audience]'))) {
+          o.classList.toggle('is-current', o === opt);
+          o.setAttribute('aria-pressed', String(o === opt));
+        }
+        if (compact) toFull();
+      });
     }
     if (audienceAfter) {
       const queueCompact = () => {

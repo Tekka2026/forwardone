@@ -95,12 +95,22 @@ export const navGreeting = {
     handler: '[PLACEHOLDER: assistant handler]',
   },
   /** Compact bar on the homepage once the founders strip has passed (owner,
-   *  2026-11-04): the line becomes `question` and a two-way switch unfolds. */
+   *  2026-11-04): the line becomes `question` and a two-way switch unfolds.
+   *  Choosing does not leave the page; it is remembered for the visit. */
   audience: {
     question: 'Are you a:',
     label: 'Are you a founder or an investor?',
-    founder: { label: 'Founder', href: '/founders' },
-    investor: { label: 'Investor', href: '/' },
+    founder: { label: 'Founder', word: 'founder' },
+    investor: { label: 'Investor', word: 'investor' },
+    /** After a choice the bar goes back to full width and greets by time of
+     *  day (the visitor's clock): "Good afternoon, founder, how are you?"
+     *  (owner, 2026-11-04). Morning 05–12, afternoon 12–18, evening after. */
+    greeting: {
+      morning: 'Good morning',
+      afternoon: 'Good afternoon',
+      evening: 'Good evening',
+      template: '{daytime}, {audience}, how are you?',
+    },
   },
 };
 
