@@ -104,13 +104,13 @@ export const navGreeting = {
     founder: { label: 'Founder', word: 'founder' },
     investor: { label: 'Investor', word: 'investor' },
     /** After a choice the bar goes back to full width and greets by time of
-     *  day (the visitor's clock): "Good afternoon, founder, how are you?"
-     *  (owner, 2026-11-04). Morning 05–12, afternoon 12–18, evening after. */
+     *  day (the visitor's clock): "Good afternoon, founder!" (owner,
+     *  2026-11-04; was "…, how are you?"). Morning 05–12, afternoon 12–18, evening after. */
     greeting: {
       morning: 'Good morning',
       afternoon: 'Good afternoon',
       evening: 'Good evening',
-      template: '{daytime}, {audience}, how are you?',
+      template: '{daytime}, {audience}!',
     },
   },
 };

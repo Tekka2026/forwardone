@@ -893,7 +893,8 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
 - Choosing (owner, 2026-11-04): a press on either option does not leave
   the page. The bar goes back to full width (AI swap, hamburger back), the
   line erases and types a greeting by the visitor's time of day: "Good
-  morning / afternoon / evening, founder (or investor), how are you?"
+  morning / afternoon / evening, founder!" (or investor; was "…, how are
+  you?")
   (morning 05–12, afternoon 12–18, evening otherwise). The choice is kept
   for the visit (sessionStorage): the bar does not ask again, and the
   greeting replaces "Welcome to FORWARD.one" as the closed line on every
