@@ -224,6 +224,11 @@ Rules:
 
 ### Founders strip (between the intro and the track record)
 
+- The H2 ("We go where Europe’s builders are."; on the founders page "Hear
+  it from the people building.") uses the H1 word reveal once it scrolls
+  into view (`<Sentences reveal onScroll>`, owner 2026-11-04), like the
+  Playbook H2.
+
 `src/components/home/Founders.astro`; copy in `founders` (home.ts). Owner,
 2026-10-19.
 

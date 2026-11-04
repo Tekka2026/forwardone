@@ -397,7 +397,10 @@ const labelled = (svg: string, label: string) =>
     padding-top: var(--header-h);
     background: var(--bg);
     box-shadow: 0 0 0 100vmax var(--bg);
-    clip-path: inset(-100vmax -100vmax 0);
+    /* 1px off the bottom: where the curtain section has covered the intro
+       and they end on the same (fractional) pixel, no black hairline shows
+       through between sections (owner, 2026-11-04). */
+    clip-path: inset(-100vmax -100vmax 1px);
     /* Sequence: H1 word by word, then the lede, the buttons, the figures. */
     --h1-end: calc(var(--reveal-start) + (var(--h1-words) - 1) * var(--reveal-stagger) + 9 * var(--reveal-frame));
     --buttons-at: calc(var(--h1-end) + 8 * var(--reveal-frame));
