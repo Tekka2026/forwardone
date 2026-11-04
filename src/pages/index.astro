@@ -20,8 +20,10 @@ const h1Words = hero.title.split(/\s+/).filter(Boolean).length;
 <Base title={meta.title} description={meta.description} darkTop>
   <!-- The intro and the founders strip share a wrapper: the intro stays put
        once the strip is 30px above the floating nav, and the strip scrolls
-       over it (owner, 2026-11-04; as on the founders page). -->
-  <div class="curtain" data-curtain>
+       over it (owner, 2026-11-04; as on the founders page). Once it has
+       passed the floating nav, the nav turns compact and asks "Are you a:"
+       (data-nav-audience-after, see Nav.astro). -->
+  <div class="curtain" data-curtain data-nav-audience-after>
     <!-- Black intro: header, hero and figures, 130% of the viewport high. -->
     <div class="intro theme-dark" data-nav-dark style={`--h1-words: ${h1Words}`}>
       <Hero />

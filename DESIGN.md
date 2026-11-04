@@ -873,6 +873,23 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   `--reveal-tint-duration` with `--reveal-gentle-ease`, the same as the H1's
   last word. Off under reduced motion.
 
+
+### Compact bar: "Are you a:" (homepage, owner 2026-11-04)
+
+- A page opts in by marking an element `data-nav-audience-after`; on the
+  homepage that is the wrapper of the intro and the founders strip. Once
+  its bottom has scrolled above the bar's centre line, the bar turns
+  compact; scrolling back above it restores the full bar.
+- Compact: the bar shrinks to 360px (or the screen width minus the page
+  margins) over 560ms, the AI mark plays its swap, "Welcome to FORWARD.one"
+  erases and "Are you a:" types in, the hamburger goes and the bar no
+  longer opens the panel. Then a pill switch unfolds from the left on the
+  right of the bar: Founder (to `/founders`) and Investor (to the homepage),
+  the current audience filled (Investor on the homepage). Inverted (white
+  bar) over dark sections like the rest of the bar.
+- Copy in `navGreeting.audience` (`src/content/nav.ts`). Reduced motion:
+  the line and switch change without typing or unfolding.
+
 ## 9. Colour (placeholders)
 
 - Accent: `--brand-yellow` #FFEA6D (owner, 2026-10-17; replaced the cyan

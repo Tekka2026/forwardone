@@ -94,6 +94,14 @@ export const navGreeting = {
     notConnected: 'Thanks. The assistant is not connected yet.',
     handler: '[PLACEHOLDER: assistant handler]',
   },
+  /** Compact bar on the homepage once the founders strip has passed (owner,
+   *  2026-11-04): the line becomes `question` and a two-way switch unfolds. */
+  audience: {
+    question: 'Are you a:',
+    label: 'Are you a founder or an investor?',
+    founder: { label: 'Founder', href: '/founders' },
+    investor: { label: 'Investor', href: '/' },
+  },
 };
 
 /** Utility links, shown inside the navigation panel. */
