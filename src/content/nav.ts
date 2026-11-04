@@ -95,11 +95,12 @@ export const navGreeting = {
     handler: '[PLACEHOLDER: assistant handler]',
   },
   /** Compact bar on the homepage once the founders strip has passed (owner,
-   *  2026-11-04): the line becomes `question` and a two-way switch unfolds.
+   *  2026-11-04): the line becomes `question` ("I am a", owner 2026-11-04; was
+   *  "Are you a:") and a two-way switch unfolds.
    *  Choosing does not leave the page; it is remembered for the visit. */
   audience: {
-    question: 'Are you a:',
-    label: 'Are you a founder or an investor?',
+    question: 'I am a',
+    label: 'I am a founder or an investor',
     founder: { label: 'Founder', word: 'founder' },
     investor: { label: 'Investor', word: 'investor' },
     /** After a choice the bar goes back to full width and greets by time of

@@ -16,7 +16,7 @@
  * - Compact (owner, 2026-11-04), on pages that mark an element with
  *   `data-nav-audience-after` (the homepage: the intro and founders strip):
  *   once that element has scrolled past the bar, the bar shrinks, the AI
- *   mark swaps, the welcome line erases into "Are you a:", the hamburger
+ *   mark swaps, the welcome line erases into "I am a", the hamburger
  *   goes (the panel cannot open then) and a Founder / Investor switch
  *   unfolds behind the line. Scrolling back up reverses it.
  */
@@ -227,7 +227,7 @@ const onFounders = current === href('/founders');
       width 560ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  /* ---- Compact (Are you a: Founder / Investor) ---- */
+  /* ---- Compact (I am a: Founder / Investor) ---- */
   .nav[data-compact] .nav__root {
     width: min(var(--nav-compact-w, 360px), calc(100vw - 2 * var(--page-margin)));
   }
@@ -1034,7 +1034,7 @@ const onFounders = current === href('/founders');
     // The whole bar toggles the menu. Keyboard activation of the hamburger
     // fires a click that bubbles here, so one handler covers both.
     bar.addEventListener('click', (e) => {
-      if (compact) return; // no panel while the bar asks "Are you a:"
+      if (compact) return; // no panel while the bar asks "I am a"
       const onPrompt = (e.target as HTMLElement).closest('[data-nav-prompt]');
       if (isOpen && onPrompt) return; // typing, not closing
       isOpen ? close() : open();
@@ -1056,7 +1056,7 @@ const onFounders = current === href('/founders');
 
     mobile.addEventListener('change', close);
 
-    /* ---- Compact: "Are you a:" with a Founder / Investor switch ----
+    /* ---- Compact: "I am a" with a Founder / Investor switch ----
        Pages opt in by marking an element with data-nav-audience-after; once
        its bottom has scrolled above the bar's centre line the bar shrinks
        and asks, and scrolling back above it restores the welcome line. */
