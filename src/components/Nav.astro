@@ -16,9 +16,10 @@
  * - Compact (owner, 2026-11-04), on pages that mark an element with
  *   `data-nav-audience-after` (the homepage: the intro and founders strip):
  *   once that element has scrolled past the bar, the bar shrinks, the AI
- *   mark swaps, the welcome line erases into "I am a", the hamburger
- *   goes (the panel cannot open then) and a Founder / Investor switch
- *   unfolds behind the line. Scrolling back up reverses it.
+ *   mark swaps, the welcome line erases into "I am a" and a Founder /
+ *   Investor switch
+ *   unfolds behind the line; the hamburger stays and opens the panel at
+ *   full width. Scrolling back up reverses it.
  */
 import { primaryNav, navGreeting } from '@content/nav';
 import { href, isActive } from '@lib/href';
@@ -229,17 +230,22 @@ const onFounders = current === href('/founders');
 
   /* ---- Compact (I am a: Founder / Investor) ---- */
   .nav[data-compact] .nav__root {
-    width: min(var(--nav-compact-w, 360px), calc(100vw - 2 * var(--page-margin)));
+    width: min(var(--nav-compact-w, 400px), calc(100vw - 2 * var(--page-margin)));
   }
-  .nav[data-compact] .nav__bar {
-    cursor: default; /* the panel cannot open in this state */
-  }
+  /* Only the hamburger opens the panel in this state (it stays, owner
+     2026-11-04, so the site can still be navigated). */
+  .nav[data-compact] .nav__bar,
   .nav[data-compact] .nav__ask,
   .nav[data-compact] .nav__prompt {
     cursor: default;
   }
-  .nav[data-compact] .nav__menu {
-    display: none;
+  @media (max-width: 640px) {
+    .nav[data-compact] .nav__bar {
+      gap: var(--space-2x);
+    }
+    .nav[data-compact] .nav__switch-opt {
+      padding-inline: var(--space-2x);
+    }
   }
   /* The switch unfolds from its left edge once the question is typed.
      Look after the owner's reference (2026-11-04): a dark segmented block
@@ -983,6 +989,13 @@ const onFounders = current === href('/founders');
     function open() {
       show();
       isOpen = true;
+      // From the compact bar: full width for the panel, the switch put away
+      // (it comes back when the panel closes, see close()).
+      if (compact) {
+        root.removeAttribute('data-compact');
+        switchEl.classList.remove('is-open');
+        switchEl.hidden = true;
+      }
       window.clearTimeout(closeTimer);
       panel.hidden = false;
       scrim.hidden = false;
@@ -1023,7 +1036,11 @@ const onFounders = current === href('/founders');
       page.removeAttribute('inert');
       document.documentElement.style.overflow = '';
       swapAi();
-      if (input.hidden || !input.value.trim()) toWelcome(true);
+      if (compact) {
+        root.setAttribute('data-compact', '');
+        switchEl.hidden = false;
+        compactLine(++runId);
+      } else if (input.hidden || !input.value.trim()) toWelcome(true);
       menu.setAttribute('aria-expanded', 'false');
       menu.setAttribute('aria-label', 'Menu');
       if (keyboard) menu.focus();
@@ -1033,7 +1050,8 @@ const onFounders = current === href('/founders');
     // The whole bar toggles the menu. Keyboard activation of the hamburger
     // fires a click that bubbles here, so one handler covers both.
     bar.addEventListener('click', (e) => {
-      if (compact) return; // no panel while the bar asks "I am a"
+      // While the bar asks "I am a", only the hamburger opens the panel.
+      if (compact && !(e.target as HTMLElement).closest('[data-nav-menu]')) return;
       const onPrompt = (e.target as HTMLElement).closest('[data-nav-prompt]');
       if (isOpen && onPrompt) return; // typing, not closing
       isOpen ? close() : open();
@@ -1066,13 +1084,15 @@ const onFounders = current === href('/founders');
     async function toCompact() {
       if (isOpen) close();
       compact = true;
-      const myId = ++runId; // also cancels the welcome line close() starts
       root.setAttribute('data-compact', '');
-      menu.setAttribute('tabindex', '-1');
       swapAi();
+      switcher.hidden = false;
+      compactLine(++runId); // the new run also cancels a welcome line close() started
+    }
+    // "I am a" typed in, then the switch unfolds.
+    async function compactLine(myId: number) {
       showPrompt();
       prompt.classList.remove('is-placeholder');
-      switcher.hidden = false;
       if (reduceMotion.matches) {
         setTyped(question);
         idle();
@@ -1091,7 +1111,6 @@ const onFounders = current === href('/founders');
     function toFull() {
       compact = false;
       root.removeAttribute('data-compact');
-      menu.removeAttribute('tabindex');
       switcher.classList.remove('is-open');
       window.setTimeout(() => { if (!compact) switcher.hidden = true; }, 420);
       swapAi();

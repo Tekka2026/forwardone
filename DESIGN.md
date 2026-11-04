@@ -885,10 +885,13 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   homepage that is the wrapper of the intro and the founders strip. Once
   its bottom has scrolled above the bar's centre line, the bar turns
   compact; scrolling back above it restores the full bar.
-- Compact: the bar shrinks to 360px (or the screen width minus the page
-  margins) over 560ms, the AI mark plays its swap, "Welcome to FORWARD.one"
-  erases and "I am a" types in (was "Are you a:"), the hamburger goes and the bar no
-  longer opens the panel. Then a switch unfolds from the left on the right
+- Compact: the bar shrinks to 400px (or the screen width minus the page
+  margins; tighter gaps on phones) over 560ms, the AI mark plays its swap,
+  "Welcome to FORWARD.one" erases and "I am a" types in (was "Are you
+  a:"). The hamburger stays (owner, 2026-11-04, so visitors can still
+  navigate) and is the only part that opens the panel then; opening grows
+  the bar back to full width for the panel and puts the switch away,
+  closing returns to the compact bar and its question. Then a switch unfolds from the left on the right
   of the bar (look after the owner's reference, 2026-11-04): a dark block
   with 3px corners (black on the white bar, white 12% on the black bar),
   two lower-case options, "founder" and "investor" (buttons, 15px). The
