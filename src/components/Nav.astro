@@ -229,14 +229,16 @@ const onFounders = current === href(aud.founder.href);
     display: none;
   }
   /* The switch unfolds from its left edge once the question is typed. */
+  /* Rectangular, in the AI mark's colour (owner, 2026-11-04): yellow on the
+     black bar, the dark text colour on the white one. */
   .nav__switch {
+    --switch-colour: var(--brand-yellow);
     display: flex;
     flex: 0 0 auto;
     gap: 2px;
     padding: 2px;
-    border: 1px solid currentColor;
-    border-radius: var(--btn-radius);
-    clip-path: inset(0 100% 0 0 round var(--btn-radius));
+    border: 1px solid var(--switch-colour);
+    clip-path: inset(0 100% 0 0);
     opacity: 0;
     transition:
       clip-path 420ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -246,31 +248,32 @@ const onFounders = current === href(aud.founder.href);
     display: none;
   }
   .nav__switch.is-open {
-    clip-path: inset(0 0 0 0 round var(--btn-radius));
+    clip-path: inset(0 0 0 0);
     opacity: 1;
   }
   .nav__switch-opt {
     padding: var(--space) var(--gap-half);
-    border-radius: var(--btn-radius);
     font-size: var(--fs-small);
     line-height: 1.2;
     font-weight: 500;
     text-decoration-line: none;
     white-space: nowrap;
-    color: inherit;
+    color: var(--switch-colour);
   }
   .nav__switch-opt:hover {
     background: rgba(255, 255, 255, 0.15);
   }
   .nav__switch-opt[aria-current='page'] {
-    background: var(--nav-fg);
+    background: var(--switch-colour);
     color: var(--nav-bg);
+  }
+  .nav[data-inverse]:not([data-open]) .nav__switch {
+    --switch-colour: var(--nav-fg-inverse);
   }
   .nav[data-inverse]:not([data-open]) .nav__switch-opt:hover {
     background: rgba(0, 0, 0, 0.08);
   }
   .nav[data-inverse]:not([data-open]) .nav__switch-opt[aria-current='page'] {
-    background: var(--nav-fg-inverse);
     color: var(--nav-bg-inverse);
   }
   .nav__switch-opt:focus-visible {

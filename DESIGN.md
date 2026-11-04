@@ -883,10 +883,13 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
 - Compact: the bar shrinks to 360px (or the screen width minus the page
   margins) over 560ms, the AI mark plays its swap, "Welcome to FORWARD.one"
   erases and "Are you a:" types in, the hamburger goes and the bar no
-  longer opens the panel. Then a pill switch unfolds from the left on the
-  right of the bar: Founder (to `/founders`) and Investor (to the homepage),
-  the current audience filled (Investor on the homepage). Inverted (white
-  bar) over dark sections like the rest of the bar.
+  longer opens the panel. Then a rectangular switch (square corners, owner
+  2026-11-04) unfolds from the left on the right of the bar: Founder (to
+  `/founders`) and Investor (to the homepage), the current audience filled
+  (Investor on the homepage). The switch takes the AI mark's colour: frame,
+  the other option's word and the filled option's background in yellow
+  #FFEA6D on the black bar (the filled word black), in the dark text colour
+  on the white bar over dark sections.
 - Copy in `navGreeting.audience` (`src/content/nav.ts`). Reduced motion:
   the line and switch change without typing or unfolding.
 
