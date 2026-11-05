@@ -883,6 +883,15 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   last word. Off under reduced motion.
 
 
+
+- AI mark swap (owner, 2026-11-05): the same movement (the next mark grows
+  in from the bottom left while the current one shrinks out to the top
+  right, 840ms) plays once on every interaction of the bar: opening,
+  closing, shrinking to and growing from the compact bar, choosing founder
+  or investor, and every change of its line (erasing or typing, the first
+  welcome included, the field opening, the "not connected" note). A swap
+  under way is never restarted, so erase-then-type reads as one movement.
+
 ### Compact bar: "I am a" (homepage, owner 2026-11-04)
 
 - A page opts in by marking an element `data-nav-audience-after`; on the

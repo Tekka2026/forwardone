@@ -826,17 +826,27 @@ const onFounders = current === href('/founders');
     const alive = (id: number) => id === runId;
     const idle = () => cursor.classList.add('is-still'); // no cursor when idle
 
-    // The AI mark is always shown. Each press of the bar (open or close)
-    // plays the swap: the next mark pushes the current one out.
+    // The AI mark is always shown. Every interaction of the bar plays the
+    // same swap, once (owner, 2026-11-05): opening, closing, shrinking,
+    // growing, choosing, and every change of the line (erasing or typing,
+    // the first welcome included). A swap already under way is not
+    // restarted, so an interaction that erases and then types still shows
+    // one whole, even movement.
     const aiNext = ai.querySelector<SVGElement>('.nav__ai-next')!;
-    aiNext.addEventListener('animationend', () => ai.classList.remove('is-swap'));
-    function swapAi() {
-      if (reduceMotion.matches) return;
+    let swapping = false;
+    aiNext.addEventListener('animationend', () => {
       ai.classList.remove('is-swap');
-      void ai.offsetWidth; // restart if pressed again mid-swap
+      swapping = false;
+    });
+    function swapAi() {
+      if (reduceMotion.matches || swapping) return;
+      swapping = true;
+      ai.classList.remove('is-swap');
+      void ai.offsetWidth;
       ai.classList.add('is-swap');
     }
     async function typeText(text: string, id: number) {
+      swapAi();
       cursor.classList.remove('is-still');
       for (let i = 1; i <= text.length; i++) {
         if (!alive(id)) return;
@@ -845,6 +855,7 @@ const onFounders = current === href('/founders');
       }
     }
     async function eraseText(id: number) {
+      if (current) swapAi();
       cursor.classList.remove('is-still');
       let text = current;
       while (text.length) {
@@ -936,6 +947,7 @@ const onFounders = current === href('/founders');
 
     /* ---- Click to type ---- */
     function startTyping() {
+      swapAi();
       ++runId; // stop any sequence still typing
       placeholderMode = false;
       prompt.hidden = true;
@@ -988,6 +1000,7 @@ const onFounders = current === href('/founders');
       showPrompt();
       prompt.classList.remove('is-placeholder');
       setTyped(notConnected);
+      swapAi();
       idle();
       window.setTimeout(() => {
         if (!alive(id) || !input.hidden) return;
@@ -1115,6 +1128,7 @@ const onFounders = current === href('/founders');
     // the rest ("I am a" -> "I am an" is one letter).
     async function retypeTo(text: string, id: number) {
       if (reduceMotion.matches) { setTyped(text); idle(); return; }
+      if (text !== current) swapAi();
       cursor.classList.remove('is-still');
       let t = current;
       while (t && !text.startsWith(t)) {
