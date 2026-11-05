@@ -807,8 +807,11 @@ const onFounders = current === href('/founders');
     const AUDIENCE_KEY = 'forwardone-audience';
     let audience = '';
     try { audience = sessionStorage.getItem(AUDIENCE_KEY) || ''; } catch { /* storage blocked */ }
+    // Below the "I am a" zone (homepage section 4 on) the closed line asks
+    // "How can we help you?" instead of welcoming (owner, 2026-11-05).
+    let pastAudienceZone = false;
     function welcomeLine() {
-      if (!audience) return first;
+      if (!audience) return pastAudienceZone ? second : first;
       const h = new Date().getHours();
       const d = switchEl.dataset;
       const daytime = h >= 5 && h < 12 ? d.greetMorning : h >= 12 && h < 18 ? d.greetAfternoon : d.greetEvening;
@@ -1188,11 +1191,17 @@ const onFounders = current === href('/founders');
       const bottom = parseFloat(getComputedStyle(root).bottom) || 0;
       const y = window.innerHeight - bottom - bar.offsetHeight / 2;
       // Once the visitor has chosen, the bar does not ask again.
-      const want =
-        !audience &&
-        audienceAfter.getBoundingClientRect().bottom < y &&
-        (!audienceZone || audienceZone.getBoundingClientRect().bottom >= y);
-      if (want === compact) return;
+      const afterPassed = audienceAfter.getBoundingClientRect().bottom < y;
+      const zonePassed = !!audienceZone && audienceZone.getBoundingClientRect().bottom < y;
+      const wasPast = pastAudienceZone;
+      pastAudienceZone = afterPassed && zonePassed;
+      const want = !audience && afterPassed && !zonePassed;
+      if (want === compact) {
+        // Moving between the welcome and the question without the compact
+        // bar in between (a jump, or after a choice): retype the closed line.
+        if (!compact && !isOpen && !audience && wasPast !== pastAudienceZone && input.hidden) toWelcome(true);
+        return;
+      }
       if (want) toCompact();
       else toFull();
     }

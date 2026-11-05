@@ -891,6 +891,10 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   compact; it stays compact only while the bar is over the section right
   after it (the track record, section 3) and is full again from the next
   section on (owner, 2026-11-05), or when scrolling back above it.
+  Expanding into section 4 (and anywhere below it) the closed line reads
+  "How can we help you?" instead of "Welcome to FORWARD.one" (owner,
+  2026-11-05); above the strip it is the welcome again. After a choice the
+  greeting replaces both.
 - Compact: the bar shrinks to 400px (or the screen width minus the page
   margins; tighter gaps on phones) over 560ms, the AI mark plays its swap
   and the switch appears at once, exactly as the boundary between the
