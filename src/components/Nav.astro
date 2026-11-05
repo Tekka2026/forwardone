@@ -1057,6 +1057,7 @@ const onFounders = current === href('/founders');
       if (compact) {
         root.setAttribute('data-compact', '');
         switchEl.hidden = false;
+        openSwitch();
         compactLine(++runId);
       } else if (input.hidden || !input.value.trim()) toWelcome(true);
       menu.setAttribute('aria-expanded', 'false');
@@ -1132,46 +1133,39 @@ const onFounders = current === href('/founders');
     }
     // The switch appears with the pill on the first option, which then
     // slides to the chosen one.
-    function openSwitch(id: number) {
+    function openSwitch() {
       switcher.classList.add('is-open');
       placePill(opts[0], false);
-      requestAnimationFrame(() => {
-        if (!alive(id)) return;
-        const to = currentOpt();
-        placePill(to, !reduceMotion.matches);
-        retypeTo(questionFor(to), id);
-      });
+      requestAnimationFrame(() => placePill(currentOpt(), !reduceMotion.matches));
     }
     window.addEventListener('resize', () => { if (!switcher.hidden) placePill(currentOpt(), false); });
     let compact = false;
+    // Exactly as the section boundary passes the bar (owner, 2026-11-05):
+    // the bar shrinks and the switch appears at once (its pill sliding to the
+    // chosen option); the line erases and types alongside.
     async function toCompact() {
       if (isOpen) close();
       compact = true;
       root.setAttribute('data-compact', '');
       swapAi();
       switcher.hidden = false;
+      openSwitch();
       compactLine(++runId); // the new run also cancels a welcome line close() started
     }
-    // The first option's line ("I am a") typed in, then the switch appears
-    // and the pill slides to the chosen option, the line following it.
+    // The chosen option's line ("I am an" with investor) erased in and typed.
     async function compactLine(myId: number) {
       showPrompt();
       prompt.classList.remove('is-placeholder');
-      const first = questionFor(opts[0]);
+      const line = questionFor(currentOpt());
       if (reduceMotion.matches) {
-        setTyped(first);
+        setTyped(line);
         idle();
-        openSwitch(myId);
         return;
       }
       await eraseText(myId);
       if (!alive(myId)) return;
-      await wait(120);
-      if (!alive(myId)) return;
-      await typeText(first, myId);
-      if (!alive(myId)) return;
-      idle();
-      openSwitch(myId);
+      await typeText(line, myId);
+      if (alive(myId)) idle();
     }
     function toFull() {
       compact = false;
