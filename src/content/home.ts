@@ -224,7 +224,7 @@ export const founders = {
   /** Active, from FORWARD.one's side (owner, 2026-10-19): the people and
    * companies we meet, the places we go: all of Europe, not one region. The
    * 2,500 a year is the site's own figure (stats). */
-  title: 'We go where Europe’s builders are.',
+  title: 'We go where\nEurope’s builders are.',
   intro: 'Across Europe, we screen 2,500 companies a year and back the few who will lead.',
   role: 'CEO',
   /** 20 founders; the card type alternates. */
