@@ -68,7 +68,7 @@ const companyStyle = (colour: string) => {
     return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
   });
   const light = 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.35;
-  return `--fc-bg: ${bg}; --fc-fg: ${light ? '#111111' : '#ffffff'};`;
+  return `--fc-bg: ${bg}; --fc-fg: ${light ? 'var(--black-ink)' : '#ffffff'};`;
 };
 const isPh = (v: string) => isPlaceholder(v);
 // "Discover more about <company> →", word by word for the H1-style reveal;
@@ -481,7 +481,7 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
 
   /* ---- Clip card: TikTok-style video ------------------------------------ */
   .fc--clip {
-    background: #0b0b0b;
+    background: var(--black-bg);
     color: #ffffff;
   }
   .fc__video,
@@ -500,7 +500,7 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
     align-items: center;
     justify-content: center;
     gap: var(--space-4x);
-    background: radial-gradient(ellipse 80% 60% at 50% 40%, #2a2a2a, #0b0b0b);
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, #2a2a2a, var(--black-bg));
     color: rgba(255, 255, 255, 0.85);
   }
   /* legibility: soft dark at the top and bottom, as in the app */
@@ -548,7 +548,7 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
     margin-bottom: 4px;
     border: 1px solid #ffffff;
     border-radius: 50%;
-    background: #111111;
+    background: var(--black-ink);
     font-family: var(--font-display);
     font-size: 11px;
   }

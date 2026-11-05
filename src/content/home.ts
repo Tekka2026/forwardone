@@ -278,7 +278,9 @@ export const founders = {
   /** Where a company card links without its own page (the current site's portfolio overview). */
   portfolioHref: 'https://www.forward.one/portfolio',
   /** Fallback colours for company cards without a brand colour: the site's own tones. */
-  tones: ['#FFEA6D', '#111111', '#26175A', '#E9E4D6', '#DB8E00', '#820400', '#C3D3DE'],
+  // The dark tone is the site's black (owner, 2026-11-05; was '#111111'):
+  // a hex here, because the card's text colour is worked out from it.
+  tones: ['#FFEA6D', '#0F121A', '#26175A', '#E9E4D6', '#DB8E00', '#820400', '#C3D3DE'],
 };
 
 export const trackRecord = {

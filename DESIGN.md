@@ -931,6 +931,17 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
 
 ## 9. Colour (placeholders)
 
+- **Black (owner, 2026-11-05): #0F121A**, one dark for the whole site, in
+  place of the three blacks before (#000000 dark sections, #111111 text and
+  dark cards, #1A1A1A nav bar). Tokens in `css/global.css`: `--black`, with
+  `--black-bg`, `--black-ink` and `--black-bar` pointing at it; every
+  component uses these. To go back, set those three to the old values
+  noted next to them and the dark tone in `founders.tones` (home.ts) to
+  '#111111', or revert the commit "One black for the site: #0F121A". Not
+  changed: the robot arm's own material colour, shading mixes with pure
+  black, and the brand guidelines palette (`/brand`), which follows the
+  Brand Foundation doc (Ink #111111, Black #000000).
+
 - Accent: `--brand-yellow` #FFEA6D (owner, 2026-10-17; replaced the cyan
   #78F6FB and the blue #2D75D9). Used for the H1 last-word tint, the nav
   AI mark and entrance glow, Proof card dates, the Fund III gradient corner, the portal's mail badge, and the robot's
@@ -938,7 +949,7 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   darkened to ochre rgb(196,160,20).
 - Dark sections: `.section--dark.theme-dark` (black band, tokens inverted;
   `data-nav-dark` so the floating nav inverts over it). Used by Insights.
-- `.theme-dark` re-points the colour tokens (`--bg` #000, `--fg` #FFF,
+- `.theme-dark` re-points the colour tokens (`--bg` the site black, `--fg` #FFF,
   `--accent` #FFF, `--muted` #A1A1A1, white hairlines, button hover mix) so
   any component inside it inverts without its own dark styles.
 - Homepage intro (`.intro` in `src/pages/index.astro`): header, hero and

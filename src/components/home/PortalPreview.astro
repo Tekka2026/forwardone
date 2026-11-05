@@ -340,7 +340,7 @@ const { class: cls } = Astro.props;
     height: 100%;
     overflow: hidden;
     background: var(--pp-canvas);
-    color: #111111;
+    color: var(--black-ink);
     font-family: var(--font-sans);
     font-size: 14px;
     line-height: 1.45;
@@ -368,7 +368,7 @@ const { class: cls } = Astro.props;
     height: 60px;
     padding: 0 80px;
     background: #ffffff;
-    color: #111111;
+    color: var(--black-ink);
     box-shadow: inset 0 -1px 0 var(--pp-line);
   }
   .pp-bar__logo {
@@ -391,7 +391,7 @@ const { class: cls } = Astro.props;
     color: var(--muted);
   }
   .pp-bar__tab.is-active {
-    color: #111111;
+    color: var(--black-ink);
     text-decoration-line: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 6px;
@@ -421,7 +421,7 @@ const { class: cls } = Astro.props;
     padding: 0 6px;
     box-sizing: border-box;
     border-radius: 999px;
-    background: #111111;
+    background: var(--black-ink);
     color: #ffffff;
     font-size: 11px;
     font-weight: 600;
@@ -445,7 +445,7 @@ const { class: cls } = Astro.props;
     place-items: center;
     overflow: hidden;
     background: var(--brand-yellow);
-    color: #111111;
+    color: var(--black-ink);
   }
   /* New message (owner, 2026-10-19): once the dashboard is in view the count
      goes 3 → 4. The old number slides up and out, the new one up from below,
@@ -617,7 +617,7 @@ const { class: cls } = Astro.props;
   .pp-row--via .pp-name {
     padding-left: 44px;
     position: relative;
-    color: #111111;
+    color: var(--black-ink);
   }
   .pp-row--via .pp-name::before {
     content: '';

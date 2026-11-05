@@ -96,12 +96,12 @@
   --nav-height: var(--form-height-large);
   /* Top strip (logo + Pitch us): gap above and below a small form height. */
   --header-h: calc(2 * var(--gap) + var(--form-height-small));
-  --nav-bg: #1a1a1a;
-  --nav-bg-open: #000000;
+  --nav-bg: var(--black-bar);
+  --nav-bg-open: var(--black-bg);
   --nav-fg: #ffffff;
   /* Closed bar over a dark area ([data-nav-dark]): inverted. */
   --nav-bg-inverse: #ffffff;
-  --nav-fg-inverse: #1a1a1a;
+  --nav-fg-inverse: var(--black-bar);
   --nav-hairline: rgba(255, 255, 255, 0.18);
 
   /* Type: families, loaded in src/layouts/Base.astro.
@@ -180,13 +180,23 @@
   --measure-body: var(--col-5);     /* body default       */
   --measure-body-max: var(--col-6); /* body never exceeds */
 
+  /* The site's black (owner, 2026-11-05): one dark, #0F121A, for all three
+     blacks the site used before. To change it back, set the three lines
+     below to the values in their comments (or revert the commit "One black
+     for the site: #0F121A"); the company-card tone in src/content/home.ts
+     (`founders.tones`) holds the same value as a hex. */
+  --black: #0F121A;
+  --black-bg: var(--black);   /* dark sections, intros, open nav; was #000000 */
+  --black-ink: var(--black);  /* text, solid buttons, dark cards; was #111111 */
+  --black-bar: var(--black);  /* the floating nav bar; was #1a1a1a */
+
   /* Colours (PLACEHOLDERS — brand later) */
   --bg: #ffffff;
-  --fg: #111111;
+  --fg: var(--black-ink);
   --muted: #666666;
   --hairline: rgba(0, 0, 0, 0.14);
   --bg-tint: rgba(0, 0, 0, 0.04);   /* tinted section band (.section--tint) */
-  --accent: #111111;
+  --accent: var(--black-ink);
   --accent-fg: #ffffff;
 
   /* Corner radius for the navigation bar. Everything else stays square
@@ -689,14 +699,14 @@ code, kbd, samp, pre {
 /* Dark theme scope: re-points the colour tokens, so every component inside
    (text, muted labels, hairlines, buttons, focus outlines) inverts. */
 .theme-dark {
-  --bg: #000000;
+  --bg: var(--black-bg);
   --fg: #ffffff;
   --accent: #ffffff;
-  --accent-fg: #000000;
+  --accent-fg: var(--black-bg);
   --muted: #a1a1a1;
   --hairline: rgba(255, 255, 255, 0.2);
   --bg-tint: rgba(255, 255, 255, 0.04);
-  --btn-hover-mix: #000000;                    /* 20% black over white */
+  --btn-hover-mix: var(--black-bg);            /* 20% black over white */
   --btn-hover-shade: rgba(255, 255, 255, 0.08);
   --reveal-tint: var(--brand-yellow);         /* white headings: tint from yellow */
   color: var(--fg);
