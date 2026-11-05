@@ -3,14 +3,17 @@
 import Brand from '@layouts/Brand.astro';
 import PageCard from '@components/brand/PageCard.astro';
 import { brandPages, brandSite } from '@content/brand';
+import Wordmark from '@components/brand/Wordmark.astro';
+import { rich } from '@lib/brand';
 ---
 
 <Brand title={brandSite.title} slug="">
   <section class="b-cover" aria-label={brandSite.title}>
-    <span class="b-cover__wordmark">{brandSite.wordmark}</span>
+    <Wordmark class="b-cover__wordmark" label />
   </section>
   <div class="b-wrap">
     <p class="b-lead">{brandSite.welcome}</p>
+    <p class="b-lead-note" set:html={rich(brandSite.welcomeAsk)} />
     <nav class="b-tiles" aria-label="Sections">
       {brandPages.map((p) => <PageCard page={p} variant="tile" />)}
     </nav>

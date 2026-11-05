@@ -17,7 +17,8 @@ export type Art =
   | 'slide' | 'onepager' | 'email' | 'story' | 'post'
   | 'wire-a' | 'wire-b' | 'wire-c'
   | 'margins' | 'columns' | 'gutters'
-  | 'icons';
+  | 'icons'
+  | 'steps';
 
 /** Background of a placeholder visual. `photo` is a calm grey gradient
  *  standing in for photography; `color` uses `color`. */
@@ -38,7 +39,7 @@ export interface Media {
   /** Logo misuse shown in a "Don't" tile. */
   misuse?: 'stretch' | 'outline' | 'colour' | 'shadow' | 'rotate' | 'pattern';
   /** Type misuse shown in a "Don't" tile. */
-  typeMisuse?: 'typeface' | 'mono' | 'tight' | 'tracking' | 'caps' | 'size' | 'clash' | 'contrast' | 'colours';
+  typeMisuse?: 'typeface' | 'mono' | 'tight' | 'tracking' | 'caps' | 'size' | 'clash' | 'contrast' | 'colours' | 'white';
 }
 
 export interface Figure {
@@ -55,6 +56,8 @@ export interface Swatch {
   pms?: string;
   /** Hide CMYK (screen-only colours). */
   screenOnly?: boolean;
+  /** What the colour is for, shown under the values. */
+  use?: string;
 }
 
 export interface Item {
@@ -79,7 +82,8 @@ export type Block =
   | { type: 'proportion'; items: { hex: string; share: number }[] }
   | { type: 'contrast'; items: { fg: string; bg: string; label: string }[] }
   | { type: 'rules'; items: string[] }
-  | { type: 'specimen'; name: string; by: string; mono?: boolean }
+  | { type: 'stats'; items: { value: string; text: string }[] }
+  | { type: 'specimen'; name: string; meta: string[]; font?: 'display' | 'sans' | 'mono' }
   | { type: 'weights'; items: { name: string; weight: number }[] }
   | { type: 'typeRows'; rows: { meta: string[]; sample: string; style: TypeStyle }[] }
   | { type: 'tester'; meta: string[]; sample: string; style: TypeStyle }
@@ -90,7 +94,7 @@ export type Block =
   | { type: 'downloads'; title?: string; items: { name: string; media: Media }[] }
   | { type: 'pages' };
 
-export type TypeStyle = 'display' | 'h1' | 'h2' | 'h3' | 'h4' | 'body' | 'caption' | 'mono' | 'formula';
+export type TypeStyle = 'display' | 'h1' | 'h2' | 'h3' | 'h4' | 'body' | 'caption' | 'mono' | 'formula' | 'lede';
 
 export interface Section {
   /** Small mono label on the left (may wrap: use \n). */
@@ -114,5 +118,8 @@ export interface BrandPage {
   lead: string;
   /** Home tile and pager card. */
   tile: { color: string; icon: IconName; cover: Media };
+  /** Set while the page's rules are still lorem ipsum: shown as a notice
+   *  under the lead and as a label on the home tile. */
+  draft?: string;
   sections: Section[];
 }

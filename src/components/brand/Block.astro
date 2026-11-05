@@ -2,7 +2,7 @@
 /** Renders one content block of the brand guidelines (see content/brand/types.ts). */
 import type { Block } from '@content/brand/types';
 import { brandSite } from '@content/brand/site';
-import { hexToRgb, hexToCmyk, contrastRatio, inkOn } from '@lib/brand';
+import { hexToRgb, hexToCmyk, contrastRatio, inkOn, rich } from '@lib/brand';
 import Visual from './Visual.astro';
 import Icon from './Icon.astro';
 
@@ -10,18 +10,18 @@ interface Props { block: Block }
 const { block: b } = Astro.props;
 
 const verdictLabel = { good: 'Do', ok: 'Acceptable', bad: 'Don’t' } as const;
-const specimenChars = ['ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz', '0123456789', '!@#$% ^ &*()?+'];
+const specimenChars = ['ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz', '0123456789 €%&@?!()+−×'];
 ---
 
 {b.type === 'prose' && (
   <div class="b-offset">
     <div class:list={['b-prose', b.size === 'lead' && 'b-prose--lead']}>
-      {b.paragraphs.map((p) => <p>{p}</p>)}
+      {b.paragraphs.map((p) => <p set:html={rich(p)} />)}
     </div>
   </div>
 )}
 
-{b.type === 'statement' && <p class="b-statement">{b.text}</p>}
+{b.type === 'statement' && <p class="b-statement" set:html={rich(b.text)} />}
 
 {b.type === 'feature' && (
   <div class="b-feature">
@@ -39,9 +39,9 @@ const specimenChars = ['ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz
       {b.items.map((it) => (
         <div class="b-item">
           {it.icon && <span class="b-item__icon"><Icon name={it.icon} /></span>}
-          <h3>{it.title}</h3>
-          <p>{it.body}</p>
-          {it.meta && <p class="b-item__meta">{it.meta}</p>}
+          <h3 set:html={rich(it.title)} />
+          <p set:html={rich(it.body)} />
+          {it.meta && <p class="b-item__meta" set:html={rich(it.meta)} />}
         </div>
       ))}
     </div>
@@ -74,13 +74,14 @@ const specimenChars = ['ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz
         const cmyk = hexToCmyk(s.hex).join('/');
         return (
           <div class:list={['b-swatch', `b-swatch--${b.size ?? 'lg'}`]} style={`--c:${s.hex};--t:${inkOn(s.hex)}`}>
+            <span class="b-swatch__name">{s.name}</span>
             <dl class="b-swatch__meta">
-              <div><dt>Name:</dt><dd>{s.name}</dd></div>
               {!s.screenOnly && <div><dt>CMYK:</dt><dd>{cmyk}</dd></div>}
               <div><dt>RGB:</dt><dd>{r}/{g}/{bl}</dd></div>
               <div><dt>HEX:</dt><dd>{s.hex.toUpperCase()}</dd></div>
               {!s.screenOnly && <div><dt>PMS:</dt><dd>{s.pms ?? 'Not specified'}</dd></div>}
             </dl>
+            {s.use && <p class="b-swatch__use">{s.use}</p>}
             <button class="b-swatch__copy" type="button" data-copy={s.hex.toUpperCase()}>Copy HEX</button>
           </div>
         );
@@ -114,12 +115,20 @@ const specimenChars = ['ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz
 )}
 
 {b.type === 'rules' && (
-  <div class="b-offset"><ol class="b-rules">{b.items.map((r) => <li>{r}</li>)}</ol></div>
+  <div class="b-offset"><ol class="b-rules">{b.items.map((r) => <li><span set:html={rich(r)} /></li>)}</ol></div>
+)}
+
+{b.type === 'stats' && (
+  <dl class="b-stats">
+    {b.items.map((s) => (
+      <div><dt>{s.value}</dt><dd set:html={rich(s.text)} /></div>
+    ))}
+  </dl>
 )}
 
 {b.type === 'specimen' && (
-  <div class:list={['b-specimen', b.mono && 'b-specimen--mono']}>
-    <div class="b-specimen__meta"><b>Designed by</b>{b.by}</div>
+  <div class:list={['b-specimen', `b-specimen--${b.font ?? 'sans'}`]}>
+    <div class="b-specimen__meta">{b.meta.map((m, i) => (i === 0 ? <b>{m}</b> : <span>{m}</span>))}</div>
     <div class="b-specimen__body">
       <p class="b-specimen__name">{b.name}</p>
       {specimenChars.map((line) => <p class="b-specimen__chars">{line}</p>)}

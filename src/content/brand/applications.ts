@@ -5,7 +5,8 @@ export const applications: BrandPage = {
   slug: 'applications',
   title: 'Applications',
   lead: 'The brand in the world. Lorem ipsum dolor sit amet: product, social, merchandise and the places we show up.',
-  tile: { color: P.mist, icon: 'shirt', cover: { art: 'phone', tone: 'color', color: P.lilac } },
+  tile: { color: P.ice, icon: 'shirt', cover: { art: 'phone', tone: 'dark' } },
+  draft: 'Placeholder page: the applications shown are mock-ups until real ones are supplied.',
   sections: [
     {
       label: 'Product UI',
@@ -16,7 +17,7 @@ export const applications: BrandPage = {
           type: 'media',
           cols: 2,
           items: [
-            { media: { art: 'phone', tone: 'color', color: P.lilac, ratio: 'square' } },
+            { media: { art: 'phone', tone: 'color', color: P.gold, ratio: 'square' } },
             { media: { art: 'ui', tone: 'grey', ratio: 'square' } },
           ],
         },
@@ -32,7 +33,7 @@ export const applications: BrandPage = {
           items: [
             { media: { art: 'story', tone: 'photo', ratio: 'story', seed: 61 }, caption: 'Story, 9:16' },
             { media: { art: 'story', tone: 'dark', ratio: 'story' }, caption: 'Story, 9:16' },
-            { media: { art: 'post', tone: 'color', color: P.periwinkle, ratio: 'story' }, caption: 'Quote' },
+            { media: { art: 'post', tone: 'color', color: P.ice, ratio: 'story' }, caption: 'Quote' },
             { media: { art: 'post', tone: 'photo', ratio: 'story', seed: 62 }, caption: 'Spotlight' },
           ],
         },
@@ -47,8 +48,8 @@ export const applications: BrandPage = {
           cols: 2,
           items: [
             { media: { art: 'tee', tone: 'grey', ratio: 'square' }, caption: 'T-shirt' },
-            { media: { art: 'cap', tone: 'color', color: P.sage, ratio: 'square' }, caption: 'Cap' },
-            { media: { art: 'tote', tone: 'color', color: P.clay, ratio: 'square' }, caption: 'Tote' },
+            { media: { art: 'cap', tone: 'color', color: P.cream, ratio: 'square' }, caption: 'Cap' },
+            { media: { art: 'tote', tone: 'color', color: P.amber, ratio: 'square' }, caption: 'Tote' },
             { media: { art: 'card', tone: 'photo', ratio: 'square', seed: 63 }, caption: 'Business cards' },
           ],
         },
@@ -62,7 +63,7 @@ export const applications: BrandPage = {
           type: 'media',
           cols: 2,
           items: [
-            { media: { art: 'van', tone: 'color', color: P.periwinkle, ratio: 'video' }, caption: 'Vehicle' },
+            { media: { art: 'van', tone: 'color', color: P.ice, ratio: 'video' }, caption: 'Vehicle' },
             { media: { art: 'sign', tone: 'photo', ratio: 'video', seed: 64 }, caption: 'Signage' },
           ],
         },

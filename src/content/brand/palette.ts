@@ -1,24 +1,17 @@
 /**
- * Placeholder palette used by the content files (swatches, home tiles, page
- * covers). Values are invented for the template; they are not a real brand.
- * The interface accent (links, focus, buttons on hover) lives in
- * src/styles/brand.css as --accent.
+ * FORWARD.one core palette, from the Brand Foundation doc (section 8 Color,
+ * 2026-11-05). Seven tones in a fixed order, Signal Red to Ice, plus Ink,
+ * White and Black. Hex values only: no CMYK or Pantone has been supplied.
  */
 export const P = {
-  ink: '#0a0a0a',
-  paper: '#f1f1f1',
-  white: '#ffffff',
-  signal: '#5b5bd6',
-  periwinkle: '#b9c4ff',
-  sage: '#dfe6c8',
-  clay: '#e8a87c',
-  lilac: '#c7b8f0',
-  stone: '#9a948a',
-  mist: '#d4d4d4',
-  graphite: '#6e6e6e',
-  success: '#2f7d4f',
-  warning: '#c9a23a',
-  error: '#c0392b',
-  info: '#2f63b8',
-  neutral: '#737373',
+  signalRed: '#FF0000',
+  oxblood: '#8A0A00',
+  copper: '#A84A00',
+  amber: '#E39200',
+  gold: '#FFE97A',
+  cream: '#FFF3C4',
+  ice: '#B3DAFF',
+  ink: '#111111',
+  white: '#FFFFFF',
+  black: '#000000',
 } as const;

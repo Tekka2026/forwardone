@@ -7,6 +7,8 @@
 import '../../css/brand.css';
 import { brandPages, brandSite } from '@content/brand';
 import { href } from '@lib/href';
+import { rich } from '@lib/brand';
+import Wordmark from '@components/brand/Wordmark.astro';
 
 interface Props {
   title: string;
@@ -14,7 +16,7 @@ interface Props {
   slug: string;
 }
 const { title, slug } = Astro.props;
-const pageTitle = slug ? `${title} · ${brandSite.title}` : brandSite.title;
+const pageTitle = slug ? `${title} · FORWARD.one ${brandSite.title}` : `FORWARD.one ${brandSite.title}`;
 ---
 
 <!doctype html>
@@ -30,14 +32,14 @@ const pageTitle = slug ? `${title} · ${brandSite.title}` : brandSite.title;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400..600&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400..600&display=swap"
     />
   </head>
   <body id="top">
     <a class="b-skip" href="#main">Skip to content</a>
     <header class="b-header">
       <div class="b-wrap b-header__inner">
-        <a class="b-header__wordmark" href={href('/brand')}>{brandSite.wordmark}</a>
+        <a class="b-header__wordmark" href={href('/brand')} aria-label={`${brandSite.wordmark} ${brandSite.title}, home`}><Wordmark /></a>
         <a class="b-header__title" href={href('/brand')}>{brandSite.title}</a>
         <details class="b-menu">
           <summary>Index</summary>
@@ -69,8 +71,8 @@ const pageTitle = slug ? `${title} · ${brandSite.title}` : brandSite.title;
           {brandSite.contact.people.map((p) => (
             <div class="b-footer__person">
               <span class="b-footer__role">{p.role}</span>
-              <span>{p.name}</span>
-              <a href={`mailto:${p.email}`}>{p.email}</a>
+              <span set:html={rich(p.name)} />
+              {p.email && <a href={`mailto:${p.email}`}>{p.email}</a>}
             </div>
           ))}
         </div>

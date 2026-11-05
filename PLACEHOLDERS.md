@@ -48,16 +48,17 @@ invented; replace the value in the file named and the marker disappears.
 
 ## Brand guidelines (`src/content/brand/`, pages `/brand/…`)
 
-Every word and visual on these pages is a deliberate placeholder (lorem ipsum, CSS-drawn logos and photos). How the pages are built: `src/content/brand/README.md`.
+Welcome, Foundations and Color follow the FORWARD.one Brand Foundation doc (2026-11-05); Typography follows the main site's fonts. Pages marked Draft (Logo rules, Photography, Graphics, Layout, Applications, Marketing Collateral) are still lorem ipsum. How the pages are built: `src/content/brand/README.md`.
 
 | Where | Key | Needed |
 |---|---|---|
-| All pages | `site.ts` → `wordmark` | The real wordmark (now "BRAND"), and the logo files (SVG) to replace the CSS mark in `Visual.astro`. |
-| All pages | `site.ts` → `contact.people` | Names, roles and email addresses of the design contacts (now example.com). |
-| Every page file | `lead`, `sections[*].notes`, block text | The real guideline copy, page by page. |
-| Color | `palette.ts` | The brand palette with Pantone references (CMYK is now computed from HEX). |
-| Typography | `typography.ts` | Typefaces, designer credits, licence and the font download. |
-| Photography, Graphics, Applications, Marketing Collateral | `media` blocks | Real photos, illustrations, mockups and PDFs; download links (`downloadHref`, now `#`). |
+| Footer, all pages | `site.ts` → `contact.people` | Name and email of the brand contact. |
+| Foundations, Who we are | `foundations.ts` | Benchmark source and year for the top-5% ranking; buyers of Aito and Nuventura; the partners, one line each on what they bring. |
+| Foundations, What we believe and What we do | `foundations.ts` | One portfolio company for applied AI (belief 2) and for Robotics, Autonomy, Manufacturing and Dual-use. |
+| Color, Color story | `color.ts` | Riemer's personal story, which may replace the 1964 opening. CMYK and Pantone values if print is needed (only hex is supplied). |
+| Typography | `typography.ts` | Web licence for KMR Apparat (A0030). |
+| Logo | `logo.ts` | Clearspace, minimum size and colour rules; a stacked version and an icon (for avatars and app icons), if wanted. |
+| Photography, Graphics, Layout, Applications, Marketing Collateral | their page files | The real rules, images, templates and download files; then remove `draft`. |
 
 ## Stub pages (`src/content/pages.ts`)
 

@@ -5,7 +5,8 @@ export const marketingCollateral: BrandPage = {
   slug: 'marketing-collateral',
   title: 'Marketing Collateral',
   lead: 'Below you will find our standard templates. Lorem ipsum: they are not co-branded, so ask the design team for a partner version.',
-  tile: { color: P.graphite, icon: 'file', cover: { art: 'onepager', tone: 'grey' } },
+  tile: { color: P.white, icon: 'file', cover: { art: 'onepager', tone: 'dark' } },
+  draft: 'Placeholder page: the templates and downloads are lorem ipsum until the files exist.',
   sections: [
     {
       label: 'One-pagers',
@@ -45,7 +46,7 @@ export const marketingCollateral: BrandPage = {
           cols: 3,
           items: [
             { media: { art: 'slide', tone: 'dark', ratio: 'video' }, caption: 'Title' },
-            { media: { art: 'slide', tone: 'color', color: P.periwinkle, ratio: 'video' }, caption: 'Chapter' },
+            { media: { art: 'slide', tone: 'color', color: P.ice, ratio: 'video' }, caption: 'Chapter' },
             { media: { art: 'slide', tone: 'white', ratio: 'video' }, caption: 'Content' },
           ],
         },
@@ -65,9 +66,9 @@ export const marketingCollateral: BrandPage = {
           cols: 4,
           items: [
             { media: { art: 'post', tone: 'dark', ratio: 'square' }, caption: 'Square 1:1 (1080 × 1080)' },
-            { media: { art: 'post', tone: 'color', color: P.sage, ratio: 'portrait' }, caption: 'Portrait 4:5 (1080 × 1350)' },
+            { media: { art: 'post', tone: 'color', color: P.cream, ratio: 'portrait' }, caption: 'Portrait 4:5 (1080 × 1350)' },
             { media: { art: 'story', tone: 'photo', ratio: 'story', seed: 72 }, caption: 'Story 9:16 (1080 × 1920)' },
-            { media: { art: 'post', tone: 'color', color: P.lilac, ratio: 'banner' }, caption: 'Link 1.91:1 (1200 × 628)' },
+            { media: { art: 'post', tone: 'color', color: P.gold, ratio: 'banner' }, caption: 'Link 1.91:1 (1200 × 628)' },
           ],
         },
       ],

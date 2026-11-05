@@ -1,19 +1,19 @@
 import type { BrandPage } from './types';
 import { P } from './palette';
-import { brandSite } from './site';
 
 export const logo: BrandPage = {
   slug: 'logo',
   title: 'Logo',
   lead: 'Our logo is the most recognisable lorem ipsum of our brand. Treat it with consistency and care.',
-  tile: { color: P.ink, icon: 'logo', cover: { art: 'construction', tone: 'dark' } },
+  tile: { color: P.black, icon: 'logo', cover: { art: 'construction', tone: 'dark' } },
+  draft: 'The logo shown is the real FORWARD.one wordmark; the rules on this page are placeholders until they are agreed.',
   sections: [
     {
       blocks: [
         {
           type: 'media',
           cols: 1,
-          items: [{ media: { art: 'mark', tone: 'grey', ratio: 'wide' } }],
+          items: [{ media: { art: 'wordmark', tone: 'dark', ratio: 'wide' } }],
         },
       ],
     },
@@ -31,7 +31,7 @@ export const logo: BrandPage = {
         'Our logo is the primary identifier of the brand: lorem ipsum, mission and legacy.',
         'The icon is used sparingly, only where the full logo is not legible (favicons, avatars).',
       ],
-      button: { label: 'Download Logo', href: brandSite.downloadHref },
+      button: { label: 'Download Logo', href: '/brand/forwardone-logo.zip' },
       blocks: [
         { type: 'media', cols: 1, items: [{ media: { art: 'wordmark', tone: 'white', ratio: 'wide' }, caption: 'Primary logo' }] },
         {
@@ -53,8 +53,8 @@ export const logo: BrandPage = {
           cols: 3,
           items: [
             { media: { art: 'wordmark', tone: 'white', ratio: 'square' }, caption: 'Horizontal' },
-            { media: { art: 'stacked', tone: 'white', ratio: 'square' }, caption: 'Stacked' },
-            { media: { art: 'mark', tone: 'white', ratio: 'square' }, caption: 'Icon only' },
+            { media: { tone: 'grey', ratio: 'square', tag: 'Not yet designed' }, caption: 'Stacked' },
+            { media: { tone: 'grey', ratio: 'square', tag: 'Not yet designed' }, caption: 'Icon only' },
           ],
         },
       ],
@@ -100,10 +100,10 @@ export const logo: BrandPage = {
           type: 'media',
           cols: 2,
           items: [
-            { media: { art: 'wordmark', tone: 'color', color: P.periwinkle, ratio: 'video' } },
-            { media: { art: 'wordmark', tone: 'color', color: P.clay, ratio: 'video' } },
-            { media: { art: 'wordmark', tone: 'color', color: P.sage, ratio: 'video' } },
-            { media: { art: 'wordmark', tone: 'color', color: P.graphite, ratio: 'video' } },
+            { media: { art: 'wordmark', tone: 'color', color: P.ice, ratio: 'video' } },
+            { media: { art: 'wordmark', tone: 'color', color: P.amber, ratio: 'video' } },
+            { media: { art: 'wordmark', tone: 'color', color: P.cream, ratio: 'video' } },
+            { media: { art: 'wordmark', tone: 'color', color: P.oxblood, ratio: 'video' } },
           ],
         },
       ],
@@ -140,37 +140,6 @@ export const logo: BrandPage = {
           items: [
             { media: { art: 'lockup', tone: 'white', ratio: 'video' }, caption: 'Partner lockup, horizontal' },
             { media: { art: 'lockup', tone: 'dark', ratio: 'video' }, caption: 'Partner lockup, reversed' },
-          ],
-        },
-      ],
-    },
-    {
-      label: 'App icon',
-      notes: ['The icon sits centred on a rounded square. Lorem ipsum dolor sit amet.'],
-      blocks: [
-        {
-          type: 'media',
-          cols: 4,
-          items: [
-            { media: { art: 'mark', tone: 'dark', ratio: 'square' } },
-            { media: { art: 'mark', tone: 'white', ratio: 'square' } },
-            { media: { art: 'mark', tone: 'accent', ratio: 'square' } },
-            { media: { art: 'mark', tone: 'color', color: P.periwinkle, ratio: 'square' } },
-          ],
-        },
-      ],
-    },
-    {
-      label: 'Avatars',
-      notes: ['On social profiles, use the icon on a solid brand colour. Never the full wordmark.'],
-      blocks: [
-        {
-          type: 'media',
-          cols: 6,
-          items: [
-            { media: { art: 'mark', tone: 'dark', ratio: 'square', tag: 'avatar' } },
-            { media: { art: 'mark', tone: 'white', ratio: 'square', tag: 'avatar' } },
-            { media: { art: 'mark', tone: 'accent', ratio: 'square', tag: 'avatar' } },
           ],
         },
       ],

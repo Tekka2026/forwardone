@@ -1,48 +1,45 @@
 ---
 /**
- * Placeholder visual for the brand guidelines. Draws everything in CSS
- * (see .v-* in css/brand.css): no photos, logos or other real assets.
+ * Visual for the brand guidelines. The wordmark is the supplied FORWARD.one
+ * SVG; everything else (photos, mock-ups, merch) is a CSS placeholder
+ * (see .v-* in css/brand.css) until real assets are supplied.
  */
 import type { Media } from '@content/brand/types';
-import { brandSite } from '@content/brand/site';
+import { P } from '@content/brand/palette';
 import { inkOn } from '@lib/brand';
 import Icon from './Icon.astro';
+import Wordmark from './Wordmark.astro';
 
 interface Props { media: Media; class?: string }
 const { media, class: extra = '' } = Astro.props;
 const { art = 'none', tone = 'grey', color, ratio = 'landscape', tag, seed = 0, misuse, typeMisuse } = media;
 
 const bgByTone: Record<string, string> = {
-  dark: '#0a0a0a', grey: '#dedede', light: '#f1f1f1', white: '#ffffff', accent: '#5b5bd6', photo: '#3a3a3a',
+  dark: P.black, grey: '#e6e6e6', light: '#f4f4f4', white: P.white, accent: P.signalRed, photo: '#3a3a3a',
 };
 const bg = tone === 'color' && color ? color : bgByTone[tone];
 const ink = inkOn(bg);
 
-// Photo stand-in: two greys and an angle derived from the seed.
+// Photo stand-in: two warm greys and an angle derived from the seed.
 const a = 30 + ((seed * 37) % 50);
 const b = 12 + ((seed * 53) % 30);
 const angle = (seed * 71) % 360;
-const photo = `linear-gradient(${angle}deg, hsl(30 4% ${b}%), hsl(30 4% ${a}%))`;
+const photo = `linear-gradient(${angle}deg, hsl(30 6% ${b}%), hsl(30 6% ${a}%))`;
 
 const style = [`--bg:${bg}`, `--ink:${ink}`, tone === 'photo' ? `--photo:${photo}` : ''].filter(Boolean).join(';');
-const wm = brandSite.wordmark;
+const steps = [P.signalRed, P.oxblood, P.copper, P.amber, P.gold, P.cream, P.ice];
 const icons = ['box', 'pin', 'globe', 'chat', 'bolt', 'users', 'target', 'leaf', 'spark', 'eye', 'heart', 'grid'] as const;
 ---
 
 <div class:list={['v', `v--${ratio}`, `v--${tone}`, misuse && `v--misuse-${misuse}`, extra]} style={style}>
-  {(art === 'wordmark') && (
-    <span class="v-logo"><span class="v-mark" />{wm}</span>
-  )}
-  {art === 'mark' && <span class="v-logo v-logo--icon"><span class="v-mark" /></span>}
-  {art === 'stacked' && <span class="v-logo v-logo--stacked"><span class="v-mark" />{wm}</span>}
+  {art === 'wordmark' && <Wordmark class="v-logo" />}
   {art === 'lockup' && (
-    <span class="v-lockup"><span class="v-logo"><span class="v-mark" />{wm}</span><i /><span class="v-partner">PARTNER</span></span>
+    <span class="v-lockup"><Wordmark class="v-logo" /><i /><span class="v-partner">PARTNER</span></span>
   )}
-  {art === 'construction' && (
-    <span class="v-construction"><span class="v-logo"><span class="v-mark" />{wm}</span></span>
-  )}
-  {art === 'clearspace' && (
-    <span class="v-clearspace"><span class="v-logo"><span class="v-mark" />{wm}</span></span>
+  {art === 'construction' && <span class="v-construction"><Wordmark class="v-logo" /></span>}
+  {art === 'clearspace' && <span class="v-clearspace"><Wordmark class="v-logo" /></span>}
+  {art === 'steps' && (
+    <span class="v-steps">{steps.map((c, i) => <i style={`--c:${c};--i:${i}`} />)}</span>
   )}
   {['dots', 'lines', 'grid', 'arcs'].includes(art) && <span class:list={['v-pattern', `v-pattern--${art}`]} />}
   {art === 'shapes' && (
@@ -57,30 +54,30 @@ const icons = ['box', 'pin', 'globe', 'chat', 'bolt', 'users', 'target', 'leaf',
   {art === 'phone' && (
     <span class="v-phone"><span><i /><i /><i /><i /></span></span>
   )}
-  {art === 'tee' && <span class="v-tee"><span class="v-logo v-logo--sm"><span class="v-mark" />{wm}</span></span>}
-  {art === 'cap' && <span class="v-cap"><span class="v-mark" /></span>}
-  {art === 'tote' && <span class="v-tote"><span class="v-logo v-logo--sm"><span class="v-mark" />{wm}</span></span>}
-  {art === 'van' && <span class="v-van"><span class="v-logo v-logo--sm"><span class="v-mark" />{wm}</span></span>}
-  {art === 'sign' && <span class="v-sign"><span class="v-logo"><span class="v-mark" />{wm}</span></span>}
+  {art === 'tee' && <span class="v-tee"><Wordmark class="v-logo v-logo--sm" /></span>}
+  {art === 'cap' && <span class="v-cap"><Wordmark class="v-logo v-logo--xs" /></span>}
+  {art === 'tote' && <span class="v-tote"><Wordmark class="v-logo v-logo--sm" /></span>}
+  {art === 'van' && <span class="v-van"><Wordmark class="v-logo v-logo--sm" /></span>}
+  {art === 'sign' && <span class="v-sign"><Wordmark class="v-logo" /></span>}
   {art === 'card' && (
-    <span class="v-cards"><span class="v-card v-card--back" /><span class="v-card"><b>Lorem Ipsum</b><small>Dolor sit amet</small><span class="v-logo v-logo--xs"><span class="v-mark" />{wm}</span></span></span>
+    <span class="v-cards"><span class="v-card v-card--back" /><span class="v-card"><b>[Name]</b><small>[Role]</small><Wordmark class="v-logo v-logo--xs" /></span></span>
   )}
   {art === 'slide' && (
-    <span class="v-slide"><span class="v-logo v-logo--xs"><span class="v-mark" />{wm}</span><b>Lorem ipsum dolor sit amet.</b><small>Chapter 01</small></span>
+    <span class="v-slide"><Wordmark class="v-logo v-logo--xs" /><b>Lorem ipsum dolor sit amet.</b><small>Chapter 01</small></span>
   )}
   {art === 'onepager' && (
-    <span class="v-onepager"><span class="v-logo v-logo--xs"><span class="v-mark" />{wm}</span><b>Lorem ipsum dolor.</b><span class="img" /><i /><i /><i class="short" /><i /><i class="short" /></span>
+    <span class="v-onepager"><Wordmark class="v-logo v-logo--xs" /><b>Lorem ipsum dolor.</b><span class="img" /><i /><i /><i class="short" /><i /><i class="short" /></span>
   )}
   {art === 'email' && (
     <span class="v-email">
-      <span class="v-email__head"><span class="v-logo v-logo--xs"><span class="v-mark" />{wm}</span><small>View online</small></span>
+      <span class="v-email__head"><Wordmark class="v-logo v-logo--xs" /><small>View online</small></span>
       <span class="v-email__hero" />
       <span class="v-email__body"><b>Lorem ipsum dolor sit amet.</b><i /><i /><i class="short" /><span class="v-email__btn">Call to action</span></span>
     </span>
   )}
   {(art === 'story' || art === 'post') && (
     <span class:list={['v-social', `v-social--${art}`]}>
-      <span class="v-social__top"><span class="v-avatar"><span class="v-mark" /></span><small>brand · 3h</small></span>
+      <span class="v-social__top"><span class="v-avatar" /><small>forward.one · 3h</small></span>
       <b>Lorem ipsum spotlight</b>
       {art === 'story' && <span class="v-social__reply">Send message</span>}
     </span>

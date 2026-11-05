@@ -1,76 +1,48 @@
+/**
+ * Typography: the typefaces and scale the FORWARD.one site uses
+ * (css/global.css, 2026-11-05). The don'ts are general guidance.
+ */
 import type { BrandPage } from './types';
 import { P } from './palette';
-import { brandSite } from './site';
 
 export const typography: BrandPage = {
   slug: 'typography',
   title: 'Typography',
-  lead: 'At the heart of the identity is a lorem typographic voice. Type influences how every message is read and remembered.',
-  tile: { color: P.sage, icon: 'type', cover: { art: 'none', tone: 'white' } },
+  lead: 'Three typefaces, each with one job: KMR Apparat for headlines, Inter for reading, Geist Mono for labels.',
+  tile: { color: P.cream, icon: 'type', cover: { art: 'dots', tone: 'dark' } },
   sections: [
     {
-      label: 'Background',
-      notes: ['We use two typefaces, each with its own job. Lorem ipsum dolor sit amet: a calm grotesk with just enough character.'],
-      button: { label: 'Download Fonts', href: brandSite.downloadHref },
-    },
-    {
-      label: 'Primary typeface',
+      label: 'Headlines',
       notes: [
-        'Inter (placeholder) is a neutral sans serif with open shapes and clear forms. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-        'Used for headlines, subheads and body copy across print and screen.',
+        'KMR Apparat Light for display headlines, section titles and key figures.',
+        'A commercial font. [PLACEHOLDER: web licence, needed before the site goes public]',
       ],
-      blocks: [{ type: 'specimen', name: 'Inter Semibold', by: 'Rasmus Andersson' }],
+      blocks: [{ type: 'specimen', name: 'KMR Apparat Light', font: 'display', meta: ['Headlines', 'Weight 300', 'Key figures: 400'] }],
     },
     {
-      label: 'Supporting typeface',
-      notes: ['JetBrains Mono (placeholder) for labels, data and small captions. Never for headlines.'],
-      blocks: [{ type: 'specimen', name: 'JetBrains Mono', by: 'JetBrains', mono: true }],
+      label: 'Body',
+      notes: ['Inter for third-level headings and below, body copy and the interface.'],
+      blocks: [{ type: 'specimen', name: 'Inter', font: 'sans', meta: ['Body and interface', 'Weights 400–600'] }],
     },
     {
-      label: 'Weights',
-      notes: ['Weight gives hierarchy. Use only these weights.'],
-      blocks: [
-        {
-          type: 'weights',
-          items: [
-            { name: 'Regular', weight: 400 },
-            { name: 'Medium', weight: 500 },
-            { name: 'Semibold', weight: 600 },
-          ],
-        },
-      ],
+      label: 'Labels',
+      notes: ['Geist Mono for eyebrows, labels and figures in small type, set in capitals with wide tracking.'],
+      blocks: [{ type: 'specimen', name: 'Geist Mono', font: 'mono', meta: ['Labels', 'Weights 400 and 500', 'SIL Open Font License'] }],
     },
     {
       label: 'Type scale',
-      notes: ['One scale for every layout. Sizes are for screen; print uses the same ratios.'],
+      notes: ['The scale of forward.one. Sizes are for screen; the smaller value applies on phones.'],
       blocks: [
         {
           type: 'typeRows',
           rows: [
-            { meta: ['Display', '88 / 88', 'Semibold'], sample: 'Lorem ipsum', style: 'display' },
-            { meta: ['H1', '56 / 60', 'Semibold'], sample: 'Lorem ipsum dolor', style: 'h1' },
-            { meta: ['H2', '40 / 44', 'Semibold'], sample: 'Lorem ipsum dolor sit', style: 'h2' },
-            { meta: ['H3', '28 / 34', 'Semibold'], sample: 'Lorem ipsum dolor sit amet', style: 'h3' },
-            { meta: ['H4', '22 / 28', 'Semibold'], sample: 'Lorem ipsum dolor sit amet, consectetur', style: 'h4' },
-            { meta: ['Body', '18 / 28', 'Regular'], sample: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.', style: 'body' },
-            { meta: ['Caption', '14 / 20', 'Regular'], sample: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', style: 'caption' },
-            { meta: ['Mono', '13 / 20', 'Uppercase'], sample: 'Lorem ipsum label', style: 'mono' },
-          ],
-        },
-      ],
-    },
-    {
-      label: 'Setting type',
-      notes: [
-        'Leading is the space between lines of text. Keep it consistent across applications.',
-        'Calculate it with the formulas below. Sizes are examples only.',
-      ],
-      blocks: [
-        {
-          type: 'typeRows',
-          rows: [
-            { meta: ['Headline', 'Inter Semibold', '80 / 88', 'Sentence case'], sample: 'Type size × 1.1 = leading. Headlines at 80 pt have 88 pt leading.', style: 'formula' },
-            { meta: ['Body', 'Inter Regular', '15 / 21', 'Sentence case'], sample: 'Type size × 1.4 = leading. Body copy at 15 pt has 21 pt leading.', style: 'body' },
+            { meta: ['Display', 'KMR Apparat Light', '44–100 px / 1.04'], sample: 'Serious about performance.', style: 'display' },
+            { meta: ['Section', 'KMR Apparat Light', '30–56 px / 1.06'], sample: 'Every leap is a step.', style: 'h1' },
+            { meta: ['Card title', 'Inter', '19 px / 1.3'], sample: 'Founders lead, we work alongside.', style: 'h4' },
+            { meta: ['Lede', 'Inter', '18–21 px / 1.5'], sample: 'We turn Europe’s breakthrough technologies into commercial victories.', style: 'lede' },
+            { meta: ['Body', 'Inter', '17 px / 1.55'], sample: 'We invest early and follow on deliberately, so the strongest companies get more. We bring capital, a network across Europe, fast decisions, and staying power when a company hits a setback.', style: 'body' },
+            { meta: ['Small', 'Inter', '15 px / 1.55'], sample: 'We screen about 2,500 companies a year and back about 8.', style: 'caption' },
+            { meta: ['Label', 'Geist Mono', '12 px, capitals, +0.16 em'], sample: 'Future of compute', style: 'mono' },
           ],
         },
       ],
@@ -79,13 +51,13 @@ export const typography: BrandPage = {
       label: 'Testing type',
       notes: ['Click a field and type to try the typefaces.'],
       blocks: [
-        { type: 'tester', meta: ['Headline', 'Inter Semibold', '64 / 70'], sample: 'Headlines nulla vitae euismod sem. Integer ut vehicula.', style: 'h1' },
-        { type: 'tester', meta: ['Body', 'Inter Regular', '18 / 28'], sample: 'Body phasellus at ornare mauris, eu viverra tellus. Curabitur sit amet lorem ipsum, praesent vel turpis ex.', style: 'body' },
+        { type: 'tester', meta: ['Headline', 'KMR Apparat Light'], sample: 'Hardware is Europe’s edge.', style: 'h1' },
+        { type: 'tester', meta: ['Body', 'Inter Regular', '17 px / 1.55'], sample: 'Many investors see hardware as slow and capital-hungry. We see Europe’s engineering base as its competitive advantage, so we go where others hesitate.', style: 'body' },
       ],
     },
     {
       label: 'Don’ts',
-      notes: ['Do not diminish the value of typography. Avoid the following treatments.'],
+      notes: ['Avoid the following treatments.'],
       blocks: [
         {
           type: 'media',
@@ -94,12 +66,9 @@ export const typography: BrandPage = {
             { media: { tone: 'white', ratio: 'landscape', typeMisuse: 'typeface' }, caption: 'Don’t use other typefaces', verdict: 'bad' },
             { media: { tone: 'dark', ratio: 'landscape', typeMisuse: 'mono' }, caption: 'Don’t set headlines in the mono', verdict: 'bad' },
             { media: { tone: 'white', ratio: 'landscape', typeMisuse: 'tight' }, caption: 'Don’t set lines too close together', verdict: 'bad' },
-            { media: { tone: 'dark', ratio: 'landscape', typeMisuse: 'tracking' }, caption: 'Don’t track out the type', verdict: 'bad' },
-            { media: { tone: 'white', ratio: 'landscape', typeMisuse: 'caps' }, caption: 'Don’t use all caps for headlines', verdict: 'bad' },
-            { media: { tone: 'dark', ratio: 'landscape', typeMisuse: 'size' }, caption: 'Don’t set levels too close in size', verdict: 'bad' },
-            { media: { tone: 'white', ratio: 'landscape', typeMisuse: 'clash' }, caption: 'Don’t use clashing colour pairs', verdict: 'bad' },
-            { media: { tone: 'dark', ratio: 'landscape', typeMisuse: 'contrast' }, caption: 'Don’t use low-contrast pairs', verdict: 'bad' },
-            { media: { tone: 'white', ratio: 'landscape', typeMisuse: 'colours' }, caption: 'Don’t use too many colours', verdict: 'bad' },
+            { media: { tone: 'dark', ratio: 'landscape', typeMisuse: 'tracking' }, caption: 'Don’t track out headlines', verdict: 'bad' },
+            { media: { tone: 'white', ratio: 'landscape', typeMisuse: 'size' }, caption: 'Don’t set levels too close in size', verdict: 'bad' },
+            { media: { tone: 'color', color: P.gold, ratio: 'landscape', typeMisuse: 'white' }, caption: 'Don’t put text on Amber, Gold, Cream or Ice without Ink', verdict: 'bad' },
           ],
         },
       ],

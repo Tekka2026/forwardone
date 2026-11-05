@@ -1,10 +1,28 @@
 # Brand guidelines (`/brand`)
 
-A brand guidelines site in ten pages: Welcome, Foundations, Logo, Color,
-Typography, Photography, Graphics, Layout, Applications and Marketing
-Collateral. The structure and layout follow brand.curri.com. All content is
-lorem ipsum or clearly marked placeholder, and every visual (logos, photos,
-mockups) is drawn in CSS. No text, logos or assets were copied from Curri.
+FORWARD.one's brand guidelines in ten pages: Welcome, Foundations, Logo,
+Color, Typography, Photography, Graphics, Layout, Applications and Marketing
+Collateral. The structure and layout follow brand.curri.com; no text, logos
+or assets were copied from Curri.
+
+**Where the content comes from (2026-11-05):**
+
+| Page | Source |
+|---|---|
+| Welcome, Foundations | FORWARD.one Brand Foundation doc, sections 1–7, copy as written there |
+| Color | Brand Foundation doc, section 8 (palette, uses, rules); contrast ratios computed at build time |
+| Typography | The fonts and type scale of the main site (`css/global.css`) |
+| Logo | The supplied wordmark (`src/assets/brand/forwardone.svg`); its rules are still placeholders |
+| Photography, Graphics, Layout, Applications, Marketing Collateral | Placeholders (lorem ipsum, CSS mock-ups) |
+
+Pages whose rules are still placeholders carry `draft` in their content file:
+a notice under the lead and a "Draft" label on the home tile. Remove the
+field once the real content is in. Any `[bracketed]` text in the copy shows as
+a dashed placeholder marker (listed in `PLACEHOLDERS.md`). `**bold**` works in
+copy strings.
+
+The logo download (`public/brand/forwardone-logo.zip`) holds the wordmark as
+Ink and White SVGs, generated from `src/assets/brand/forwardone.svg`.
 
 Live: https://tekka2026.github.io/forwardone/brand/ (not linked from the main
 site; pages carry `noindex`).
@@ -58,7 +76,7 @@ footer.
 `prose`, `statement`, `feature`, `items`, `media` (with do/don't verdicts and
 tinted panels), `swatches` (name, CMYK, RGB, HEX, PMS, copy button),
 `proportion`, `contrast` (WCAG ratio computed at build time), `rules`,
-`specimen`, `weights`, `typeRows`, `tester` (editable type tester),
+`stats` (key figures), `specimen`, `weights`, `typeRows`, `tester` (editable type tester),
 `wordlist`, `spacing`, `radius`, `columns` and `downloads`.
 
 ### Common changes
@@ -77,9 +95,10 @@ tinted panels), `swatches` (name, CMYK, RGB, HEX, PMS, copy button),
 
 ### Tokens
 
-Dark `#0a0a0a`, light `#f1f1f1`, text black on light and white on dark. One
-accent (`--accent: #5b5bd6`) is used only for interactive elements (links on
-hover, focus rings, the back-to-top button, the tester's focus state). The
-layout is a 12-column grid with a 40px page margin (16px on phones) and a
-20px gutter. Media corners are 10–16px. Type is Inter with JetBrains Mono for
-code-style labels.
+The FORWARD.one palette: Black for the header, hero and footer, White for the
+page, Ink for text, Cream for bands. Oxblood marks interactive elements on
+light backgrounds (hover, focus, buttons, back-to-top), Gold on Black. A
+stepped band of the seven tones runs under the home cover. Type uses the main
+site's font files: KMR Apparat Light for headlines, leads and statements,
+Inter for body, Geist Mono for labels. The layout is a 12-column grid with a
+40px page margin (16px on phones) and a 20px gutter.

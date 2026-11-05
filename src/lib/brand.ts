@@ -45,3 +45,16 @@ export function slugify(text: string): string {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
 }
+
+const escapeHtml = (s: string) =>
+  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+/**
+ * Copy to HTML: escapes it, turns **bold** into <strong>, and shows every
+ * [bracketed] gap as a visible placeholder marker (see PLACEHOLDERS.md).
+ */
+export function rich(text: string): string {
+  return escapeHtml(text)
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\[([^\]]+)\]/g, '<mark class="b-ph">[$1]</mark>');
+}

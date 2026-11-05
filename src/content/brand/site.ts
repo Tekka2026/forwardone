@@ -1,25 +1,25 @@
 /**
- * Brand guidelines (/brand): site-wide copy. Everything here is placeholder
- * (lorem ipsum, example.com addresses) until the real brand is supplied;
- * see PLACEHOLDERS.md, "Brand guidelines".
+ * Brand guidelines (/brand): site-wide copy. Text comes from the FORWARD.one
+ * Brand Foundation doc (2026-11-05); [bracketed] values are still to be
+ * supplied (PLACEHOLDERS.md, "Brand guidelines").
  */
 
 export const brandSite = {
-  /** Text wordmark in the header and on placeholder logos. */
-  wordmark: 'BRAND',
+  /** Accessible name of the wordmark (the logo itself is the supplied SVG). */
+  wordmark: 'FORWARD.one',
   title: 'Brand Guidelines',
-  description: 'Placeholder brand guidelines: logo, colour, typography, photography, graphics, layout and applications. All content is lorem ipsum.',
+  description:
+    'FORWARD.one brand guidelines: who we are, how we show up, and the logo, colour and type that carry it.',
   welcome:
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante venenatis dapibus. Vestibulum id ligula porta felis euismod semper, sed posuere consectetur est at lobortis. Use these pages as a starting point.',
+    'Serious about performance. That is our promise, and our name explains how we keep it: one step at a time.',
+  welcomeAsk:
+    'These standards explain where we come from, what we stand for and how we show up. Use them whenever you write, design or present for FORWARD.one, and when in doubt, ask one question: does this prove performance?',
   contact: {
     intro: 'For any questions about using these guidelines, please contact:',
-    team: 'Lorem Design Team',
-    people: [
-      { role: 'Lead designer', name: 'Lorem Ipsum', email: 'lorem.ipsum@example.com' },
-      { role: 'Product designer', name: 'Dolor Amet', email: 'dolor.amet@example.com' },
-    ],
+    team: 'FORWARD.one',
+    people: [{ role: 'Brand contact', name: '[PLACEHOLDER: name]', email: '' }],
   },
   backToTop: 'Back to top',
-  /** Placeholder file target for every download button. */
+  /** Target for download buttons until the files exist. */
   downloadHref: '#',
 };

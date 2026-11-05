@@ -10,7 +10,8 @@ export const photography: BrandPage = {
   slug: 'photography',
   title: 'Photography',
   lead: 'Our photography is one of the most lorem ipsum assets in our toolkit: real moments, real people, real dolor.',
-  tile: { color: P.stone, icon: 'image', cover: { tone: 'photo', seed: 7 } },
+  tile: { color: P.copper, icon: 'image', cover: { tone: 'photo', seed: 7 } },
+  draft: 'Placeholder page: the photography rules and images are lorem ipsum until they are supplied.',
   sections: [
     {
       title: 'Ethos',

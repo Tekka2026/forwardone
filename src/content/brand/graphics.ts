@@ -6,7 +6,8 @@ export const graphics: BrandPage = {
   slug: 'graphics',
   title: 'Graphics',
   lead: 'Graphics play a functional and expressive role in our identity. Lorem ipsum: this is where the system comes to life.',
-  tile: { color: P.lilac, icon: 'pen', cover: { art: 'shapes', tone: 'color', color: P.lilac } },
+  tile: { color: P.gold, icon: 'pen', cover: { art: 'shapes', tone: 'dark' } },
+  draft: 'Placeholder page: the graphics rules and examples are lorem ipsum until they are supplied.',
   sections: [
     {
       blocks: [
@@ -14,7 +15,7 @@ export const graphics: BrandPage = {
           type: 'media',
           cols: 3,
           items: [
-            { media: { art: 'phone', tone: 'color', color: P.stone, ratio: 'landscape' } },
+            { media: { art: 'phone', tone: 'color', color: P.copper, ratio: 'landscape' } },
             { media: { art: 'ui', tone: 'dark', ratio: 'landscape' } },
             { media: { art: 'ui', tone: 'grey', ratio: 'landscape' } },
           ],
@@ -32,7 +33,7 @@ export const graphics: BrandPage = {
           items: [
             { media: { art: 'ui', tone: 'dark', ratio: 'video', tag: 'Product UI' } },
             { media: { art: 'shapes', tone: 'white', ratio: 'video', tag: 'Illustrations' } },
-            { media: { art: 'icons', tone: 'color', color: P.periwinkle, ratio: 'video', tag: 'Iconography' } },
+            { media: { art: 'icons', tone: 'color', color: P.ice, ratio: 'video', tag: 'Iconography' } },
             { media: { art: 'arcs', tone: 'dark', ratio: 'video', tag: 'Patterns' } },
           ],
         },
@@ -50,8 +51,8 @@ export const graphics: BrandPage = {
           cols: 3,
           items: [
             { media: { art: 'ui', tone: 'dark', ratio: 'landscape' } },
-            { media: { art: 'phone', tone: 'color', color: P.clay, ratio: 'landscape' } },
-            { media: { art: 'ui', tone: 'color', color: P.periwinkle, ratio: 'landscape' } },
+            { media: { art: 'phone', tone: 'color', color: P.amber, ratio: 'landscape' } },
+            { media: { art: 'ui', tone: 'color', color: P.ice, ratio: 'landscape' } },
           ],
         },
       ],
@@ -65,8 +66,8 @@ export const graphics: BrandPage = {
           cols: 3,
           items: [
             { media: { art: 'shapes', tone: 'white', ratio: 'landscape' } },
-            { media: { art: 'shapes', tone: 'color', color: P.sage, ratio: 'landscape' } },
-            { media: { art: 'shapes', tone: 'color', color: P.lilac, ratio: 'landscape' } },
+            { media: { art: 'shapes', tone: 'color', color: P.cream, ratio: 'landscape' } },
+            { media: { art: 'shapes', tone: 'color', color: P.gold, ratio: 'landscape' } },
           ],
         },
       ],
@@ -116,7 +117,7 @@ export const graphics: BrandPage = {
           cols: 2,
           items: [
             { media: { art: 'slide', tone: 'dark', ratio: 'video' }, caption: 'Pattern behind a title slide' },
-            { media: { art: 'post', tone: 'color', color: P.sage, ratio: 'video' }, caption: 'Illustration in a social post' },
+            { media: { art: 'post', tone: 'color', color: P.cream, ratio: 'video' }, caption: 'Illustration in a social post' },
           ],
         },
       ],

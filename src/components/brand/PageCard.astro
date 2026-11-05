@@ -25,5 +25,6 @@ const bg = page.tile.color;
     {variant === 'prev' && <small>← Previous</small>}
     {variant === 'next' && <small>Next →</small>}
     <span class="b-card__title">{page.title}</span>
+    {variant === 'tile' && page.draft && <span class="b-card__draft">Draft</span>}
   </span>
 </a>

@@ -5,7 +5,8 @@ export const layout: BrandPage = {
   slug: 'layout',
   title: 'Layout',
   lead: 'Now that we have everything together, here is lorem ipsum guidance for combining it into clear, consistent layouts.',
-  tile: { color: P.clay, icon: 'layout', cover: { art: 'columns', tone: 'white' } },
+  tile: { color: P.amber, icon: 'layout', cover: { art: 'columns', tone: 'dark' } },
+  draft: 'Placeholder page: the layout rules are lorem ipsum until they are agreed.',
   sections: [
     {
       label: 'Grids',

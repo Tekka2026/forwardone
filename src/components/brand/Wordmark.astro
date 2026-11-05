@@ -1,0 +1,10 @@
+---
+/** The supplied FORWARD.one wordmark (src/assets/brand/forwardone.svg), in currentColor. */
+import svg from '../../assets/brand/forwardone.svg?raw';
+
+interface Props { class?: string; label?: boolean }
+const { class: cls = '', label = false } = Astro.props;
+const markup = svg.replace('<svg ', label ? '<svg role="img" aria-label="FORWARD.one" ' : '<svg aria-hidden="true" focusable="false" ');
+---
+
+<span class:list={['b-wordmark', cls]} set:html={markup} />
