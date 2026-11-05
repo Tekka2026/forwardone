@@ -188,7 +188,7 @@
   --black: #0F121A;
   --black-bg: var(--black);   /* dark sections, intros, open nav; was #000000 */
   --black-ink: var(--black);  /* text, solid buttons, dark cards; was #111111 */
-  --black-bar: var(--black);  /* the floating nav bar; was #1a1a1a */
+  --black-bar: #000000;       /* the floating nav bar when closed (owner, 2026-11-05: pure black; it turns --black-bg, #0F121A, as it opens); was #1a1a1a */
 
   /* Colours (PLACEHOLDERS — brand later) */
   --bg: #ffffff;

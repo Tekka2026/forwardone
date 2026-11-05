@@ -943,8 +943,10 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
 - **Black (owner, 2026-11-05): #0F121A**, one dark for the whole site, in
   place of the three blacks before (#000000 dark sections, #111111 text and
   dark cards, #1A1A1A nav bar). Tokens in `css/global.css`: `--black`, with
-  `--black-bg`, `--black-ink` and `--black-bar` pointing at it; every
-  component uses these. To go back, set those three to the old values
+  `--black-bg` and `--black-ink` pointing at it; every component uses
+  these. Exception (owner, 2026-11-05): the closed floating nav bar is pure
+  black (`--black-bar` #000000) and turns #0F121A as it opens (the bar's
+  existing colour transition, 420ms). To go back, set those three to the old values
   noted next to them and the dark tone in `founders.tones` (home.ts) to
   '#111111', or revert the commit "One black for the site: #0F121A". Not
   changed: the robot arm's own material colour, shading mixes with pure
