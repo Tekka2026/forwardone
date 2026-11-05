@@ -136,6 +136,7 @@ const onFounders = current === href('/founders');
         data-greet-template={aud.greeting.template}
         hidden
       >
+        <span class="nav__switch-pill" aria-hidden="true" data-nav-pill></span>
         <button class:list={['nav__switch-opt', onFounders && 'is-current']} type="button" aria-pressed="false" data-audience={aud.founder.word}>{aud.founder.label}</button>
         <button class:list={['nav__switch-opt', !onFounders && 'is-current']} type="button" aria-pressed="false" data-audience={aud.investor.word}>{aud.investor.label}</button>
       </div>
@@ -255,25 +256,42 @@ const onFounders = current === href('/founders');
   .nav__switch {
     --switch-bg: rgba(255, 255, 255, 0.12);
     --switch-active: color-mix(in srgb, var(--brand-yellow) 15%, #ffffff);
+    position: relative;
     display: flex;
     flex: 0 0 auto;
     padding: 3px;
     border-radius: 3px;
     background: var(--switch-bg);
-    clip-path: inset(0 100% 0 0 round 3px);
     opacity: 0;
-    transition:
-      clip-path 420ms cubic-bezier(0.22, 1, 0.36, 1),
-      opacity 200ms ease;
+    transition: opacity 160ms ease;
   }
   .nav__switch[hidden] {
     display: none;
   }
+  /* No wipe (owner, 2026-11-04): the switch appears, and the pale pill
+     slides from the first option to the chosen one (the page's own
+     audience, investor on the homepage), which reads as the reveal. */
   .nav__switch.is-open {
-    clip-path: inset(0 0 0 0 round 3px);
     opacity: 1;
   }
+  .nav__switch-pill {
+    position: absolute;
+    top: 3px;
+    bottom: 3px;
+    left: 0;
+    width: var(--pill-w, 0);
+    border-radius: 2px;
+    background: var(--switch-active);
+    transform: translateX(var(--pill-x, 0));
+    transition:
+      transform 520ms cubic-bezier(0.22, 1, 0.36, 1),
+      width 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .nav__switch.is-placing .nav__switch-pill {
+    transition: none;
+  }
   .nav__switch-opt {
+    position: relative; /* above the pill */
     margin: 0;
     border: 0;
     border-radius: 2px;
@@ -287,13 +305,13 @@ const onFounders = current === href('/founders');
     text-decoration-line: none;
     white-space: nowrap;
     color: #a1a1a1;
-    transition: background-color 160ms ease, color 160ms ease;
+    transition: color 260ms ease;
   }
   .nav__switch-opt:hover {
     color: #ffffff;
   }
-  .nav__switch-opt.is-current {
-    background: var(--switch-active);
+  .nav__switch-opt.is-current,
+  .nav__switch-opt.is-current:hover {
     color: #111111;
   }
   .nav[data-inverse]:not([data-open]) .nav__switch {
@@ -305,7 +323,8 @@ const onFounders = current === href('/founders');
   }
   @media (prefers-reduced-motion: reduce) {
     .nav__root,
-    .nav__switch {
+    .nav__switch,
+    .nav__switch-pill {
       transition: none;
     }
   }
@@ -1080,6 +1099,27 @@ const onFounders = current === href('/founders');
     const audienceAfter = document.querySelector<HTMLElement>('[data-nav-audience-after]');
     const switcher = switchEl;
     const question = switcher.dataset.question || '';
+    const pill = switcher.querySelector<HTMLElement>('[data-nav-pill]')!;
+    const opts = Array.from(switcher.querySelectorAll<HTMLButtonElement>('[data-audience]'));
+    const currentOpt = () => opts.find((o) => o.classList.contains('is-current')) || opts[opts.length - 1];
+    // Move the pill under an option; without `animate` it jumps there.
+    function placePill(opt: HTMLElement, animate: boolean) {
+      if (!animate) switcher.classList.add('is-placing');
+      pill.style.setProperty('--pill-x', opt.offsetLeft + 'px');
+      pill.style.setProperty('--pill-w', opt.offsetWidth + 'px');
+      if (!animate) {
+        void pill.offsetWidth;
+        switcher.classList.remove('is-placing');
+      }
+    }
+    // The switch appears with the pill on the first option, which then
+    // slides to the chosen one.
+    function openSwitch() {
+      switcher.classList.add('is-open');
+      placePill(opts[0], false);
+      requestAnimationFrame(() => placePill(currentOpt(), !reduceMotion.matches));
+    }
+    window.addEventListener('resize', () => { if (!switcher.hidden) placePill(currentOpt(), false); });
     let compact = false;
     async function toCompact() {
       if (isOpen) close();
@@ -1096,7 +1136,7 @@ const onFounders = current === href('/founders');
       if (reduceMotion.matches) {
         setTyped(question);
         idle();
-        switcher.classList.add('is-open');
+        openSwitch();
         return;
       }
       await eraseText(myId);
@@ -1106,7 +1146,7 @@ const onFounders = current === href('/founders');
       await typeText(question, myId);
       if (!alive(myId)) return;
       idle();
-      switcher.classList.add('is-open');
+      openSwitch();
     }
     function toFull() {
       compact = false;
@@ -1138,6 +1178,7 @@ const onFounders = current === href('/founders');
           o.classList.toggle('is-current', o === opt);
           o.setAttribute('aria-pressed', String(o === opt));
         }
+        placePill(opt, !reduceMotion.matches);
         // Not at once (owner, 2026-11-04): the bar opens up again once the
         // pointer has left it and the 25px around it. Without a mouse
         // (touch, keyboard) after a short pause.

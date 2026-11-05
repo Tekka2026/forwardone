@@ -214,6 +214,10 @@ Rules:
 
 ### Homepage curtain
 
+- 96px of black under the key figures (owner, 2026-11-05; was 48px), on
+  the homepage and the founders page, so the next section slides over the
+  intro a little later.
+
 - (Owner, 2026-11-04, as on the founders page.) The black intro is sticky:
   once the top of the founders strip is 30px above the floating nav bar,
   the intro stops moving and the strip (opaque white, on top) scrolls over
@@ -897,9 +901,12 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   two lower-case options, "founder" and "investor" (buttons, 15px). The
   chosen option (before a choice: the page's own audience, investor on the
   homepage) sits on pale yellow (#FFEA6D at 15% into white, 2px corners)
-  in black; the other is grey #A1A1A1, white on hover.
+  in black; the other is grey #A1A1A1, white on hover. No wipe (owner,
+  2026-11-05): the switch appears, and the pale pill slides from the first
+  option ("founder") to the chosen one in 520ms, which reads as the reveal;
+  choosing slides it again.
 - Choosing (owner, 2026-11-04): a press on either option does not leave
-  the page. The pill moves to it at once; the bar opens up again only once
+  the page. The pill slides to it at once; the bar opens up again only once
   the mouse has left the bar and the 25px around it (or the window), and
   after 1.2s for touch and keyboard. Then the bar goes back to full width (AI swap, hamburger back), the
   line erases and types a greeting by the visitor's time of day: "Good

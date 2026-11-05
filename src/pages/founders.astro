@@ -464,7 +464,10 @@ const labelled = (svg: string, label: string) =>
      until they scroll into view (script after the intro). */
   .f-stats {
     margin-top: auto;
-    padding-block: var(--gap-double);
+    padding-top: var(--gap-double);
+    /* More black under the figures (owner, 2026-11-05), so the next section
+       slides over the intro a little later. */
+    padding-bottom: var(--space-24x);
   }
   .f-stats:global(.is-waiting) .f-stat__value,
   .f-stats:global(.is-waiting) .f-stat__label {

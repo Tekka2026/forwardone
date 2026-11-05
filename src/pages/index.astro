@@ -104,7 +104,10 @@ const h1Words = hero.title.split(/\s+/).filter(Boolean).length;
   }
   .intro > .stats {
     margin-top: auto;
-    padding-block: var(--gap-double);
+    padding-top: var(--gap-double);
+    /* More black under the figures (owner, 2026-11-05), so the next section
+       slides over the intro a little later. */
+    padding-bottom: var(--space-24x);
   }
 
   /* Sequence: H1 word by word, then the body copy, then the buttons, then
