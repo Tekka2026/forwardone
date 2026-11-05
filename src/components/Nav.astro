@@ -129,7 +129,6 @@ const onFounders = current === href('/founders');
         role="group"
         aria-label={aud.label}
         data-nav-switch
-        data-question={aud.question}
         data-greet-morning={aud.greeting.morning}
         data-greet-afternoon={aud.greeting.afternoon}
         data-greet-evening={aud.greeting.evening}
@@ -137,8 +136,8 @@ const onFounders = current === href('/founders');
         hidden
       >
         <span class="nav__switch-pill" aria-hidden="true" data-nav-pill></span>
-        <button class:list={['nav__switch-opt', onFounders && 'is-current']} type="button" aria-pressed="false" data-audience={aud.founder.word}>{aud.founder.label}</button>
-        <button class:list={['nav__switch-opt', !onFounders && 'is-current']} type="button" aria-pressed="false" data-audience={aud.investor.word}>{aud.investor.label}</button>
+        <button class:list={['nav__switch-opt', onFounders && 'is-current']} type="button" aria-pressed="false" data-audience={aud.founder.word} data-question={aud.founder.question}>{aud.founder.label}</button>
+        <button class:list={['nav__switch-opt', !onFounders && 'is-current']} type="button" aria-pressed="false" data-audience={aud.investor.word} data-question={aud.investor.question}>{aud.investor.label}</button>
       </div>
 
       <button
@@ -1098,10 +1097,29 @@ const onFounders = current === href('/founders');
        and asks, and scrolling back above it restores the welcome line. */
     const audienceAfter = document.querySelector<HTMLElement>('[data-nav-audience-after]');
     const switcher = switchEl;
-    const question = switcher.dataset.question || '';
     const pill = switcher.querySelector<HTMLElement>('[data-nav-pill]')!;
     const opts = Array.from(switcher.querySelectorAll<HTMLButtonElement>('[data-audience]'));
     const currentOpt = () => opts.find((o) => o.classList.contains('is-current')) || opts[opts.length - 1];
+    const questionFor = (o: HTMLElement) => o.dataset.question || '';
+    // The line follows the pill: erase back to what both lines share, type
+    // the rest ("I am a" -> "I am an" is one letter).
+    async function retypeTo(text: string, id: number) {
+      if (reduceMotion.matches) { setTyped(text); idle(); return; }
+      cursor.classList.remove('is-still');
+      let t = current;
+      while (t && !text.startsWith(t)) {
+        if (!alive(id)) return;
+        t = t.slice(0, -1);
+        setTyped(t);
+        await wait(ERASE_MS);
+      }
+      for (let i = t.length + 1; i <= text.length; i++) {
+        if (!alive(id)) return;
+        setTyped(text.slice(0, i));
+        await wait(TYPE_MS);
+      }
+      if (alive(id)) idle();
+    }
     // Move the pill under an option; without `animate` it jumps there.
     function placePill(opt: HTMLElement, animate: boolean) {
       if (!animate) switcher.classList.add('is-placing');
@@ -1114,10 +1132,15 @@ const onFounders = current === href('/founders');
     }
     // The switch appears with the pill on the first option, which then
     // slides to the chosen one.
-    function openSwitch() {
+    function openSwitch(id: number) {
       switcher.classList.add('is-open');
       placePill(opts[0], false);
-      requestAnimationFrame(() => placePill(currentOpt(), !reduceMotion.matches));
+      requestAnimationFrame(() => {
+        if (!alive(id)) return;
+        const to = currentOpt();
+        placePill(to, !reduceMotion.matches);
+        retypeTo(questionFor(to), id);
+      });
     }
     window.addEventListener('resize', () => { if (!switcher.hidden) placePill(currentOpt(), false); });
     let compact = false;
@@ -1129,24 +1152,26 @@ const onFounders = current === href('/founders');
       switcher.hidden = false;
       compactLine(++runId); // the new run also cancels a welcome line close() started
     }
-    // "I am a" typed in, then the switch unfolds.
+    // The first option's line ("I am a") typed in, then the switch appears
+    // and the pill slides to the chosen option, the line following it.
     async function compactLine(myId: number) {
       showPrompt();
       prompt.classList.remove('is-placeholder');
+      const first = questionFor(opts[0]);
       if (reduceMotion.matches) {
-        setTyped(question);
+        setTyped(first);
         idle();
-        openSwitch();
+        openSwitch(myId);
         return;
       }
       await eraseText(myId);
       if (!alive(myId)) return;
       await wait(120);
       if (!alive(myId)) return;
-      await typeText(question, myId);
+      await typeText(first, myId);
       if (!alive(myId)) return;
       idle();
-      openSwitch();
+      openSwitch(myId);
     }
     function toFull() {
       compact = false;
@@ -1179,6 +1204,7 @@ const onFounders = current === href('/founders');
           o.setAttribute('aria-pressed', String(o === opt));
         }
         placePill(opt, !reduceMotion.matches);
+        if (compact) retypeTo(questionFor(opt), ++runId);
         // Not at once (owner, 2026-11-04): the bar opens up again once the
         // pointer has left it and the 25px around it. Without a mouse
         // (touch, keyboard) after a short pause.

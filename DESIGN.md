@@ -904,7 +904,9 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   in black; the other is grey #A1A1A1, white on hover. No wipe (owner,
   2026-11-05): the switch appears, and the pale pill slides from the first
   option ("founder") to the chosen one in 520ms, which reads as the reveal;
-  choosing slides it again.
+  choosing slides it again. The line follows the pill (owner, 2026-11-05):
+  "I am a" with founder, "I am an" with investor (the "n" typed or erased
+  as the pill moves).
 - Choosing (owner, 2026-11-04): a press on either option does not leave
   the page. The pill slides to it at once; the bar opens up again only once
   the mouse has left the bar and the 25px around it (or the window), and
