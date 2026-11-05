@@ -19,7 +19,8 @@
  *   mark swaps, the welcome line erases into "I am a" and a Founder /
  *   Investor switch
  *   unfolds behind the line; the hamburger stays and opens the panel at
- *   full width. Scrolling back up reverses it.
+ *   full width. It lasts while the bar is over the next section; past it,
+ *   or scrolling back up, the bar is full again.
  */
 import { primaryNav, navGreeting } from '@content/nav';
 import { href, isActive } from '@lib/href';
@@ -1097,6 +1098,11 @@ const onFounders = current === href('/founders');
        its bottom has scrolled above the bar's centre line the bar shrinks
        and asks, and scrolling back above it restores the welcome line. */
     const audienceAfter = document.querySelector<HTMLElement>('[data-nav-audience-after]');
+    // The bar asks only while it is over the section right after that
+    // element (on the homepage the track record, section 3); from the next
+    // one on (section 4) it is back to the full bar (owner, 2026-11-05).
+    let audienceZone: Element | null = audienceAfter ? audienceAfter.nextElementSibling : null;
+    while (audienceZone && audienceZone.tagName === 'SCRIPT') audienceZone = audienceZone.nextElementSibling;
     const switcher = switchEl;
     const pill = switcher.querySelector<HTMLElement>('[data-nav-pill]')!;
     const opts = Array.from(switcher.querySelectorAll<HTMLButtonElement>('[data-audience]'));
@@ -1182,7 +1188,10 @@ const onFounders = current === href('/founders');
       const bottom = parseFloat(getComputedStyle(root).bottom) || 0;
       const y = window.innerHeight - bottom - bar.offsetHeight / 2;
       // Once the visitor has chosen, the bar does not ask again.
-      const want = !audience && audienceAfter.getBoundingClientRect().bottom < y;
+      const want =
+        !audience &&
+        audienceAfter.getBoundingClientRect().bottom < y &&
+        (!audienceZone || audienceZone.getBoundingClientRect().bottom >= y);
       if (want === compact) return;
       if (want) toCompact();
       else toFull();

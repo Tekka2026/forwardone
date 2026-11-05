@@ -888,7 +888,9 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
 - A page opts in by marking an element `data-nav-audience-after`; on the
   homepage that is the wrapper of the intro and the founders strip. Once
   its bottom has scrolled above the bar's centre line, the bar turns
-  compact; scrolling back above it restores the full bar.
+  compact; it stays compact only while the bar is over the section right
+  after it (the track record, section 3) and is full again from the next
+  section on (owner, 2026-11-05), or when scrolling back above it.
 - Compact: the bar shrinks to 400px (or the screen width minus the page
   margins; tighter gaps on phones) over 560ms, the AI mark plays its swap
   and the switch appears at once, exactly as the boundary between the
