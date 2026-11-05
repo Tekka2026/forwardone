@@ -46,6 +46,19 @@ invented; replace the value in the file named and the marker disappears.
 |---|---|
 | `css/global.css` colour tokens | Brand colours. Current values are neutral placeholders. |
 
+## Brand guidelines (`src/content/brand/`, pages `/brand/…`)
+
+Every word and visual on these pages is a deliberate placeholder (lorem ipsum, CSS-drawn logos and photos). How the pages are built: `src/content/brand/README.md`.
+
+| Where | Key | Needed |
+|---|---|---|
+| All pages | `site.ts` → `wordmark` | The real wordmark (now "BRAND"), and the logo files (SVG) to replace the CSS mark in `Visual.astro`. |
+| All pages | `site.ts` → `contact.people` | Names, roles and email addresses of the design contacts (now example.com). |
+| Every page file | `lead`, `sections[*].notes`, block text | The real guideline copy, page by page. |
+| Color | `palette.ts` | The brand palette with Pantone references (CMYK is now computed from HEX). |
+| Typography | `typography.ts` | Typefaces, designer credits, licence and the font download. |
+| Photography, Graphics, Applications, Marketing Collateral | `media` blocks | Real photos, illustrations, mockups and PDFs; download links (`downloadHref`, now `#`). |
+
 ## Stub pages (`src/content/pages.ts`)
 
 Every route other than the homepage renders a heading, a one-line intro and

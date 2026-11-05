@@ -1,0 +1,36 @@
+---
+/** Brand guidelines: one page per entry in src/content/brand/index.ts. */
+import Brand from '@layouts/Brand.astro';
+import Section from '@components/brand/Section.astro';
+import PageCard from '@components/brand/PageCard.astro';
+import { brandPages, type BrandPage } from '@content/brand';
+
+export function getStaticPaths() {
+  return brandPages.map((page, i) => ({
+    params: { slug: page.slug },
+    props: {
+      page,
+      prev: i > 0 ? brandPages[i - 1] : undefined,
+      // The last page points back to the first, as on the reference site.
+      next: brandPages[(i + 1) % brandPages.length],
+    },
+  }));
+}
+
+interface Props { page: BrandPage; prev?: BrandPage; next: BrandPage }
+const { page, prev, next } = Astro.props;
+---
+
+<Brand title={page.title} slug={page.slug}>
+  <section class="b-hero">
+    <div class="b-wrap"><h1>{page.title}</h1></div>
+  </section>
+  <div class="b-wrap"><p class="b-lead">{page.lead}</p></div>
+  {page.sections.map((s) => <Section section={s} />)}
+  <div class="b-wrap">
+    <nav class="b-pager" aria-label="Previous and next section">
+      {prev ? <PageCard page={prev} variant="prev" /> : <span />}
+      <PageCard page={next} variant="next" />
+    </nav>
+  </div>
+</Brand>

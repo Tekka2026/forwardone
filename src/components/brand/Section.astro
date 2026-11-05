@@ -1,0 +1,28 @@
+---
+/** One section of a brand page: hairline, label + notes + button, then blocks. */
+import type { Section } from '@content/brand/types';
+import { slugify } from '@lib/brand';
+import Block from './Block.astro';
+
+interface Props { section: Section }
+const { section: s } = Astro.props;
+const id = s.id ?? (s.label || s.title ? slugify((s.label ?? s.title)!.replace(/\n/g, ' ')) : undefined);
+const hasHead = Boolean(s.label || s.title || s.notes?.length || s.button);
+---
+
+<section class:list={['b-section', s.band && 'b-section--band', s.title && 'b-section--titled']} id={id}>
+  <div class="b-wrap">
+    {hasHead && (
+      <header class="b-head">
+        {s.title ? (
+          <h2 class="b-head__title">{s.title}</h2>
+        ) : (
+          s.label && <h2 class="b-head__label">{s.label.split('\n').map((l, i) => (i ? <><br />{l}</> : l))}</h2>
+        )}
+        {s.notes?.map((n) => <p class="b-head__note">{n}</p>)}
+        {s.button && <a class="b-button" href={s.button.href}>{s.button.label}</a>}
+      </header>
+    )}
+    {s.blocks?.map((block) => <div class="b-block"><Block block={block} /></div>)}
+  </div>
+</section>

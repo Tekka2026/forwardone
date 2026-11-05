@@ -977,5 +977,6 @@ redefine any token or class from this file elsewhere.
 | Copy and numbers | `src/content/home.ts`, `src/content/nav.ts`, `src/content/pages.ts` |
 | Legacy redirects | `src/content/redirects.mjs` |
 | Internal links | always through `href()` from `src/lib/href.ts` so the base path is applied |
+| Brand guidelines (`/brand`) | Separate template with its own layout (`src/layouts/Brand.astro`) and stylesheet (`css/brand.css`); it does not use the tokens in this file. Content in `src/content/brand/`, see its `README.md` |
 
 Component styles are Astro scoped `<style>` blocks that use the tokens above.

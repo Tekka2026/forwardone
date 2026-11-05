@@ -1,0 +1,123 @@
+---
+/**
+ * Layout of the brand guidelines (/brand). Separate from Base.astro: its own
+ * header, footer and stylesheet (css/brand.css), so the main site's design
+ * system and the brand template do not affect each other.
+ */
+import '../../css/brand.css';
+import { brandPages, brandSite } from '@content/brand';
+import { href } from '@lib/href';
+
+interface Props {
+  title: string;
+  /** Current page slug, '' for the home page. */
+  slug: string;
+}
+const { title, slug } = Astro.props;
+const pageTitle = slug ? `${title} · ${brandSite.title}` : brandSite.title;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={brandSite.description} />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href={href('/favicon.svg')} type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400..600&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+  </head>
+  <body id="top">
+    <a class="b-skip" href="#main">Skip to content</a>
+    <header class="b-header">
+      <div class="b-wrap b-header__inner">
+        <a class="b-header__wordmark" href={href('/brand')}>{brandSite.wordmark}</a>
+        <a class="b-header__title" href={href('/brand')}>{brandSite.title}</a>
+        <details class="b-menu">
+          <summary>Index</summary>
+          <nav class="b-menu__panel" aria-label="Brand guidelines">
+            <ol>
+              <li><a href={href('/brand')} aria-current={slug === '' ? 'page' : undefined}><span>00</span>Welcome</a></li>
+              {brandPages.map((p, i) => (
+                <li>
+                  <a href={href(`/brand/${p.slug}`)} aria-current={slug === p.slug ? 'page' : undefined}>
+                    <span>{String(i + 1).padStart(2, '0')}</span>{p.title}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        </details>
+      </div>
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="b-footer">
+      <div class="b-wrap">
+        <p class="b-footer__intro">{brandSite.contact.intro}</p>
+        <p class="b-footer__team">{brandSite.contact.team}</p>
+        <div class="b-footer__people">
+          {brandSite.contact.people.map((p) => (
+            <div class="b-footer__person">
+              <span class="b-footer__role">{p.role}</span>
+              <span>{p.name}</span>
+              <a href={`mailto:${p.email}`}>{p.email}</a>
+            </div>
+          ))}
+        </div>
+        <a class="b-footer__top" href="#top">{brandSite.backToTop}</a>
+      </div>
+    </footer>
+
+    <button class="b-totop" type="button" aria-label={brandSite.backToTop}>↑</button>
+    <div class="b-toast" role="status" aria-live="polite"></div>
+
+    <script>
+      // Back-to-top button: visible after the first screen.
+      const toTop = document.querySelector<HTMLButtonElement>('.b-totop');
+      const onScroll = () => toTop?.classList.toggle('is-visible', window.scrollY > window.innerHeight * 0.8);
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+      toTop?.addEventListener('click', () => window.scrollTo({ top: 0 }));
+
+      // Index menu: close on outside click and Escape.
+      const menu = document.querySelector<HTMLDetailsElement>('.b-menu');
+      document.addEventListener('click', (e) => {
+        if (menu?.open && !menu.contains(e.target as Node)) menu.open = false;
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && menu?.open) {
+          menu.open = false;
+          menu.querySelector('summary')?.focus();
+        }
+      });
+
+      // Swatches: copy the HEX value.
+      const toast = document.querySelector<HTMLElement>('.b-toast');
+      let timer: number | undefined;
+      document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const value = btn.dataset.copy ?? '';
+          try {
+            await navigator.clipboard.writeText(value);
+            if (toast) toast.textContent = `Copied ${value}`;
+          } catch {
+            if (toast) toast.textContent = value;
+          }
+          toast?.classList.add('is-visible');
+          window.clearTimeout(timer);
+          timer = window.setTimeout(() => toast?.classList.remove('is-visible'), 1600);
+        });
+      });
+    </script>
+  </body>
+</html>

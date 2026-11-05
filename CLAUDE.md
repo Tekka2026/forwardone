@@ -35,7 +35,8 @@
 ## Stack
 
 - Astro (static output), no UI framework. Content lives in `src/content/`
-  (`home.ts`, `nav.ts`, `pages.ts`, `team.ts`, `pitch.ts`, `founders.ts`, `redirects.mjs`); components contain no
+  (`home.ts`, `nav.ts`, `pages.ts`, `team.ts`, `pitch.ts`, `founders.ts`, `redirects.mjs`, and `brand/` for the
+  brand guidelines at `/brand`, see `src/content/brand/README.md`); components contain no
   copy. Internal links go through `href()` from `src/lib/href.ts` so the
   `/forwardone` base path is applied.
 - Unknown values are visible `[PLACEHOLDER …]` markers and are listed in
@@ -93,3 +94,5 @@
 | A0029 | done   | One more dashboard login (FORWARD.one): added to `PITCH_REVIEWERS` by the owner on 2026-10-30; the deploy that brings it to the service run the same day. A change to that secret only works after "Deploy the pitch booking service" runs. |
 | A0030 | open   | Licence for KMR Apparat: on all display headings again since 2026-11-02 (owner, for the MVP; the font files are in the public repo). Buy a web licence before the site goes public, or say to switch back to Clash Display (one line in `css/global.css`). |
 | A0031 | cancelled | Regola Pro S Light: tried on the headings and display numbers as a test on 2026-11-03; the owner switched back to KMR Apparat the same day and the font file was removed. |
+| A0032 | done   | Network access to brand.curri.com for the brand guidelines reference: allowed by the owner on 2026-11-05. |
+| A0033 | open   | Brand guidelines (`/brand`, built 2026-11-05 as a lorem ipsum replica of brand.curri.com's structure): supply the real content listed in `PLACEHOLDERS.md`, Brand guidelines (wordmark and logo files, contacts, copy, palette, typefaces, photos and downloads), and decide whether to link `/brand` from the main site (now unlinked and `noindex`). |

@@ -1,0 +1,29 @@
+---
+/** A brand page as a card: the home tiles and the previous / next cards. */
+import type { BrandPage } from '@content/brand/types';
+import { href } from '@lib/href';
+import { inkOn } from '@lib/brand';
+import Visual from './Visual.astro';
+import Icon from './Icon.astro';
+
+interface Props { page: BrandPage; variant: 'tile' | 'prev' | 'next' }
+const { page, variant } = Astro.props;
+const bg = page.tile.color;
+---
+
+<a
+  class:list={['b-card', `b-card--${variant}`]}
+  href={href(`/brand/${page.slug}`)}
+  style={variant === 'tile' ? `--bg:${bg};--ink:${inkOn(bg)}` : undefined}
+>
+  {variant === 'tile' ? (
+    <span class="b-card__icon"><Icon name={page.tile.icon} /></span>
+  ) : (
+    <Visual media={{ ...page.tile.cover, ratio: 'wide' }} class="b-card__cover" />
+  )}
+  <span class="b-card__text">
+    {variant === 'prev' && <small>← Previous</small>}
+    {variant === 'next' && <small>Next →</small>}
+    <span class="b-card__title">{page.title}</span>
+  </span>
+</a>

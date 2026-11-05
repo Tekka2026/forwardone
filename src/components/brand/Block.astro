@@ -1,0 +1,224 @@
+---
+/** Renders one content block of the brand guidelines (see content/brand/types.ts). */
+import type { Block } from '@content/brand/types';
+import { brandSite } from '@content/brand/site';
+import { hexToRgb, hexToCmyk, contrastRatio, inkOn } from '@lib/brand';
+import Visual from './Visual.astro';
+import Icon from './Icon.astro';
+
+interface Props { block: Block }
+const { block: b } = Astro.props;
+
+const verdictLabel = { good: 'Do', ok: 'Acceptable', bad: 'Don’t' } as const;
+const specimenChars = ['ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz', '0123456789', '!@#$% ^ &*()?+'];
+---
+
+{b.type === 'prose' && (
+  <div class="b-offset">
+    <div class:list={['b-prose', b.size === 'lead' && 'b-prose--lead']}>
+      {b.paragraphs.map((p) => <p>{p}</p>)}
+    </div>
+  </div>
+)}
+
+{b.type === 'statement' && <p class="b-statement">{b.text}</p>}
+
+{b.type === 'feature' && (
+  <div class="b-feature">
+    <div class="b-feature__text">
+      <h3>{b.title}</h3>
+      <p>{b.body}</p>
+    </div>
+    <Visual media={b.media} class="b-feature__media" />
+  </div>
+)}
+
+{b.type === 'items' && (
+  <div class="b-offset">
+    <div class:list={['b-items', `b-cols-${b.cols ?? 2}`]}>
+      {b.items.map((it) => (
+        <div class="b-item">
+          {it.icon && <span class="b-item__icon"><Icon name={it.icon} /></span>}
+          <h3>{it.title}</h3>
+          <p>{it.body}</p>
+          {it.meta && <p class="b-item__meta">{it.meta}</p>}
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
+{b.type === 'media' && (
+  <div class:list={[b.offset && 'b-offset']}>
+    <div class:list={['b-media', `b-cols-${b.cols ?? 3}`, b.panel && `b-panel b-panel--${b.panel}`]}>
+      {b.items.map((f) => (
+        <figure class:list={['b-figure', f.verdict === 'bad' && f.media.misuse && 'is-dont']}>
+          <Visual media={f.media} />
+          {(f.caption || f.verdict) && (
+            <figcaption>
+              {f.verdict && <span class:list={['b-verdict', `b-verdict--${f.verdict}`]} aria-label={verdictLabel[f.verdict]} />}
+              {f.caption}
+            </figcaption>
+          )}
+        </figure>
+      ))}
+    </div>
+  </div>
+)}
+
+{b.type === 'swatches' && (
+  <div class:list={[b.offset && 'b-offset']}>
+    <div class:list={['b-swatches', `b-cols-${b.cols ?? 3}`]}>
+      {b.items.map((s) => {
+        const [r, g, bl] = hexToRgb(s.hex);
+        const cmyk = hexToCmyk(s.hex).join('/');
+        return (
+          <div class:list={['b-swatch', `b-swatch--${b.size ?? 'lg'}`]} style={`--c:${s.hex};--t:${inkOn(s.hex)}`}>
+            <dl class="b-swatch__meta">
+              <div><dt>Name:</dt><dd>{s.name}</dd></div>
+              {!s.screenOnly && <div><dt>CMYK:</dt><dd>{cmyk}</dd></div>}
+              <div><dt>RGB:</dt><dd>{r}/{g}/{bl}</dd></div>
+              <div><dt>HEX:</dt><dd>{s.hex.toUpperCase()}</dd></div>
+              {!s.screenOnly && <div><dt>PMS:</dt><dd>{s.pms ?? 'Not specified'}</dd></div>}
+            </dl>
+            <button class="b-swatch__copy" type="button" data-copy={s.hex.toUpperCase()}>Copy HEX</button>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+)}
+
+{b.type === 'proportion' && (
+  <div class="b-proportion" role="img" aria-label="Colour proportion bar">
+    {b.items.map((it) => <span style={`--c:${it.hex};--f:${it.share}`} />)}
+  </div>
+)}
+
+{b.type === 'contrast' && (
+  <div class="b-offset">
+    <div class="b-contrast b-cols-2">
+      {b.items.map((it) => {
+        const ratio = contrastRatio(it.fg, it.bg);
+        const grade = ratio >= 7 ? 'AAA' : ratio >= 4.5 ? 'AA' : ratio >= 3 ? 'AA large' : 'Fail';
+        return (
+          <div class="b-contrast__card" style={`--c:${it.bg};--t:${it.fg}`}>
+            <strong>Aa</strong>
+            <span>{it.label}</span>
+            <span>{ratio.toFixed(1)}:1 · {grade}</span>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+)}
+
+{b.type === 'rules' && (
+  <div class="b-offset"><ol class="b-rules">{b.items.map((r) => <li>{r}</li>)}</ol></div>
+)}
+
+{b.type === 'specimen' && (
+  <div class:list={['b-specimen', b.mono && 'b-specimen--mono']}>
+    <div class="b-specimen__meta"><b>Designed by</b>{b.by}</div>
+    <div class="b-specimen__body">
+      <p class="b-specimen__name">{b.name}</p>
+      {specimenChars.map((line) => <p class="b-specimen__chars">{line}</p>)}
+    </div>
+  </div>
+)}
+
+{b.type === 'weights' && (
+  <div class="b-offset">
+    <div class="b-weights">
+      {b.items.map((w) => (
+        <div><span class="b-weights__aa" style={`font-weight:${w.weight}`}>Aa</span><span>{w.name} · {w.weight}</span></div>
+      ))}
+    </div>
+  </div>
+)}
+
+{b.type === 'typeRows' && (
+  <div class="b-typerows">
+    {b.rows.map((r) => (
+      <div class="b-typerow">
+        <div class="b-typerow__meta">{r.meta.map((m, i) => (i === 0 ? <b>{m}</b> : <span>{m}</span>))}</div>
+        <p class:list={['b-typerow__sample', `t-${r.style}`]}>{r.sample}</p>
+      </div>
+    ))}
+  </div>
+)}
+
+{b.type === 'tester' && (
+  <div class="b-typerow">
+    <div class="b-typerow__meta">{b.meta.map((m, i) => (i === 0 ? <b>{m}</b> : <span>{m}</span>))}</div>
+    <p class:list={['b-tester', `t-${b.style}`]} contenteditable="plaintext-only" spellcheck="false" aria-label={`Type tester: ${b.meta[0]}`}>{b.sample}</p>
+  </div>
+)}
+
+{b.type === 'wordlist' && (
+  <div class="b-offset">
+    <div class="b-wordlist b-cols-2">
+      {b.columns.map((c) => (
+        <div>
+          <p class="b-wordlist__title">{c.title}</p>
+          <ul class:list={['b-wordlist__words', `is-${c.verdict}`]}>{c.words.map((w) => <li>{w}</li>)}</ul>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
+{b.type === 'spacing' && (
+  <div class="b-spacing">
+    <p class="b-spacing__title">{b.title}</p>
+    <div class="b-spacing__steps">
+      {b.steps.map((s, i) => (
+        <div><span>{(i + 1) * 50} · {s}px</span><i style={`--h:${s}px`} /></div>
+      ))}
+    </div>
+  </div>
+)}
+
+{b.type === 'radius' && (
+  <div class="b-radius b-cols-2">
+    <div class="b-radius__card">
+      <div class="b-radius__row">
+        {b.steps.map((s) => (<div><i style={`--r:${s.px}px`} /><span>{s.label}<b>{s.px}px</b></span></div>))}
+      </div>
+    </div>
+    <div class="b-radius__card">
+      <div class="b-radius__row">
+        {b.borders.map((s) => (<div><i class="is-border" style={`--w:${s.px}px`} /><span>{s.label}<b>{s.px}px</b></span></div>))}
+      </div>
+    </div>
+  </div>
+)}
+
+{b.type === 'columns' && (
+  <div class="b-columns b-cols-3">
+    {b.items.map((c) => (
+      <div>
+        <Visual media={c.media} />
+        <h3>{c.title}</h3>
+        {c.body.map((p) => <p>{p}</p>)}
+      </div>
+    ))}
+  </div>
+)}
+
+{b.type === 'downloads' && (
+  <div class="b-downloads-wrap">
+    {b.title && <h3 class="b-downloads__title">{b.title}</h3>}
+    <div class="b-downloads">
+      {b.items.map((d) => (
+        <figure>
+          <Visual media={{ ...d.media, ratio: 'portrait' }} />
+          <figcaption>{d.name}</figcaption>
+          <a class="b-download" href={brandSite.downloadHref} aria-label={`Download ${d.name} (placeholder)`}>
+            Download <Icon name="download" size={14} />
+          </a>
+        </figure>
+      ))}
+    </div>
+  </div>
+)}
