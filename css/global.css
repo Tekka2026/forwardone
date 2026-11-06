@@ -118,9 +118,9 @@
                      all UI text.
      --font-mono:    Geist Mono (self-hosted, src/assets/fonts/geist-mono) for
                      eyebrows, labels and code. */
-  --font-display: "F37 Lineca", "KMR Apparat", "Clash Display", "Inter", system-ui, -apple-system,
+  --font-display: "KMR Apparat", "Clash Display", "Inter", system-ui, -apple-system,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-heading: "F37 Lineca", "KMR Apparat", "Clash Display", "Inter", system-ui,
+  --font-heading: "KMR Apparat", "Clash Display", "Inter", system-ui,
     -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
@@ -239,26 +239,6 @@
   font-weight: 500;
   font-display: swap;
   src: url("../src/assets/fonts/geist-mono/GeistMono-Medium.woff2") format("woff2");
-}
-
-/* F37 Lineca Arabic (owner, 2026-11-06, as a test) for the headings and the
-   display numbers, in front of KMR Apparat. Two cuts: Book takes the light
-   weights (the headings, --fw-heading 300, and --fw-display 300), Medium the
-   key figures and the €388M (--fw-stat 400). Going back: drop "F37 Lineca"
-   from --font-heading and --font-display (or revert the commit). */
-@font-face {
-  font-family: "F37 Lineca";
-  font-style: normal;
-  font-weight: 100 399;
-  font-display: swap;
-  src: url("../src/assets/fonts/f37-lineca/F37LinecaArabic-Book.woff2") format("woff2");
-}
-@font-face {
-  font-family: "F37 Lineca";
-  font-style: normal;
-  font-weight: 400 900;
-  font-display: swap;
-  src: url("../src/assets/fonts/f37-lineca/F37LinecaArabic-Medium.woff2") format("woff2");
 }
 
 /* KMR Apparat (owner, 2026-11-02; first tried 2026-10-17) for the headings.
