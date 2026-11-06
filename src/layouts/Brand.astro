@@ -53,6 +53,9 @@ const pageTitle = slug ? `${title} · FORWARD.one ${brandSite.title}` : `FORWARD
                   </a>
                 </li>
               ))}
+              <li class="b-menu__tool">
+                <a href={href('/brand/backgrounds')} aria-current={slug === 'backgrounds' ? 'page' : undefined}><span>↗</span>Background maker</a>
+              </li>
             </ol>
           </nav>
         </details>
