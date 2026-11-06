@@ -104,36 +104,30 @@ All queries are `max-width`, desktop-first.
 
 Four families, loaded in `src/layouts/Base.astro` and `css/global.css`:
 
-- `--font-heading`: **KMR Apparat** (owner, 2026-11-02, for the MVP; first
-  tried 2026-10-17 and withdrawn then). Self-hosted WOFF2 from
-  `src/assets/fonts/kmr-apparat`, declared in `css/global.css` as Light 300,
-  Regular 400, Book 450, Medium 500, Bold 700, Heavy 800, Black 900. The
-  headings use Light (`--fw-heading: 300`, owner 2026-11-02); Display numbers
-  and names use Light as well (`--fw-display`, 300). Used for all display headings: Display
-  (H1), Section (H2) and Feature headings, bare `h1`/`h2`, and the headings
-  set in the display face (case names in the Proof slider, the founders
-  page deck titles). Commercial font: buy a web licence before the site
-  goes public (A0030). Clash Display is the fallback, so going back is a
-  one-line change in `--font-heading`. Exception: the pitch page H1 stays
-  in Inter 500 (owner, 2026-10-22).
-- `--font-display`: **KMR Apparat** as well since 2026-11-02 (owner), Light
-  (`--fw-display: 300`; the key figure values and the €388M one step
-  heavier, Regular, `--fw-stat: 400`, owner 2026-11-02): stat values (homepage and founders
-  page), the
-  €388M headline figure, card metrics and the company names on the
-  founders strip cards. Clash Display (Fontshare, variable) stays loaded as
-  the fallback for both families.
-- **Test, 2026-11-06 (owner): Aeonik TRIAL** (CoType), second round
-  (headings Regular, numbers SemiBold), sits in front of KMR Apparat in both
-  `--font-heading` and `--font-display`. Self-hosted trial WOFF2 from
-  `src/assets/fonts/aeonik-trial`: Regular (declared for weights 100–399;
-  owner 2026-11-06, was Medium) takes the headings and the Display names (300), SemiBold (400–900) the key
-  figures and the €388M (`--fw-stat`, 400). The trial cuts hold only
-  letters, digits and `. ,`: € % ’ ‘ “ ” – — ~ & ? ! and accented letters
-  fall back to KMR Apparat glyph by glyph. Trial licence: not for production
-  (A0038). Going back: drop "Aeonik Trial" from the two tokens and delete
-  the folder, or revert the commit. F37 Lineca (Medium and Bold), tried
-  just before, was removed (A0037).
+- `--font-heading`: **Aeonik** (CoType), **Regular**. Chosen by the owner
+  on 2026-11-06 as the font going forward, after tests of KMR Apparat,
+  Regola, F37 Lineca and other Aeonik weights. Used for all display
+  headings: Display (H1), Section (H2) and Feature headings, bare
+  `h1`/`h2`, and the headings set in the display face (case names in the
+  Proof slider, the founders page deck titles). Exception: the pitch page
+  H1 stays in Inter 500 (owner, 2026-10-22).
+- `--font-display`: **Aeonik** as well. **SemiBold** for the key figure
+  values and the €388M (`--fw-stat`, 400); Regular for the company names on
+  the founders strip cards (`--fw-display`, 300). Also stat values on the
+  homepage and founders page and card metrics.
+- How it is loaded: self-hosted WOFF2 from `src/assets/fonts/aeonik-trial`,
+  declared in `css/global.css` as the family "Aeonik Trial" with two
+  ranges. Regular covers weights 100–399, which takes `--fw-heading` and
+  `--fw-display` (300). SemiBold covers 400–900, which takes `--fw-stat`
+  (400). The CSS weight numbers stay as they were, so only the files
+  change when the licensed cuts arrive.
+- **For now these are the trial files.** They hold only letters, digits
+  and `. ,`. So € % ’ ‘ “ ” – — ~ & ? ! and accented letters fall back,
+  glyph by glyph, to **KMR Apparat** (`src/assets/fonts/kmr-apparat`,
+  still loaded for that reason). Clash Display is the last fallback.
+- **When the licensed Aeonik arrives (A0038):** put its Regular and
+  SemiBold WOFF2 in place of the trial files and rename the family. Then
+  KMR Apparat and its font-faces can go.
 - `--font-sans`: **Inter** (Google Fonts, variable 400–600). H3 and below
   (card titles, the Playbook list) and all body and UI text: lede, body,
   small, buttons, navigation, forms, footer.
@@ -145,7 +139,7 @@ Four families, loaded in `src/layouts/Base.astro` and `css/global.css`:
 
 | Role        | Class         | Size                                   | Line | Tracking | Weight | Notes |
 |-------------|---------------|----------------------------------------|------|----------|--------|-------|
-| Display/H1  | `.h-display`  | `clamp(52px, 8.4vw, 120px)` (`--fs-h1`, owner 2026-11-02; was 44–100px) | 0.98 (`--lh-h1`, owner 2026-11-06; was 1.04) | 0 | 300 | **One per page.** KMR Apparat Light, the lightest cut there is. The €388M figure and the pitch page keep `--fs-display` (44–100px). |
+| Display/H1  | `.h-display`  | `clamp(52px, 8.4vw, 120px)` (`--fs-h1`, owner 2026-11-02; was 44–100px) | 0.98 (`--lh-h1`, owner 2026-11-06; was 1.04) | 0 | 300 | **One per page.** Aeonik Regular (CSS weight 300 maps to the Regular cut). The €388M figure and the pitch page keep `--fs-display` (44–100px). |
 | Section/H2  | `.h-section`  | `clamp(30px, 4.2vw, 56px)`             | 1.06 | 0        | 450    | max-width 1056px (8 cols). |
 | Feature/H3  | `.h-feature`  | `clamp(34px, 5vw, 72px)`               | 1.04 | 0        | 450    | max-width 1056px (8 cols). |
 | Card title  | `.card-title` | 19px                                   | 1.3  | −0.01em  | 550    | |
@@ -208,9 +202,10 @@ Rules:
 - Every size, line height, tracking and heading weight value exists as a token
   (`--fs-*`, `--lh-*`, `--ls-*`, `--fw-heading`, `--fw-card-title`). New
   components reference tokens, never literal values. Heading weights are
-  300 (KMR Apparat Light, display headings, `--fw-heading`; owner
-  2026-11-02) / 550 (card titles, Inter variable); display numbers
-  and names (KMR Apparat as well) use 300 too (`--fw-display`).
+  300 (display headings, `--fw-heading`, which loads Aeonik Regular)
+  / 550 (card titles, Inter variable); display names use 300 too
+  (`--fw-display`), and the key figures use 400 (`--fw-stat`, Aeonik
+  SemiBold).
 
 ### Figures and tables
 

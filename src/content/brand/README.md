@@ -123,6 +123,6 @@ The FORWARD.one palette: Black for the header, hero and footer, White for the
 page, Ink for text, Cream for bands. Oxblood marks interactive elements on
 light backgrounds (hover, focus, buttons, back-to-top), Gold on Black. A
 stepped band of the seven tones runs under the home cover. Type uses the main
-site's font files: KMR Apparat Light for headlines, leads and statements,
+site's font files: Aeonik Regular for headlines, leads and statements,
 Inter for body, Geist Mono for labels. The layout is a 12-column grid with a
 40px page margin (16px on phones) and a 20px gutter.

@@ -1,6 +1,6 @@
 /**
  * Typography: the typefaces and scale the FORWARD.one site uses
- * (css/global.css, 2026-11-05). The don'ts are general guidance.
+ * (css/global.css; headline font Aeonik since 2026-11-06). The don'ts are general guidance.
  */
 import type { BrandPage } from './types';
 import { P } from './palette';
@@ -8,16 +8,16 @@ import { P } from './palette';
 export const typography: BrandPage = {
   slug: 'typography',
   title: 'Typography',
-  lead: 'Three typefaces, each with one job: KMR Apparat for headlines, Inter for reading, Geist Mono for labels.',
+  lead: 'Three typefaces, each with one job: Aeonik for headlines and key figures, Inter for reading, Geist Mono for labels.',
   tile: { color: P.cream, icon: 'type', cover: { art: 'dots', tone: 'dark' } },
   sections: [
     {
       label: 'Headlines',
       notes: [
-        'KMR Apparat Light for display headlines, section titles and key figures.',
+        'Aeonik Regular for display headlines and section titles, Aeonik SemiBold for key figures.',
         'A commercial font. [PLACEHOLDER: web licence, needed before the site goes public]',
       ],
-      blocks: [{ type: 'specimen', name: 'KMR Apparat Light', font: 'display', meta: ['Headlines', 'Weight 300', 'Key figures: 400'] }],
+      blocks: [{ type: 'specimen', name: 'Aeonik Regular', font: 'display', meta: ['Headlines', 'Regular', 'Key figures: SemiBold'] }],
     },
     {
       label: 'Body',
@@ -36,8 +36,8 @@ export const typography: BrandPage = {
         {
           type: 'typeRows',
           rows: [
-            { meta: ['Display', 'KMR Apparat Light', '44–100 px / 1.04'], sample: 'Serious about performance.', style: 'display' },
-            { meta: ['Section', 'KMR Apparat Light', '30–56 px / 1.06'], sample: 'Every leap is a step.', style: 'h1' },
+            { meta: ['Display', 'Aeonik Regular', '52–120 px / 0.98'], sample: 'Serious about performance.', style: 'display' },
+            { meta: ['Section', 'Aeonik Regular', '30–56 px / 1.06'], sample: 'Every leap is a step.', style: 'h1' },
             { meta: ['Card title', 'Inter', '19 px / 1.3'], sample: 'Founders lead, we work alongside.', style: 'h4' },
             { meta: ['Lede', 'Inter', '18–21 px / 1.5'], sample: 'We turn Europe’s breakthrough technologies into commercial victories.', style: 'lede' },
             { meta: ['Body', 'Inter', '17 px / 1.55'], sample: 'We invest early and follow on deliberately, so the strongest companies get more. We bring capital, a network across Europe, fast decisions, and staying power when a company hits a setback.', style: 'body' },
@@ -51,7 +51,7 @@ export const typography: BrandPage = {
       label: 'Testing type',
       notes: ['Click a field and type to try the typefaces.'],
       blocks: [
-        { type: 'tester', meta: ['Headline', 'KMR Apparat Light'], sample: 'Hardware is Europe’s edge.', style: 'h1' },
+        { type: 'tester', meta: ['Headline', 'Aeonik Regular'], sample: 'Hardware is Europe’s edge.', style: 'h1' },
         { type: 'tester', meta: ['Body', 'Inter Regular', '17 px / 1.55'], sample: 'Many investors see hardware as slow and capital-hungry. We see Europe’s engineering base as its competitive advantage, so we go where others hesitate.', style: 'body' },
       ],
     },

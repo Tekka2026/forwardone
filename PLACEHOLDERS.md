@@ -56,7 +56,7 @@ Welcome, Foundations and Color follow the FORWARD.one Brand Foundation doc (2026
 | Foundations, Who we are | `foundations.ts` | Benchmark source and year for the top-5% ranking; buyers of Aito and Nuventura; the partners, one line each on what they bring. |
 | Foundations, What we believe and What we do | `foundations.ts` | One portfolio company for applied AI (belief 2) and for Robotics, Autonomy, Manufacturing and Dual-use. |
 | Color, Color story | `color.ts` | Riemer's personal story, which may replace the 1964 opening. CMYK and Pantone values if print is needed (only hex is supplied). |
-| Typography | `typography.ts` | Web licence for KMR Apparat (A0030). |
+| Typography | `typography.ts` | Web licence and full files for Aeonik Regular and SemiBold (A0038). |
 | Logo | `logo.ts` | Clearspace, minimum size and colour rules; a stacked version and an icon (for avatars and app icons), if wanted. |
 | Photography, Graphics, Layout, Applications, Marketing Collateral | their page files | The real rules, images, templates and download files; then remove `draft`. |
 
