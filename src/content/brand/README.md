@@ -34,7 +34,9 @@ supplied 2026-11-06) extruded to 3D with Three.js, on a gradient of palette
 colours. Controls: format (1:1, 3:4, 4:5, 1:2, 16:9 default, 5:7, each turned
 90° on request), gradient (presets or colours in order, linear or radial,
 angle), plectrum colour, size, position, rotation (sliders or drag), thickness,
-rounded edge, gloss, metal, motion blur (spin, tumble, roll or slide), blur and
+rounded edge, gloss, metal, motion blur (spin, tumble, roll, slide, or a sweep
+that fans out from one of the plectrum's three points, up to a full circle at
+360°), blur and
 grain. Export is a PNG with a long side of 1920 or 3840 px. All settings live in
 the page address, so a background can be shared or reopened by its link.
 
