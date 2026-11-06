@@ -1,0 +1,463 @@
+---
+/** Brand guidelines: the background maker (3D plectrum on a brand gradient). */
+import Brand from '@layouts/Brand.astro';
+import { backgrounds, swatches, ratios, defaultRatio, presets } from '@content/brand/backgrounds';
+import { P } from '@content/brand/palette';
+import { inkOn } from '@lib/brand';
+import plectrumSvg from '../../assets/brand/plectrum.svg?raw';
+
+const defaults = {
+  ratio: defaultRatio,
+  turn: false,
+  stops: presets[1].stops,
+  gradType: presets[1].type,
+  angle: presets[1].angle,
+  color: P.signalRed,
+  gloss: 35,
+  metal: 0,
+  depth: 16,
+  bevel: 3,
+  rotX: -16,
+  rotY: 34,
+  rotZ: 10,
+  size: 56,
+  posX: 0,
+  posY: 0,
+  motion: 0,
+  axis: 'y',
+  blur: 0,
+  grain: true,
+  grainAmount: 30,
+};
+
+const sliders = {
+  plectrum: [
+    { name: 'size', label: 'Size', min: 5, max: 200, unit: '%' },
+    { name: 'posX', label: 'Left – right', min: -60, max: 60, unit: '%' },
+    { name: 'posY', label: 'Down – up', min: -60, max: 60, unit: '%' },
+    { name: 'rotX', label: 'Tilt (X)', min: -180, max: 180, unit: '°' },
+    { name: 'rotY', label: 'Turn (Y)', min: -180, max: 180, unit: '°' },
+    { name: 'rotZ', label: 'Roll (Z)', min: -180, max: 180, unit: '°' },
+    { name: 'depth', label: 'Thickness', min: 1, max: 80, unit: '' },
+    { name: 'bevel', label: 'Rounded edge', min: 0, max: 12, unit: '' },
+    { name: 'gloss', label: 'Gloss', min: 0, max: 100, unit: '' },
+    { name: 'metal', label: 'Metal', min: 0, max: 100, unit: '' },
+  ],
+};
+---
+
+<Brand title={backgrounds.title} slug="backgrounds">
+  <section class="b-hero">
+    <div class="b-wrap"><h1>{backgrounds.title}</h1></div>
+  </section>
+  <div class="b-wrap">
+    <p class="b-lead">{backgrounds.lead}</p>
+  </div>
+
+  <div class="b-wrap bgm" data-defaults={JSON.stringify(defaults)} data-svg={plectrumSvg}>
+    <div class="bgm__stage">
+      <div class="bgm__frame"><canvas class="bgm__canvas" aria-label="Background preview: drag to rotate the plectrum"></canvas></div>
+      <p class="bgm__hint">{backgrounds.hint}</p>
+      <p class="bgm__error" hidden>This browser could not start WebGL 2, which the background maker needs. Try a current Chrome, Edge, Firefox or Safari.</p>
+    </div>
+
+    <form class="bgm__panel" autocomplete="off" onsubmit="return false">
+      <fieldset>
+        <legend>Format</legend>
+        <div class="bgm__chips" role="radiogroup" aria-label="Aspect ratio">
+          {ratios.map((r) => (
+            <label class="bgm__chip"><input type="radio" name="ratio" value={`${r.w}:${r.h}`} /><span data-ratio-label={`${r.w}:${r.h}`}>{r.w}:{r.h}</span></label>
+          ))}
+        </div>
+        <label class="bgm__switch"><input type="checkbox" name="turn" /><span>Turn 90° (portrait ↔ landscape)</span></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Background</legend>
+        <div class="bgm__presets">
+          {presets.map((p, i) => (
+            <button type="button" class="bgm__preset" data-preset={i} title={p.name}
+              style={`--g:${p.type === 'radial' ? `radial-gradient(circle, ${p.stops.join(',')})` : `linear-gradient(${p.angle}deg, ${p.stops.join(',')})`}`}>
+              <span>{p.name}</span>
+            </button>
+          ))}
+        </div>
+        <p class="bgm__sub">Colours, in order</p>
+        <ol class="bgm__stops" aria-live="polite"></ol>
+        <div class="bgm__swatches" aria-label="Add a colour">
+          {swatches.map((s) => (
+            <button type="button" class="bgm__swatch" data-add-stop={s.hex} style={`--c:${s.hex}`} title={`Add ${s.name}`}><span class="sr">Add {s.name}</span></button>
+          ))}
+        </div>
+        <div class="bgm__row">
+          <button type="button" class="bgm__btn" data-action="reverse">Reverse order</button>
+          <label class="bgm__select">Type
+            <select name="gradType"><option value="linear">Linear</option><option value="radial">Radial</option></select>
+          </label>
+        </div>
+        <label class="bgm__range" data-only="linear"><span>Angle <output data-for="angle"></output></span><input type="range" name="angle" min="0" max="360" step="1" /></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Plectrum</legend>
+        <div class="bgm__swatches" role="radiogroup" aria-label="Plectrum colour">
+          {swatches.map((s) => (
+            <label class="bgm__swatch" style={`--c:${s.hex};--t:${inkOn(s.hex)}`} title={s.name}><input type="radio" name="color" value={s.hex} /><span class="sr">{s.name}</span></label>
+          ))}
+        </div>
+        {sliders.plectrum.map((r) => (
+          <label class="bgm__range"><span>{r.label} <output data-for={r.name} data-unit={r.unit}></output></span><input type="range" name={r.name} min={r.min} max={r.max} step="1" /></label>
+        ))}
+      </fieldset>
+
+      <fieldset>
+        <legend>Motion &amp; blur</legend>
+        <label class="bgm__range"><span>Motion blur <output data-for="motion"></output></span><input type="range" name="motion" min="0" max="120" step="1" /></label>
+        <label class="bgm__select">Motion
+          <select name="axis">
+            <option value="y">Spin (Y)</option>
+            <option value="x">Tumble (X)</option>
+            <option value="z">Roll (Z)</option>
+            <option value="h">Slide left – right</option>
+            <option value="v">Slide up – down</option>
+          </select>
+        </label>
+        <label class="bgm__range"><span>Blur <output data-for="blur" data-unit="px"></output></span><input type="range" name="blur" min="0" max="120" step="1" /></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Grain</legend>
+        <label class="bgm__switch"><input type="checkbox" name="grain" /><span>Grain on</span></label>
+        <label class="bgm__range"><span>Amount <output data-for="grainAmount"></output></span><input type="range" name="grainAmount" min="0" max="100" step="1" /></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Export</legend>
+        <label class="bgm__select">Size
+          <select name="exportSize">
+            <option value="1920">HD, long side 1920 px</option>
+            <option value="3840" selected>4K, long side 3840 px</option>
+          </select>
+        </label>
+        <div class="bgm__row">
+          <button type="button" class="b-button bgm__download" data-action="download">Download PNG</button>
+          <button type="button" class="bgm__btn" data-action="copy">Copy link</button>
+          <button type="button" class="bgm__btn" data-action="reset">Reset</button>
+        </div>
+        <p class="bgm__status" role="status" aria-live="polite"></p>
+      </fieldset>
+    </form>
+  </div>
+</Brand>
+
+<style>
+  .bgm {
+    display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: var(--gap);
+    align-items: start; padding-block: clamp(32px, 4vw, 56px) var(--section);
+  }
+  .bgm__stage { position: sticky; top: calc(var(--header-h) + 16px); }
+  .bgm__frame {
+    display: grid; place-items: center;
+    height: min(calc(100vh - var(--header-h) - 96px), 900px); min-height: 280px;
+    background: #f4f4f4; border-radius: var(--radius-lg);
+    background-image: linear-gradient(45deg, #ececec 25%, transparent 25%, transparent 75%, #ececec 75%), linear-gradient(45deg, #ececec 25%, transparent 25%, transparent 75%, #ececec 75%);
+    background-size: 16px 16px; background-position: 0 0, 8px 8px;
+  }
+  .bgm__canvas { display: block; border-radius: 4px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18); cursor: grab; touch-action: none; }
+  .bgm__canvas:active { cursor: grabbing; }
+  .bgm__hint { margin-top: 10px; font-size: var(--fs-small); color: var(--ink-2); }
+  .bgm__error { margin-top: 10px; color: var(--accent); }
+
+  .bgm__panel { display: grid; gap: 12px; }
+  fieldset { border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 16px; margin: 0; display: grid; gap: 12px; min-width: 0; }
+  legend { font-size: var(--fs-label); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 0 6px; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  .bgm__chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .bgm__chip input, .bgm__swatch input, .bgm__switch input:not([type="checkbox"]) { position: absolute; opacity: 0; pointer-events: none; }
+  .bgm__chip span {
+    display: inline-block; min-width: 52px; text-align: center; padding: 6px 10px; border-radius: 999px;
+    border: 1px solid var(--line); font-family: var(--mono); font-size: 0.75rem; cursor: pointer;
+  }
+  .bgm__chip input:checked + span { background: var(--ink); color: var(--white); border-color: var(--ink); }
+  .bgm__chip input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .bgm__switch { display: flex; align-items: center; gap: 10px; font-size: var(--fs-small); cursor: pointer; }
+  .bgm__switch input { width: 18px; height: 18px; accent-color: var(--accent); }
+
+  .bgm__presets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .bgm__preset {
+    position: relative; aspect-ratio: 16 / 9; border: 0; border-radius: 8px; cursor: pointer; background: var(--g);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08); padding: 0;
+  }
+  .bgm__preset span {
+    position: absolute; left: 6px; bottom: 4px; font-size: 0.6875rem; color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  }
+  .bgm__preset:hover { transform: translateY(-1px); }
+
+  .bgm__sub { font-size: var(--fs-small); color: var(--ink-2); margin-bottom: -4px; }
+  .bgm__stops { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; min-height: 30px; }
+  /* Built by the script, so outside Astro's scoping */
+  .bgm__stops :global(li) { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 999px; padding: 3px 4px 3px 4px; font-size: 0.75rem; }
+  .bgm__stops :global(i) { width: 18px; height: 18px; border-radius: 50%; background: var(--c); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12); }
+  .bgm__stops :global(button) { border: 0; background: none; cursor: pointer; font-size: 0.875rem; line-height: 1; padding: 2px 4px; color: var(--ink-2); border-radius: 999px; }
+  .bgm__stops :global(button:hover) { color: var(--accent); }
+
+  .bgm__swatches { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; }
+  .bgm__swatch {
+    position: relative; aspect-ratio: 1; border-radius: 50%; background: var(--c); border: 0; cursor: pointer; padding: 0;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.14);
+  }
+  .bgm__swatch:has(input:checked)::after {
+    content: ""; position: absolute; inset: -3px; border-radius: 50%; border: 2px solid var(--ink);
+  }
+  .bgm__swatch:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 3px; }
+  button.bgm__swatch:hover { transform: scale(1.08); }
+
+  .bgm__range { display: grid; gap: 4px; font-size: var(--fs-small); }
+  .bgm__range span { display: flex; justify-content: space-between; }
+  .bgm__range output { font-family: var(--mono); font-size: 0.75rem; color: var(--ink-2); }
+  .bgm__range input { width: 100%; accent-color: var(--accent); }
+  .bgm__range[hidden] { display: none; }
+
+  .bgm__row { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; }
+  .bgm__select { display: grid; gap: 4px; font-size: var(--fs-small); flex: 1; min-width: 120px; }
+  .bgm__select select { font: inherit; padding: 7px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--white); }
+  .bgm__btn {
+    font: inherit; font-size: var(--fs-small); padding: 9px 14px; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--line); background: var(--white); color: var(--ink);
+  }
+  .bgm__btn:hover { border-color: var(--ink); }
+  .bgm__download { border: 0; cursor: pointer; font: inherit; font-size: var(--fs-small); grid-column: auto; grid-row: auto; justify-self: auto; }
+  .bgm__download[disabled] { opacity: 0.6; cursor: progress; }
+  .bgm__status { font-size: var(--fs-small); color: var(--ink-2); min-height: 1.5em; }
+
+  @media (max-width: 899px) {
+    .bgm { grid-template-columns: minmax(0, 1fr); }
+    .bgm__stage { position: static; }
+    .bgm__frame { min-height: 0; }
+  }
+</style>
+
+<script>
+  import { PlectrumStudio, ratioSize, type StudioState } from '../../lib/plectrum-studio';
+  import { presets, swatches } from '../../content/brand/backgrounds';
+
+  const root = document.querySelector<HTMLElement>('.bgm')!;
+  const form = root.querySelector<HTMLFormElement>('.bgm__panel')!;
+  const canvas = root.querySelector<HTMLCanvasElement>('.bgm__canvas')!;
+  const frame = root.querySelector<HTMLElement>('.bgm__frame')!;
+  const status = root.querySelector<HTMLElement>('.bgm__status')!;
+  const stopsList = root.querySelector<HTMLOListElement>('.bgm__stops')!;
+  const defaults: StudioState = JSON.parse(root.dataset.defaults!);
+  const nameOf = (hex: string) => swatches.find((s) => s.hex.toLowerCase() === hex.toLowerCase())?.name ?? hex;
+
+  // ---- State, kept in the page address so a background can be shared ----
+  const numberKeys = ['angle', 'gloss', 'metal', 'depth', 'bevel', 'rotX', 'rotY', 'rotZ', 'size', 'posX', 'posY', 'motion', 'blur', 'grainAmount'] as const;
+
+  function readHash(): StudioState {
+    const s: StudioState = structuredClone(defaults);
+    const q = new URLSearchParams(location.hash.slice(1));
+    for (const k of numberKeys) if (q.has(k) && !Number.isNaN(Number(q.get(k)))) (s as any)[k] = Number(q.get(k));
+    if (q.get('ratio') && /^\d+:\d+$/.test(q.get('ratio')!)) s.ratio = q.get('ratio')!;
+    if (q.has('turn')) s.turn = q.get('turn') === '1';
+    if (q.has('grain')) s.grain = q.get('grain') === '1';
+    if (q.get('stops')) s.stops = q.get('stops')!.split('-').filter((h) => /^[0-9a-f]{6}$/i.test(h)).map((h) => `#${h.toUpperCase()}`);
+    if (!s.stops.length) s.stops = defaults.stops;
+    if (q.get('type') === 'radial' || q.get('type') === 'linear') s.gradType = q.get('type') as StudioState['gradType'];
+    if (q.get('color') && /^[0-9a-f]{6}$/i.test(q.get('color')!)) s.color = `#${q.get('color')!.toUpperCase()}`;
+    if (['x', 'y', 'z', 'h', 'v'].includes(q.get('axis') ?? '')) s.axis = q.get('axis') as StudioState['axis'];
+    return s;
+  }
+
+  function writeHash(s: StudioState): void {
+    const q = new URLSearchParams();
+    q.set('ratio', s.ratio);
+    q.set('turn', s.turn ? '1' : '0');
+    q.set('stops', s.stops.map((h) => h.replace('#', '')).join('-'));
+    q.set('type', s.gradType);
+    q.set('color', s.color.replace('#', ''));
+    q.set('axis', s.axis);
+    q.set('grain', s.grain ? '1' : '0');
+    for (const k of numberKeys) q.set(k, String(s[k]));
+    history.replaceState(null, '', `#${q.toString()}`);
+  }
+
+  let state = readHash();
+
+  // ---- Controls ----
+  function syncForm(): void {
+    for (const el of Array.from(form.elements) as HTMLInputElement[]) {
+      const key = el.name as keyof StudioState;
+      if (!key || !(key in state)) continue;
+      const v = state[key];
+      if (el.type === 'radio') el.checked = String(v).toLowerCase() === el.value.toLowerCase();
+      else if (el.type === 'checkbox') el.checked = Boolean(v);
+      else el.value = String(v);
+    }
+    form.querySelectorAll<HTMLOutputElement>('output[data-for]').forEach((o) => {
+      o.textContent = `${state[o.dataset.for as keyof StudioState]}${o.dataset.unit ?? ''}`;
+    });
+    form.querySelectorAll<HTMLElement>('[data-ratio-label]').forEach((el) => {
+      const [a, b] = el.dataset.ratioLabel!.split(':');
+      el.textContent = state.turn ? `${b}:${a}` : `${a}:${b}`;
+    });
+    form.querySelector<HTMLElement>('[data-only="linear"]')!.hidden = state.gradType !== 'linear';
+    stopsList.innerHTML = '';
+    state.stops.forEach((hex, i) => {
+      const li = document.createElement('li');
+      li.style.setProperty('--c', hex);
+      li.innerHTML = `<i></i><span>${nameOf(hex)}</span>`;
+      const rm = document.createElement('button');
+      rm.type = 'button';
+      rm.textContent = '×';
+      rm.setAttribute('aria-label', `Remove ${nameOf(hex)}`);
+      rm.addEventListener('click', () => {
+        if (state.stops.length > 1) update({ stops: state.stops.filter((_, j) => j !== i) });
+      });
+      li.append(rm);
+      stopsList.append(li);
+    });
+  }
+
+  form.addEventListener('input', (e) => {
+    const el = e.target as HTMLInputElement;
+    const key = el.name as keyof StudioState;
+    if (!key || !(key in state)) return;
+    let value: unknown = el.value;
+    if (el.type === 'checkbox') value = el.checked;
+    else if (el.type === 'range') value = Number(el.value);
+    update({ [key]: value } as Partial<StudioState>);
+  });
+
+  form.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('button');
+    if (!btn) return;
+    if (btn.dataset.addStop && state.stops.length < 8) update({ stops: [...state.stops, btn.dataset.addStop] });
+    if (btn.dataset.preset) {
+      const p = presets[Number(btn.dataset.preset)];
+      update({ stops: [...p.stops], gradType: p.type, angle: p.angle });
+    }
+    if (btn.dataset.action === 'reverse') update({ stops: [...state.stops].reverse() });
+    if (btn.dataset.action === 'reset') update(structuredClone(defaults));
+    if (btn.dataset.action === 'copy') {
+      navigator.clipboard?.writeText(location.href).then(
+        () => (status.textContent = 'Link copied.'),
+        () => (status.textContent = 'Copy the address from the address bar.'),
+      );
+    }
+    if (btn.dataset.action === 'download') download(btn);
+  });
+
+  // ---- Rendering ----
+  let studio: PlectrumStudio | null = null;
+  try {
+    studio = new PlectrumStudio(canvas, root.dataset.svg!, state);
+  } catch (err) {
+    console.error(err);
+    root.querySelector<HTMLElement>('.bgm__error')!.hidden = false;
+  }
+
+  const narrow = window.matchMedia('(max-width: 899px)');
+  function layout(): void {
+    const { w, h } = ratioSize(state);
+    const pad = 24;
+    const fw = frame.clientWidth - pad * 2;
+    // Phones: the frame takes the image's own height (at most 70% of the screen).
+    if (narrow.matches) frame.style.height = `${Math.round(Math.min((fw * h) / w, window.innerHeight * 0.7)) + pad * 2}px`;
+    else frame.style.height = '';
+    const fh = frame.clientHeight - pad * 2;
+    const scale = Math.min(fw / w, fh / h);
+    const cw = Math.max(1, Math.floor(w * scale));
+    const ch = Math.max(1, Math.floor(h * scale));
+    canvas.style.width = `${cw}px`;
+    canvas.style.height = `${ch}px`;
+    studio?.resize(cw, ch);
+  }
+
+  let pending = false;
+  let fast = false;
+  function requestRender(quick = false): void {
+    fast = fast || quick;
+    if (pending) return;
+    pending = true;
+    requestAnimationFrame(() => {
+      pending = false;
+      studio?.setState(state);
+      studio?.render(fast && state.motion > 0 ? 8 : undefined);
+      if (fast) {
+        fast = false;
+        clearTimeout(settle);
+        settle = window.setTimeout(() => requestRender(), 160);
+      }
+    });
+  }
+  let settle = 0;
+
+  let lastRatio = '';
+  function update(patch: Partial<StudioState>, quick = false): void {
+    state = { ...state, ...patch };
+    writeHash(state);
+    syncForm();
+    const r = `${state.ratio}|${state.turn}`;
+    if (r !== lastRatio) {
+      lastRatio = r;
+      layout();
+    }
+    requestRender(quick);
+  }
+
+  new ResizeObserver(() => {
+    layout();
+    requestRender();
+  }).observe(frame);
+
+  // Drag to rotate (Y with horizontal moves, X with vertical moves).
+  let drag: { x: number; y: number; rx: number; ry: number } | null = null;
+  canvas.addEventListener('pointerdown', (e) => {
+    drag = { x: e.clientX, y: e.clientY, rx: state.rotX, ry: state.rotY };
+    canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener('pointermove', (e) => {
+    if (!drag) return;
+    const wrap = (v: number) => ((((v + 180) % 360) + 360) % 360) - 180;
+    update({ rotY: Math.round(wrap(drag.ry + (e.clientX - drag.x) * 0.5)), rotX: Math.round(wrap(drag.rx + (e.clientY - drag.y) * 0.5)) }, true);
+  });
+  const endDrag = () => { drag = null; };
+  canvas.addEventListener('pointerup', endDrag);
+  canvas.addEventListener('pointercancel', endDrag);
+
+  async function download(btn: HTMLButtonElement): Promise<void> {
+    if (!studio) return;
+    const size = Number((form.elements.namedItem('exportSize') as HTMLSelectElement).value);
+    btn.disabled = true;
+    status.textContent = 'Rendering…';
+    await new Promise((r) => setTimeout(r, 30));
+    try {
+      const blob = await studio.exportPng(size);
+      const { w, h } = ratioSize(state);
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `forwardone-background-${w}x${h}-${Date.now()}.png`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+      status.textContent = 'Downloaded.';
+    } catch (err) {
+      console.error(err);
+      status.textContent = 'The export failed. Try the HD size.';
+    } finally {
+      btn.disabled = false;
+      layout();
+      requestRender();
+    }
+  }
+
+  // A pasted or edited link applies at once (our own writes use replaceState and fire no event).
+  window.addEventListener('hashchange', () => {
+    state = readHash();
+    update({});
+  });
+
+  update({});
+</script>

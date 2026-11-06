@@ -5,6 +5,8 @@ import PageCard from '@components/brand/PageCard.astro';
 import { brandPages, brandSite } from '@content/brand';
 import Wordmark from '@components/brand/Wordmark.astro';
 import { rich } from '@lib/brand';
+import { href } from '@lib/href';
+import { backgrounds } from '@content/brand/backgrounds';
 ---
 
 <Brand title={brandSite.title} slug="">
@@ -17,5 +19,11 @@ import { rich } from '@lib/brand';
     <nav class="b-tiles" aria-label="Sections">
       {brandPages.map((p) => <PageCard page={p} variant="tile" />)}
     </nav>
+    <a class="b-tool" href={href('/brand/backgrounds')}>
+      <span class="b-tool__label">Tool</span>
+      <span class="b-tool__title">{backgrounds.title}</span>
+      <span class="b-tool__text">{backgrounds.lead}</span>
+      <span class="b-tool__go" aria-hidden="true">→</span>
+    </a>
   </div>
 </Brand>

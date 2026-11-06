@@ -27,6 +27,30 @@ Ink and White SVGs, generated from `src/assets/brand/forwardone.svg`.
 Live: https://tekka2026.github.io/forwardone/brand/ (not linked from the main
 site; pages carry `noindex`).
 
+## Background maker (`/brand/backgrounds`)
+
+A tool for new brand backgrounds: the plectrum (`src/assets/brand/plectrum.svg`,
+supplied 2026-11-06) extruded to 3D with Three.js, on a gradient of palette
+colours. Controls: format (1:1, 3:4, 4:5, 1:2, 16:9 default, 5:7, each turned
+90° on request), gradient (presets or colours in order, linear or radial,
+angle), plectrum colour, size, position, rotation (sliders or drag), thickness,
+rounded edge, gloss, metal, motion blur (spin, tumble, roll or slide), blur and
+grain. Export is a PNG with a long side of 1920 or 3840 px. All settings live in
+the page address, so a background can be shared or reopened by its link.
+
+| What | Where |
+|---|---|
+| Copy, formats, gradient presets, colour list | `src/content/brand/backgrounds.ts` |
+| Page and controls | `src/pages/brand/backgrounds.astro` |
+| Renderer | `src/lib/plectrum-studio.ts` |
+
+How a frame is made (`plectrum-studio.ts`): the plectrum is rendered 8–128 times
+into a float target, each sample with a sub-pixel jitter (smooth edges) and, with
+motion blur, a slightly different rotation or position; the samples are averaged.
+An optional two-pass gaussian blur follows, then one shader draws the gradient,
+puts the plectrum on top and adds grain. A different SVG works as long as it
+consists of filled shapes.
+
 ## Run it
 
 ```bash
