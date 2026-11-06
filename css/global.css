@@ -102,6 +102,10 @@
   /* Closed bar over a dark area ([data-nav-dark]): inverted. */
   --nav-bg-inverse: #ffffff;
   --nav-fg-inverse: var(--black-bar);
+  /* Closed bar once the visitor has said they are a founder (owner,
+     2026-11-06): light blue (the brand's Ice) with black text and icons. */
+  --nav-bg-founder: #b3daff;
+  --nav-fg-founder: #000000;
   --nav-hairline: rgba(255, 255, 255, 0.18);
 
   /* Type: families, loaded in src/layouts/Base.astro.

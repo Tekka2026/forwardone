@@ -16,20 +16,20 @@
  * - Compact (owner, 2026-11-04), on pages that mark an element with
  *   `data-nav-audience-after` (the homepage: the intro and founders strip):
  *   once that element has scrolled past the bar, the bar shrinks, the AI
- *   mark swaps, the welcome line erases into "I am a" and a Founder /
- *   Investor switch
- *   unfolds behind the line; the hamburger stays and opens the panel at
- *   full width. It lasts while the bar is over the next section; past it,
- *   or scrolling back up, the bar is full again.
+ *   mark swaps and the welcome line erases into "Are you a founder or
+ *   investor?" with the two words underlined (owner, 2026-11-06; was a
+ *   switch). The hamburger stays and opens the panel at full width. It
+ *   lasts while the bar is over the next section; past it, or scrolling
+ *   back up, the bar is full again. Choosing greets by time of day; a
+ *   founder's bar turns light blue with black text and icons (Ice,
+ *   --nav-bg-founder), an investor's stays black.
  */
 import { primaryNav, navGreeting } from '@content/nav';
 import { href, isActive } from '@lib/href';
 
 const current = Astro.url.pathname;
 const aud = navGreeting.audience;
-// Before a choice the page's own audience is filled: Founder on the founders
-// page, Investor elsewhere.
-const onFounders = current === href('/founders');
+const question = aud.question.before + aud.founder.label + aud.question.between + aud.investor.label + aud.question.after;
 ---
 
 <div class="nav" data-nav>
@@ -123,23 +123,20 @@ const onFounders = current === href('/founders');
           data-nav-input
           hidden
         />
+        <span
+          class="nav__who"
+          role="group"
+          aria-label={aud.label}
+          data-nav-switch
+          data-question={question}
+          data-greet-morning={aud.greeting.morning}
+          data-greet-afternoon={aud.greeting.afternoon}
+          data-greet-evening={aud.greeting.evening}
+          data-greet-template={aud.greeting.template}
+          hidden
+        >{aud.question.before}<button class="nav__who-opt" type="button" aria-pressed="false" data-audience={aud.founder.word}>{aud.founder.label}</button>{aud.question.between}<button class="nav__who-opt" type="button" aria-pressed="false" data-audience={aud.investor.word}>{aud.investor.label}</button>{aud.question.after}</span>
       </form>
 
-      <div
-        class="nav__switch"
-        role="group"
-        aria-label={aud.label}
-        data-nav-switch
-        data-greet-morning={aud.greeting.morning}
-        data-greet-afternoon={aud.greeting.afternoon}
-        data-greet-evening={aud.greeting.evening}
-        data-greet-template={aud.greeting.template}
-        hidden
-      >
-        <span class="nav__switch-pill" aria-hidden="true" data-nav-pill></span>
-        <button class:list={['nav__switch-opt', onFounders && 'is-current']} type="button" aria-pressed="false" data-audience={aud.founder.word} data-question={aud.founder.question}>{aud.founder.label}</button>
-        <button class:list={['nav__switch-opt', !onFounders && 'is-current']} type="button" aria-pressed="false" data-audience={aud.investor.word} data-question={aud.investor.question}>{aud.investor.label}</button>
-      </div>
 
       <button
         class="nav__menu"
@@ -240,91 +237,39 @@ const onFounders = current === href('/founders');
   .nav[data-compact] .nav__prompt {
     cursor: default;
   }
-  @media (max-width: 640px) {
-    .nav[data-compact] .nav__bar {
-      gap: var(--space-2x);
-    }
-    .nav[data-compact] .nav__switch-opt {
-      padding-inline: var(--space-2x);
-    }
+  /* The question with its two clickable words (owner, 2026-11-06): same
+     type as the line, the words underlined. It replaces the typed line
+     once that has been typed out, so it reads as one line. */
+  .nav__who {
+    min-width: 0;
+    padding: var(--space-2x) 0;
+    white-space: nowrap;
   }
-  /* The switch unfolds from its left edge once the question is typed.
-     Look after the owner's reference (2026-11-04): a dark segmented block
-     with slightly rounded corners; the chosen option on pale yellow with
-     black text, the other in grey. Black on the white bar, a lifted dark
-     on the black one. */
-  .nav__switch {
-    --switch-bg: rgba(255, 255, 255, 0.12);
-    --switch-active: color-mix(in srgb, var(--brand-yellow) 15%, #ffffff);
-    position: relative;
-    display: flex;
-    flex: 0 0 auto;
-    padding: 3px;
-    border-radius: 3px;
-    background: var(--switch-bg);
-    opacity: 0;
-    transition: opacity 160ms ease;
-  }
-  .nav__switch[hidden] {
+  .nav__who[hidden] {
     display: none;
   }
-  /* No wipe (owner, 2026-11-04): the switch appears, and the pale pill
-     slides from the first option to the chosen one (the page's own
-     audience, investor on the homepage), which reads as the reveal. */
-  .nav__switch.is-open {
-    opacity: 1;
-  }
-  .nav__switch-pill {
-    position: absolute;
-    top: 3px;
-    bottom: 3px;
-    left: 0;
-    width: var(--pill-w, 0);
-    border-radius: 2px;
-    background: var(--switch-active);
-    transform: translateX(var(--pill-x, 0));
-    transition:
-      transform 520ms cubic-bezier(0.22, 1, 0.36, 1),
-      width 520ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .nav__switch.is-placing .nav__switch-pill {
-    transition: none;
-  }
-  .nav__switch-opt {
-    position: relative; /* above the pill */
+  .nav__who-opt {
     margin: 0;
+    padding: 0;
     border: 0;
-    border-radius: 2px;
     background: none;
-    font-family: inherit;
+    color: inherit;
+    font: inherit;
     cursor: pointer;
-    padding: var(--space-2x) var(--space-4x);
-    font-size: var(--fs-small);
-    line-height: 1;
-    font-weight: 400;
-    text-decoration-line: none;
-    white-space: nowrap;
-    color: #a1a1a1;
-    transition: color 260ms ease;
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
   }
-  .nav__switch-opt:hover {
-    color: #ffffff;
+  .nav__who-opt:hover {
+    text-decoration-thickness: 2px;
   }
-  .nav__switch-opt.is-current,
-  .nav__switch-opt.is-current:hover {
-    color: var(--black-ink);
-  }
-  .nav[data-inverse]:not([data-open]) .nav__switch {
-    --switch-bg: var(--black-bg);
-  }
-  .nav__switch-opt:focus-visible {
+  .nav__who-opt:focus-visible {
     outline: 2px solid currentColor;
-    outline-offset: 1px;
+    outline-offset: 2px;
+    border-radius: 2px;
   }
   @media (prefers-reduced-motion: reduce) {
-    .nav__root,
-    .nav__switch,
-    .nav__switch-pill {
+    .nav__root {
       transition: none;
     }
   }
@@ -407,6 +352,25 @@ const onFounders = current === href('/founders');
     color: var(--nav-fg-inverse);
   }
   .nav[data-inverse]:not([data-open]) .nav__menu:focus-visible {
+    background: rgba(0, 0, 0, 0.08);
+  }
+
+  /* A founder's bar (owner, 2026-11-06): light blue with black text and
+     icons, over light and dark areas alike, while closed. The panel takes
+     the colour too so opening animates bar and panel together. An
+     investor's bar keeps the usual colours. */
+  .nav[data-founder]:not([data-open]) .nav__bar,
+  .nav[data-founder]:not([data-open]) .nav__panel {
+    background-color: var(--nav-bg-founder);
+  }
+  .nav[data-founder]:not([data-open]) .nav__bar {
+    --nav-glow-color: #ffffff;
+    color: var(--nav-fg-founder);
+  }
+  .nav[data-founder]:not([data-open]) .nav__ai {
+    color: var(--nav-fg-founder);
+  }
+  .nav[data-founder]:not([data-open]) .nav__menu:focus-visible {
     background: rgba(0, 0, 0, 0.08);
   }
 
@@ -800,13 +764,16 @@ const onFounders = current === href('/founders');
        Closing again types the welcome line back. Every sequence gets a run
        id; starting a new one cancels whatever was still typing. */
     const first = greeting.dataset.first || '';
-    // After the visitor has said who they are (the compact bar's switch),
+    // After the visitor has said who they are (the compact bar's question),
     // the closed line greets them by time of day instead of "Welcome to
-    // FORWARD.one". Remembered for the visit (sessionStorage).
+    // FORWARD.one", and a founder's bar turns light blue. Remembered for
+    // the visit (sessionStorage).
     const switchEl = root.querySelector<HTMLElement>('[data-nav-switch]')!;
     const AUDIENCE_KEY = 'forwardone-audience';
     let audience = '';
     try { audience = sessionStorage.getItem(AUDIENCE_KEY) || ''; } catch { /* storage blocked */ }
+    const applyAudience = () => root.toggleAttribute('data-founder', audience === 'founder');
+    applyAudience();
     // Below the "I am a" zone (homepage section 4 on) the closed line asks
     // "How can we help you?" instead of welcoming (owner, 2026-11-05).
     let pastAudienceZone = false;
@@ -889,6 +856,13 @@ const onFounders = current === href('/founders');
       }
       if (delay) await wait(delay);
       if (!alive(id)) return;
+      // Already (being) typed, as after a choice in the compact bar: carry
+      // on from there rather than erase and type it again.
+      const target = welcomeLine();
+      if (current && target.startsWith(current) && !prompt.classList.contains('is-placeholder')) {
+        await retypeTo(target, id);
+        return;
+      }
       if (current) {
         await eraseText(id);
         if (!alive(id)) return;
@@ -1024,12 +998,11 @@ const onFounders = current === href('/founders');
     function open() {
       show();
       isOpen = true;
-      // From the compact bar: full width for the panel, the switch put away
-      // (it comes back when the panel closes, see close()).
+      // From the compact bar: full width for the panel, the question put
+      // away (it comes back when the panel closes, see close()).
       if (compact) {
         root.removeAttribute('data-compact');
-        switchEl.classList.remove('is-open');
-        switchEl.hidden = true;
+        showWho(false);
       }
       window.clearTimeout(closeTimer);
       panel.hidden = false;
@@ -1073,8 +1046,6 @@ const onFounders = current === href('/founders');
       swapAi();
       if (compact) {
         root.setAttribute('data-compact', '');
-        switchEl.hidden = false;
-        openSwitch();
         compactLine(++runId);
       } else if (input.hidden || !input.value.trim()) toWelcome(true);
       menu.setAttribute('aria-expanded', 'false');
@@ -1109,7 +1080,7 @@ const onFounders = current === href('/founders');
 
     mobile.addEventListener('change', close);
 
-    /* ---- Compact: "I am a" with a Founder / Investor switch ----
+    /* ---- Compact: "Are you a founder or investor?" ----
        Pages opt in by marking an element with data-nav-audience-after; once
        its bottom has scrolled above the bar's centre line the bar shrinks
        and asks, and scrolling back above it restores the welcome line. */
@@ -1119,13 +1090,23 @@ const onFounders = current === href('/founders');
     // one on (section 4) it is back to the full bar (owner, 2026-11-05).
     let audienceZone: Element | null = audienceAfter ? audienceAfter.nextElementSibling : null;
     while (audienceZone && audienceZone.tagName === 'SCRIPT') audienceZone = audienceZone.nextElementSibling;
-    const switcher = switchEl;
-    const pill = switcher.querySelector<HTMLElement>('[data-nav-pill]')!;
-    const opts = Array.from(switcher.querySelectorAll<HTMLButtonElement>('[data-audience]'));
-    const currentOpt = () => opts.find((o) => o.classList.contains('is-current')) || opts[opts.length - 1];
-    const questionFor = (o: HTMLElement) => o.dataset.question || '';
-    // The line follows the pill: erase back to what both lines share, type
-    // the rest ("I am a" -> "I am an" is one letter).
+    const who = switchEl;
+    const QUESTION = who.dataset.question || '';
+    const opts = Array.from(who.querySelectorAll<HTMLButtonElement>('[data-audience]'));
+    // The question is typed into the line like any other; once it is out,
+    // the same words with the two links take its place (same type, so the
+    // only change is the underlines appearing). Leaving puts the plain line
+    // back so it can be erased.
+    function showWho(on: boolean) {
+      if (on) {
+        prompt.hidden = true;
+        who.hidden = false;
+      } else if (!who.hidden) {
+        who.hidden = true;
+        prompt.hidden = false;
+      }
+    }
+    // Erase back to what both lines share, type the rest.
     async function retypeTo(text: string, id: number) {
       if (reduceMotion.matches) { setTyped(text); idle(); return; }
       if (text !== current) swapAi();
@@ -1144,57 +1125,37 @@ const onFounders = current === href('/founders');
       }
       if (alive(id)) idle();
     }
-    // Move the pill under an option; without `animate` it jumps there.
-    function placePill(opt: HTMLElement, animate: boolean) {
-      if (!animate) switcher.classList.add('is-placing');
-      pill.style.setProperty('--pill-x', opt.offsetLeft + 'px');
-      pill.style.setProperty('--pill-w', opt.offsetWidth + 'px');
-      if (!animate) {
-        void pill.offsetWidth;
-        switcher.classList.remove('is-placing');
-      }
-    }
-    // The switch appears with the pill on the first option, which then
-    // slides to the chosen one.
-    function openSwitch() {
-      switcher.classList.add('is-open');
-      placePill(opts[0], false);
-      requestAnimationFrame(() => placePill(currentOpt(), !reduceMotion.matches));
-    }
-    window.addEventListener('resize', () => { if (!switcher.hidden) placePill(currentOpt(), false); });
     let compact = false;
     // Exactly as the section boundary passes the bar (owner, 2026-11-05):
-    // the bar shrinks and the switch appears at once (its pill sliding to the
-    // chosen option); the line erases and types alongside.
+    // the bar shrinks at once; the line erases and the question types.
     async function toCompact() {
       if (isOpen) close();
       compact = true;
       root.setAttribute('data-compact', '');
       swapAi();
-      switcher.hidden = false;
-      openSwitch();
       compactLine(++runId); // the new run also cancels a welcome line close() started
     }
-    // The chosen option's line ("I am an" with investor) erased in and typed.
     async function compactLine(myId: number) {
+      showWho(false);
       showPrompt();
       prompt.classList.remove('is-placeholder');
-      const line = questionFor(currentOpt());
       if (reduceMotion.matches) {
-        setTyped(line);
+        setTyped(QUESTION);
         idle();
+        showWho(true);
         return;
       }
       await eraseText(myId);
       if (!alive(myId)) return;
-      await typeText(line, myId);
-      if (alive(myId)) idle();
+      await typeText(QUESTION, myId);
+      if (!alive(myId)) return;
+      idle();
+      showWho(true);
     }
     function toFull() {
       compact = false;
       root.removeAttribute('data-compact');
-      switcher.classList.remove('is-open');
-      window.setTimeout(() => { if (!compact) switcher.hidden = true; }, 420);
+      showWho(false);
       swapAi();
       toWelcome(true);
     }
@@ -1219,26 +1180,27 @@ const onFounders = current === href('/founders');
       if (want) toCompact();
       else toFull();
     }
-    // Choosing: remember it, back to the full bar, greet.
-    for (const opt of Array.from(switcher.querySelectorAll<HTMLButtonElement>('[data-audience]'))) {
+    // Choosing (owner, 2026-11-06): remember it, colour the bar (light blue
+    // for a founder, black stays for an investor), greet by time of day,
+    // then back to the full bar.
+    for (const opt of opts) {
       opt.addEventListener('click', (e) => {
         e.stopPropagation();
         audience = opt.dataset.audience || '';
         try { sessionStorage.setItem(AUDIENCE_KEY, audience); } catch { /* storage blocked */ }
-        for (const o of Array.from(switcher.querySelectorAll<HTMLButtonElement>('[data-audience]'))) {
-          o.classList.toggle('is-current', o === opt);
-          o.setAttribute('aria-pressed', String(o === opt));
-        }
-        placePill(opt, !reduceMotion.matches);
-        if (compact) retypeTo(questionFor(opt), ++runId);
+        for (const o of opts) o.setAttribute('aria-pressed', String(o === opt));
+        applyAudience();
+        if (!compact) return;
+        const viaKeyboard = keyboard;
+        showWho(false);
+        retypeTo(welcomeLine(), ++runId);
+        if (viaKeyboard) menu.focus(); // the chosen word is gone; keep focus in the bar
         // Not at once (owner, 2026-11-04): the bar opens up again once the
         // pointer has left it and the 25px around it. Without a mouse
-        // (touch, keyboard) after a short pause.
-        if (compact) {
-          const viaMouse = (e as PointerEvent).pointerType === 'mouse' || (e.detail > 0 && matchMedia('(hover: hover)').matches);
-          if (viaMouse) waitForLeave();
-          else window.setTimeout(() => { if (compact) toFull(); }, 1200);
-        }
+        // (touch, keyboard) after the greeting has been typed.
+        const viaMouse = (e as PointerEvent).pointerType === 'mouse' || (e.detail > 0 && matchMedia('(hover: hover)').matches);
+        if (viaMouse) waitForLeave();
+        else window.setTimeout(() => { if (compact) toFull(); }, 2600);
       });
     }
     const LEAVE_MARGIN = 25;

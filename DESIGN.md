@@ -900,7 +900,7 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   welcome included, the field opening, the "not connected" note). A swap
   under way is never restarted, so erase-then-type reads as one movement.
 
-### Compact bar: "I am a" (homepage, owner 2026-11-04)
+### Compact bar: "Are you a founder or investor?" (homepage, owner 2026-11-04; question since 2026-11-06)
 
 - A page opts in by marking an element `data-nav-audience-after`; on the
   homepage that is the wrapper of the intro and the founders strip. Once
@@ -913,38 +913,33 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   2026-11-05); above the strip it is the welcome again. After a choice the
   greeting replaces both.
 - Compact: the bar shrinks to 400px (or the screen width minus the page
-  margins; tighter gaps on phones) over 560ms, the AI mark plays its swap
-  and the switch appears at once, exactly as the boundary between the
-  strip and the next section passes the bar's centre line (owner,
-  2026-11-05); alongside, "Welcome to FORWARD.one" erases and "I am an"
-  types in (the chosen option's line; was "Are you a:"). The hamburger stays (owner, 2026-11-04, so visitors can still
-  navigate) and is the only part that opens the panel then; opening grows
-  the bar back to full width for the panel and puts the switch away,
-  closing returns to the compact bar and its question. Then a switch unfolds from the left on the right
-  of the bar (look after the owner's reference, 2026-11-04): a dark block
-  with 3px corners (black on the white bar, white 12% on the black bar),
-  two lower-case options, "founder" and "investor" (buttons, 15px). The
-  chosen option (before a choice: the page's own audience, investor on the
-  homepage) sits on pale yellow (#FFEA6D at 15% into white, 2px corners)
-  in black; the other is grey #A1A1A1, white on hover. No wipe (owner,
-  2026-11-05): the switch appears, and the pale pill slides from the first
-  option ("founder") to the chosen one in 520ms, which reads as the reveal;
-  choosing slides it again. The line follows the pill (owner, 2026-11-05):
-  "I am a" with founder, "I am an" with investor (the "n" typed or erased
-  as the pill moves).
-- Choosing (owner, 2026-11-04): a press on either option does not leave
-  the page. The pill slides to it at once; the bar opens up again only once
-  the mouse has left the bar and the 25px around it (or the window), and
-  after 1.2s for touch and keyboard. Then the bar goes back to full width (AI swap, hamburger back), the
-  line erases and types a greeting by the visitor's time of day: "Good
-  morning / afternoon / evening, founder!" (or investor; was "…, how are
-  you?")
-  (morning 05–12, afternoon 12–18, evening otherwise). The choice is kept
-  for the visit (sessionStorage): the bar does not ask again, and the
+  margins) over 560ms and the AI mark plays its swap, exactly as the
+  boundary between the strip and the next section passes the bar's centre
+  line (owner, 2026-11-05). Alongside, the closed line erases and "Are you
+  a founder or investor?" types in (owner, 2026-11-06; replaced "I am a"
+  with a founder / investor switch). Once it is typed out, "founder" and
+  "investor" become links in place: same type, underlined (1px, offset
+  3px; 2px on hover), so the only change is the underlines appearing. The
+  hamburger stays (owner, 2026-11-04, so visitors can still navigate) and
+  is the only part that opens the panel then; opening grows the bar back
+  to full width for the panel, closing returns to the compact bar and its
+  question.
+- Choosing (owner, 2026-11-06): a press on either word does not leave the
+  page. At once the question erases and a greeting by the visitor's time of
+  day types in: "Good morning / afternoon / evening, founder!" (or
+  investor; morning 05–12, afternoon 12–18, evening otherwise). **Founder:
+  the bar turns light blue** (`--nav-bg-founder` #B3DAFF, the brand's Ice)
+  **with black text and icons** (`--nav-fg-founder`, AI mark and hamburger
+  included), over light and dark areas alike, whenever it is closed; open,
+  it is the usual #0F121A panel. **Investor: the bar stays black.** The bar
+  goes back to full width (the greeting is not retyped) once the mouse has
+  left the bar and the 25px around it (or the window), or 2.6s after a
+  touch or key press. The choice is kept for the visit (sessionStorage):
+  the bar does not ask again, a founder's bar stays light blue, and the
   greeting replaces "Welcome to FORWARD.one" as the closed line on every
   page of the site.
 - Copy in `navGreeting.audience` (`src/content/nav.ts`). Reduced motion:
-  the line and switch change without typing or unfolding.
+  the line changes without typing.
 
 ## 9. Colour (placeholders)
 
