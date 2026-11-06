@@ -123,15 +123,17 @@ Four families, loaded in `src/layouts/Base.astro` and `css/global.css`:
   €388M headline figure, card metrics and the company names on the
   founders strip cards. Clash Display (Fontshare, variable) stays loaded as
   the fallback for both families.
-- **Test, 2026-11-06 (owner): F37 Lineca**, one weight heavier than the
-  morning's Lineca test (Book and Medium), sits in front of KMR Apparat in
-  both `--font-heading` and `--font-display`. Self-hosted WOFF2 from
-  `src/assets/fonts/f37-lineca`: Medium (declared for weights 100–399) takes
-  the headings and the Display names (300), Bold (400–900) the key figures
-  and the €388M (`--fw-stat`, 400). Full character set (€ % ’ and dashes
-  included). Commercial font: licence or switch back (A0037). Going back:
-  drop "F37 Lineca" from the two tokens and delete the folder, or revert the
-  commit. Aeonik TRIAL, tried earlier the same day, was removed (A0036).
+- **Test, 2026-11-06 (owner): Aeonik TRIAL** (CoType), one weight heavier
+  than the first Aeonik round, sits in front of KMR Apparat in both
+  `--font-heading` and `--font-display`. Self-hosted trial WOFF2 from
+  `src/assets/fonts/aeonik-trial`: Medium (declared for weights 100–399)
+  takes the headings and the Display names (300), SemiBold (400–900) the key
+  figures and the €388M (`--fw-stat`, 400). The trial cuts hold only
+  letters, digits and `. ,`: € % ’ ‘ “ ” – — ~ & ? ! and accented letters
+  fall back to KMR Apparat glyph by glyph. Trial licence: not for production
+  (A0038). Going back: drop "Aeonik Trial" from the two tokens and delete
+  the folder, or revert the commit. F37 Lineca (Medium and Bold), tried
+  just before, was removed (A0037).
 - `--font-sans`: **Inter** (Google Fonts, variable 400–600). H3 and below
   (card titles, the Playbook list) and all body and UI text: lede, body,
   small, buttons, navigation, forms, footer.
