@@ -143,7 +143,7 @@ Four families, loaded in `src/layouts/Base.astro` and `css/global.css`:
 
 | Role        | Class         | Size                                   | Line | Tracking | Weight | Notes |
 |-------------|---------------|----------------------------------------|------|----------|--------|-------|
-| Display/H1  | `.h-display`  | `clamp(52px, 8.4vw, 120px)` (`--fs-h1`, owner 2026-11-02; was 44–100px) | 1.04 | 0 | 300 | **One per page.** KMR Apparat Light, the lightest cut there is. The €388M figure and the pitch page keep `--fs-display` (44–100px). |
+| Display/H1  | `.h-display`  | `clamp(52px, 8.4vw, 120px)` (`--fs-h1`, owner 2026-11-02; was 44–100px) | 0.98 (`--lh-h1`, owner 2026-11-06; was 1.04) | 0 | 300 | **One per page.** KMR Apparat Light, the lightest cut there is. The €388M figure and the pitch page keep `--fs-display` (44–100px). |
 | Section/H2  | `.h-section`  | `clamp(30px, 4.2vw, 56px)`             | 1.06 | 0        | 450    | max-width 1056px (8 cols). |
 | Feature/H3  | `.h-feature`  | `clamp(34px, 5vw, 72px)`               | 1.04 | 0        | 450    | max-width 1056px (8 cols). |
 | Card title  | `.card-title` | 19px                                   | 1.3  | −0.01em  | 550    | |
