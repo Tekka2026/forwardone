@@ -104,6 +104,13 @@ All queries are `max-width`, desktop-first.
 
 Four families, loaded in `src/layouts/Base.astro` and `css/global.css`:
 
+- **Test, 2026-11-06 (owner):** **F37 Lineca Arabic** (Book and Medium,
+  self-hosted from `src/assets/fonts/f37-lineca`) sits in front of KMR
+  Apparat in both `--font-heading` and `--font-display`. Book covers the
+  light weights (headings, `--fw-heading` and `--fw-display`, 300), Medium
+  the heavier ones (key figures and the €388M, `--fw-stat` 400). Going
+  back: drop "F37 Lineca" from both variables. Licence: A0035.
+
 - `--font-heading`: **KMR Apparat** (owner, 2026-11-02, for the MVP; first
   tried 2026-10-17 and withdrawn then). Self-hosted WOFF2 from
   `src/assets/fonts/kmr-apparat`, declared in `css/global.css` as Light 300,
