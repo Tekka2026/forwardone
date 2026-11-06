@@ -112,7 +112,7 @@ const sliders = {
 
       <fieldset>
         <legend>Motion &amp; blur</legend>
-        <label class="bgm__range"><span>Motion blur <output data-for="motion"></output></span><input type="range" name="motion" min="0" max="120" step="1" /></label>
+        <label class="bgm__range"><span>Motion blur <output data-for="motion"></output></span><input type="range" name="motion" min="0" max="360" step="1" /></label>
         <label class="bgm__select">Motion
           <select name="axis">
             <option value="y">Spin (Y)</option>
@@ -120,6 +120,9 @@ const sliders = {
             <option value="z">Roll (Z)</option>
             <option value="h">Slide left – right</option>
             <option value="v">Slide up – down</option>
+            <option value="p1">Sweep from point 1 (right)</option>
+            <option value="p2">Sweep from point 2 (top left)</option>
+            <option value="p3">Sweep from point 3 (bottom left)</option>
           </select>
         </label>
         <label class="bgm__range"><span>Blur <output data-for="blur" data-unit="px"></output></span><input type="range" name="blur" min="0" max="120" step="1" /></label>
@@ -267,7 +270,7 @@ const sliders = {
     if (!s.stops.length) s.stops = defaults.stops;
     if (q.get('type') === 'radial' || q.get('type') === 'linear') s.gradType = q.get('type') as StudioState['gradType'];
     if (q.get('color') && /^[0-9a-f]{6}$/i.test(q.get('color')!)) s.color = `#${q.get('color')!.toUpperCase()}`;
-    if (['x', 'y', 'z', 'h', 'v'].includes(q.get('axis') ?? '')) s.axis = q.get('axis') as StudioState['axis'];
+    if (['x', 'y', 'z', 'h', 'v', 'p1', 'p2', 'p3'].includes(q.get('axis') ?? '')) s.axis = q.get('axis') as StudioState['axis'];
     return s;
   }
 

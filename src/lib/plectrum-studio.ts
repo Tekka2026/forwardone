@@ -13,7 +13,9 @@ import * as THREE from 'three';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 
-export type MotionAxis = 'y' | 'x' | 'z' | 'h' | 'v';
+/** y/x/z: spin about an axis; h/v: slide; p1–p3: sweep in the plectrum's own
+ *  plane around one of its three points (the blur fans out from that point). */
+export type MotionAxis = 'y' | 'x' | 'z' | 'h' | 'v' | 'p1' | 'p2' | 'p3';
 
 export interface StudioState {
   /** Base format "w:h" as listed; `turn` swaps it. */
@@ -39,7 +41,8 @@ export interface StudioState {
   /** Offset as % of the frame width / height. */
   posX: number;
   posY: number;
-  /** Motion blur: degrees of rotation, or % of the frame for a slide. */
+  /** Motion blur: degrees of rotation (centred on the pose; for a sweep, from the
+   *  pose onwards), or % of the frame for a slide. */
   motion: number;
   axis: MotionAxis;
   /** Gaussian blur radius in px at 1080 px frame height. */
@@ -179,6 +182,8 @@ export class PlectrumStudio {
   private rtB: THREE.WebGLRenderTarget;
   private state: StudioState;
   private frame = 0;
+  /** The plectrum's three points, in the mesh's local space (see ensureGeometry). */
+  private tips: THREE.Vector3[] = [];
 
   constructor(private canvas: HTMLCanvasElement, svgText: string, state: StudioState) {
     this.state = state;
@@ -199,6 +204,7 @@ export class PlectrumStudio {
 
     this.material = new THREE.MeshPhysicalMaterial({ color: state.color });
     this.mesh = new THREE.Mesh(new THREE.BufferGeometry(), this.material);
+    this.mesh.matrixAutoUpdate = false; // composed per sample in render()
     this.scene.add(this.mesh);
     this.camera.position.set(0, 0, 0.5 / Math.tan(THREE.MathUtils.degToRad(FOV / 2)));
 
@@ -261,10 +267,26 @@ export class PlectrumStudio {
       curveSegments: 12,
     });
     geo.rotateX(Math.PI); // SVG y runs down; a rotation keeps the faces' winding
-    geo.center();
     geo.computeBoundingBox();
+    const c = geo.boundingBox!.getCenter(new THREE.Vector3());
+    geo.translate(-c.x, -c.y, -c.z);
     const h = geo.boundingBox!.max.y - geo.boundingBox!.min.y;
     geo.scale(1 / h, 1 / h, 1 / h);
+    // The three points: the middles of the outline's three shortest edges,
+    // taken through the same rotation, centring and scale as the geometry.
+    const outline = this.shapes[0]?.getPoints() ?? [];
+    const edges = outline.map((a, i) => {
+      const b = outline[(i + 1) % outline.length];
+      return { len: a.distanceTo(b), mid: new THREE.Vector2((a.x + b.x) / 2, (a.y + b.y) / 2) };
+    }).filter((e) => e.len > 1e-6);
+    this.tips = edges
+      .sort((a, b) => a.len - b.len)
+      .slice(0, 3)
+      .map((e) => new THREE.Vector3((e.mid.x - c.x) / h, (-e.mid.y - c.y) / h, 0))
+      // A little inside the edge, so the fan's centre is solid.
+      .map((v) => v.multiplyScalar(0.94))
+      // Point 1 is the one furthest right; then counter-clockwise.
+      .sort((a, b) => ((Math.atan2(a.y, a.x) + 2 * Math.PI) % (2 * Math.PI)) - ((Math.atan2(b.y, b.x) + 2 * Math.PI) % (2 * Math.PI)));
     geo.computeVertexNormals();
     this.mesh.geometry.dispose();
     this.mesh.geometry = geo;
@@ -304,14 +326,18 @@ export class PlectrumStudio {
 
     // At least 8 samples: each is shifted by a sub-pixel offset, so averaging
     // them also smooths the edges.
-    const n = Math.max(8, samples ?? (s.motion > 0 ? Math.min(64, 16 + Math.round(s.motion * 0.6)) : 8));
+    const n = Math.max(8, samples ?? (s.motion > 0 ? Math.min(96, 16 + Math.round(s.motion * 0.5)) : 8));
     const base = new THREE.Euler(
       THREE.MathUtils.degToRad(s.rotX),
       THREE.MathUtils.degToRad(s.rotY),
       THREE.MathUtils.degToRad(s.rotZ),
     );
-    const scale = s.size / 100;
-    this.mesh.scale.setScalar(scale);
+    const scaleVec = new THREE.Vector3().setScalar(s.size / 100);
+    const sweepTip = s.axis.startsWith('p') ? this.tips[Number(s.axis.slice(1)) - 1] : undefined;
+    const euler = new THREE.Euler();
+    const pos = new THREE.Vector3();
+    const quat = new THREE.Quaternion();
+    const sweep = new THREE.Matrix4();
     const px = (s.posX / 100) * aspect;
     const py = s.posY / 100;
 
@@ -322,15 +348,26 @@ export class PlectrumStudio {
     this.accumMat.uniforms.tex.value = this.rtSample.texture;
 
     for (let i = 0; i < n; i++) {
-      const t = n === 1 ? 0 : i / (n - 1) - 0.5;
+      // Spins and slides spread evenly around the pose; a sweep starts at the
+      // pose and fans out from there.
+      const t = n === 1 ? 0 : sweepTip ? i / (n - 1) : i / (n - 1) - 0.5;
       const m = t * s.motion;
-      this.mesh.rotation.copy(base);
-      this.mesh.position.set(px, py, 0);
-      if (s.axis === 'x') this.mesh.rotation.x += THREE.MathUtils.degToRad(m);
-      if (s.axis === 'y') this.mesh.rotation.y += THREE.MathUtils.degToRad(m);
-      if (s.axis === 'z') this.mesh.rotation.z += THREE.MathUtils.degToRad(m);
-      if (s.axis === 'h') this.mesh.position.x += (m / 100) * aspect;
-      if (s.axis === 'v') this.mesh.position.y += m / 100;
+      euler.copy(base);
+      pos.set(px, py, 0);
+      if (s.axis === 'x') euler.x += THREE.MathUtils.degToRad(m);
+      if (s.axis === 'y') euler.y += THREE.MathUtils.degToRad(m);
+      if (s.axis === 'z') euler.z += THREE.MathUtils.degToRad(m);
+      if (s.axis === 'h') pos.x += (m / 100) * aspect;
+      if (s.axis === 'v') pos.y += m / 100;
+      this.mesh.matrix.compose(pos, quat.setFromEuler(euler), scaleVec);
+      if (sweepTip) {
+        // Rotate in the plectrum's own plane (local Z) about the chosen point.
+        sweep.makeTranslation(sweepTip.x, sweepTip.y, sweepTip.z)
+          .multiply(new THREE.Matrix4().makeRotationZ(THREE.MathUtils.degToRad(m)))
+          .multiply(new THREE.Matrix4().makeTranslation(-sweepTip.x, -sweepTip.y, -sweepTip.z));
+        this.mesh.matrix.multiply(sweep);
+      }
+      this.mesh.matrixWorldNeedsUpdate = true;
       const [jx, jy] = halton(i);
       this.camera.setViewOffset(w, h, jx - 0.5, jy - 0.5, w, h);
       this.renderer.setRenderTarget(this.rtSample);
@@ -386,7 +423,7 @@ export class PlectrumStudio {
     const prev = { w: this.canvas.width, h: this.canvas.height, ratio: this.renderer.getPixelRatio(), cssW: this.canvas.style.width, cssH: this.canvas.style.height };
     this.renderer.setPixelRatio(1);
     this.renderer.setSize(W, H, false);
-    this.render(this.state.motion > 0 ? 128 : 32);
+    this.render(this.state.motion > 0 ? Math.min(256, Math.max(128, Math.round(this.state.motion))) : 32);
     const blob = await new Promise<Blob>((resolve, reject) =>
       this.canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('Export failed'))), 'image/png'),
     );
