@@ -86,6 +86,15 @@ const aud = navGreeting.audience;
         }
       </div>
 
+      <!-- Opened from the greeting's underlined word (owner, 2026-11-06):
+           the panel shows only the choice, filled in by the script. -->
+      <div class="nav__choice" data-nav-choice>
+        <p class="nav__choice-title" data-nav-choice-title></p>
+        <ul class="nav__choice-list">
+          <li><button class="nav__choice-opt" type="button" data-nav-choice-switch></button></li>
+          <li><button class="nav__choice-opt" type="button" data-nav-choice-reset>{aud.choice.reset}</button></li>
+        </ul>
+      </div>
     </div>
 
     <div class="nav__bar" data-nav-bar>
@@ -123,13 +132,13 @@ const aud = navGreeting.audience;
           hidden
         />
         <!-- The bar's line with links in it (built by the script): the
-             compact question, the greeting's audience word, and the
-             switch / clear question. Copy from navGreeting.audience. -->
+             compact question and the greeting's audience word. Copy from
+             navGreeting.audience. -->
         <span
           class="nav__who"
           role="group"
           data-nav-switch
-          data-copy={JSON.stringify({ question: aud.question, change: aud.change, founder: aud.founder, investor: aud.investor })}
+          data-copy={JSON.stringify({ question: aud.question, choice: aud.choice, founder: aud.founder, investor: aud.investor })}
           data-greet-morning={aud.greeting.morning}
           data-greet-afternoon={aud.greeting.afternoon}
           data-greet-evening={aud.greeting.evening}
@@ -580,6 +589,62 @@ const aud = navGreeting.audience;
     gap: var(--gap);
   }
 
+  /* The choice panel (owner, 2026-11-06): instead of the site menu, a
+     label with the current choice and two options, in the panel's own
+     type (mono label as the column titles, then card-title size). */
+  .nav__choice {
+    display: none;
+  }
+  .nav[data-panel-choice] .nav__columns {
+    display: none;
+  }
+  .nav[data-panel-choice] .nav__choice {
+    display: block;
+  }
+  .nav__choice-title {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    line-height: var(--lh-mono);
+    letter-spacing: var(--ls-label);
+    font-weight: 500;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  .nav__choice-list {
+    display: flex;
+    flex-direction: column;
+    margin: var(--space-2x) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .nav__choice-list li + li {
+    border-top: var(--hairline-w) solid var(--nav-hairline);
+  }
+  .nav__choice-opt {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: var(--space-4x) 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font-family: var(--font-sans);
+    font-size: var(--fs-card-title);
+    line-height: var(--lh-card-title);
+    letter-spacing: var(--ls-card-title);
+    text-align: left;
+    cursor: pointer;
+  }
+  .nav__choice-opt:hover {
+    text-decoration-line: underline;
+    text-underline-offset: 4px;
+  }
+  .nav__choice-opt:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+
   .nav__col-head {
     display: flex;
     align-items: center;
@@ -724,8 +789,8 @@ const aud = navGreeting.audience;
     /* ---- Lines with links ----
        Three lines carry underlined words (owner, 2026-11-06): the compact
        bar's "Are you a founder or investor?", the greeting after a choice
-       ("Good afternoon, founder!", the audience word), and "Switch to
-       investor or reset?" that pressing that word brings up.
+       ("Good afternoon, founder!", the audience word, which opens the
+       panel with only the choice: switch or reset).
        The words are underlined while they are typed and erased; once a
        line is typed out (and is the one the bar should offer) the same
        words become buttons in [data-nav-switch], which takes the typed
@@ -735,14 +800,14 @@ const aud = navGreeting.audience;
     const who = root.querySelector<HTMLElement>('[data-nav-switch]')!;
     type Copy = {
       question: { before: string; between: string; after: string };
-      change: { before: string; between: string; clear: string; after: string };
+      choice: { title: string; switchTo: string; reset: string };
       founder: { label: string; word: string };
       investor: { label: string; word: string };
     };
     const COPY: Copy = JSON.parse(who.dataset.copy || '{}');
     let audience = '';
     let compact = false;
-    let changing = false; // the switch / clear question is showing
+    let choicePanel = false; // the panel is open with only the choice
     function lineOf(parts: (string | [string, () => void])[]): LineSpec {
       let text = '';
       const links: LineLink[] = [];
@@ -766,22 +831,15 @@ const aud = navGreeting.audience;
       const t = d.greetTemplate || '';
       const at = t.indexOf('{audience}');
       if (at < 0) return lineOf([t.replace('{daytime}', daytime)]);
-      return lineOf([t.slice(0, at).replace('{daytime}', daytime), [labelOf(audience), openChange], t.slice(at + 10).replace('{daytime}', daytime)]);
-    }
-    function changeLine(): LineSpec | null {
-      if (!audience) return null;
-      const c = COPY.change;
-      const other = audience === COPY.founder.word ? COPY.investor.word : COPY.founder.word;
-      return lineOf([c.before, [labelOf(other), () => choose(other)], c.between, [c.clear, clearChoice], c.after]);
+      return lineOf([t.slice(0, at).replace('{daytime}', daytime), [labelOf(audience), () => open(true)], t.slice(at + 10).replace('{daytime}', daytime)]);
     }
     // Every line that underlines (for typing), and the one the bar offers
     // as buttons right now.
     function allLines(): LineSpec[] {
-      return [questionLine(), greetingLine(), changeLine()].filter((l): l is LineSpec => !!l);
+      return [questionLine(), greetingLine()].filter((l): l is LineSpec => !!l);
     }
     function offeredLine(): LineSpec | null {
       if (isOpen) return null;
-      if (changing) return changeLine();
       if (compact && !audience) return questionLine();
       if (!compact) return greetingLine();
       return null;
@@ -1043,7 +1101,6 @@ const aud = navGreeting.audience;
     function startTyping() {
       swapAi();
       hideWho();
-      changing = false;
       ++runId; // stop any sequence still typing
       placeholderMode = false;
       prompt.hidden = true;
@@ -1068,7 +1125,7 @@ const aud = navGreeting.audience;
     // The whole bar opens the menu; the prompt also drops you into the field.
     // The bar handler runs after this one (bubbling), so open there, type here.
     prompt.addEventListener('click', () => {
-      if (compact) return;
+      if (compact || choicePanel) return;
       if (!isOpen) {
         // Let the bar's click handler open the panel first, then type.
         setTimeout(startTyping, 0);
@@ -1117,13 +1174,17 @@ const aud = navGreeting.audience;
       if (btn) btn.setAttribute('aria-expanded', String(open));
     }
 
-    function open() {
+    // `choice`: opened from the greeting's audience word, the panel holds
+    // only the choice (switch or reset) and the line keeps the greeting.
+    function open(choice = false) {
       show();
       isOpen = true;
+      choicePanel = choice;
+      root.toggleAttribute('data-panel-choice', choice);
+      if (choice) fillChoice();
       // From the compact bar: full width for the panel, the question put
       // away (it comes back when the panel closes, see close()).
       if (compact) root.removeAttribute('data-compact');
-      changing = false;
       hideWho();
       window.clearTimeout(closeTimer);
       panel.hidden = false;
@@ -1137,12 +1198,14 @@ const aud = navGreeting.audience;
       page.setAttribute('inert', '');
       document.documentElement.style.overflow = 'hidden';
       swapAi();
-      if (input.hidden) toQuestion();
+      if (input.hidden && !choice) toQuestion();
       menu.setAttribute('aria-expanded', 'true');
       menu.setAttribute('aria-label', 'Close menu');
       for (const c of cols) setAccordion(c, false);
       if (keyboard && input.hidden) {
-        const firstTarget = panel.querySelector<HTMLElement>(mobile.matches ? '[data-nav-acc]' : 'a');
+        const firstTarget = choice
+          ? panel.querySelector<HTMLElement>('[data-nav-choice-switch]')
+          : panel.querySelector<HTMLElement>(mobile.matches ? '[data-nav-acc]' : 'a');
         firstTarget?.focus();
       }
     }
@@ -1160,7 +1223,9 @@ const aud = navGreeting.audience;
         panel.hidden = true;
         scrim.hidden = true;
         root.removeAttribute('data-shape');
+        root.removeAttribute('data-panel-choice');
       }, 460);
+      choicePanel = false;
       page.classList.remove('is-pushed');
       page.removeAttribute('inert');
       document.documentElement.style.overflow = '';
@@ -1181,7 +1246,7 @@ const aud = navGreeting.audience;
       // While the bar asks "I am a", only the hamburger opens the panel.
       if (compact && !(e.target as HTMLElement).closest('[data-nav-menu]')) return;
       const onPrompt = (e.target as HTMLElement).closest('[data-nav-prompt]');
-      if (isOpen && onPrompt) return; // typing, not closing
+      if (isOpen && onPrompt && !choicePanel) return; // typing, not closing
       isOpen ? close() : open();
     });
 
@@ -1284,11 +1349,16 @@ const aud = navGreeting.audience;
     // Choosing (owner, 2026-11-06): remember it, colour the bar (light blue
     // for a founder, black stays for an investor) and greet by time of day.
     // From the compact bar it then goes back to full width.
-    function choose(word: string) {
+    function remember(word: string) {
       audience = word;
-      try { sessionStorage.setItem(AUDIENCE_KEY, audience); } catch { /* storage blocked */ }
+      try {
+        if (word) sessionStorage.setItem(AUDIENCE_KEY, word);
+        else sessionStorage.removeItem(AUDIENCE_KEY);
+      } catch { /* storage blocked */ }
       applyAudience();
-      changing = false;
+    }
+    function choose(word: string) {
+      remember(word);
       const viaKeyboard = keyboard;
       retypeTo(welcomeLine(), ++runId);
       if (viaKeyboard) menu.focus(); // the pressed word is gone; keep focus in the bar
@@ -1299,32 +1369,28 @@ const aud = navGreeting.audience;
       if (hoverPointer() && !viaKeyboard) waitForLeave(() => { if (compact) toFull(); });
       else window.setTimeout(() => { if (compact) toFull(); }, 2600);
     }
-    // The greeting's audience word: offer to switch or clear (owner,
-    // 2026-11-06). Leaving the bar (or 8s without a mouse) goes back.
-    function openChange() {
-      changing = true;
-      const viaKeyboard = keyboard;
-      const id = ++runId;
-      retypeTo(changeLine()!.text, id);
-      if (viaKeyboard) menu.focus();
-      const back = () => {
-        if (!changing || isOpen) return;
-        changing = false;
-        retypeTo(welcomeLine(), ++runId);
-      };
-      if (hoverPointer() && !viaKeyboard) waitForLeave(back);
-      else window.setTimeout(() => { if (alive(id)) back(); }, 8000);
+    // The choice panel (owner, 2026-11-06), opened from the greeting's
+    // audience word: switch to the other audience, or reset. Either one
+    // closes the panel; the closed bar then greets anew (or welcomes, and
+    // over section 3 asks again).
+    const choiceTitle = panel.querySelector<HTMLElement>('[data-nav-choice-title]')!;
+    const choiceSwitch = panel.querySelector<HTMLButtonElement>('[data-nav-choice-switch]')!;
+    const choiceReset = panel.querySelector<HTMLButtonElement>('[data-nav-choice-reset]')!;
+    const otherOf = (word: string) => (word === COPY.founder.word ? COPY.investor.word : COPY.founder.word);
+    function fillChoice() {
+      choiceTitle.textContent = COPY.choice.title.replace('{audience}', labelOf(audience));
+      choiceSwitch.textContent = COPY.choice.switchTo.replace('{other}', labelOf(otherOf(audience)));
     }
-    function clearChoice() {
-      audience = '';
-      try { sessionStorage.removeItem(AUDIENCE_KEY); } catch { /* storage blocked */ }
-      applyAudience();
-      changing = false;
-      if (keyboard) menu.focus();
-      retypeTo(welcomeLine(), ++runId);
+    choiceSwitch.addEventListener('click', () => {
+      remember(otherOf(audience));
+      close();
+    });
+    choiceReset.addEventListener('click', () => {
+      remember('');
+      close();
       // Back in the question's zone, the bar asks again.
       if (audienceAfter) requestAnimationFrame(updateCompact);
-    }
+    });
     const hoverPointer = () => matchMedia('(hover: hover)').matches;
     const LEAVE_MARGIN = 25;
     function waitForLeave(done: () => void) {

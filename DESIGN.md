@@ -940,21 +940,23 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   greeting replaces "Welcome to FORWARD.one" as the closed line on every
   page of the site.
 - Switch or reset (owner, 2026-11-06): in the greeting the audience word
-  stays underlined ("Good afternoon, <u>founder</u>!", underlined while
-  it types too). Pressing it erases the greeting and types "Switch to
-  <u>investor</u> or <u>reset</u>?" (or "…to founder…"). "investor" (or
-  "founder") switches: the bar's colour follows at once and the new
-  greeting types. "reset" forgets the choice: the bar goes back to black
-  and the welcome line (or "How can we help you?" below section 3), and
-  over section 3 the bar asks again. Leaving the bar and the 25px around
-  it without choosing, or 8s on touch, brings the greeting back; opening
-  the menu drops the question too. The line is kept short so it fits the
-  bar on a phone, and it is clipped rather than run under the hamburger.
+  stays underlined ("Good afternoon, <u>founder</u>!", underlined while it
+  types too). Pressing it opens the nav panel the usual way (it grows up
+  out of the bar, the page is pushed back), but with only the choice
+  instead of the site menu: a mono label "Your choice: founder", then two
+  options in card-title type with a hairline between them, "Switch to
+  investor" (or "…founder") and "Reset my choice". The bar keeps the
+  greeting while it is open. Switching closes the panel; the bar takes the
+  new colour (light blue or black) and types the new greeting. Reset closes
+  it, forgets the choice, and the bar goes back to black with the welcome
+  line (or "How can we help you?" below section 3); over section 3 it asks
+  again. The hamburger, the bar, Escape or the scrim close it without a
+  change. The hamburger still opens the full menu.
 - How the links work: the line is typed as plain text with the linked
   words underlined; once it is out, `[data-nav-switch]` takes its place
   with the same words as buttons (built by the script), so nothing moves.
-- Copy in `navGreeting.audience` (`src/content/nav.ts`; `change` for the
-  switch line). Reduced motion: the line changes without typing.
+- Copy in `navGreeting.audience` (`src/content/nav.ts`; `choice` for the
+  choice panel). Reduced motion: the line changes without typing.
 
 ## 9. Colour (placeholders)
 
