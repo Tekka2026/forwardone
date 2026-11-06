@@ -917,9 +917,10 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   boundary between the strip and the next section passes the bar's centre
   line (owner, 2026-11-05). Alongside, the closed line erases and "Are you
   a founder or investor?" types in (owner, 2026-11-06; replaced "I am a"
-  with a founder / investor switch). Once it is typed out, "founder" and
-  "investor" become links in place: same type, underlined (1px, offset
-  3px; 2px on hover), so the only change is the underlines appearing. The
+  with a founder / investor switch). "founder" and "investor" are
+  underlined (1px, offset 3px) already while they are typed and erased
+  (owner, 2026-11-06); once the line is typed out they become links in
+  place, same type and underline (2px on hover), so nothing moves. The
   hamburger stays (owner, 2026-11-04, so visitors can still navigate) and
   is the only part that opens the panel then; opening grows the bar back
   to full width for the panel, closing returns to the compact bar and its

@@ -238,8 +238,9 @@ const question = aud.question.before + aud.founder.label + aud.question.between 
     cursor: default;
   }
   /* The question with its two clickable words (owner, 2026-11-06): same
-     type as the line, the words underlined. It replaces the typed line
-     once that has been typed out, so it reads as one line. */
+     type as the line, the words underlined, already while they are typed
+     (.nav__typed-link). It replaces the typed line once that has been
+     typed out, so it reads as one line. */
   .nav__who {
     min-width: 0;
     padding: var(--space-2x) 0;
@@ -247,6 +248,12 @@ const question = aud.question.before + aud.founder.label + aud.question.between 
   }
   .nav__who[hidden] {
     display: none;
+  }
+  .nav__typed :global(.nav__typed-link),
+  .nav__who-opt {
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
   }
   .nav__who-opt {
     margin: 0;
@@ -256,9 +263,6 @@ const question = aud.question.before + aud.founder.label + aud.question.between 
     color: inherit;
     font: inherit;
     cursor: pointer;
-    text-decoration-line: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 3px;
   }
   .nav__who-opt:hover {
     text-decoration-thickness: 2px;
@@ -715,8 +719,39 @@ const question = aud.question.before + aud.founder.label + aud.question.between 
     const typedRest = root.querySelector<HTMLElement>('[data-nav-typed-rest]')!;
     const HEAD_CHARS = 6;
     let current = '';
+    // The compact bar's question underlines "founder" and "investor" while
+    // it is typed (and erased), as in the clickable version that replaces
+    // it (owner, 2026-11-06). Their places come from that version's markup.
+    const whoMarkup = root.querySelector<HTMLElement>('[data-nav-switch]');
+    const QUESTION_TEXT = whoMarkup?.dataset.question || '';
+    const questionLinks: [number, number][] = [];
+    if (whoMarkup) {
+      let at = 0;
+      for (const node of Array.from(whoMarkup.childNodes)) {
+        const len = (node.textContent || '').length;
+        if (node.nodeType === Node.ELEMENT_NODE) questionLinks.push([at, at + len]);
+        at += len;
+      }
+    }
     function setTyped(text: string) {
       current = text;
+      if (text && QUESTION_TEXT.startsWith(text) && questionLinks.length) {
+        const parts: (string | HTMLElement)[] = [];
+        let at = 0;
+        for (const [a, b] of questionLinks) {
+          if (a >= text.length) break;
+          if (a > at) parts.push(text.slice(at, a));
+          const u = document.createElement('span');
+          u.className = 'nav__typed-link';
+          u.textContent = text.slice(a, Math.min(b, text.length));
+          parts.push(u);
+          at = Math.min(b, text.length);
+        }
+        if (at < text.length) parts.push(text.slice(at));
+        typedHead.textContent = '';
+        typedRest.replaceChildren(...parts);
+        return;
+      }
       typedHead.textContent = text.slice(0, HEAD_CHARS);
       typedRest.textContent = text.slice(HEAD_CHARS);
     }
