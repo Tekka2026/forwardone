@@ -939,8 +939,22 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   the bar does not ask again, a founder's bar stays light blue, and the
   greeting replaces "Welcome to FORWARD.one" as the closed line on every
   page of the site.
-- Copy in `navGreeting.audience` (`src/content/nav.ts`). Reduced motion:
-  the line changes without typing.
+- Switch or reset (owner, 2026-11-06): in the greeting the audience word
+  stays underlined ("Good afternoon, <u>founder</u>!", underlined while
+  it types too). Pressing it erases the greeting and types "Switch to
+  <u>investor</u> or <u>reset</u>?" (or "…to founder…"). "investor" (or
+  "founder") switches: the bar's colour follows at once and the new
+  greeting types. "reset" forgets the choice: the bar goes back to black
+  and the welcome line (or "How can we help you?" below section 3), and
+  over section 3 the bar asks again. Leaving the bar and the 25px around
+  it without choosing, or 8s on touch, brings the greeting back; opening
+  the menu drops the question too. The line is kept short so it fits the
+  bar on a phone, and it is clipped rather than run under the hamburger.
+- How the links work: the line is typed as plain text with the linked
+  words underlined; once it is out, `[data-nav-switch]` takes its place
+  with the same words as buttons (built by the script), so nothing moves.
+- Copy in `navGreeting.audience` (`src/content/nav.ts`; `change` for the
+  switch line). Reduced motion: the line changes without typing.
 
 ## 9. Colour (placeholders)
 

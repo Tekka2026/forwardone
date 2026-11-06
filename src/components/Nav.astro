@@ -29,7 +29,6 @@ import { href, isActive } from '@lib/href';
 
 const current = Astro.url.pathname;
 const aud = navGreeting.audience;
-const question = aud.question.before + aud.founder.label + aud.question.between + aud.investor.label + aud.question.after;
 ---
 
 <div class="nav" data-nav>
@@ -123,18 +122,20 @@ const question = aud.question.before + aud.founder.label + aud.question.between 
           data-nav-input
           hidden
         />
+        <!-- The bar's line with links in it (built by the script): the
+             compact question, the greeting's audience word, and the
+             switch / clear question. Copy from navGreeting.audience. -->
         <span
           class="nav__who"
           role="group"
-          aria-label={aud.label}
           data-nav-switch
-          data-question={question}
+          data-copy={JSON.stringify({ question: aud.question, change: aud.change, founder: aud.founder, investor: aud.investor })}
           data-greet-morning={aud.greeting.morning}
           data-greet-afternoon={aud.greeting.afternoon}
           data-greet-evening={aud.greeting.evening}
           data-greet-template={aud.greeting.template}
           hidden
-        >{aud.question.before}<button class="nav__who-opt" type="button" aria-pressed="false" data-audience={aud.founder.word}>{aud.founder.label}</button>{aud.question.between}<button class="nav__who-opt" type="button" aria-pressed="false" data-audience={aud.investor.word}>{aud.investor.label}</button>{aud.question.after}</span>
+        ></span>
       </form>
 
 
@@ -245,17 +246,18 @@ const question = aud.question.before + aud.founder.label + aud.question.between 
     min-width: 0;
     padding: var(--space-2x) 0;
     white-space: nowrap;
+    overflow: hidden; /* never under the hamburger */
   }
   .nav__who[hidden] {
     display: none;
   }
   .nav__typed :global(.nav__typed-link),
-  .nav__who-opt {
+  .nav__who :global(.nav__who-opt) {
     text-decoration-line: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 3px;
   }
-  .nav__who-opt {
+  .nav__who :global(.nav__who-opt) {
     margin: 0;
     padding: 0;
     border: 0;
@@ -264,10 +266,10 @@ const question = aud.question.before + aud.founder.label + aud.question.between 
     font: inherit;
     cursor: pointer;
   }
-  .nav__who-opt:hover {
+  .nav__who :global(.nav__who-opt:hover) {
     text-decoration-thickness: 2px;
   }
-  .nav__who-opt:focus-visible {
+  .nav__who :global(.nav__who-opt:focus-visible) {
     outline: 2px solid currentColor;
     outline-offset: 2px;
     border-radius: 2px;
@@ -719,26 +721,110 @@ const question = aud.question.before + aud.founder.label + aud.question.between 
     const typedRest = root.querySelector<HTMLElement>('[data-nav-typed-rest]')!;
     const HEAD_CHARS = 6;
     let current = '';
-    // The compact bar's question underlines "founder" and "investor" while
-    // it is typed (and erased), as in the clickable version that replaces
-    // it (owner, 2026-11-06). Their places come from that version's markup.
-    const whoMarkup = root.querySelector<HTMLElement>('[data-nav-switch]');
-    const QUESTION_TEXT = whoMarkup?.dataset.question || '';
-    const questionLinks: [number, number][] = [];
-    if (whoMarkup) {
-      let at = 0;
-      for (const node of Array.from(whoMarkup.childNodes)) {
-        const len = (node.textContent || '').length;
-        if (node.nodeType === Node.ELEMENT_NODE) questionLinks.push([at, at + len]);
-        at += len;
+    /* ---- Lines with links ----
+       Three lines carry underlined words (owner, 2026-11-06): the compact
+       bar's "Are you a founder or investor?", the greeting after a choice
+       ("Good afternoon, founder!", the audience word), and "Switch to
+       investor or reset?" that pressing that word brings up.
+       The words are underlined while they are typed and erased; once a
+       line is typed out (and is the one the bar should offer) the same
+       words become buttons in [data-nav-switch], which takes the typed
+       line's place, so nothing moves. */
+    type LineLink = { start: number; end: number; act: () => void };
+    type LineSpec = { text: string; links: LineLink[] };
+    const who = root.querySelector<HTMLElement>('[data-nav-switch]')!;
+    type Copy = {
+      question: { before: string; between: string; after: string };
+      change: { before: string; between: string; clear: string; after: string };
+      founder: { label: string; word: string };
+      investor: { label: string; word: string };
+    };
+    const COPY: Copy = JSON.parse(who.dataset.copy || '{}');
+    let audience = '';
+    let compact = false;
+    let changing = false; // the switch / clear question is showing
+    function lineOf(parts: (string | [string, () => void])[]): LineSpec {
+      let text = '';
+      const links: LineLink[] = [];
+      for (const part of parts) {
+        if (typeof part === 'string') { text += part; continue; }
+        links.push({ start: text.length, end: text.length + part[0].length, act: part[1] });
+        text += part[0];
       }
+      return { text, links };
+    }
+    const labelOf = (word: string) => (word === COPY.founder.word ? COPY.founder.label : COPY.investor.label);
+    function questionLine(): LineSpec {
+      const q = COPY.question;
+      return lineOf([q.before, [COPY.founder.label, () => choose(COPY.founder.word)], q.between, [COPY.investor.label, () => choose(COPY.investor.word)], q.after]);
+    }
+    function greetingLine(): LineSpec | null {
+      if (!audience) return null;
+      const h = new Date().getHours();
+      const d = who.dataset;
+      const daytime = (h >= 5 && h < 12 ? d.greetMorning : h >= 12 && h < 18 ? d.greetAfternoon : d.greetEvening) || '';
+      const t = d.greetTemplate || '';
+      const at = t.indexOf('{audience}');
+      if (at < 0) return lineOf([t.replace('{daytime}', daytime)]);
+      return lineOf([t.slice(0, at).replace('{daytime}', daytime), [labelOf(audience), openChange], t.slice(at + 10).replace('{daytime}', daytime)]);
+    }
+    function changeLine(): LineSpec | null {
+      if (!audience) return null;
+      const c = COPY.change;
+      const other = audience === COPY.founder.word ? COPY.investor.word : COPY.founder.word;
+      return lineOf([c.before, [labelOf(other), () => choose(other)], c.between, [c.clear, clearChoice], c.after]);
+    }
+    // Every line that underlines (for typing), and the one the bar offers
+    // as buttons right now.
+    function allLines(): LineSpec[] {
+      return [questionLine(), greetingLine(), changeLine()].filter((l): l is LineSpec => !!l);
+    }
+    function offeredLine(): LineSpec | null {
+      if (isOpen) return null;
+      if (changing) return changeLine();
+      if (compact && !audience) return questionLine();
+      if (!compact) return greetingLine();
+      return null;
+    }
+    function hideWho() {
+      if (who.hidden) return;
+      who.hidden = true;
+      if (input.hidden) prompt.hidden = false;
+    }
+    // Swap the typed line for its buttons once it is out.
+    function linkIfDone() {
+      if (!input.hidden || prompt.hidden || prompt.classList.contains('is-placeholder')) return;
+      const line = offeredLine();
+      if (!line || line.text !== current) return;
+      const nodes: (string | HTMLElement)[] = [];
+      let at = 0;
+      for (const l of line.links) {
+        if (l.start > at) nodes.push(line.text.slice(at, l.start));
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'nav__who-opt';
+        btn.textContent = line.text.slice(l.start, l.end);
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          l.act();
+        });
+        nodes.push(btn);
+        at = l.end;
+      }
+      if (at < line.text.length) nodes.push(line.text.slice(at));
+      who.replaceChildren(...nodes);
+      who.setAttribute('aria-label', line.text);
+      prompt.hidden = true;
+      who.hidden = false;
     }
     function setTyped(text: string) {
       current = text;
-      if (text && QUESTION_TEXT.startsWith(text) && questionLinks.length) {
+      hideWho();
+      const line = text ? allLines().find((l) => l.text.startsWith(text)) : undefined;
+      if (line && line.links.length) {
         const parts: (string | HTMLElement)[] = [];
         let at = 0;
-        for (const [a, b] of questionLinks) {
+        for (const { start: a, end: b } of line.links) {
           if (a >= text.length) break;
           if (a > at) parts.push(text.slice(at, a));
           const u = document.createElement('span');
@@ -803,9 +889,7 @@ const question = aud.question.before + aud.founder.label + aud.question.between 
     // the closed line greets them by time of day instead of "Welcome to
     // FORWARD.one", and a founder's bar turns light blue. Remembered for
     // the visit (sessionStorage).
-    const switchEl = root.querySelector<HTMLElement>('[data-nav-switch]')!;
     const AUDIENCE_KEY = 'forwardone-audience';
-    let audience = '';
     try { audience = sessionStorage.getItem(AUDIENCE_KEY) || ''; } catch { /* storage blocked */ }
     const applyAudience = () => root.toggleAttribute('data-founder', audience === 'founder');
     applyAudience();
@@ -813,11 +897,8 @@ const question = aud.question.before + aud.founder.label + aud.question.between 
     // "How can we help you?" instead of welcoming (owner, 2026-11-05).
     let pastAudienceZone = false;
     function welcomeLine() {
-      if (!audience) return pastAudienceZone ? second : first;
-      const h = new Date().getHours();
-      const d = switchEl.dataset;
-      const daytime = h >= 5 && h < 12 ? d.greetMorning : h >= 12 && h < 18 ? d.greetAfternoon : d.greetEvening;
-      return (d.greetTemplate || '').replace('{daytime}', daytime || '').replace('{audience}', audience);
+      const g = greetingLine();
+      return g ? g.text : pastAudienceZone ? second : first;
     }
     const second = greeting.dataset.second || '';
     const TYPE_MS = 55;
@@ -826,7 +907,11 @@ const question = aud.question.before + aud.founder.label + aud.question.between 
 
     let runId = 0;
     const alive = (id: number) => id === runId;
-    const idle = () => cursor.classList.add('is-still'); // no cursor when idle
+    // Idle: no cursor; a line with links gets its buttons.
+    function idle() {
+      cursor.classList.add('is-still');
+      linkIfDone();
+    }
 
     // The AI mark is always shown. Every interaction of the bar plays the
     // same swap, once (owner, 2026-11-05): opening, closing, shrinking,
@@ -957,6 +1042,8 @@ const question = aud.question.before + aud.founder.label + aud.question.between 
     /* ---- Click to type ---- */
     function startTyping() {
       swapAi();
+      hideWho();
+      changing = false;
       ++runId; // stop any sequence still typing
       placeholderMode = false;
       prompt.hidden = true;
@@ -1035,10 +1122,9 @@ const question = aud.question.before + aud.founder.label + aud.question.between 
       isOpen = true;
       // From the compact bar: full width for the panel, the question put
       // away (it comes back when the panel closes, see close()).
-      if (compact) {
-        root.removeAttribute('data-compact');
-        showWho(false);
-      }
+      if (compact) root.removeAttribute('data-compact');
+      changing = false;
+      hideWho();
       window.clearTimeout(closeTimer);
       panel.hidden = false;
       scrim.hidden = false;
@@ -1125,22 +1211,6 @@ const question = aud.question.before + aud.founder.label + aud.question.between 
     // one on (section 4) it is back to the full bar (owner, 2026-11-05).
     let audienceZone: Element | null = audienceAfter ? audienceAfter.nextElementSibling : null;
     while (audienceZone && audienceZone.tagName === 'SCRIPT') audienceZone = audienceZone.nextElementSibling;
-    const who = switchEl;
-    const QUESTION = who.dataset.question || '';
-    const opts = Array.from(who.querySelectorAll<HTMLButtonElement>('[data-audience]'));
-    // The question is typed into the line like any other; once it is out,
-    // the same words with the two links take its place (same type, so the
-    // only change is the underlines appearing). Leaving puts the plain line
-    // back so it can be erased.
-    function showWho(on: boolean) {
-      if (on) {
-        prompt.hidden = true;
-        who.hidden = false;
-      } else if (!who.hidden) {
-        who.hidden = true;
-        prompt.hidden = false;
-      }
-    }
     // Erase back to what both lines share, type the rest.
     async function retypeTo(text: string, id: number) {
       if (reduceMotion.matches) { setTyped(text); idle(); return; }
@@ -1160,7 +1230,6 @@ const question = aud.question.before + aud.founder.label + aud.question.between 
       }
       if (alive(id)) idle();
     }
-    let compact = false;
     // Exactly as the section boundary passes the bar (owner, 2026-11-05):
     // the bar shrinks at once; the line erases and the question types.
     async function toCompact() {
@@ -1171,26 +1240,23 @@ const question = aud.question.before + aud.founder.label + aud.question.between 
       compactLine(++runId); // the new run also cancels a welcome line close() started
     }
     async function compactLine(myId: number) {
-      showWho(false);
       showPrompt();
       prompt.classList.remove('is-placeholder');
+      const q = questionLine().text;
       if (reduceMotion.matches) {
-        setTyped(QUESTION);
+        setTyped(q);
         idle();
-        showWho(true);
         return;
       }
       await eraseText(myId);
       if (!alive(myId)) return;
-      await typeText(QUESTION, myId);
-      if (!alive(myId)) return;
-      idle();
-      showWho(true);
+      await typeText(q, myId);
+      if (alive(myId)) idle();
     }
     function toFull() {
       compact = false;
       root.removeAttribute('data-compact');
-      showWho(false);
+      hideWho();
       swapAi();
       toWelcome(true);
     }
@@ -1216,30 +1282,52 @@ const question = aud.question.before + aud.founder.label + aud.question.between 
       else toFull();
     }
     // Choosing (owner, 2026-11-06): remember it, colour the bar (light blue
-    // for a founder, black stays for an investor), greet by time of day,
-    // then back to the full bar.
-    for (const opt of opts) {
-      opt.addEventListener('click', (e) => {
-        e.stopPropagation();
-        audience = opt.dataset.audience || '';
-        try { sessionStorage.setItem(AUDIENCE_KEY, audience); } catch { /* storage blocked */ }
-        for (const o of opts) o.setAttribute('aria-pressed', String(o === opt));
-        applyAudience();
-        if (!compact) return;
-        const viaKeyboard = keyboard;
-        showWho(false);
-        retypeTo(welcomeLine(), ++runId);
-        if (viaKeyboard) menu.focus(); // the chosen word is gone; keep focus in the bar
-        // Not at once (owner, 2026-11-04): the bar opens up again once the
-        // pointer has left it and the 25px around it. Without a mouse
-        // (touch, keyboard) after the greeting has been typed.
-        const viaMouse = (e as PointerEvent).pointerType === 'mouse' || (e.detail > 0 && matchMedia('(hover: hover)').matches);
-        if (viaMouse) waitForLeave();
-        else window.setTimeout(() => { if (compact) toFull(); }, 2600);
-      });
+    // for a founder, black stays for an investor) and greet by time of day.
+    // From the compact bar it then goes back to full width.
+    function choose(word: string) {
+      audience = word;
+      try { sessionStorage.setItem(AUDIENCE_KEY, audience); } catch { /* storage blocked */ }
+      applyAudience();
+      changing = false;
+      const viaKeyboard = keyboard;
+      retypeTo(welcomeLine(), ++runId);
+      if (viaKeyboard) menu.focus(); // the pressed word is gone; keep focus in the bar
+      if (!compact) return;
+      // Not at once (owner, 2026-11-04): the bar opens up again once the
+      // pointer has left it and the 25px around it. Without a mouse
+      // (touch, keyboard) after the greeting has been typed.
+      if (hoverPointer() && !viaKeyboard) waitForLeave(() => { if (compact) toFull(); });
+      else window.setTimeout(() => { if (compact) toFull(); }, 2600);
     }
+    // The greeting's audience word: offer to switch or clear (owner,
+    // 2026-11-06). Leaving the bar (or 8s without a mouse) goes back.
+    function openChange() {
+      changing = true;
+      const viaKeyboard = keyboard;
+      const id = ++runId;
+      retypeTo(changeLine()!.text, id);
+      if (viaKeyboard) menu.focus();
+      const back = () => {
+        if (!changing || isOpen) return;
+        changing = false;
+        retypeTo(welcomeLine(), ++runId);
+      };
+      if (hoverPointer() && !viaKeyboard) waitForLeave(back);
+      else window.setTimeout(() => { if (alive(id)) back(); }, 8000);
+    }
+    function clearChoice() {
+      audience = '';
+      try { sessionStorage.removeItem(AUDIENCE_KEY); } catch { /* storage blocked */ }
+      applyAudience();
+      changing = false;
+      if (keyboard) menu.focus();
+      retypeTo(welcomeLine(), ++runId);
+      // Back in the question's zone, the bar asks again.
+      if (audienceAfter) requestAnimationFrame(updateCompact);
+    }
+    const hoverPointer = () => matchMedia('(hover: hover)').matches;
     const LEAVE_MARGIN = 25;
-    function waitForLeave() {
+    function waitForLeave(done: () => void) {
       const onMove = (ev: PointerEvent) => {
         const r = bar.getBoundingClientRect();
         const out =
@@ -1248,12 +1336,12 @@ const question = aud.question.before + aud.founder.label + aud.question.between 
         if (!out) return;
         document.removeEventListener('pointermove', onMove);
         document.documentElement.removeEventListener('pointerleave', onLeaveWindow);
-        if (compact) toFull();
+        done();
       };
       const onLeaveWindow = () => {
         document.removeEventListener('pointermove', onMove);
         document.documentElement.removeEventListener('pointerleave', onLeaveWindow);
-        if (compact) toFull();
+        done();
       };
       document.addEventListener('pointermove', onMove);
       document.documentElement.addEventListener('pointerleave', onLeaveWindow);

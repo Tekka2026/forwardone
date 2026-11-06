@@ -105,6 +105,11 @@ export const navGreeting = {
     question: { before: 'Are you a ', between: ' or ', after: '?' },
     founder: { label: 'founder', word: 'founder' },
     investor: { label: 'investor', word: 'investor' },
+    /** After a choice the audience word in the greeting stays underlined;
+     *  pressing it asks this, with the other audience and `clear` as links
+     *  (owner, 2026-11-06): "Switch to investor or reset?" (short enough
+     *  for the bar on a phone). */
+    change: { before: 'Switch to ', between: ' or ', clear: 'reset', after: '?' },
     /** After a choice the bar greets by time of day (the visitor's clock):
      *  "Good afternoon, founder!" (owner, 2026-11-04; was "…, how are
      *  you?"), then goes back to full width. Morning 05–12, afternoon
