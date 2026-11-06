@@ -8,16 +8,16 @@ import { P } from './palette';
 export const typography: BrandPage = {
   slug: 'typography',
   title: 'Typography',
-  lead: 'Three typefaces, each with one job: Aeonik for headlines and key figures, Inter for reading, Geist Mono for labels.',
+  lead: 'Three typefaces, each with one job: Aeonik for headlines and figures, Inter for reading, Geist Mono for labels.',
   tile: { color: P.cream, icon: 'type', cover: { art: 'dots', tone: 'dark' } },
   sections: [
     {
       label: 'Headlines',
       notes: [
-        'Aeonik Regular for display headlines and section titles, Aeonik SemiBold for key figures.',
+        'Aeonik Regular for display headlines and section titles, Aeonik SemiBold for the headline figure.',
         'A commercial font. [PLACEHOLDER: web licence, needed before the site goes public]',
       ],
-      blocks: [{ type: 'specimen', name: 'Aeonik Regular', font: 'display', meta: ['Headlines', 'Regular', 'Key figures: SemiBold'] }],
+      blocks: [{ type: 'specimen', name: 'Aeonik Regular', font: 'display', meta: ['Headlines', 'Regular', 'Headline figure: SemiBold'] }],
     },
     {
       label: 'Body',
@@ -37,8 +37,8 @@ export const typography: BrandPage = {
           type: 'typeRows',
           rows: [
             { meta: ['Display', 'Aeonik Regular', '52–120 px / 0.98'], sample: 'Serious about performance.', style: 'display' },
-            { meta: ['Section', 'Aeonik Regular', '30–56 px / 1.06'], sample: 'Every leap is a step.', style: 'h1' },
-            { meta: ['Card title', 'Inter', '19 px / 1.3'], sample: 'Founders lead, we work alongside.', style: 'h4' },
+            { meta: ['Section', 'Aeonik Regular', '30–56 px / 1.12'], sample: 'Every leap is a step.', style: 'h1' },
+            { meta: ['Card title', 'Inter', '19 px / 1.35'], sample: 'Founders lead, we work alongside.', style: 'h4' },
             { meta: ['Lede', 'Inter', '18–21 px / 1.5'], sample: 'We turn Europe’s breakthrough technologies into commercial victories.', style: 'lede' },
             { meta: ['Body', 'Inter', '17 px / 1.55'], sample: 'We invest early and follow on deliberately, so the strongest companies get more. We bring capital, a network across Europe, fast decisions, and staying power when a company hits a setback.', style: 'body' },
             { meta: ['Small', 'Inter', '15 px / 1.55'], sample: 'We screen about 2,500 companies a year and back about 8.', style: 'caption' },

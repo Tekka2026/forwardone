@@ -150,9 +150,12 @@
   /* H1 only (owner, 2026-11-06: slightly tighter than the other display
      lines, which keep --lh-display). */
   --lh-h1: 0.98;
-  --lh-section: 1.06;
-  --lh-feature: 1.04;
-  --lh-card-title: 1.3;
+  /* H2, H3 and card titles a touch looser (owner, 2026-11-06; were 1.06,
+     1.04 and 1.3). Stat values keep 1.06 (--lh-stat). */
+  --lh-section: 1.12;
+  --lh-feature: 1.1;
+  --lh-card-title: 1.35;
+  --lh-stat: 1.06;
   --lh-metric: 1.15;
   --lh-lede: 1.5;
   --lh-body: 1.55;
@@ -162,10 +165,10 @@
 
   /* Type: heading weights. Intermediate values need the variable font,
      loaded in src/layouts/Base.astro; static fallback snaps to 500/600. */
-  --fw-heading: 300;     /* Display, Section, Feature: KMR Apparat Light (owner, 2026-11-02; was 450) */
-  --fw-display: 300;     /* display numbers and names (figures, metrics, strip company names): KMR Apparat Light too (owner, 2026-11-02) */
-  --fw-stat: 400;        /* key figure values (homepage and founders page): KMR Apparat Regular, one step above the headings (owner, 2026-11-02) */
-  --fw-figure: var(--fw-stat); /* headline figure (Track record €388M): Regular, like the key figures (owner, 2026-11-02) */
+  --fw-heading: 300;     /* Display, Section, Feature: Aeonik Regular (owner, 2026-11-06) */
+  --fw-display: 300;     /* display numbers and names (figures, metrics, strip company names): Aeonik Regular too */
+  --fw-stat: 300;        /* key figure values in the first section (homepage and founders page): Aeonik Regular (owner, 2026-11-06; was SemiBold) */
+  --fw-figure: 400;      /* headline figure (Track record €388M): Aeonik SemiBold (owner, 2026-11-06) */
   --ls-figure: 0;            /* headline figure tracking */
   --fw-card-title: 550;  /* Card title */
 
@@ -246,8 +249,8 @@
 
 /* Aeonik (CoType), the headings and display font, chosen by the owner on
    2026-11-06. Regular takes the headings and display names (--fw-heading
-   and --fw-display, 300); SemiBold takes the key figures and the €388M
-   (--fw-stat, 400). These are still the TRIAL files: they hold only
+   and --fw-display, 300); SemiBold takes the €388M (--fw-figure, 400;
+   the key figures went back to Regular, owner 2026-11-06). These are still the TRIAL files: they hold only
    letters, digits and ". ,". So € % ’ quotes, dashes, & ? ! ~ and accented
    letters fall back to KMR Apparat. When the licensed cuts arrive (A0038),
    swap the two files and the family name, then drop KMR Apparat. */

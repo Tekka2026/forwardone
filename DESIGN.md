@@ -111,15 +111,16 @@ Four families, loaded in `src/layouts/Base.astro` and `css/global.css`:
   `h1`/`h2`, and the headings set in the display face (case names in the
   Proof slider, the founders page deck titles). Exception: the pitch page
   H1 stays in Inter 500 (owner, 2026-10-22).
-- `--font-display`: **Aeonik** as well. **SemiBold** for the key figure
-  values and the €388M (`--fw-stat`, 400); Regular for the company names on
-  the founders strip cards (`--fw-display`, 300). Also stat values on the
-  homepage and founders page and card metrics.
+- `--font-display`: **Aeonik** as well. **SemiBold** for the €388M only
+  (`--fw-figure`, 400). **Regular** for everything else: the stat values in
+  the first section of the homepage and founders page (`--fw-stat`, 300;
+  owner 2026-11-06, was SemiBold), the company names on the founders strip
+  cards and card metrics (`--fw-display`, 300).
 - How it is loaded: self-hosted WOFF2 from `src/assets/fonts/aeonik-trial`,
   declared in `css/global.css` as the family "Aeonik Trial" with two
-  ranges. Regular covers weights 100–399, which takes `--fw-heading` and
-  `--fw-display` (300). SemiBold covers 400–900, which takes `--fw-stat`
-  (400). The CSS weight numbers stay as they were, so only the files
+  ranges. Regular covers weights 100–399, which takes `--fw-heading`,
+  `--fw-display` and `--fw-stat` (300). SemiBold covers 400–900, which
+  takes `--fw-figure` (400). The CSS weight numbers stay as they were, so only the files
   change when the licensed cuts arrive.
 - **For now these are the trial files.** They hold only letters, digits
   and `. ,`. So € % ’ ‘ “ ” – — ~ & ? ! and accented letters fall back,
@@ -140,9 +141,9 @@ Four families, loaded in `src/layouts/Base.astro` and `css/global.css`:
 | Role        | Class         | Size                                   | Line | Tracking | Weight | Notes |
 |-------------|---------------|----------------------------------------|------|----------|--------|-------|
 | Display/H1  | `.h-display`  | `clamp(52px, 8.4vw, 120px)` (`--fs-h1`, owner 2026-11-02; was 44–100px) | 0.98 (`--lh-h1`, owner 2026-11-06; was 1.04) | 0 | 300 | **One per page.** Aeonik Regular (CSS weight 300 maps to the Regular cut). The €388M figure and the pitch page keep `--fs-display` (44–100px). |
-| Section/H2  | `.h-section`  | `clamp(30px, 4.2vw, 56px)`             | 1.06 | 0        | 450    | max-width 1056px (8 cols). |
-| Feature/H3  | `.h-feature`  | `clamp(34px, 5vw, 72px)`               | 1.04 | 0        | 450    | max-width 1056px (8 cols). |
-| Card title  | `.card-title` | 19px                                   | 1.3  | −0.01em  | 550    | |
+| Section/H2  | `.h-section`  | `clamp(30px, 4.2vw, 56px)`             | 1.12 (owner 2026-11-06; was 1.06) | 0        | 450    | max-width 1056px (8 cols). |
+| Feature/H3  | `.h-feature`  | `clamp(34px, 5vw, 72px)`               | 1.1 (owner 2026-11-06; was 1.04; also the case names in Proof) | 0        | 450    | max-width 1056px (8 cols). |
+| Card title  | `.card-title` | 19px                                   | 1.35 (owner 2026-11-06; was 1.3) | −0.01em  | 550    | |
 | Metric      | `--fs-metric` | `clamp(24px, 2.4vw, 32px)`             | 1.15 | 0        | 450    | Headline figure on a card (Proof). Also stat values at ≤640px. |
 | Lede        | `.lede`       | `clamp(18px, 1.6vw, 21px)`             | 1.5  | 0        | 400    | max-width 784px (6 cols). Homepage section body copy uses it too: hero, Track record, What we do blocks, Playbook, Fund III. |
 | Body        | `.body`       | 17px; `clamp(17px, 1.4vw, 19px)` inside `.section--feature` | 1.55 | 0 | 400 | max-width 648px (5 cols); `.body--wide` allows 784px, never more. |
@@ -204,8 +205,9 @@ Rules:
   components reference tokens, never literal values. Heading weights are
   300 (display headings, `--fw-heading`, which loads Aeonik Regular)
   / 550 (card titles, Inter variable); display names use 300 too
-  (`--fw-display`), and the key figures use 400 (`--fw-stat`, Aeonik
-  SemiBold).
+  (`--fw-display`), and so do the key figures (`--fw-stat`); only the
+  €388M uses 400 (`--fw-figure`, Aeonik SemiBold). Stat values keep line
+  height 1.06 (`--lh-stat`) while H2 went to 1.12.
 
 ### Figures and tables
 
