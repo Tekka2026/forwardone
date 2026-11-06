@@ -245,8 +245,8 @@
 }
 
 /* Aeonik TRIAL (CoType; owner, 2026-11-06, as a test, second round) for
-   the headings and the display numbers, in front of KMR Apparat. Medium
-   takes the headings (--fw-heading and --fw-display, 300), SemiBold the key
+   the headings and the display numbers, in front of KMR Apparat. Regular
+   takes the headings (owner, 2026-11-06; was Medium) (--fw-heading and --fw-display, 300), SemiBold the key
    figures and the €388M (--fw-stat, 400). The trial cuts hold letters,
    digits and . , only: € % ’ quotes, dashes, & ? ! ~ and accented letters
    fall back to KMR Apparat. Going back: drop "Aeonik Trial" from
@@ -256,7 +256,7 @@
   font-style: normal;
   font-weight: 100 399;
   font-display: swap;
-  src: url("../src/assets/fonts/aeonik-trial/AeonikTRIAL-Medium.woff2") format("woff2");
+  src: url("../src/assets/fonts/aeonik-trial/AeonikTRIAL-Regular.woff2") format("woff2");
 }
 @font-face {
   font-family: "Aeonik Trial";

@@ -123,11 +123,11 @@ Four families, loaded in `src/layouts/Base.astro` and `css/global.css`:
   €388M headline figure, card metrics and the company names on the
   founders strip cards. Clash Display (Fontshare, variable) stays loaded as
   the fallback for both families.
-- **Test, 2026-11-06 (owner): Aeonik TRIAL** (CoType), one weight heavier
-  than the first Aeonik round, sits in front of KMR Apparat in both
+- **Test, 2026-11-06 (owner): Aeonik TRIAL** (CoType), second round
+  (headings Regular, numbers SemiBold), sits in front of KMR Apparat in both
   `--font-heading` and `--font-display`. Self-hosted trial WOFF2 from
-  `src/assets/fonts/aeonik-trial`: Medium (declared for weights 100–399)
-  takes the headings and the Display names (300), SemiBold (400–900) the key
+  `src/assets/fonts/aeonik-trial`: Regular (declared for weights 100–399;
+  owner 2026-11-06, was Medium) takes the headings and the Display names (300), SemiBold (400–900) the key
   figures and the €388M (`--fw-stat`, 400). The trial cuts hold only
   letters, digits and `. ,`: € % ’ ‘ “ ” – — ~ & ? ! and accented letters
   fall back to KMR Apparat glyph by glyph. Trial licence: not for production
