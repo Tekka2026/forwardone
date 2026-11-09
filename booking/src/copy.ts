@@ -1,5 +1,5 @@
 /**
- * Texts the service sends or shows. The four founder emails are templates
+ * Texts the service sends or shows. The six founder emails are templates
  * the team can edit on the dashboard (/review/emails, owner 2026-10-26); the
  * defaults below apply until someone saves a change, and "Revert to the
  * default" brings them back. Placeholders in {braces} are filled per email.
@@ -7,14 +7,14 @@
  */
 import type { Env } from './env';
 
-export type TemplateKey = 'received' | 'approved' | 'denied' | 'expired';
+export type TemplateKey = 'received' | 'approved' | 'denied' | 'expired' | 'waitlisted' | 'assigned';
 
 /** What each placeholder means, shown next to the editor. */
 export const VARIABLES: Record<string, string> = {
   first_name: 'Founder’s first name, as they signed the letter',
   name: 'Founder’s full name',
   company: 'Company name',
-  time: 'Their slot, e.g. 09:30',
+  time: 'Their slot, e.g. 09:30 (empty for the waiting list)',
   event: 'Event name with the blank: The _____ Pitch at Slush',
   event_plain: 'Event name without the blank: The Pitch at Slush',
   cancel_link: 'Link that releases their slot',
@@ -66,6 +66,38 @@ export const TEMPLATES: Record<
       'Thank you for applying to {event_plain}. Unfortunately, we aren’t able to offer you a pitch slot, and our schedules at Slush are fully booked, so we won’t be able to meet this time.',
       '',
       'Thanks again for your interest, and best of luck with {company}.',
+      '',
+      'FORWARD.one, Balnord, HCVC',
+    ].join('\n'),
+  },
+  waitlisted: {
+    title: 'On the waiting list',
+    when: 'Right after a founder sends the letter when every time is taken',
+    vars: ['first_name', 'name', 'company', 'event', 'event_plain', 'cancel_link', 'page_link'],
+    subject: '{event}: you are on the waiting list',
+    body: [
+      'Hi {first_name},',
+      '',
+      'Thank you for applying to The {company} Pitch at Slush.',
+      'All pitch times are taken at the moment, so we have put {company} on the waiting list. If a time opens up for you, we will email you with your slot.',
+      '',
+      'Can no longer make it? Take yourself off the list here: {cancel_link}',
+      '',
+      'FORWARD.one, Balnord, HCVC',
+    ].join('\n'),
+  },
+  assigned: {
+    title: 'Slot assigned from the waiting list',
+    when: 'When a reviewer gives a founder on the waiting list a time',
+    vars: ['first_name', 'name', 'company', 'time', 'event', 'event_plain', 'cancel_link', 'page_link'],
+    note: 'A calendar invite for the slot is attached automatically.',
+    subject: '{event}: you pitch at {time}',
+    body: [
+      'Hi {first_name},',
+      '',
+      'Good news: a pitch time has opened up. {company} pitches at {event_plain} at {time} (Helsinki time). The calendar invite is attached.',
+      '',
+      'Can no longer make it? Release the slot here, so someone else can take it: {cancel_link}',
       '',
       'FORWARD.one, Balnord, HCVC',
     ].join('\n'),
@@ -122,6 +154,7 @@ export const copy = {
   pages: {
     cancelled: 'Your request is cancelled and the slot is free again.',
     cancelGone: 'This request is no longer active.',
+    leftList: 'You are off the waiting list. Thank you for letting us know.',
     loginSent: 'If that address may review, a login link is on its way.',
   },
 };

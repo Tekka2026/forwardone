@@ -23,6 +23,7 @@ export const PAGE_FIELDS: { group: string; fields: PageField[] }[] = [
       { key: 'submit', label: 'Button', help: 'The send button under the letter.', max: 40 },
       { key: 'privacy', label: 'Privacy note', help: 'Small text under the button, before the Privacy policy link. It promises that requests are deleted three months after Slush, which the service does on 18 February 2027.', rows: 3, max: 600 },
       { key: 'sent', label: 'Thank-you message', help: 'Shown after a founder sends the letter.', rows: 3, max: 400 },
+      { key: 'sent_waitlist', label: 'Thank-you message, waiting list', help: 'Shown instead when every time was taken and the founder joined the waiting list.', rows: 3, max: 400 },
     ],
   },
   {

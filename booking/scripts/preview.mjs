@@ -42,6 +42,7 @@ const data = {
     app('a3', '11:00', 'pending', 'Quill', 'contracts that read themselves', 'Cy Demo', 'CTO', 'cy@quill.example', at(10, 3)),
     app('a4', '13:30', 'pending', 'Fjord Sensors', 'wind turbine blades that report their own cracks', 'Dee Placeholder', 'CEO', 'dee@fjord.example', at(10, 31)),
     app('a5', '08:30', 'denied', 'Tundra Foods', 'protein from forest fungi', 'Eli Test', 'Founder', 'eli@tundra.example', at(7, 55), { decided_by: 'reviewer@forward.one' }),
+    app('a6', '', 'waitlist', 'Polar Grid', 'batteries that survive Arctic winters', 'Fay Example', 'CEO', 'fay@polar.example', at(11, 20), { slot_id: null, label: null }),
   ],
 };
 const sample = {
@@ -59,7 +60,7 @@ var PREVIEW_KEY = 'pitch-preview-emails';
 function previewEmails() { try { return JSON.parse(localStorage.getItem(PREVIEW_KEY) || '{}'); } catch (e) { return {}; } }
 function previewSave(all) { try { localStorage.setItem(PREVIEW_KEY, JSON.stringify(all)); } catch (e) {} }
 var later = function (v) { return new Promise(function (ok) { setTimeout(function () { ok(v); }, 450); }); };
-window.REVIEW_API = { decide: function () { return later({ ok: true }); } };
+window.REVIEW_API = { decide: function () { return later({ ok: true }); }, assign: function () { return later({ ok: true }); } };
 window.EMAIL_API = {
   save: function (b) {
     var all = previewEmails(); all[b.key] = { subject: b.subject, body: b.body, updated_at: new Date().toISOString(), updated_by: 'you (preview)' }; previewSave(all);

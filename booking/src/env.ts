@@ -18,7 +18,7 @@ export interface Env {
   DELETE_AFTER: string;
 }
 
-export type Status = 'pending' | 'approved' | 'denied' | 'expired' | 'cancelled';
+export type Status = 'pending' | 'approved' | 'denied' | 'expired' | 'cancelled' | 'waitlist';
 
 export interface Slot {
   id: string;
@@ -30,7 +30,7 @@ export interface Slot {
 export interface Application {
   id: string;
   created_at: string;
-  slot_id: string;
+  slot_id: string | null; // null while on the waiting list (migration 0006)
   status: Status;
   company: string;
   name: string;

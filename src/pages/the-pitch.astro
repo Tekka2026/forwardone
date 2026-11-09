@@ -65,6 +65,10 @@ steps.forEach((_, si) => {
 // The company name (mirrored on the H1's line) is the first field.
 const firstStep = steps.findIndex((s) => s.toks.some((t) => 'field' in t));
 const firstField = steps[firstStep].toks.findIndex((t) => 'field' in t);
+// The booking sentence: its words up to the email blank give way to the
+// waiting-list wording once every time is taken (owner, 2026-11-09).
+const slotStep = steps.findIndex((s) => s.toks.some((t) => 'field' in t && t.field.type === 'slot'));
+const emailAt = slotStep < 0 ? -1 : steps[slotStep].toks.findIndex((t) => 'field' in t && t.field.type === 'email');
 // Values with an embedded placeholder ("FORWARD.one and [PLACEHOLDER: …]").
 const chunks = (v: string) => v.split(/(\[PLACEHOLDER:[^\]]*\])/).filter(Boolean);
 const ready = !isPlaceholder(pitch.bookingApi);
@@ -133,6 +137,10 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
                     {steps[si].toks.map((t, i) => (
                       <>
                         {i > 0 && ' '}
+                        {si === slotStep && i === emailAt && (
+                          <span data-pitch-waitlist-part hidden>{pitch.waitlist} </span>
+                        )}
+                        <span data-pitch-slot-part={si === slotStep && i < emailAt ? '' : undefined}>
                         {'text' in t ? (
                           t.text.split('\n').map((l, li) => (
                             <>
@@ -186,6 +194,7 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
                             {t.tail}
                           </span>
                         )}
+                        </span>
                       </>
                     ))}
                   </span>
@@ -209,6 +218,7 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
           <template data-pitch-msg-not-sent>{pitch.notSent}</template>
           <template data-pitch-msg-sending>{pitch.sending}</template>
           <template data-pitch-msg-sent data-copy="sent">{pitch.sent}</template>
+          <template data-pitch-msg-sent-waitlist data-copy="sent_waitlist">{pitch.sentWaitlist}</template>
           <template data-pitch-msg-no-slots>{pitch.noSlots}</template>
           <template data-pitch-msg-slots-failed>{pitch.slotsFailed}</template>
           <template data-pitch-msg-failed>{pitch.failed}</template>
@@ -305,6 +315,7 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
         });
       },
       sent: function (el, v) { el.innerHTML = ''; el.content.textContent = v; },
+      sent_waitlist: function (el, v) { el.innerHTML = ''; el.content.textContent = v; },
       submit: function (_, v) { var b = form.querySelector('button[type="submit"]'); if (b) b.textContent = v; },
     };
     if (form.dataset.api) {
@@ -582,6 +593,18 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
     var api = form.dataset.api;
     var slot = form.querySelector('[data-pitch-slot]');
     var slotsAt = 0;
+    // Every time taken: the waiting list. The booking sentence's words give
+    // way to the waiting-list wording, the time is no longer asked for, and
+    // the letter is sent with waitlist=1. A time that frees up brings the
+    // booking sentence back.
+    var waitlistMode = false;
+    function setWaitlist(on) {
+      waitlistMode = on;
+      form.querySelectorAll('[data-pitch-slot-part]').forEach(function (el) { el.hidden = on; });
+      form.querySelectorAll('[data-pitch-waitlist-part]').forEach(function (el) { el.hidden = !on; });
+      slot.required = !on;
+      slot.disabled = on;
+    }
     function slotEmpty() {
       slot.classList.toggle('is-empty', !slot.value);
       size(slot);
@@ -598,8 +621,8 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
           free.forEach(function (x) { slot.add(new Option(x.label, x.id)); });
           slot.value = free.some(function (x) { return x.id === keep; }) ? keep : '';
           slotEmpty();
-          if (!free.length) status.textContent = msg('no-slots');
-          else if (status.textContent === msg('no-slots') || status.textContent === msg('slots-failed')) status.textContent = '';
+          setWaitlist(!free.length);
+          if (status.textContent === msg('no-slots') || status.textContent === msg('slots-failed')) status.textContent = '';
           updateSend();
         })
         .catch(function () { status.textContent = msg('slots-failed'); });
@@ -617,6 +640,7 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
       if (!form.reportValidity()) return;
       var body = {};
       new FormData(form).forEach(function (v, k) { body[k] = String(v); });
+      if (waitlistMode) body.waitlist = '1';
       send.disabled = true;
       status.textContent = msg('sending');
       fetch(api + '/apply', {
@@ -627,7 +651,7 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
         .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; }); })
         .then(function (res) {
           if (res.ok) {
-            status.textContent = msg('sent');
+            status.textContent = msg(res.d && res.d.waitlist ? 'sent-waitlist' : 'sent');
             form.classList.add('is-sent');
             [].forEach.call(form.elements, function (el) { el.disabled = true; });
             return;

@@ -95,6 +95,8 @@ a { color: inherit; }
   font: inherit; font-size: 14px; padding: 9px 11px; border-radius: var(--radius-sm);
   border: 1px solid var(--border); background: var(--bg-elev); color: var(--fg); min-width: 0;
 }
+/* A choice next to small buttons (waiting list: Assign), the same height. */
+.field--sm { height: var(--btn-sm); width: auto; padding: 0 8px; font-size: 13px; }
 .field::placeholder { color: var(--placeholder); }
 .field:focus { outline: none; border-color: var(--fg); box-shadow: 0 0 0 3px var(--focus-field); }
 .field:focus-visible { outline: none; }
@@ -332,7 +334,7 @@ export type ReviewData = {
   emailConfigured: boolean;
   pageUrl: string;
   slots: Pick<Slot, 'id' | 'label'>[];
-  apps: (Pick<Application, 'id' | 'slot_id' | 'status' | 'company' | 'name' | 'role' | 'email' | 'phone' | 'building' | 'deck' | 'linkedin' | 'surprise' | 'why' | 'first_name' | 'created_at' | 'decided_by'> & { label: string })[];
+  apps: (Pick<Application, 'id' | 'slot_id' | 'status' | 'company' | 'name' | 'role' | 'email' | 'phone' | 'building' | 'deck' | 'linkedin' | 'surprise' | 'why' | 'first_name' | 'created_at' | 'decided_by'> & { label: string | null })[];
 };
 
 /** The dashboard's markup: a shell the client script fills in. */
@@ -355,6 +357,7 @@ export function dashboardHtml(data: ReviewData) {
         <select class="field" id="status">
           <option value="">All statuses</option>
           <option value="pending">Waiting</option>
+          <option value="waitlist">Waiting list</option>
           <option value="approved">Approved</option>
           <option value="denied">Denied</option>
           <option value="cancelled">Cancelled</option>
@@ -380,14 +383,35 @@ export const CLIENT_JS = String.raw`(function () {
       return fetch(data.base + '/decide', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ id: id, decision: decision }) })
         .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d.message || 'The decision was not saved.'); return d; }); });
     },
+    assign: function (id, slot) {
+      return fetch(data.base + '/assign', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ id: id, slot: slot }) })
+        .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d.message || 'The time was not assigned.'); return d; }); });
+    },
   };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
   var STATUS = {
     pending: ['Waiting', 'warn'], approved: ['Approved', 'ok'], denied: ['Denied', 'err'],
-    cancelled: ['Cancelled', 'neutral'], expired: ['Expired', 'neutral'],
+    cancelled: ['Cancelled', 'neutral'], expired: ['Expired', 'neutral'], waitlist: ['Waiting list', 'neutral'],
+  };
+  // Free slots right now (no pending or approved request holds them).
+  var freeSlots = function () {
+    var held = {};
+    data.apps.forEach(function (a) { if (a.slot_id && (a.status === 'pending' || a.status === 'approved')) held[a.slot_id] = 1; });
+    return data.slots.filter(function (s) { return !held[s.id]; });
   };
   // Row actions; on phones they sit under the status instead of in their own column.
+  // On the waiting list: pick a free time and assign it, or take them off.
   var actions = function (a, cls) {
+    if (a.status === 'waitlist') {
+      var free = freeSlots();
+      return '<div class="row-actions ' + cls + '">' +
+        (free.length
+          ? '<label class="sr-only" for="as-' + cls + esc(a.id) + '">Time for ' + esc(a.company) + '</label><select class="field field--sm" id="as-' + cls + esc(a.id) + '" data-assign-slot="' + esc(a.id) + '"><option value="">Pick a time</option>' +
+            free.map(function (s) { return '<option value="' + esc(s.id) + '">' + esc(s.label) + '</option>'; }).join('') + '</select>' +
+            '<button class="btn btn--sm" type="button" data-assign="' + esc(a.id) + '">Assign</button>'
+          : '<span class="cell-sub">No free time</span>') +
+        '<button class="btn btn--sm btn--warn" type="button" data-deny="' + esc(a.id) + '">Remove</button></div>';
+    }
     return a.status === 'pending' ? '<div class="row-actions ' + cls + '"><button class="btn btn--sm" type="button" data-approve="' + esc(a.id) + '">Approve</button><button class="btn btn--sm btn--warn" type="button" data-deny="' + esc(a.id) + '">Deny</button></div>' : '';
   };
   // Founder: name, role, LinkedIn, email, phone. On phones it sits in the company cell.
@@ -424,7 +448,7 @@ export const CLIENT_JS = String.raw`(function () {
   window.addEventListener('popstate', function () { readUrl(); render(); });
 
   var KEYS = {
-    time: function (a) { return a.label; }, company: function (a) { return a.company.toLowerCase(); },
+    time: function (a) { return a.label || '~'; }, // the waiting list after every time company: function (a) { return a.company.toLowerCase(); },
     received: function (a) { return a.created_at; }, status: function (a) { return a.status; },
   };
   function sortBy(key) { if (state.sort === key) state.dir = -state.dir; else { state.sort = key; state.dir = 1; } writeUrl(); render(); }
@@ -433,14 +457,28 @@ export const CLIENT_JS = String.raw`(function () {
 
   // ---- Decisions.
   function decide(a, decision, btn) {
-    btn.disabled = true; btn.textContent = decision === 'approved' ? 'Approving…' : 'Denying…';
+    var listed = a.status === 'waitlist';
+    btn.disabled = true; btn.textContent = decision === 'approved' ? 'Approving…' : listed ? 'Removing…' : 'Denying…';
     api.decide(a.id, decision).then(function () {
       a.status = decision; a.decided_by = data.who;
-      toast(decision === 'approved'
+      toast(listed
+        ? 'Took ' + a.company + ' off the waiting list.' + (data.emailConfigured ? ' The founder gets an email.' : '')
+        : decision === 'approved'
         ? 'Approved ' + a.company + ' for ' + a.label + '.' + (data.emailConfigured ? ' The confirmation with a calendar invite is on its way.' : '')
         : 'Denied ' + a.company + '. The ' + a.label + ' slot is free again.' + (data.emailConfigured ? ' The founder gets an email.' : ''));
       render();
     }).catch(function (e) { toast(e.message || 'The decision was not saved. Try again.', true); render(); });
+  }
+
+  // ---- Waiting list: assign a free time (approves them at once).
+  function assign(a, slotId, btn) {
+    var s = data.slots.find(function (x) { return x.id === slotId; });
+    btn.disabled = true; btn.textContent = 'Assigning…';
+    api.assign(a.id, slotId).then(function () {
+      a.status = 'approved'; a.slot_id = slotId; a.label = s.label; a.decided_by = data.who;
+      toast('Assigned ' + s.label + ' to ' + a.company + '.' + (data.emailConfigured ? ' The confirmation with a calendar invite is on its way.' : ''));
+      render();
+    }).catch(function (e) { toast(e.message || 'The time was not assigned. Try again.', true); render(); });
   }
 
   // ---- Render.
@@ -456,7 +494,8 @@ export const CLIENT_JS = String.raw`(function () {
     document.getElementById('slot-count').textContent = taken + ' of ' + data.slots.length + ' taken';
 
     var waiting = data.apps.filter(function (a) { return a.status === 'pending'; }).length;
-    document.getElementById('intro').textContent = data.event + '. ' + data.apps.length + (data.apps.length === 1 ? ' request, ' : ' requests, ') + waiting + ' waiting for review. Times are Helsinki time.';
+    var listed = data.apps.filter(function (a) { return a.status === 'waitlist'; }).length;
+    document.getElementById('intro').textContent = data.event + '. ' + data.apps.length + (data.apps.length === 1 ? ' request, ' : ' requests, ') + waiting + ' waiting for review' + (listed ? ', ' + listed + ' on the waiting list' : '') + '. Times are Helsinki time.';
 
     var needle = state.q.toLowerCase();
     var rows = data.apps.filter(function (a) {
@@ -486,7 +525,7 @@ export const CLIENT_JS = String.raw`(function () {
       th('time', 'Time') + th('company', 'Company') + '<th class="hide-sm">Founder</th>' + th('received', 'Received', 'hide-sm') + th('status', 'Status') + '<th class="hide-sm"><span class="sr-only">Actions</span></th>' +
       '</tr></thead><tbody>' + rows.map(function (a) {
         return '<tr>' +
-          '<td class="mono">' + esc(a.label) + '</td>' +
+          '<td class="mono">' + (a.label ? esc(a.label) : '<span class="cell-sub">List</span>') + '</td>' +
           '<td><div class="answer">' + esc(a.company) + '</div><div class="cell-sub">' + esc(a.building) + '</div>' +
             '<div class="cell-note only-sm-block">' + founder(a) + '</div>' +
             (a.why ? '<div class="cell-note"><span class="t-eyebrow">Why us</span> ' + esc(a.why) + '</div>' : '') +
@@ -504,9 +543,18 @@ export const CLIENT_JS = String.raw`(function () {
     var s = e.target.closest('[data-sort]'); if (s) return sortBy(s.dataset.sort);
     var ap = e.target.closest('[data-approve]');
     if (ap) { var a = data.apps.find(function (x) { return x.id === ap.dataset.approve; }); return decide(a, 'approved', ap); }
+    var as = e.target.closest('[data-assign]');
+    if (as) {
+      var w = data.apps.find(function (x) { return x.id === as.dataset.assign; });
+      var pick = as.parentElement.querySelector('[data-assign-slot]');
+      if (!pick.value) { toast('Pick a time for ' + w.company + ' first.', true); pick.focus(); return; }
+      var label = pick.options[pick.selectedIndex].text;
+      return confirmAsk('Assign ' + label + ' to ' + w.company + '?', 'They are approved for ' + label + ' (Helsinki time)' + (data.emailConfigured ? ' and get an email with a calendar invite.' : '.'), 'Yes, assign', function () { assign(w, pick.value, as); });
+    }
     var dn = e.target.closest('[data-deny]');
     if (dn) {
       var d = data.apps.find(function (x) { return x.id === dn.dataset.deny; });
+      if (d.status === 'waitlist') return confirmAsk('Take ' + d.company + ' off the waiting list?', data.emailConfigured ? 'The founder gets an email that they cannot pitch this time.' : 'They are removed from the list.', 'Yes, remove', function () { decide(d, 'denied', dn); });
       confirmAsk('Deny ' + d.company + '?', 'The ' + d.label + ' slot becomes free again' + (data.emailConfigured ? ' and the founder gets an email that they cannot pitch this time.' : '.'), 'Yes, deny', function () { decide(d, 'denied', dn); });
     }
   });

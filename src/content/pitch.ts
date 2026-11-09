@@ -111,6 +111,11 @@ export const pitch = {
   sending: 'Sending…',
   sent: 'Thank you. Your time is on hold while we read your application. We’ll email you whether it is confirmed.',
   noSlots: 'All times are taken at the moment.',
+  /** Once every time is taken (owner, 2026-11-09), the letter's booking
+   * sentence ("I’d like to grab the [slot] slot, Helsinki time. Reach me at")
+   * becomes this, and the letter puts the founder on the waiting list. */
+  waitlist: 'I would like to be on the waiting list. Reach me at',
+  sentWaitlist: 'Thank you. You are on the waiting list. We’ll email you if a time opens up for you.',
   slotsFailed: 'The pitch times could not be loaded. Please try again in a minute.',
   failed: 'Your request could not be sent. Please try again in a minute.',
   /** Small note under the button, followed by the privacy policy link
