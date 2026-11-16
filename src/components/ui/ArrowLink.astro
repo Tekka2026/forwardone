@@ -5,7 +5,9 @@
  * "Discover more about …" link: when it scrolls into view, word by word,
  * each word appearing two steps low and stepping up in 80ms frames
  * (--reveal-frame, --reveal-stagger), the last word, which carries the
- * arrow, rising smoothly. Plays once. Without JavaScript, or with reduced
+ * arrow, rising smoothly. It starts once the link is three quarters of
+ * the way up the window (150ms after), so it plays where the eye is. Plays
+ * once. Without JavaScript, or with reduced
  * motion, it is simply there.
  */
 interface Props {
@@ -40,11 +42,11 @@ words[words.length - 1] += ' →';
           io.unobserve(e.target);
         }
       },
-      { rootMargin: '0px 0px -12% 0px' },
+      { rootMargin: '0px 0px -25% 0px' }, // well in view, where the eye is (owner, 2026-11-16)
     );
     for (const l of Array.from(links)) {
       // Only links still below the fold wait to animate in.
-      if (l.getBoundingClientRect().top > innerHeight * 0.88) {
+      if (l.getBoundingClientRect().top > innerHeight * 0.75) {
         l.classList.add('is-waiting');
         io.observe(l);
       }
@@ -76,15 +78,15 @@ words[words.length - 1] += ' →';
   }
   .arrow-link.is-waiting.is-in .arrow-link__w {
     animation: arrow-w-in calc(var(--reveal-frame) * 4) step-end forwards;
-    animation-delay: calc(var(--i) * var(--reveal-stagger));
+    animation-delay: calc(150ms + var(--i) * var(--reveal-stagger));
   }
   .arrow-link.is-waiting.is-in .arrow-link__w--last {
     animation:
       arrow-w-show calc(var(--reveal-frame) * 9) step-end forwards,
       arrow-w-rise calc(var(--reveal-frame) * 9) cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
     animation-delay:
-      calc(var(--i) * var(--reveal-stagger)),
-      calc(var(--i) * var(--reveal-stagger));
+      calc(150ms + var(--i) * var(--reveal-stagger)),
+      calc(150ms + var(--i) * var(--reveal-stagger));
   }
   /* 4 frames: invisible, then two steps down, one step, rest */
   @keyframes arrow-w-in {

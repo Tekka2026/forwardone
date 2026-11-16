@@ -226,11 +226,13 @@ Rules:
   record →", "Our strategy →", "Meet the team →", "All insights →") is
   `src/components/ui/ArrowLink.astro`: 15px, weight 500, the arrow joined
   to the last word. It animates in like the founders strip's "Discover
-  more about …": when it scrolls into view (12% above the window's bottom
-  edge), word by word, each word appearing two steps low and stepping up
+  more about …": when it is well in view (a quarter of the window above its
+  bottom edge, then 150ms; owner, 2026-11-16, so the track record's link is
+  not missed), word by word, each word appearing two steps low and stepping up
   in 80ms frames (`--reveal-frame`, `--reveal-stagger`), the last word with
   the arrow rising smoothly; once. Links already in view on load, reduced
-  motion and no JavaScript: simply there. Hover: a 1px line 4px under the
+  motion and no JavaScript: simply there (also the links already
+  above that line on load). Hover: a 1px line 4px under the
   whole link (words and gaps).
 
 ### What we do (homepage, owner 2026-11-16)
