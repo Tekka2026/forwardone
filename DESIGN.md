@@ -259,7 +259,8 @@ Rules:
   crop with it and stay in place. Light blue #B3DAFF behind it while it
   loads.
 - FWD animation (owner, 2026-11-16): when the letters are three quarters
-  of the way up the window, they come up from below, clipped at their own
+  of the way up the window (a plain scroll check on the letters' box; an
+  IntersectionObserver on an SVG element did not fire on a phone), they come up from below, clipped at their own
   baseline, onto their place: F and W like the H2's first words (the snap:
   hidden, two steps low, one step, rest; 80ms frames), 90ms apart; the D
   like the last word (hidden one frame, then rising smoothly over nine

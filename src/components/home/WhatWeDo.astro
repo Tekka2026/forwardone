@@ -83,20 +83,28 @@ const AT = { x: 1001 - 203.5 * SCALE, y: 1001 - 79.5 * SCALE };
 <script>
   // Play the FWD once the letters are well in view (three quarters of the
   // way up the window); letters already that far up on load just show.
+  // A plain scroll check on the letters' own box (owner, 2026-11-16: on a
+  // phone nothing played; an IntersectionObserver on an element inside an
+  // SVG is not reliable in every browser).
   const box = document.querySelector<HTMLElement>('[data-fwd]');
   const anchor = box?.querySelector<SVGRectElement>('[data-fwd-anchor]');
   if (box && anchor && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    if (anchor.getBoundingClientRect().top > innerHeight * 0.75) {
+    const due = () => anchor.getBoundingClientRect().top < innerHeight * 0.75;
+    if (!due()) {
       box.classList.add('is-waiting');
-      const io = new IntersectionObserver(
-        ([e]) => {
-          if (!e.isIntersecting) return;
-          box.classList.add('is-in');
-          io.disconnect();
-        },
-        { rootMargin: '0px 0px -25% 0px' },
-      );
-      io.observe(anchor);
+      let frame = 0;
+      const check = () => {
+        frame = 0;
+        if (!due()) return;
+        box.classList.add('is-in');
+        removeEventListener('scroll', onScroll);
+        removeEventListener('resize', onScroll);
+      };
+      const onScroll = () => {
+        if (!frame) frame = requestAnimationFrame(check);
+      };
+      addEventListener('scroll', onScroll, { passive: true });
+      addEventListener('resize', onScroll);
     }
   }
 </script>
