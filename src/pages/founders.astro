@@ -441,7 +441,7 @@ const labelled = (svg: string, label: string) =>
     --reveal-start: 0ms;
   }
   .f-hero__title {
-    margin-top: var(--gap-half);
+    margin-top: 0; /* no label above it any more (2026-11-16) */
     max-width: var(--col-10);
   }
   .f-hero__lede {
@@ -520,7 +520,7 @@ const labelled = (svg: string, label: string) =>
 
   /* ---- Shared section rhythm (as on the homepage) ------------------------ */
   .f-title {
-    margin-top: var(--gap-half);
+    margin-top: var(--cap-top); /* opens the section: capitals on the padding line */
   }
   .f-body {
     margin-top: var(--space-4x);
@@ -645,8 +645,11 @@ const labelled = (svg: string, label: string) =>
 
   /* ---- 4. Playbook pattern ----------------------------------------------- */
   .f-playbook {
-    margin-top: var(--gap-half);
+    margin-top: 0;
     align-items: start;
+  }
+  .f-playbook .h-feature {
+    margin-top: var(--cap-top);
   }
   .f-playbook__body {
     margin-top: var(--space-4x);
@@ -811,7 +814,7 @@ const labelled = (svg: string, label: string) =>
     text-align: center;
   }
   .f-closing__title {
-    margin-inline: auto;
+    margin: var(--cap-top) auto 0; /* capitals on the padding line */
   }
   .f-closing__actions {
     display: flex;

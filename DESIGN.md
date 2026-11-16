@@ -868,7 +868,17 @@ Fixed uses:
 - Inputs: height `--form-height`, horizontal padding `--gap-half`.
 - Panel and card inner padding: `--gap`. Cell padding: `--gap-half`.
 - Between titled groups: `--gap-double`.
-- Eyebrow to the heading under it: `--gap-half` (12px).
+- Section top = section bottom, optically (owner, 2026-11-16): a section
+  that opens with a heading pulls it up by the empty band above its
+  capitals (`margin-top: var(--cap-top)`, defined on `.h-section` and
+  `.h-feature` from Aeonik's metrics: half-leading + ascent 0.93 − capital
+  height 0.703), so the capitals' tops sit on the section's padding line
+  (128 / 96 / 64px) and the space above the text equals the space below
+  the content. The track record's €388M does the same for its digits
+  (−0.1375 × the H1 size). No 12px gap above the first heading any more
+  (it belonged to the eyebrows, removed the same day). Measured: every
+  section's first capitals within 2px of the padding line at 1440, 1024
+  and 390px.
 - Heading to the body copy or lede that follows it: `--space-4x` (16px).
 - Heading block (eyebrow, heading, intro/body) to the section's content
   (cards, slider, table, list): `--space-4x` (16px).

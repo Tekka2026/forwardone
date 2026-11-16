@@ -535,6 +535,20 @@ code, kbd, samp, pre {
   text-transform: none;
 }
 
+/* Optical top (owner, 2026-11-16): the empty band above a heading's
+   capitals, as a negative margin. A section that opens with a heading uses
+   it (margin-top: var(--cap-top)), so the tops of the capitals sit on the
+   section's padding line and the space above the text equals the space
+   below the section's content. From Aeonik's metrics: ascent 0.93em,
+   descent 0.23em, capital height 0.703em; the band is the half-leading,
+   (line height - 1.16) / 2, plus 0.93 - 0.703. */
+.h-section {
+  --cap-top: calc(-1em * ((var(--lh-section) - 1.16) / 2 + 0.227));
+}
+.h-feature {
+  --cap-top: calc(-1em * ((var(--lh-feature) - 1.16) / 2 + 0.227));
+}
+
 .card-title {
   font-family: var(--font-sans);
   font-size: var(--fs-card-title);

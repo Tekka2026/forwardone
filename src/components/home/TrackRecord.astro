@@ -89,7 +89,11 @@ const keys = ['size', 'companies', 'status'] as const;
     -webkit-text-fill-color: transparent;
     color: transparent;
     padding-block: var(--figure-bleed);
-    margin: calc(var(--gap-half) - var(--figure-bleed)) 0 calc(-1 * var(--figure-bleed));
+    /* Top (owner, 2026-11-16): the tops of the digits on the section's
+       padding line, like the headings' capitals (no 12px gap any more: the
+       label above it is gone). The band above the digits at twice the H1
+       size (0.1375 × the H1 size, from Aeonik's metrics) is pulled up. */
+    margin: calc(-1 * var(--figure-bleed) - 0.1375 * var(--fs-display)) 0 calc(-1 * var(--figure-bleed));
     font-family: var(--font-display);
     font-weight: var(--fw-figure);
     line-height: var(--lh-display);
