@@ -442,17 +442,17 @@ screens the list stacks under the CTA.
   the viewer when it leaves; drag turns the view, and while dragging the arm
   holds still; a click or tap (under 6px of movement) opens the article;
   the SENSORFACT label sits behind the arm. Coded visuals sit above the card's full-size link, so
-  dragging works; the title still links. The second (Munich) uses
-  `MunichMap.astro` (owner, 2026-10-19): a static, top-down street map of
-  central Munich in the manner of a Mapbox "Light" style: pale land,
-  built-up blocks, a dense web of white minor streets, white main roads
-  with grey casings (the Mittlerer Ring among them, no longer yellow),
-  muted green parks, grey-blue water (Isar, Eisbach, Auer Mühlbach, two
-  lakes) and rail corridors. No names, pins or other copy on the map; only
-  the legend (a 1 km scale bar and N ↑). Main roads, water and parks follow
-  real coordinates, simplified; the minor streets are a seeded, slightly
-  irregular grid per district (that district's street angle and block
-  size), not real streets. Built at build time; it does not move.
+  dragging works; the title still links. The second (Munich) is an aerial flyover video
+  supplied by the owner (2026-11-16; it replaced the drawn street map of
+  2026-10-19, `MunichMap.astro`, in the git history), played with the
+  scroll by `ScrollVideo.astro`: its time follows the card's way through
+  the viewport (first frame as it comes in at the bottom, last as it leaves
+  at the top), forward when scrolling down, backward when scrolling up,
+  gliding after the scroll with a short ease. File:
+  `public/visuals/munich-flyover.mp4` (720 × 1008, cropped to 5:7, every
+  frame a keyframe for smooth seeking, no sound, 5.2 MB) with a poster
+  frame; it loads only when the card comes within 800px of the screen
+  (encoding in `visuals/README.md`). It sits under the card's link.
 - Insights: on desktop the H2 runs at most 6 of the 12 grid
   columns (fluid, from the wrap width); full width at ≤880px.
 - Closing ("Serious about performance? So are we."): title and buttons

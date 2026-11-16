@@ -4,7 +4,7 @@ import { href, isPlaceholder } from '@lib/href';
 import Placeholder from '@components/ui/Placeholder.astro';
 import Sentences from '@components/ui/Sentences.astro';
 import RobotArm from '@components/visuals/RobotArm.astro';
-import MunichMap from '@components/visuals/MunichMap.astro';
+import ScrollVideo from '@components/visuals/ScrollVideo.astro';
 ---
 
 <section class="section section--dark theme-dark" data-nav-dark>
@@ -19,8 +19,8 @@ import MunichMap from '@components/visuals/MunichMap.astro';
             <div class:list={['article__visual', a.visual === 'robot-arm' && 'article__visual--live']}>
               {a.visual === 'robot-arm' ? (
                 <RobotArm />
-              ) : a.visual === 'munich-map' ? (
-                <MunichMap />
+              ) : a.video ? (
+                <ScrollVideo src={href(a.video.src)} poster={href(a.video.poster)} />
               ) : isPlaceholder(a.image) ? (
                 <Placeholder value={a.image} />
               ) : (
@@ -66,6 +66,7 @@ import MunichMap from '@components/visuals/MunichMap.astro';
   /* Visual: 5:7 portrait (7:5 landscape on phones), a light grey tile
      (#f5f5f5, as the robot arm's box) until the image is supplied. */
   .article__visual {
+    position: relative; /* holds a scroll video, under the card's link */
     display: flex;
     align-items: center;
     justify-content: center;

@@ -18,7 +18,8 @@ export const hero = {
    */
   eyebrow: { lead: 'Early-stage VC', rest: 'for European industrial tech' },
   /** `\n` forces the line break. */
-  title: 'Performance,\nengineered.',
+  // Owner, 2026-11-16 (was 'Performance,\nengineered.').
+  title: 'Every proven step\nearns the next.',
   /** `text`, then the footnote marker, then `after`. */
   sub: {
     text: 'Our Funds I and II rank in the top 5% of European VC.',
@@ -500,7 +501,10 @@ export type Article = {
   /** Visual above the article (5:7, portrait). Path under public/, or a placeholder. */
   image: string;
   /** Instead of an image: a coded visual from src/components/visuals/. */
-  visual?: 'robot-arm' | 'munich-map';
+  visual?: 'robot-arm';
+  /** Instead of an image: a video that plays with the scroll (paths under
+   *  public/; ScrollVideo.astro). */
+  video?: { src: string; poster: string };
 };
 
 export const insights = {
@@ -527,7 +531,9 @@ export const insights = {
       slug: 'why-munich-matters-for-europes-next-generation-of-industrial-tech',
       intro: 'Universities, industrial leaders and a growing founder scene: why we look closely at Munich.',
       image: '',
-      visual: 'munich-map',
+      // Aerial flyover supplied by the owner (2026-11-16), replacing the
+      // drawn street map; it plays forward and backward with the scroll.
+      video: { src: '/visuals/munich-flyover.mp4', poster: '/visuals/munich-flyover.jpg' },
     },
     {
       title: 'Fund III: doubling down on Europe’s industrial technology winners',
