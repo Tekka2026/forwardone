@@ -237,8 +237,15 @@ const aud = navGreeting.audience;
   }
 
   /* ---- Compact (I am a: Founder / Investor) ---- */
+  /* Six columns of the grid (owner, 2026-11-16; was 400px): half the full
+     bar less half a gutter, so 784px (--col-6) at full width, centred over
+     columns 4 to 9. Never narrower than 400px (or the screen less its
+     margins), so the question still fits on tablets and phones. */
   .nav[data-compact] .nav__root {
-    width: min(var(--nav-compact-w, 400px), calc(100vw - 2 * var(--page-margin)));
+    width: max(
+      calc((min(var(--col-12), 100vw - 2 * var(--page-margin)) - var(--gutter)) / 2),
+      min(400px, calc(100vw - 2 * var(--page-margin)))
+    );
   }
   /* Only the hamburger opens the panel in this state (it stays, owner
      2026-11-04, so the site can still be navigated). */

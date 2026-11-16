@@ -948,8 +948,9 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   "How can we help you?" instead of "Welcome to FORWARD.one" (owner,
   2026-11-05); above the strip it is the welcome again. After a choice the
   greeting replaces both.
-- Compact: the bar shrinks to 400px (or the screen width minus the page
-  margins) over 560ms and the AI mark plays its swap, exactly as the
+- Compact: the bar shrinks to six grid columns (owner, 2026-11-16; was
+  400px): 784px at full width, centred over columns 4–9, never narrower
+  than 400px (or the screen width minus the page margins) over 560ms and the AI mark plays its swap, exactly as the
   boundary between the strip and the next section passes the bar's centre
   line (owner, 2026-11-05). Alongside, the closed line erases and "Are you
   a founder or investor?" types in (owner, 2026-11-06; replaced "I am a"
