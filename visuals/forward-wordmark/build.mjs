@@ -20,7 +20,7 @@
 // Writes public/visuals/forward-wordmark.svg (plays once, ends on FORWARD)
 // and public/visuals/forward-wordmark-loop.svg (FWD → FORWARD → FWD, again),
 // and the same two without the fade (-nofade): solid letters, revealed by
-// their slots only.
+// their slots only. -reverse and -reverse-nofade play FORWARD → FWD once.
 
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -200,6 +200,18 @@ const loop = build({ dur: LOOP, loop: true, title: 'FORWARD', sample: loopSample
 writeFileSync(join(out, 'forward-wordmark-loop.svg'), loop);
 const loopSolid = build({ dur: LOOP, loop: true, title: 'FORWARD', sample: loopSample(true), fades: false });
 writeFileSync(join(out, 'forward-wordmark-loop-nofade.svg'), loopSolid);
+
+// Reverse (owner, 2026-11-16): FORWARD, then closes to FWD and stays.
+// Holds FORWARD as long as the forward run holds FWD.
+const reverseSample = (closed) => (t) => state(Math.max(HOLD, FORWARD_END - Math.max(0, t - HOLD)), closed);
+writeFileSync(
+  join(out, 'forward-wordmark-reverse.svg'),
+  build({ dur: FORWARD_END, sample: reverseSample(false), loop: false, title: 'FWD' }),
+);
+writeFileSync(
+  join(out, 'forward-wordmark-reverse-nofade.svg'),
+  build({ dur: FORWARD_END, sample: reverseSample(true), loop: false, title: 'FWD', fades: false }),
+);
 
 console.log(`forward-wordmark.svg ${(once.length / 1024).toFixed(0)} KB, ${FORWARD_END.toFixed(2)}s`);
 console.log(`forward-wordmark-loop.svg ${(loop.length / 1024).toFixed(0)} KB, ${LOOP.toFixed(2)}s`);
