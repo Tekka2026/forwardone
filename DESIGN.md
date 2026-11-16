@@ -245,7 +245,8 @@ Rules:
   section's height: eyebrow, title, then, 48px under it, the three blocks
   as a quiet list like the Playbook's (no numbers): each title on its own
   line in card-title type (19px, 500), the line under it small and muted,
-  16px above and below, hairlines between and around; then the link. At ≤880px the visual sits on top, full width and
+  16px above and below, hairlines between the items only (no top and
+  bottom line, owner 2026-11-16); then the link. At ≤880px the visual sits on top, full width and
   square, touching the hairline above, with the copy under it.
 
 ### Homepage curtain

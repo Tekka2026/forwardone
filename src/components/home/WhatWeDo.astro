@@ -81,7 +81,7 @@ import Placeholder from '@components/ui/Placeholder.astro';
   }
   /* The three blocks as a quiet list, like the Playbook's (without the
      numbers): the title on its own line in card-title type, the line under
-     it small and muted, hairlines between. */
+     it small and muted, hairlines between them. */
   .blocks {
     margin: var(--gap-double) 0 0;
     padding: 0;
@@ -92,10 +92,17 @@ import Placeholder from '@components/ui/Placeholder.astro';
     flex-direction: column;
     gap: var(--space);
     padding: var(--space-4x) 0;
+  }
+  /* Lines between the items only (owner, 2026-11-16: no top and bottom
+     line); the first and last item sit flush with the list's edges. */
+  .block + .block {
     border-top: var(--hairline-w) solid var(--hairline);
   }
+  .block:first-child {
+    padding-top: 0;
+  }
   .block:last-child {
-    border-bottom: var(--hairline-w) solid var(--hairline);
+    padding-bottom: 0;
   }
   .block__title {
     font-size: var(--fs-card-title);
