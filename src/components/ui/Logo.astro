@@ -3,18 +3,17 @@
  * The logo (owner, 2026-11-16): the FORWARD wordmark from the owner's
  * storyboard (glyphs and motion in src/lib/wordmark.mjs). It stays pinned
  * at its place top-left while the page scrolls, and follows the scroll
- * (owner, 2026-11-16): scrolling down closes it to FWD (W and D slide
- * together, O, R, A and R go back into their slots), scrolling up opens it
- * to FORWARD again, by how far you scroll (closed by the time the H1
- * reaches the logo); at the
- * top it is always FORWARD. No fade: solid letters,
+ * (owner, 2026-11-16): at the top of the page it is FWD; scrolling down
+ * opens it to FORWARD (W and D slide apart, O, R, A and R come out of their
+ * slots), fully open by the time the H1 reaches the logo; scrolling up
+ * closes it again. No fade: solid letters,
  * revealed by their slots only. Colour (owner, 2026-11-16): white over
  * dark areas, black elsewhere; ".ONE" in a tint of the same (half
  * strength). 18px high (14px on narrow phones).
  *
  * A spacer keeps the logo's place in the header row; the link itself is
  * moved out of the header by the script and is position: fixed at the
- * spacer's spot. Without JavaScript it is simply FORWARD, in the header.
+ * spacer's spot. Without JavaScript it is simply FWD, in the header.
  *
  * `classic`: the old FORWARD.one wordmark (src/assets/brand/forwardone.svg),
  * static, in the text colour. Kept for the co-branded landing page
@@ -32,8 +31,10 @@ interface Props {
 const { classic = false } = Astro.props;
 
 const mark = wordmark.replace('<svg ', '<svg class="logo__mark" aria-hidden="true" focusable="false" ');
-// FORWARD, as rendered before the script runs (and without it).
-const open = layout(1);
+// FWD, as rendered before the script runs (and without it): the logo starts
+// closed and opens to FORWARD on scroll (owner, 2026-11-16).
+const start = layout(0);
+const at = (k: 'W' | 'D' | 'O' | 'R' | 'A' | 'R2') => `translate(${start[k].toFixed(2)} 0)`;
 const SLOTS = ['O', 'R', 'A', 'R2'] as const;
 // ".ONE" after the D (owner, 2026-11-16): the owner's DOTONE.svg (the
 // full stop, O, N, E; 452 × 159, the wordmark's own cap height), placed in
@@ -61,22 +62,22 @@ const VIEWBOX = '498 456 1388 168';
           <defs>
             {SLOTS.map((k) => (
               <clipPath id={`logo-slot-${k}`} clipPathUnits="userSpaceOnUse">
-                <polygon points={open.slots[k]} data-slot={k} />
+                <polygon points={start.slots[k]} data-slot={k} />
               </clipPath>
             ))}
           </defs>
           <path d={GLYPHS.F} />
           {SLOTS.map((k) => (
             <g clip-path={`url(#logo-slot-${k})`}>
-              <g data-glyph={k}>
+              <g data-glyph={k} transform={at(k)}>
                 <path d={GLYPHS[k]} />
               </g>
             </g>
           ))}
-          <g data-glyph="W">
+          <g data-glyph="W" transform={at('W')}>
             <path d={GLYPHS.W} />
           </g>
-          <g data-glyph="D">
+          <g data-glyph="D" transform={at('D')}>
             <path d={GLYPHS.D} />
             <clipPath id="logo-slot-one" clipPathUnits="userSpaceOnUse">
               <polygon points={ONE_MASK} />
@@ -190,12 +191,12 @@ const VIEWBOX = '498 456 1388 168';
     );
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-    // Scroll-driven (owner, 2026-11-16): scrolling down closes it, scrolling
-    // up opens it, anywhere on the page, by how far you scroll. The whole
-    // way takes as much scroll as it takes the page's H1 to reach the logo
-    // (owner, 2026-11-16: closed by the time the H1 gets there), measured
-    // per page and window size; 320px where a page has no H1. At the very
-    // top it is always FORWARD. The drawing follows with a short lag (TAU),
+    // Scroll-driven (owner, 2026-11-16): scrolling down opens it to FORWARD,
+    // scrolling up closes it to FWD, anywhere on the page, by how far you
+    // scroll. The whole way takes as much scroll as it takes the page's H1
+    // to reach the logo (open by the time the H1 gets there), measured per
+    // page and window size; 320px where a page has no H1. At the very top it
+    // is always FWD. The drawing follows with a short lag (TAU),
     // so it is never jumpy.
     let DIST = 320;
     // Measured at the top of the page only (the homepage intro is sticky, so
@@ -219,7 +220,7 @@ const VIEWBOX = '498 456 1388 168';
 
     // ---- Motion: `target` moves with the scroll; `shown` eases after it ----
     let lastY = window.scrollY;
-    let target = lastY > 0 ? 0 : 1;
+    let target = lastY > 0 ? 1 : 0;
     let shown = target;
     let last = 0;
     let frame = 0;
@@ -235,7 +236,7 @@ const VIEWBOX = '498 456 1388 168';
     function onScroll() {
       const y = Math.max(0, window.scrollY);
       if (y <= 0) measureDist();
-      const next = y <= 0 ? 1 : Math.min(1, Math.max(0, target - (y - lastY) / DIST));
+      const next = y <= 0 ? 0 : Math.min(1, Math.max(0, target + (y - lastY) / DIST));
       lastY = y;
       if (next === target) return;
       target = next;

@@ -960,18 +960,19 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   spacer keeps its place in the header row; the script moves the link out
   of the header (just before the page, z-index 50, under the floating nav
   and its scrim) and fixes it at the spacer's spot.
-- On scroll (owner, 2026-11-16): it follows the scroll. Scrolling down
-  closes it to FWD (W and D slide together, O, R, A and R slide back into
-  their slots), scrolling up opens it to FORWARD, anywhere on the page, by
-  how far you scroll: the whole way takes as much scroll as it takes the
-  page's H1 to reach the logo (owner, 2026-11-16: closed by the time the
-  H1 gets there; measured per page and window size at the top of the page,
-  e.g. 258px on the homepage at 1440, 177px on a phone; 320px where a page
-  has no H1) (in-out eased, drawn with a
-  140ms lag so it never jumps). At the very top it is always FORWARD; a
-  page opened part-way down starts as FWD. No fade (owner's choice): solid
-  letters, revealed by their slots only, which are shut in FWD. Reduced
-  motion: it switches at once, at the halfway point.
+- On scroll (owner, 2026-11-16): it follows the scroll, opening rather
+  than closing (owner, same day: "animate open instead of close"). At the
+  top of the page it is FWD; scrolling down opens it to FORWARD (W and D
+  slide apart, O, R, A and R come out of their slots), scrolling up closes
+  it again, anywhere on the page, by how far you scroll: the whole way
+  takes as much scroll as it takes the page's H1 to reach the logo (open by
+  the time the H1 gets there; measured per page and window size at the top
+  of the page, e.g. 258px on the homepage at 1440, 177px on a phone; 320px
+  where a page has no H1), in-out eased, drawn with a 140ms lag so it never
+  jumps. A page opened part-way down starts as FORWARD; without JavaScript
+  it is FWD. No fade (owner's choice): solid letters, revealed by their
+  slots only, which are shut in FWD. Reduced motion: it switches at once,
+  at the halfway point.
 - Colour (owner, 2026-11-16, final): FORWARD / FWD are always white over
   dark areas and black (`--black-ink`) on whites and light greys, 200ms
   between them. ".ONE" is a tint of the same: white at half strength on
@@ -986,8 +987,8 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
 - ".ONE" (owner, 2026-11-16): the owner's DOTONE.svg (`src/assets/brand/
   dot-one.svg`: the full stop, O, N, E, at the wordmark's cap height)
   follows the D on the same baseline, 18 units after the D's bowl, and
-  moves with it: FORWARD.ONE, and FWD.ONE when closed. About a second after
-  the page has loaded (FORWARD is there from the start) it rises in from
+  moves with it: FWD.ONE at the top, FORWARD.ONE when open. About a second
+  after the page has loaded it rises in from
   the bottom, masked at its own baseline (owner, 2026-11-16), gently: 1.6s
   with a soft ease out;
   with reduced motion it is there at once, without scripting too.
