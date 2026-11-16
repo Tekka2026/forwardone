@@ -216,14 +216,35 @@ const VIEWBOX = '498 456 942 168';
     window.addEventListener('load', place);
 
     // ---- Colour: yellow over dark areas, black elsewhere ----
-    const darkZones = Array.from(document.querySelectorAll<HTMLElement>('[data-nav-dark]'));
+    // What is actually painted under the logo decides (owner, 2026-11-16: a
+    // white block sliding over the sticky dark intro must turn it black): of
+    // the elements at the logo's spot, front to back, the first with a solid
+    // background of its own; dark if that background is dark. Pictures,
+    // video and canvases are looked past (to the card behind them); a box
+    // drawn with a gradient can be marked [data-nav-light].
+    function solidBg(el: Element): number | null {
+      if (el.hasAttribute('data-nav-light')) return 1; // a light box drawn with a gradient or a canvas
+      if (el.matches('img, video, canvas, picture, svg')) return null; // look past pictures to the box behind
+      const m = getComputedStyle(el).backgroundColor.match(/[\d.]+/g);
+      if (!m) return null;
+      const [r, g, b, a = '1'] = m;
+      if (Number(a) < 0.5) return null;
+      const lin = (c: string) => {
+        const v = Number(c) / 255;
+        return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+      };
+      return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b); // relative luminance
+    }
     function tone() {
       const r = logo!.getBoundingClientRect();
-      const y = r.top + r.height / 2;
-      const dark = darkZones.some((z) => {
-        const b = z.getBoundingClientRect();
-        return b.top <= y && b.bottom >= y;
-      });
+      const x = r.left + Math.min(r.width / 2, 24), y = r.top + r.height / 2;
+      let lum = 1;
+      for (const el of document.elementsFromPoint(x, y)) {
+        if (logo!.contains(el)) continue;
+        const l = solidBg(el);
+        if (l !== null) { lum = l; break; }
+      }
+      const dark = lum < 0.35;
       logo!.classList.toggle('is-dark', dark);
       logo!.classList.toggle('is-light', !dark);
     }
