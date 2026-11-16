@@ -863,13 +863,14 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   spacer keeps its place in the header row; the script moves the link out
   of the header (just before the page, z-index 50, under the floating nav
   and its scrim) and fixes it at the spacer's spot.
-- On scroll: once the page is scrolled more than 40px it closes to FWD (W
-  and D slide together, O, R, A and R slide back into their slots); back
-  at the top it opens to FORWARD. A full change takes 1.8s with an
-  in-out ease (owner: "not too fast"), and it can turn round midway
-  without a jump. No fade (owner's choice): solid letters, revealed by
-  their slots only, which are shut in FWD. Reduced motion: it switches at
-  once.
+- On scroll (owner, 2026-11-16): it follows the scroll. Scrolling down
+  closes it to FWD (W and D slide together, O, R, A and R slide back into
+  their slots), scrolling up opens it to FORWARD, anywhere on the page, by
+  how far you scroll: 320px for the whole way (in-out eased, drawn with a
+  140ms lag so it never jumps). At the very top it is always FORWARD; a
+  page opened part-way down starts as FWD. No fade (owner's choice): solid
+  letters, revealed by their slots only, which are shut in FWD. Reduced
+  motion: it switches at once, at the halfway point.
 - Colour as the old wordmark: white over dark areas (the dark intro and
   the `[data-nav-dark]` sections, checked at the logo's centre line as it
   scrolls), black (`--black-ink`) elsewhere, 200ms between them.

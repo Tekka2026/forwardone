@@ -2,10 +2,11 @@
 /**
  * The logo (owner, 2026-11-16): the FORWARD wordmark from the owner's
  * storyboard (glyphs and motion in src/lib/wordmark.mjs). It stays pinned
- * at its place top-left while the page scrolls; once the page is scrolled
- * it closes to FWD (W and D slide together, O, R, A and R go back into
- * their slots), and it opens to FORWARD again at the top. Taking about
- * 1.8s either way, and it can turn round midway. No fade: solid letters,
+ * at its place top-left while the page scrolls, and follows the scroll
+ * (owner, 2026-11-16): scrolling down closes it to FWD (W and D slide
+ * together, O, R, A and R go back into their slots), scrolling up opens it
+ * to FORWARD again, by how far you scroll (320px for the whole way); at the
+ * top it is always FORWARD. No fade: solid letters,
  * revealed by their slots only. Colour as the old wordmark: white over dark
  * areas (the dark intro, [data-nav-dark] sections), black elsewhere.
  *
@@ -134,10 +135,12 @@ const VIEWBOX = '498 456 942 168';
     );
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-    // How far the page has to scroll before it closes, and how long a full
-    // change takes (owner: "not too fast").
-    const SCROLLED = 40;
-    const DURATION = 1800;
+    // Scroll-driven (owner, 2026-11-16): scrolling down closes it, scrolling
+    // up opens it, anywhere on the page, by how far you scroll: DIST px for
+    // the whole way. At the very top it is always FORWARD. The drawing
+    // follows with a short lag (TAU), so it is never jumpy.
+    const DIST = 320;
+    const TAU = 140;
 
     // ---- Drawing: p = 0 is FWD, 1 is FORWARD ----
     function draw(p: number) {
@@ -148,27 +151,30 @@ const VIEWBOX = '498 456 942 168';
       for (const k of ['O', 'R', 'A', 'R2'] as const) slots[k]?.setAttribute('points', l.slots[k]);
     }
 
-    // ---- Motion: a linear value runs to its target at a steady pace and
-    // is eased for drawing, so a change can turn round midway smoothly. ----
-    let shown = window.scrollY > SCROLLED ? 0 : 1;
-    let target = shown;
+    // ---- Motion: `target` moves with the scroll; `shown` eases after it ----
+    let lastY = window.scrollY;
+    let target = lastY > 0 ? 0 : 1;
+    let shown = target;
     let last = 0;
     let frame = 0;
     function step(now: number) {
-      const dt = last ? now - last : 16;
+      const dt = last ? Math.min(64, now - last) : 16;
       last = now;
-      const move = dt / DURATION;
-      shown = target > shown ? Math.min(target, shown + move) : Math.max(target, shown - move);
+      shown += (target - shown) * (1 - Math.exp(-dt / TAU));
+      if (Math.abs(target - shown) < 0.001) shown = target;
       draw(easeInOutCubic(shown));
       if (shown !== target) frame = requestAnimationFrame(step);
       else frame = 0;
     }
-    function setTarget(next: number) {
+    function onScroll() {
+      const y = Math.max(0, window.scrollY);
+      const next = y <= 0 ? 1 : Math.min(1, Math.max(0, target - (y - lastY) / DIST));
+      lastY = y;
       if (next === target) return;
       target = next;
       if (reduceMotion.matches) {
-        shown = target;
-        draw(target);
+        shown = target = Math.round(target);
+        draw(shown);
         return;
       }
       if (!frame) {
@@ -216,7 +222,7 @@ const VIEWBOX = '498 456 942 168';
         if (queued) return;
         queued = requestAnimationFrame(() => {
           queued = 0;
-          setTarget(window.scrollY > SCROLLED ? 0 : 1);
+          onScroll();
           tone();
         });
       },
