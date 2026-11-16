@@ -877,11 +877,12 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   page opened part-way down starts as FWD. No fade (owner's choice): solid
   letters, revealed by their slots only, which are shut in FWD. Reduced
   motion: it switches at once, at the halfway point.
-- Colour as the old wordmark: white over dark areas (the dark intro and
-  the `[data-nav-dark]` sections, checked at the logo's centre line as it
-  scrolls), black (`--black-ink`) elsewhere, 200ms between them.
-- Size: 20px high (15px at ≤420px), 112 × 20 (the storyboard frame cropped
-  to `498 456 942 168`). Without JavaScript: FORWARD in the header.
+- Colour (owner, 2026-11-16): yellow (`--brand-yellow`, #FFEA6D) over dark
+  areas (the dark intro and the `[data-nav-dark]` sections, checked at the
+  logo's centre line as it scrolls), black (`--black-ink`) on whites and
+  light greys, 200ms between them.
+- Size (owner, 2026-11-16: 4px higher): 24px high (19px at ≤420px), 135 ×
+  24 (the storyboard frame cropped to `498 456 942 168`). Without JavaScript: FORWARD in the header.
 - The stand-alone SVG animations of the same motion (FWD → FORWARD, loops,
   without fade, FORWARD → FWD) are built from the same module by
   `node visuals/forward-wordmark/build.mjs` into `public/visuals/`.
@@ -1018,7 +1019,7 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   Brand Foundation doc (Ink #111111, Black #000000).
 
 - Accent: `--brand-yellow` #FFEA6D (owner, 2026-10-17; replaced the cyan
-  #78F6FB and the blue #2D75D9). Used for the H1 last-word tint, the nav
+  #78F6FB and the blue #2D75D9). Used for the logo over dark areas, the H1 last-word tint, the nav
   AI mark and entrance glow, Proof card dates, the Fund III gradient corner, the portal's mail badge, and the robot's
   cap. Where it must read on light grey (the robot's ring and label) it is
   darkened to ochre rgb(196,160,20).
@@ -1063,7 +1064,7 @@ redefine any token or class from this file elsewhere.
 |---|---|
 | Global stylesheet | `css/global.css`, imported once in `src/layouts/Base.astro` |
 | Page shell, skip link, font loading | `src/layouts/Base.astro` |
-| Logo | Since 2026-11-16 the FORWARD wordmark (`src/lib/wordmark.mjs`, from the owner's storyboard), drawn by `src/components/ui/Logo.astro` in `currentColor`, pinned and closing to FWD on scroll (§8, Logo). 20px high (15px at ≤420px so logo and LP login fit down to 320px). The classic FORWARD.one wordmark `src/assets/brand/forwardone.svg` (supplied 2026-10-14) stays on /the-pitch (`<Logo classic />`) and in the portal preview's top bar (16px desktop, 14px mobile) |
+| Logo | Since 2026-11-16 the FORWARD wordmark (`src/lib/wordmark.mjs`, from the owner's storyboard), drawn by `src/components/ui/Logo.astro` in `currentColor` (yellow on dark, black on light), pinned and closing to FWD on scroll (§8, Logo). 24px high (19px at ≤420px). The classic FORWARD.one wordmark `src/assets/brand/forwardone.svg` (supplied 2026-10-14) stays on /the-pitch (`<Logo classic />`) and in the portal preview's top bar (16px desktop, 14px mobile) |
 | Top strip (logo), floating nav, footer | `src/components/Header.astro`, `src/components/Nav.astro`, `src/components/Footer.astro` |
 | Footer partner logos (Invest Europe, EIF, EU) | `src/assets/partners/*.svg`: single-colour SVGs inlined in `currentColor` (black on the light footer), all 44px high. No hairline above. Desktop: one left-aligned row, "Member of:" (Inter, `.small`) 12px before the Invest Europe logo, 64px between logos. Phones (≤640px): "Member of:" centred with the three logos centred in one row 16px under it, 32px high; label and names in `footer.partnersLabel` / `footer.partners` (nav.ts) |
 | Shared UI | `src/components/ui/` (Button, Logo, Footnote, Placeholder) |
