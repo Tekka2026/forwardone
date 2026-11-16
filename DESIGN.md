@@ -963,7 +963,11 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
 - On scroll (owner, 2026-11-16): it follows the scroll. Scrolling down
   closes it to FWD (W and D slide together, O, R, A and R slide back into
   their slots), scrolling up opens it to FORWARD, anywhere on the page, by
-  how far you scroll: 320px for the whole way (in-out eased, drawn with a
+  how far you scroll: the whole way takes as much scroll as it takes the
+  page's H1 to reach the logo (owner, 2026-11-16: closed by the time the
+  H1 gets there; measured per page and window size at the top of the page,
+  e.g. 258px on the homepage at 1440, 177px on a phone; 320px where a page
+  has no H1) (in-out eased, drawn with a
   140ms lag so it never jumps). At the very top it is always FORWARD; a
   page opened part-way down starts as FWD. No fade (owner's choice): solid
   letters, revealed by their slots only, which are shut in FWD. Reduced

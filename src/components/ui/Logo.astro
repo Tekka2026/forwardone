@@ -5,7 +5,8 @@
  * at its place top-left while the page scrolls, and follows the scroll
  * (owner, 2026-11-16): scrolling down closes it to FWD (W and D slide
  * together, O, R, A and R go back into their slots), scrolling up opens it
- * to FORWARD again, by how far you scroll (320px for the whole way); at the
+ * to FORWARD again, by how far you scroll (closed by the time the H1
+ * reaches the logo); at the
  * top it is always FORWARD. No fade: solid letters,
  * revealed by their slots only. Colour (owner, 2026-11-16): white over
  * dark areas, black elsewhere; ".ONE" in a tint of the same (half
@@ -190,10 +191,21 @@ const VIEWBOX = '498 456 1388 168';
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
     // Scroll-driven (owner, 2026-11-16): scrolling down closes it, scrolling
-    // up opens it, anywhere on the page, by how far you scroll: DIST px for
-    // the whole way. At the very top it is always FORWARD. The drawing
-    // follows with a short lag (TAU), so it is never jumpy.
-    const DIST = 320;
+    // up opens it, anywhere on the page, by how far you scroll. The whole
+    // way takes as much scroll as it takes the page's H1 to reach the logo
+    // (owner, 2026-11-16: closed by the time the H1 gets there), measured
+    // per page and window size; 320px where a page has no H1. At the very
+    // top it is always FORWARD. The drawing follows with a short lag (TAU),
+    // so it is never jumpy.
+    let DIST = 320;
+    // Measured at the top of the page only (the homepage intro is sticky, so
+    // the H1 is not where it starts once scrolled); until then 320px.
+    const measureDist = () => {
+      const h1 = document.querySelector<HTMLElement>('main h1');
+      if (!h1 || window.scrollY > 0) return;
+      const gap = h1.getBoundingClientRect().top + window.scrollY - (slot!.getBoundingClientRect().bottom + window.scrollY);
+      DIST = Math.max(80, Math.round(gap));
+    };
     const TAU = 140;
 
     // ---- Drawing: p = 0 is FWD, 1 is FORWARD ----
@@ -222,6 +234,7 @@ const VIEWBOX = '498 456 1388 168';
     }
     function onScroll() {
       const y = Math.max(0, window.scrollY);
+      if (y <= 0) measureDist();
       const next = y <= 0 ? 1 : Math.min(1, Math.max(0, target - (y - lastY) / DIST));
       lastY = y;
       if (next === target) return;
@@ -251,7 +264,9 @@ const VIEWBOX = '498 456 1388 168';
       logo!.style.setProperty('--logo-y', `${r.top + window.scrollY}px`);
     }
     place();
+    measureDist();
     window.addEventListener('resize', place);
+    window.addEventListener('resize', measureDist);
     window.addEventListener('load', place);
 
     // ---- Colour: yellow over dark areas, black elsewhere ----
