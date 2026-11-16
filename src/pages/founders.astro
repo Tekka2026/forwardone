@@ -499,13 +499,14 @@ const labelled = (svg: string, label: string) =>
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
     animation-delay: var(--stat-at);
-    transition: color 200ms ease;
+    transition: color 900ms cubic-bezier(0.45, 0, 0.55, 1); /* back, gently (owner, 2026-11-16) */
   }
   /* Hover (owner, 2026-11-16): the figure lights up yellow, or light blue
      for a visitor who chose founder in the nav. */
   @media (hover: hover) {
     .f-stat:hover .f-stat__value {
       color: var(--brand-yellow);
+      transition-duration: 600ms; /* lights up a little quicker than it fades */
     }
     :global(html[data-founder]) .f-stat:hover .f-stat__value {
       color: var(--nav-bg-founder);

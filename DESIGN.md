@@ -283,6 +283,13 @@ Rules:
   bottom line, owner 2026-11-16); then the link. At ≤880px the visual sits on top, full width and
   square, touching the hairline above, with the copy under it.
 
+### Key figures on hover (owner, 2026-11-16)
+
+- The key figures (homepage intro stats, founders page figures) light up
+  on hover: yellow #FFEA6D, or light blue #B3DAFF for a visitor who chose
+  founder. Gently: 600ms to light up, 900ms to fade back, in-out ease.
+  Mouse only.
+
 ### H1 on phones (owner, 2026-11-16)
 
 - The H1s have a forced break ("Every proven step / earns the next",
