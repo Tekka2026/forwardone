@@ -3,8 +3,8 @@
  * What we do (owner, 2026-11-16): the visual fills the left half of the
  * section edge to edge, from the browser's left edge to the middle and from
  * the separator line above to the one below; the copy sits in the right
- * half of the grid (columns 7–12): eyebrow, title, the three blocks one
- * under the other, and the link. At ≤880px the visual sits on top, full
+ * half (columns 8–12, column 7 left open): eyebrow, title, the three blocks
+ * as a quiet list (title, small muted line, hairlines between), the link. At ≤880px the visual sits on top, full
  * width and square, touching the separator line, with the copy under it.
  */
 import ArrowLink from '@components/ui/ArrowLink.astro';
@@ -28,15 +28,16 @@ import Placeholder from '@components/ui/Placeholder.astro';
     <div class="split__copy">
       <p class="eyebrow">{whatWeDo.eyebrow}</p>
       <h2 class="h-section section-title"><Sentences text={whatWeDo.title} /></h2>
-      <div class="blocks">
+      <ul class="blocks">
         {
           whatWeDo.blocks.map((b) => (
-            <p class="lede block">
-              <strong class="block__title">{b.title}</strong> {b.body}
-            </p>
+            <li class="block">
+              <span class="block__title">{b.title}</span>
+              <span class="small block__body">{b.body}</span>
+            </li>
           ))
         }
-      </div>
+      </ul>
       <p class="section-link">
         <ArrowLink href={href(whatWeDo.link.href)} label={whatWeDo.link.label} />
       </p>
@@ -69,22 +70,42 @@ import Placeholder from '@components/ui/Placeholder.astro';
     height: 100%;
     object-fit: cover;
   }
+  /* Columns 8–12 (owner, 2026-11-16: it felt dense): column 7 stays empty
+     as room next to the visual, and the lines stay short. */
   .split__copy {
-    grid-column: 7 / span 6;
+    grid-column: 8 / span 5;
+    align-self: center;
   }
   .section-title {
     margin-top: var(--gap-half);
   }
+  /* The three blocks as a quiet list, like the Playbook's (without the
+     numbers): the title on its own line in card-title type, the line under
+     it small and muted, hairlines between. */
   .blocks {
-    display: grid;
-    gap: var(--space-4x);
-    margin-top: var(--space-4x); /* heading → body: 16px */
+    margin: var(--gap-double) 0 0;
+    padding: 0;
+    list-style: none;
   }
   .block {
-    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space);
+    padding: var(--space-4x) 0;
+    border-top: var(--hairline-w) solid var(--hairline);
+  }
+  .block:last-child {
+    border-bottom: var(--hairline-w) solid var(--hairline);
   }
   .block__title {
-    font-weight: 600;
+    font-size: var(--fs-card-title);
+    font-weight: 500;
+    letter-spacing: var(--ls-card-title);
+    line-height: var(--lh-card-title);
+  }
+  .block__body {
+    color: var(--muted);
+    text-wrap: pretty;
   }
   .section-link {
     margin-top: var(--gap-double);

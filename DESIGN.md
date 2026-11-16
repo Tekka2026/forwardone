@@ -240,9 +240,12 @@ Rules:
   half edge to edge: from the window's left edge to the middle, and from
   the section's hairline above to the next section's hairline below
   (`object-fit: cover`, light blue #B3DAFF behind it while it loads). The
-  copy sits in grid columns 7–12 with the section's usual padding:
-  eyebrow, title, the three blocks one under the other (16px apart, Lede
-  type), and the link. At ≤880px the visual sits on top, full width and
+  copy sits in grid columns 8–12 (column 7 left open as room next to the
+  visual; owner, 2026-11-16: the first version felt dense), centred on the
+  section's height: eyebrow, title, then, 48px under it, the three blocks
+  as a quiet list like the Playbook's (no numbers): each title on its own
+  line in card-title type (19px, 500), the line under it small and muted,
+  16px above and below, hairlines between and around; then the link. At ≤880px the visual sits on top, full width and
   square, touching the hairline above, with the copy under it.
 
 ### Homepage curtain
