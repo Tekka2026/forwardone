@@ -18,8 +18,8 @@ export const hero = {
    */
   eyebrow: { lead: 'Early-stage VC', rest: 'for European industrial tech' },
   /** `\n` forces the line break. */
-  // Owner, 2026-11-16 (was 'Performance,\nengineered.').
-  title: 'Every proven step\nearns the next.',
+  // Owner, 2026-11-16 (was 'Performance,\nengineered.'); no full stop.
+  title: 'Every proven step\nearns the next',
   /** `text`, then the footnote marker, then `after`. */
   sub: {
     text: 'Our Funds I and II rank in the top 5% of European VC.',
