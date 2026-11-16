@@ -419,16 +419,22 @@ screens the list stacks under the CTA.
 - Insights article visuals: light grey tiles (#F5F5F5) until supplied, 5:7 portrait;
   on phones (≤640px, one column) 7:5 landscape. An article can instead set
   `visual` to a coded visual from `src/components/visuals/`: the first one
-  (Sensorfact) uses `RobotArm.astro`, the owner's interactive canvas robot
-  arm (second version, WebGL2 with a depth buffer; inverted version). Since
-  2026-10-19 the arm is drawn realistically: smooth-shaded solids without
-  outlines, matte black links with a fine powder-coat grain (object-space
-  noise mottling colour and sheen, so it sticks to the parts), all of it
-  matte black down to the base plate, motor covers, tool changer and gripper
-  (slightly different sheens keep the parts apart), and the yellow (#FFEA6D)
-  sensor, lit per pixel by a camera-fixed studio rig (key upper left, fill right, rim behind, sky/ground
-  ambient, highlights per material) with a soft contact shadow under the
-  base. The plus-grid floor, dashed reach ring and label are unchanged. It
+  (Sensorfact) uses `RobotArm.astro`, the owner's interactive robot arm.
+  Photorealistic since 2026-11-16 (owner): rendered with three.js
+  (`src/lib/robot-arm.ts`, loaded only when the card comes within 600px of
+  the screen), same arm, size, kinematics and behaviour as before. Rounded
+  edges on every part (lathed and bevelled solids), physically based
+  materials: satin black powder coat with a fine grain in its roughness and
+  relief (a few percent only) on the links, black anodised aluminium on the
+  tool changer and gripper, steel bolt heads on the base plate and the J2
+  motor cover, a glossy clear-coated yellow (#FFEA6D) sensor with a black
+  name plate. Lit by an image-based studio environment (RoomEnvironment)
+  plus a key light (upper left, casting soft VSM shadows on the arm and
+  the floor), a fill and a rim, all three turning with the camera; a
+  contact shadow under the base; Neutral tone mapping. Backdrop: a soft
+  light-grey studio gradient (lighter behind the arm). The floor shows the
+  dashed reach ring with ticks and the SENSORFACT label as a printed
+  marking in the darkened yellow; the drafting grid is gone. It
   fits itself to the box. Idle, its cap faces the viewer (turning with the
   slowly orbiting view) and keeps moving slightly: every 1.4–3.2 s it picks
   another spot near the camera to look at, eased so it moves like a machine.
