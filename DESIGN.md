@@ -527,7 +527,8 @@ screens the list stacks under the CTA.
   the viewport (first frame as it comes in at the bottom, last as it leaves
   at the top), forward when scrolling down, backward when scrolling up,
   gliding after the scroll with a short ease. File:
-  `public/visuals/munich-flyover-3.mp4` (the owner's third version,
+  `public/visuals/munich-flyover-2.mp4` (the owner's second version, back
+  after a third was tried the same day;
   2026-11-16; 720 × 1008, cropped to 5:7, every frame a keyframe for smooth
   seeking, no sound) with a poster
   frame; it loads only when the card comes within 800px of the screen
