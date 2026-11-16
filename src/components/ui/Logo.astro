@@ -7,9 +7,9 @@
  * together, O, R, A and R go back into their slots), scrolling up opens it
  * to FORWARD again, by how far you scroll (320px for the whole way); at the
  * top it is always FORWARD. No fade: solid letters,
- * revealed by their slots only. Colour (owner, 2026-11-16): FORWARD / FWD
- * white over dark areas, black elsewhere; ".ONE" yellow (#FFEA6D) for
- * investors and before a choice, light blue (#B3DAFF) for founders. 18px high (14px on narrow phones).
+ * revealed by their slots only. Colour (owner, 2026-11-16): white over
+ * dark areas, black elsewhere; ".ONE" in a tint of the same (half
+ * strength). 18px high (14px on narrow phones).
  *
  * A spacer keeps the logo's place in the header row; the link itself is
  * moved out of the header by the script and is position: fixed at the
@@ -146,11 +146,9 @@ const VIEWBOX = '498 456 1388 168';
     top: var(--logo-y, calc(var(--gap) + (var(--form-height-small) - 18px) / 2));
     left: var(--logo-x, max(var(--pad), calc((100vw - var(--max)) / 2)));
   }
-  /* Colour (owner, 2026-11-16): FORWARD / FWD always white on dark and
-     black on whites and light greys (before the script has placed it:
-     white in the dark header). ".ONE" carries the visitor's side: yellow
-     for investors (and before a choice), light blue once they chose
-     founder, on every background. */
+  /* Colour (owner, 2026-11-16): white on dark and black on whites and
+     light greys (before the script has placed it: white in the dark
+     header); ".ONE" in a tint of the same. */
   :global(.theme-dark) .logo--forward {
     color: #ffffff;
   }
@@ -160,24 +158,13 @@ const VIEWBOX = '498 456 1388 168';
   .logo--forward.is-dark {
     color: #ffffff;
   }
+  /* ".ONE" (owner, 2026-11-16): a tint of the logo's own colour, white at
+     half strength on dark, black at half strength on light; no other
+     colours. */
   .logo--forward :global(.logo__one-in) {
-    fill: var(--brand-yellow);
-    transition:
-      fill 200ms ease,
-      transform 1600ms cubic-bezier(0.33, 1, 0.68, 1);
-  }
-  .logo--forward.is-founder :global(.logo__one-in) {
-    fill: var(--nav-bg-founder);
-  }
-  /* On whites and light greys (owner, 2026-11-16) ".ONE" takes a deeper
-     shade of the same colour, so it reads next to the black FORWARD: the
-     site's darkened yellow (ochre, as on the robot's ring) for investors,
-     and Ice's own hue, deepened, for founders. */
-  .logo--forward.is-light :global(.logo__one-in) {
-    fill: #c4a014;
-  }
-  .logo--forward.is-light.is-founder :global(.logo__one-in) {
-    fill: #3989d5;
+    fill: currentColor;
+    fill-opacity: 0.5;
+    transition: transform 1600ms cubic-bezier(0.33, 1, 0.68, 1);
   }
   .logo--forward.is-ready {
     transition: color 200ms ease;
@@ -310,20 +297,6 @@ const VIEWBOX = '498 456 1388 168';
     else if (document.readyState === 'complete') setTimeout(showOne, 1000);
     else addEventListener('load', () => setTimeout(showOne, 1000), { once: true });
 
-    // ---- Founder or investor: follows the choice in the floating nav,
-    // which marks itself [data-founder] (and remembers it for the visit) ----
-    const nav = document.querySelector<HTMLElement>('[data-nav]');
-    const audience = () => {
-      if (nav) return nav.hasAttribute('data-founder');
-      try { return sessionStorage.getItem('forwardone-audience') === 'founder'; } catch { return false; }
-    };
-    logo.classList.toggle('is-founder', audience());
-    if (nav) {
-      new MutationObserver(() => logo!.classList.toggle('is-founder', audience())).observe(nav, {
-        attributes: true,
-        attributeFilter: ['data-founder'],
-      });
-    }
 
     let queued = 0;
     window.addEventListener(

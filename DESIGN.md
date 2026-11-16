@@ -952,14 +952,9 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   motion: it switches at once, at the halfway point.
 - Colour (owner, 2026-11-16, final): FORWARD / FWD are always white over
   dark areas and black (`--black-ink`) on whites and light greys, 200ms
-  between them. ".ONE" carries the visitor's side, on every background:
-  yellow (`--brand-yellow`, #FFEA6D) for investors and before a choice,
-  light blue (`--nav-bg-founder`, #B3DAFF) once they chose founder in the
-  floating nav (it follows a switch or reset at once). On whites and light
-  greys (owner, 2026-11-16) a deeper shade of the same colour so it reads
-  next to the black: ochre #C4A014 (the site's darkened yellow) for
-  investors, #3989D5 (Ice's hue, deepened; no darker blue in the palette)
-  for founders. What is actually
+  between them. ".ONE" is a tint of the same: white at half strength on
+  dark, black at half strength on light; no yellow or blue, the same for
+  founders and investors. What is actually
   painted under the logo decides dark or light, so a white block sliding
   over the sticky dark intro turns it black: of the elements at the
   logo's spot (front to back) the first with a solid background of its
