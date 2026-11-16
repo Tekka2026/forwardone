@@ -7,9 +7,9 @@
  * together, O, R, A and R go back into their slots), scrolling up opens it
  * to FORWARD again, by how far you scroll (320px for the whole way); at the
  * top it is always FORWARD. No fade: solid letters,
- * revealed by their slots only. Colour (owner, 2026-11-16): yellow
- * (#FFEA6D) over dark areas, black elsewhere; for a visitor who chose
- * founder in the nav, light blue (#B3DAFF) over dark areas instead. 24px high (19px on narrow phones).
+ * revealed by their slots only. Colour (owner, 2026-11-16): FORWARD / FWD
+ * white over dark areas, black elsewhere; ".ONE" yellow (#FFEA6D) for
+ * investors and before a choice, light blue (#B3DAFF) for founders. 24px high (19px on narrow phones).
  *
  * A spacer keeps the logo's place in the header row; the link itself is
  * moved out of the header by the script and is position: fixed at the
@@ -148,23 +148,26 @@ const VIEWBOX = '498 456 1388 168';
     top: var(--logo-y, calc(var(--gap) + (var(--form-height-small) - 24px) / 2));
     left: var(--logo-x, max(var(--pad), calc((100vw - var(--max)) / 2)));
   }
-  /* Colour (owner, 2026-11-16): yellow on black, black on whites and
-     light greys. Before the script has placed it: yellow in the dark
-     header. */
+  /* Colour (owner, 2026-11-16): FORWARD / FWD always white on dark and
+     black on whites and light greys (before the script has placed it:
+     white in the dark header). ".ONE" carries the visitor's side: yellow
+     for investors (and before a choice), light blue once they chose
+     founder, on every background. */
   :global(.theme-dark) .logo--forward {
-    color: var(--brand-yellow);
+    color: #ffffff;
   }
   .logo--forward.is-light {
     color: var(--black-ink);
   }
   .logo--forward.is-dark {
-    color: var(--brand-yellow);
+    color: #ffffff;
   }
-  /* Founders (owner, 2026-11-16): once a visitor has said they are a
-     founder, light blue on dark (the founder bar's colour) instead of
-     yellow; black on light as for everyone. */
-  .logo--forward.is-dark.is-founder {
-    color: var(--nav-bg-founder);
+  .logo--forward :global(.logo__one-in) {
+    fill: var(--brand-yellow);
+    transition: fill 200ms ease;
+  }
+  .logo--forward.is-founder :global(.logo__one-in) {
+    fill: var(--nav-bg-founder);
   }
   .logo--forward.is-ready {
     transition: color 200ms ease;

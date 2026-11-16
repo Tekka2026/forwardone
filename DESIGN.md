@@ -948,14 +948,15 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   page opened part-way down starts as FWD. No fade (owner's choice): solid
   letters, revealed by their slots only, which are shut in FWD. Reduced
   motion: it switches at once, at the halfway point.
-- Colour (owner, 2026-11-16): yellow (`--brand-yellow`, #FFEA6D) over dark
-  areas, black (`--black-ink`) on whites and light greys, 200ms between
-  them. Founders (owner, 2026-11-16): once the visitor has chosen
-  founder in the floating nav, the logo is light blue (`--nav-bg-founder`,
-  #B3DAFF, the founder bar's colour) over dark areas instead of yellow,
-  black on light as for everyone; it follows a switch or reset at once. What is actually painted under the logo decides, so a white block
-  sliding over the sticky dark intro turns it black: of the elements at
-  the logo's spot (front to back) the first with a solid background of its
+- Colour (owner, 2026-11-16, final): FORWARD / FWD are always white over
+  dark areas and black (`--black-ink`) on whites and light greys, 200ms
+  between them. ".ONE" carries the visitor's side, on every background:
+  yellow (`--brand-yellow`, #FFEA6D) for investors and before a choice,
+  light blue (`--nav-bg-founder`, #B3DAFF) once they chose founder in the
+  floating nav (it follows a switch or reset at once). What is actually
+  painted under the logo decides dark or light, so a white block sliding
+  over the sticky dark intro turns it black: of the elements at the
+  logo's spot (front to back) the first with a solid background of its
   own, dark below 0.35 relative luminance. Pictures, video and canvases
   are looked past, to the card behind them; a box drawn with a gradient
   can be marked `[data-nav-light]` (the robot arm's studio backdrop is).
