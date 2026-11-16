@@ -850,6 +850,35 @@ the dark intro, black with white text on light pages) and, to its right,
 LP login (outlined, opens the LP portal in a new tab, ↗). On phones
 (≤640px) Pitch us is hidden; founders reach it from the closing section.
 
+### Logo: FORWARD ↔ FWD (owner, 2026-11-16)
+
+- The logo is the FORWARD wordmark from the owner's storyboard
+  (`visuals/forward-wordmark/storyboard-*.svg`; glyphs and motion in
+  `src/lib/wordmark.mjs`, component `src/components/ui/Logo.astro`). It
+  replaces the FORWARD.one wordmark in the header on every page except the
+  co-branded landing page (/the-pitch, also on Webflow), which keeps the
+  classic one (`<Logo classic />`).
+- Pinned (owner's choice): the logo stays at its place top-left while the
+  page scrolls; the buttons scroll away with the header as before. A
+  spacer keeps its place in the header row; the script moves the link out
+  of the header (just before the page, z-index 50, under the floating nav
+  and its scrim) and fixes it at the spacer's spot.
+- On scroll: once the page is scrolled more than 40px it closes to FWD (W
+  and D slide together, O, R, A and R slide back into their slots); back
+  at the top it opens to FORWARD. A full change takes 1.8s with an
+  in-out ease (owner: "not too fast"), and it can turn round midway
+  without a jump. No fade (owner's choice): solid letters, revealed by
+  their slots only, which are shut in FWD. Reduced motion: it switches at
+  once.
+- Colour as the old wordmark: white over dark areas (the dark intro and
+  the `[data-nav-dark]` sections, checked at the logo's centre line as it
+  scrolls), black (`--black-ink`) elsewhere, 200ms between them.
+- Size: 20px high (15px at ≤420px), 112 × 20 (the storyboard frame cropped
+  to `498 456 942 168`). Without JavaScript: FORWARD in the header.
+- The stand-alone SVG animations of the same motion (FWD → FORWARD, loops,
+  without fade, FORWARD → FWD) are built from the same module by
+  `node visuals/forward-wordmark/build.mjs` into `public/visuals/`.
+
 - Hidden on load. It slides in from the bottom on the visitor's first scroll
   (or at once when the page cannot scroll, or on the first Tab press).
   Once in place, a gradient fades in behind it: black 30% at the viewport
@@ -1026,7 +1055,7 @@ redefine any token or class from this file elsewhere.
 |---|---|
 | Global stylesheet | `css/global.css`, imported once in `src/layouts/Base.astro` |
 | Page shell, skip link, font loading | `src/layouts/Base.astro` |
-| Logo | `src/assets/brand/forwardone.svg` (supplied 2026-10-14), inlined by `src/components/ui/Logo.astro` in `currentColor`: 20px high (15px at ≤420px so logo and LP login fit down to 320px); also in the portal preview's top bar (16px desktop, 14px mobile) |
+| Logo | Since 2026-11-16 the FORWARD wordmark (`src/lib/wordmark.mjs`, from the owner's storyboard), drawn by `src/components/ui/Logo.astro` in `currentColor`, pinned and closing to FWD on scroll (§8, Logo). 20px high (15px at ≤420px so logo and LP login fit down to 320px). The classic FORWARD.one wordmark `src/assets/brand/forwardone.svg` (supplied 2026-10-14) stays on /the-pitch (`<Logo classic />`) and in the portal preview's top bar (16px desktop, 14px mobile) |
 | Top strip (logo), floating nav, footer | `src/components/Header.astro`, `src/components/Nav.astro`, `src/components/Footer.astro` |
 | Footer partner logos (Invest Europe, EIF, EU) | `src/assets/partners/*.svg`: single-colour SVGs inlined in `currentColor` (black on the light footer), all 44px high. No hairline above. Desktop: one left-aligned row, "Member of:" (Inter, `.small`) 12px before the Invest Europe logo, 64px between logos. Phones (≤640px): "Member of:" centred with the three logos centred in one row 16px under it, 32px high; label and names in `footer.partnersLabel` / `footer.partners` (nav.ts) |
 | Shared UI | `src/components/ui/` (Button, Logo, Footnote, Placeholder) |

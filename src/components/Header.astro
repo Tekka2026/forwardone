@@ -1,6 +1,8 @@
 ---
 /**
- * Top strip: the logo on the left; on the right Pitch us (solid: white with
+ * Top strip: the logo on the left (FORWARD, pinned while the page scrolls
+ * and closing to FWD, see Logo.astro; the classic FORWARD.one wordmark on
+ * the co-branded landing page); on the right Pitch us (solid: white with
  * black text on the dark intro, inverted on light pages) and LP login
  * (outlined).
  * Navigation lives in Nav.astro, floating at the bottom of the viewport.
@@ -45,7 +47,7 @@ const marks = partners.map((p) => ({
     {
       marks.length ? (
         <div class="site-top__brands">
-          <Logo />
+          <Logo classic />
           {marks.map((m) =>
             m.href ? (
               <a class="site-top__partner" href={m.href} rel="noopener" set:html={m.svg} />
@@ -103,11 +105,13 @@ const marks = partners.map((p) => ({
   /* Landing pages (owner, 2026-10-22): no LP login next to it, so the
      wordmark can be a little larger, also on narrow phones. 20% smaller
      since 2026-10-26 (owner; before: 24 / 19px). */
-  .site-top.site-top--minimal :global(.logo__mark) {
+  .site-top.site-top--minimal :global(.logo__mark),
+  .site-top.site-top--minimal :global(.logo-slot) {
     height: 19.2px;
   }
   @media (max-width: 420px) {
-    .site-top.site-top--minimal :global(.logo__mark) {
+    .site-top.site-top--minimal :global(.logo__mark),
+    .site-top.site-top--minimal :global(.logo-slot) {
       height: 15.2px;
     }
   }

@@ -1,17 +1,74 @@
 ---
 /**
- * Wordmark: the supplied FORWARD.one SVG (src/assets/brand/forwardone.svg),
- * inlined in currentColor so it follows the theme (white on the dark intro,
- * black on light pages). The link carries the accessible name.
+ * The logo (owner, 2026-11-16): the FORWARD wordmark from the owner's
+ * storyboard (glyphs and motion in src/lib/wordmark.mjs). It stays pinned
+ * at its place top-left while the page scrolls; once the page is scrolled
+ * it closes to FWD (W and D slide together, O, R, A and R go back into
+ * their slots), and it opens to FORWARD again at the top. Taking about
+ * 1.8s either way, and it can turn round midway. No fade: solid letters,
+ * revealed by their slots only. Colour as the old wordmark: white over dark
+ * areas (the dark intro, [data-nav-dark] sections), black elsewhere.
+ *
+ * A spacer keeps the logo's place in the header row; the link itself is
+ * moved out of the header by the script and is position: fixed at the
+ * spacer's spot. Without JavaScript it is simply FORWARD, in the header.
+ *
+ * `classic`: the old FORWARD.one wordmark (src/assets/brand/forwardone.svg),
+ * static, in the text colour. Kept for the co-branded landing page
+ * (/the-pitch, also pasted into Webflow), which shows partner logos beside it.
  */
 import { href } from '@lib/href';
 import { site } from '@content/nav';
+import { GLYPHS, layout } from '@lib/wordmark.mjs';
 import wordmark from '../../assets/brand/forwardone.svg?raw';
 
+interface Props {
+  classic?: boolean;
+}
+const { classic = false } = Astro.props;
+
 const mark = wordmark.replace('<svg ', '<svg class="logo__mark" aria-hidden="true" focusable="false" ');
+// FORWARD, as rendered before the script runs (and without it).
+const open = layout(1);
+const SLOTS = ['O', 'R', 'A', 'R2'] as const;
+// The storyboard's 1920×1080 frame, cropped to the wordmark.
+const VIEWBOX = '498 456 942 168';
 ---
 
-<a class="logo" href={href('/')} aria-label={`${site.name} home`} set:html={mark} />
+{
+  classic ? (
+    <a class="logo" href={href('/')} aria-label={`${site.name} home`} set:html={mark} />
+  ) : (
+    <>
+      <span class="logo-slot" aria-hidden="true" data-logo-slot />
+      <a class="logo logo--forward" href={href('/')} aria-label={`${site.name} home`} data-logo>
+        <svg class="logo__mark" viewBox={VIEWBOX} fill="currentColor" aria-hidden="true" focusable="false">
+          <defs>
+            {SLOTS.map((k) => (
+              <clipPath id={`logo-slot-${k}`} clipPathUnits="userSpaceOnUse">
+                <polygon points={open.slots[k]} data-slot={k} />
+              </clipPath>
+            ))}
+          </defs>
+          <path d={GLYPHS.F} />
+          {SLOTS.map((k) => (
+            <g clip-path={`url(#logo-slot-${k})`}>
+              <g data-glyph={k}>
+                <path d={GLYPHS[k]} />
+              </g>
+            </g>
+          ))}
+          <g data-glyph="W">
+            <path d={GLYPHS.W} />
+          </g>
+          <g data-glyph="D">
+            <path d={GLYPHS.D} />
+          </g>
+        </svg>
+      </a>
+    </>
+  )
+}
 
 <style>
   .logo {
@@ -20,16 +77,150 @@ const mark = wordmark.replace('<svg ', '<svg class="logo__mark" aria-hidden="tru
     color: inherit;
     text-decoration-line: none;
   }
-  /* 199 × 20 artwork: 20px high, 15px on narrow phones so the logo and the
-     LP login button fit on one row (down to 320px wide). */
-  .logo :global(.logo__mark) {
+  /* Classic: 199 × 20 artwork, 20px high (15px on narrow phones so the logo
+     and the LP login button fit on one row, down to 320px wide). FORWARD:
+     the same height; its cropped frame is 942 × 168. */
+  .logo :global(.logo__mark),
+  .logo-slot {
     display: block;
     height: 20px;
     width: auto;
   }
+  .logo-slot {
+    aspect-ratio: 942 / 168;
+  }
   @media (max-width: 420px) {
-    .logo :global(.logo__mark) {
+    .logo :global(.logo__mark),
+    .logo-slot {
       height: 15px;
     }
   }
+
+  /* Pinned at the spacer's place (measured by the script; these fallbacks
+     match the header row: --gap above, centred in a small form height,
+     at the content edge). Under the floating nav (z-index 60). */
+  .logo--forward {
+    position: fixed;
+    z-index: 50;
+    top: var(--logo-y, calc(var(--gap) + (var(--form-height-small) - 20px) / 2));
+    left: var(--logo-x, max(var(--pad), calc((100vw - var(--max)) / 2)));
+  }
+  .logo--forward.is-light {
+    color: var(--black-ink);
+  }
+  .logo--forward.is-dark {
+    color: #ffffff;
+  }
+  .logo--forward.is-ready {
+    transition: color 200ms ease;
+  }
+  .logo--forward:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+  }
 </style>
+
+<script>
+  import { layout, easeInOutCubic } from '@lib/wordmark.mjs';
+
+  const logo = document.querySelector<HTMLElement>('[data-logo]');
+  const slot = document.querySelector<HTMLElement>('[data-logo-slot]');
+  if (logo && slot) {
+    const glyphs = Object.fromEntries(
+      Array.from(logo.querySelectorAll<SVGGElement>('[data-glyph]')).map((g) => [g.dataset.glyph!, g]),
+    );
+    const slots = Object.fromEntries(
+      Array.from(logo.querySelectorAll<SVGPolygonElement>('[data-slot]')).map((p) => [p.dataset.slot!, p]),
+    );
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    // How far the page has to scroll before it closes, and how long a full
+    // change takes (owner: "not too fast").
+    const SCROLLED = 40;
+    const DURATION = 1800;
+
+    // ---- Drawing: p = 0 is FWD, 1 is FORWARD ----
+    function draw(p: number) {
+      const l = layout(p, true);
+      for (const k of ['W', 'D', 'O', 'R', 'A', 'R2'] as const) {
+        glyphs[k]?.setAttribute('transform', `translate(${l[k].toFixed(2)} 0)`);
+      }
+      for (const k of ['O', 'R', 'A', 'R2'] as const) slots[k]?.setAttribute('points', l.slots[k]);
+    }
+
+    // ---- Motion: a linear value runs to its target at a steady pace and
+    // is eased for drawing, so a change can turn round midway smoothly. ----
+    let shown = window.scrollY > SCROLLED ? 0 : 1;
+    let target = shown;
+    let last = 0;
+    let frame = 0;
+    function step(now: number) {
+      const dt = last ? now - last : 16;
+      last = now;
+      const move = dt / DURATION;
+      shown = target > shown ? Math.min(target, shown + move) : Math.max(target, shown - move);
+      draw(easeInOutCubic(shown));
+      if (shown !== target) frame = requestAnimationFrame(step);
+      else frame = 0;
+    }
+    function setTarget(next: number) {
+      if (next === target) return;
+      target = next;
+      if (reduceMotion.matches) {
+        shown = target;
+        draw(target);
+        return;
+      }
+      if (!frame) {
+        last = 0;
+        frame = requestAnimationFrame(step);
+      }
+    }
+    draw(easeInOutCubic(shown));
+
+    // Out of the header (which can be its own stacking layer, under the
+    // sections that scroll up over the intro), to just before the page: so
+    // it stays above the content, and under the floating nav and its scrim.
+    // Tab order is kept: skip link, logo, then the page.
+    document.querySelector('[data-page]')?.before(logo);
+
+    // ---- Place: the spacer's spot in the header, at the top of the page ----
+    function place() {
+      const r = slot!.getBoundingClientRect();
+      logo!.style.setProperty('--logo-x', `${r.left + window.scrollX}px`);
+      logo!.style.setProperty('--logo-y', `${r.top + window.scrollY}px`);
+    }
+    place();
+    window.addEventListener('resize', place);
+    window.addEventListener('load', place);
+
+    // ---- Colour: white over dark areas, black elsewhere ----
+    const darkZones = Array.from(document.querySelectorAll<HTMLElement>('[data-nav-dark]'));
+    function tone() {
+      const r = logo!.getBoundingClientRect();
+      const y = r.top + r.height / 2;
+      const dark = darkZones.some((z) => {
+        const b = z.getBoundingClientRect();
+        return b.top <= y && b.bottom >= y;
+      });
+      logo!.classList.toggle('is-dark', dark);
+      logo!.classList.toggle('is-light', !dark);
+    }
+    tone();
+    requestAnimationFrame(() => logo!.classList.add('is-ready'));
+
+    let queued = 0;
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (queued) return;
+        queued = requestAnimationFrame(() => {
+          queued = 0;
+          setTarget(window.scrollY > SCROLLED ? 0 : 1);
+          tone();
+        });
+      },
+      { passive: true },
+    );
+  }
+</script>

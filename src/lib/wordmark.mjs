@@ -1,0 +1,104 @@
+// FORWARD wordmark: the glyphs and the FWD ↔ FORWARD motion (owner,
+// 2026-11-16). One source for the site logo (src/components/ui/Logo.astro)
+// and the stand-alone SVG animations (visuals/forward-wordmark/build.mjs).
+//
+// Glyphs: the owner's storyboard frame 72 (FORWARD), in its 1920×1080
+// coordinates; FWD is frame 54. F stays put, W and D move apart, and O, R,
+// A and R each come in through a slot of their own (slanted at the italic
+// angle) that opens with the space between F, W and D. A letter sits
+// against its slot's right edge, so it slides out from behind the slot's
+// left edge, right part first.
+//
+// `layout(p)`: p = 0 is FWD, p = 1 is FORWARD (pass it eased). It returns
+// each moving glyph's x offset and the four slots as polygon points.
+
+export const GLYPHS = {
+  F: 'M629.038 528.862L624.878 551.483H537.478L524.998 619.345H501.998L531.117 461H641.517L637.357 483.621H549.957L541.638 528.862H629.038Z',
+  O: 'M768.699 494.931L752.06 585.414C750.341 594.764 745.497 602.756 737.531 609.392C729.564 616.027 720.827 619.345 711.32 619.345H669.92C660.414 619.345 652.897 616.027 647.371 609.392C641.844 602.756 639.941 594.764 641.66 585.414L658.299 494.931C660.019 485.581 664.862 477.589 672.829 470.953C680.796 464.318 689.532 461 699.039 461H740.439C749.946 461 757.462 464.318 762.989 470.953C768.515 477.589 770.419 485.581 768.699 494.931ZM729.06 585.414L745.699 494.931C746.282 491.764 745.617 489.125 743.705 487.014C741.821 484.752 739.346 483.621 736.279 483.621H694.879C691.813 483.621 688.921 484.752 686.205 487.014C683.517 489.125 681.882 491.764 681.299 494.931L664.66 585.414C664.105 588.43 664.77 591.069 666.654 593.331C668.538 595.593 671.013 596.724 674.08 596.724H715.48C718.547 596.724 721.438 595.593 724.154 593.331C726.87 591.069 728.505 588.43 729.06 585.414Z',
+  R: 'M901.077 500.586L898.997 511.897C897.278 521.246 892.763 529.541 885.452 536.779C878.14 544.018 869.781 548.617 860.374 550.578L879.682 580.663C881.357 583.227 882.432 585.715 882.909 588.128C883.538 590.541 883.819 592.351 883.75 593.557C883.682 594.764 883.426 596.573 882.982 598.986L879.238 619.345H856.238L860.398 596.724L830.998 551.483H804.318L791.838 619.345H768.838L797.957 461H868.107C879.3 461 888.1 464.846 894.506 472.537C900.911 480.228 903.102 489.577 901.077 500.586ZM875.997 511.897L878.077 500.586C878.937 495.911 877.985 491.915 875.222 488.597C872.459 485.28 868.701 483.621 863.947 483.621H816.797L808.478 528.862H855.628C860.381 528.862 864.749 527.203 868.733 523.886C872.716 520.568 875.138 516.572 875.997 511.897Z',
+  W: 'M1012.59 619L1041.59 461H1018.59L997.094 577L982.094 547H958.594L932.594 577L954.094 461H931.094L901.938 619H925.092L965.592 571L989.163 619H1012.59Z',
+  A: 'M1108.49 461H1131.49C1134.86 461 1137.13 461.603 1138.29 462.81C1139.63 463.865 1140.77 465.977 1141.72 469.143L1160.66 532.481C1161.22 534.442 1160.84 539.041 1159.51 546.28L1146.07 619.345H1123.07L1129.31 585.414H1064.91L1058.67 619.345H1035.67L1049.11 546.28C1050.44 539.041 1051.74 534.442 1053.02 532.481L1095.03 469.143C1096.97 466.127 1098.81 464.016 1100.57 462.81C1102.47 461.603 1105.12 461 1108.49 461ZM1133.47 562.793L1137.67 539.946L1121.58 483.621H1110.77L1073.27 539.946L1069.07 562.793H1133.47Z',
+  R2: 'M1301.33 500.586L1299.25 511.897C1297.53 521.246 1293.01 529.541 1285.7 536.779C1278.39 544.018 1270.03 548.617 1260.62 550.578L1279.93 580.663C1281.61 583.227 1282.68 585.715 1283.16 588.128C1283.79 590.541 1284.07 592.351 1284 593.557C1283.93 594.764 1283.68 596.573 1283.23 598.986L1279.49 619.345H1256.49L1260.65 596.724L1231.25 551.483H1204.57L1192.09 619.345H1169.09L1198.21 461H1268.36C1279.55 461 1288.35 464.846 1294.76 472.537C1301.16 480.228 1303.35 489.577 1301.33 500.586ZM1276.25 511.897L1278.33 500.586C1279.19 495.911 1278.24 491.915 1275.47 488.597C1272.71 485.28 1268.95 483.621 1264.2 483.621H1217.05L1208.73 528.862H1255.88C1260.63 528.862 1265 527.203 1268.98 523.886C1272.97 520.568 1275.39 516.572 1276.25 511.897Z',
+  D: 'M1435.83 494.705L1419.15 585.414C1417.43 594.764 1412.58 602.756 1404.62 609.392C1396.65 616.027 1387.91 619.345 1378.41 619.345H1302.51L1331.62 461H1407.53C1417.03 461 1424.55 464.318 1430.07 470.953C1435.63 477.438 1437.55 485.355 1435.83 494.705ZM1396.15 585.414L1412.79 494.931C1413.37 491.764 1412.7 489.125 1410.79 487.014C1409.06 484.752 1406.59 483.621 1403.37 483.621H1350.47L1329.67 596.724H1382.57C1385.79 596.724 1388.68 595.593 1391.24 593.331C1393.96 591.069 1395.59 588.43 1396.15 585.414Z',
+};
+
+// Moves from FWD (frame 54) to FORWARD (frame 72), from the paths' own
+// points: W's "M746.12 619" becomes "M1012.59 619", D's "M902.155 494.705"
+// becomes "M1435.83 494.705".
+export const W_FROM = 746.12 - 1012.59; // -266.47
+export const D_FROM = 902.155 - 1435.83; // -533.675
+
+// Italic slant of the letters' straight edges (dx per dy).
+export const SLANT = 0.1839;
+// Edges at the cap line (y 461) in FORWARD: F's right, W's left and right,
+// D's left.
+export const F_RIGHT = 641.517;
+export const W_LEFT = 931.094;
+export const W_RIGHT = 1041.59;
+export const D_LEFT = 1331.62;
+// Slot boundaries between the two letters in each gap (at the cap line):
+// between O and R, and between A and R, with room on both sides in FORWARD.
+export const OR_EDGE = 786;
+export const AR_EDGE = 1186;
+const K1 = (OR_EDGE - F_RIGHT) / (W_LEFT - F_RIGHT);
+const K2 = (AR_EDGE - W_RIGHT) / (D_LEFT - W_RIGHT);
+export const Y_TOP = 430;
+export const Y_BOTTOM = 650;
+
+// Where each incoming letter is in FWD (x offset from its FORWARD place).
+// Open slots: the gaps follow W's and D's own edges, a few pixels open in
+// FWD (the faded version hides that). Closed slots: each gap opens from
+// zero width with the spread, so FWD shows nothing of them (the solid
+// version, and the site logo).
+const IN_OPEN = {
+  O: F_RIGHT + (W_LEFT + W_FROM - F_RIGHT) * K1 - OR_EDGE,
+  R: W_FROM,
+  A: W_RIGHT + W_FROM + (D_LEFT + D_FROM - W_RIGHT - W_FROM) * K2 - AR_EDGE,
+  R2: D_FROM,
+};
+const IN_CLOSED = {
+  O: F_RIGHT - OR_EDGE,
+  R: F_RIGHT - W_LEFT,
+  A: W_RIGHT + W_FROM - AR_EDGE,
+  R2: W_RIGHT + W_FROM - D_LEFT,
+};
+
+export const easeInOutCubic = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+
+const r2 = (n) => (Math.round(n * 100) / 100).toString();
+// Parallelogram between two slanted edges given at the cap line.
+function gap(left, right) {
+  const at = (x461, y) => x461 - SLANT * (y - 461);
+  return [
+    [at(left, Y_TOP), Y_TOP],
+    [at(right, Y_TOP), Y_TOP],
+    [at(right, Y_BOTTOM), Y_BOTTOM],
+    [at(left, Y_BOTTOM), Y_BOTTOM],
+  ]
+    .map(([x, y]) => `${r2(x)},${r2(y)}`)
+    .join(' ');
+}
+
+export function layout(p, closed = true) {
+  const w = W_FROM * (1 - p);
+  const d = D_FROM * (1 - p);
+  const from = closed ? IN_CLOSED : IN_OPEN;
+  const end1 = closed ? F_RIGHT + (W_LEFT - F_RIGHT) * p : W_LEFT + w;
+  const end2 = closed ? W_RIGHT + w + (D_LEFT - W_RIGHT) * p : D_LEFT + d;
+  const or = F_RIGHT + (end1 - F_RIGHT) * K1;
+  const ar = W_RIGHT + w + (end2 - W_RIGHT - w) * K2;
+  return {
+    W: w,
+    D: d,
+    O: from.O * (1 - p),
+    R: from.R * (1 - p),
+    A: from.A * (1 - p),
+    R2: from.R2 * (1 - p),
+    slots: {
+      O: gap(F_RIGHT, or),
+      R: gap(or, end1),
+      A: gap(W_RIGHT + w, ar),
+      R2: gap(ar, end2),
+    },
+  };
+}
