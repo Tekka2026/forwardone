@@ -18,7 +18,9 @@
 //
 // Run: node visuals/forward-wordmark/build.mjs
 // Writes public/visuals/forward-wordmark.svg (plays once, ends on FORWARD)
-// and public/visuals/forward-wordmark-loop.svg (FWD → FORWARD → FWD, again).
+// and public/visuals/forward-wordmark-loop.svg (FWD → FORWARD → FWD, again),
+// and the same two without the fade (-nofade): solid letters, revealed by
+// their slots only.
 
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -69,6 +71,16 @@ const IN = {
   A: { from: (W_RIGHT + W_FROM + (D_LEFT + D_FROM - W_RIGHT - W_FROM) * K2) - AR_EDGE, fade: [0.12, 0.78] },
   R2: { from: D_FROM, fade: [0.25, 0.92] },
 };
+// Without the fade the slots must be shut in FWD, or slivers of the four
+// letters would show in the narrow spaces between F, W and D. There each
+// gap opens from zero width with the spread (its right edge a few pixels
+// short of W or D until it arrives), and the letters start further left.
+const IN_CLOSED = {
+  O: F_RIGHT - OR_EDGE,
+  R: F_RIGHT - W_LEFT,
+  A: W_RIGHT + W_FROM - AR_EDGE,
+  R2: W_RIGHT + W_FROM - D_LEFT,
+};
 const Y_TOP = 430;
 const Y_BOTTOM = 650;
 
@@ -83,15 +95,16 @@ const easeInOutCubic = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2
 const easeInOutSine = (x) => -(Math.cos(Math.PI * x) - 1) / 2;
 
 // State at time t on the forward run (0 = FWD, FORWARD_END = FORWARD).
-function state(t) {
+function state(t, closed = false) {
   const u = (t - HOLD) / SPREAD; // 0..1
   const p = easeInOutCubic(clamp(u));
   const s = {
+    p,
     W: W_FROM * (1 - p),
     D: D_FROM * (1 - p),
   };
   for (const [k, v] of Object.entries(IN)) {
-    s[k] = v.from * (1 - p);
+    s[k] = (closed ? IN_CLOSED[k] : v.from) * (1 - p);
     s[k + 'o'] = easeInOutSine(clamp((u - v.fade[0]) / (v.fade[1] - v.fade[0])));
   }
   return s;
@@ -112,11 +125,12 @@ function gap(left, right) {
 }
 
 // Build one SVG from a timeline: `times` (seconds, 0..dur) mapped to states.
-function build({ dur, sample, loop, title }) {
+function build({ dur, sample, loop, title, fades = true }) {
+  const closed = !fades;
   const times = [];
   for (let i = 0; i <= Math.round(dur * FPS); i++) times.push(Math.min(dur, i / FPS));
   if (times[times.length - 1] !== dur) times.push(dur);
-  const states = times.map(sample);
+  const states = times.map((t) => sample(t));
   const keyTimes = times.map((t) => f(t / dur)).join(';');
   const timing = `dur="${f(dur)}s" begin="0s" calcMode="linear" keyTimes="${keyTimes}" ${loop ? 'repeatCount="indefinite"' : 'fill="freeze"'}`;
   const move = (key) =>
@@ -124,18 +138,24 @@ function build({ dur, sample, loop, title }) {
   const fade = (key) => `<animate attributeName="opacity" ${timing} values="${states.map((s) => f(s[key + 'o'])).join(';')}"/>`;
   const first = states[0];
   // Slot edges at the cap line, from F, W and D.
-  const or = (s) => F_RIGHT + (W_LEFT + s.W - F_RIGHT) * K1;
-  const ar = (s) => W_RIGHT + s.W + (D_LEFT + s.D - W_RIGHT - s.W) * K2;
+  const end1 = (s) => (closed ? F_RIGHT + (W_LEFT - F_RIGHT) * s.p : W_LEFT + s.W);
+  const end2 = (s) => (closed ? W_RIGHT + s.W + (D_LEFT - W_RIGHT) * s.p : D_LEFT + s.D);
+  const or = (s) => F_RIGHT + (end1(s) - F_RIGHT) * K1;
+  const ar = (s) => W_RIGHT + s.W + (end2(s) - W_RIGHT - s.W) * K2;
   const slots = {
     O: (s) => gap(F_RIGHT, or(s)),
-    R: (s) => gap(or(s), W_LEFT + s.W),
+    R: (s) => gap(or(s), end1(s)),
     A: (s) => gap(W_RIGHT + s.W, ar(s)),
-    R2: (s) => gap(ar(s), D_LEFT + s.D),
+    R2: (s) => gap(ar(s), end2(s)),
   };
   const clip = (key) =>
     `<clipPath id="fwd-slot-${key}" clipPathUnits="userSpaceOnUse"><polygon points="${slots[key](first)}"><animate attributeName="points" ${timing} values="${states.map(slots[key]).join(';')}"/></polygon></clipPath>`;
+  // Without fades (owner, 2026-11-16, to compare) the letters are solid
+  // and only the slots reveal them.
   const letter = (key, d) =>
-    `<g clip-path="url(#fwd-slot-${key})"><g transform="translate(${f(first[key])},0)" opacity="${f(first[key + 'o'])}">${move(key)}${fade(key)}<path d="${d}" fill="${INK}"/></g></g>`;
+    fades
+      ? `<g clip-path="url(#fwd-slot-${key})"><g transform="translate(${f(first[key])},0)" opacity="${f(first[key + 'o'])}">${move(key)}${fade(key)}<path d="${d}" fill="${INK}"/></g></g>`
+      : `<g clip-path="url(#fwd-slot-${key})"><g transform="translate(${f(first[key])},0)">${move(key)}<path d="${d}" fill="${INK}"/></g></g>`;
 
   return `<svg width="1920" height="1080" viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${title}">
 <title>${title}</title>
@@ -163,23 +183,23 @@ mkdirSync(out, { recursive: true });
 // Once: FWD, opens to FORWARD, stays.
 const once = build({ dur: FORWARD_END, sample: state, loop: false, title: 'FORWARD' });
 writeFileSync(join(out, 'forward-wordmark.svg'), once);
+const onceSolid = build({ dur: FORWARD_END, sample: (t) => state(t, true), loop: false, title: 'FORWARD', fades: false });
+writeFileSync(join(out, 'forward-wordmark-nofade.svg'), onceSolid);
 
 // Loop: FWD → FORWARD, holds, closes back to FWD a little quicker.
 const HOLD_OPEN = 2.4;
 const CLOSE = (FORWARD_END - HOLD) * 0.8;
 const LOOP = FORWARD_END + HOLD_OPEN + CLOSE;
-const loop = build({
-  dur: LOOP,
-  loop: true,
-  title: 'FORWARD',
-  sample: (t) => {
-    if (t <= FORWARD_END) return state(t);
-    if (t <= FORWARD_END + HOLD_OPEN) return state(FORWARD_END);
-    const back = (t - FORWARD_END - HOLD_OPEN) / CLOSE; // 0..1
-    return state(FORWARD_END - back * (FORWARD_END - HOLD));
-  },
-});
+const loopSample = (closed) => (t) => {
+  if (t <= FORWARD_END) return state(t, closed);
+  if (t <= FORWARD_END + HOLD_OPEN) return state(FORWARD_END, closed);
+  const back = (t - FORWARD_END - HOLD_OPEN) / CLOSE; // 0..1
+  return state(FORWARD_END - back * (FORWARD_END - HOLD), closed);
+};
+const loop = build({ dur: LOOP, loop: true, title: 'FORWARD', sample: loopSample(false) });
 writeFileSync(join(out, 'forward-wordmark-loop.svg'), loop);
+const loopSolid = build({ dur: LOOP, loop: true, title: 'FORWARD', sample: loopSample(true), fades: false });
+writeFileSync(join(out, 'forward-wordmark-loop-nofade.svg'), loopSolid);
 
 console.log(`forward-wordmark.svg ${(once.length / 1024).toFixed(0)} KB, ${FORWARD_END.toFixed(2)}s`);
 console.log(`forward-wordmark-loop.svg ${(loop.length / 1024).toFixed(0)} KB, ${LOOP.toFixed(2)}s`);
