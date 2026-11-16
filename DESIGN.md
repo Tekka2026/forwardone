@@ -264,8 +264,12 @@ Rules:
   baseline, onto their place: F and W like the H2's first words (the snap:
   hidden, two steps low, one step, rest; 80ms frames), 90ms apart; the D
   like the last word (hidden one frame, then rising smoothly over nine
-  frames). Over all three a gradient #FF0000 → #820400 (left to right) that
-  slowly fades away (48 frames, 3.8s, from 1s in) to the solid #820400.
+  frames). Over all three a gradient #FF0000 → #820400 (left to right)
+  that comes and goes with the scroll over the whole height of the window
+  (owner, 2026-11-16; was a one-off fade): none as the letters come in at
+  the bottom edge, full when they are in the middle, none again at the top
+  edge (sine of their way through the window), the solid #820400 showing
+  around it; scrolling back plays it in reverse.
   Once; without JavaScript, with reduced motion or when already in view on
   load: simply there.
 - The copy sits in grid columns 8–12 (column 7 left open as room next to the

@@ -88,6 +88,26 @@ const AT = { x: 1001 - 203.5 * SCALE, y: 1001 - 79.5 * SCALE };
   // SVG is not reliable in every browser).
   const box = document.querySelector<HTMLElement>('[data-fwd]');
   const anchor = box?.querySelector<SVGRectElement>('[data-fwd-anchor]');
+
+  // The gradient over the letters comes and goes with the scroll, over the
+  // whole height of the window (owner, 2026-11-16): none as the letters
+  // come in at the bottom, full in the middle, none again as they leave at
+  // the top; the solid #820400 shows through around it.
+  if (box && anchor) {
+    let tintFrame = 0;
+    const tint = () => {
+      tintFrame = 0;
+      const r = anchor.getBoundingClientRect();
+      const p = Math.min(1, Math.max(0, (innerHeight - (r.top + r.height / 2)) / innerHeight));
+      box.style.setProperty('--fwd-tint', Math.sin(Math.PI * p).toFixed(3));
+    };
+    const onTint = () => {
+      if (!tintFrame) tintFrame = requestAnimationFrame(tint);
+    };
+    tint();
+    addEventListener('scroll', onTint, { passive: true });
+    addEventListener('resize', onTint);
+  }
   if (box && anchor && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
     const due = () => anchor.getBoundingClientRect().top < innerHeight * 0.75;
     if (!due()) {
@@ -137,20 +157,19 @@ const AT = { x: 1001 - 203.5 * SCALE, y: 1001 - 79.5 * SCALE };
      up from below, clipped at their own baseline, onto their place. F and
      W like the H2's first words (the snap: hidden, two steps low, one
      step, rest, in 80ms frames), 90ms apart; the D like the last word
-     (hidden one frame, then rising smoothly over nine frames). Across the
-     three a gradient #FF0000 → #820400 that slowly fades to the solid
-     #820400. Without JavaScript or with reduced motion: simply there. */
+     (hidden one frame, then rising smoothly over nine frames). Without
+     JavaScript or with reduced motion: simply there. Across the three a
+     gradient #FF0000 → #820400 that comes and goes with the scroll. */
   .fwd__l {
     --fwd-step: 22px; /* one step, in the letters' own units (159 high) */
   }
+  /* The gradient follows the scroll (owner, 2026-11-16): its strength is
+     set by the script from where the letters are in the window. */
   .fwd__tint {
-    opacity: 0;
+    opacity: var(--fwd-tint, 0);
   }
   [data-fwd].is-waiting .fwd__l {
     transform: translateY(170px);
-  }
-  [data-fwd].is-waiting .fwd__tint {
-    opacity: 1;
   }
   [data-fwd].is-waiting.is-in .fwd__l {
     animation: fwd-snap calc(var(--reveal-frame) * 4) step-end both;
@@ -159,10 +178,6 @@ const AT = { x: 1001 - 203.5 * SCALE, y: 1001 - 79.5 * SCALE };
   [data-fwd].is-waiting.is-in .fwd__l--d {
     animation: fwd-rise calc(var(--reveal-frame) * 9) cubic-bezier(0.2, 0.7, 0.2, 1) both;
     animation-delay: calc(var(--i) * var(--reveal-stagger));
-  }
-  [data-fwd].is-waiting.is-in .fwd__tint {
-    animation: fwd-tint calc(var(--reveal-frame) * 48) ease-in-out both;
-    animation-delay: calc(var(--reveal-frame) * 12);
   }
   @keyframes fwd-snap {
     0%        { transform: translateY(170px); }
@@ -174,10 +189,6 @@ const AT = { x: 1001 - 203.5 * SCALE, y: 1001 - 79.5 * SCALE };
     0%      { transform: translateY(170px); }
     11.111% { transform: translateY(160px); }
     100%    { transform: translateY(0); }
-  }
-  @keyframes fwd-tint {
-    from { opacity: 1; }
-    to   { opacity: 0; }
   }
   /* Columns 8–12 (owner, 2026-11-16: it felt dense): column 7 stays empty
      as room next to the visual, and the lines stay short. */
