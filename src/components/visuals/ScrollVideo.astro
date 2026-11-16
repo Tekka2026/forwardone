@@ -77,9 +77,11 @@ const { src, poster } = Astro.props;
 </script>
 
 <style>
+  /* 1px past the box on every side (the card clips it), so a rounded
+     edge never leaves a hairline of the card's background showing. */
   .scroll-video {
     position: absolute;
-    inset: 0;
+    inset: -1px;
   }
   .scroll-video video {
     display: block;

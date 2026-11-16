@@ -16,7 +16,7 @@ import ScrollVideo from '@components/visuals/ScrollVideo.astro';
       {
         insights.articles.map((a) => (
           <li class="article">
-            <div class:list={['article__visual', a.visual === 'robot-arm' && 'article__visual--live']}>
+            <div class:list={['article__visual', a.visual === 'robot-arm' && 'article__visual--live', a.video && 'article__visual--video']}>
               {a.visual === 'robot-arm' ? (
                 <RobotArm />
               ) : a.video ? (
@@ -74,6 +74,11 @@ import ScrollVideo from '@components/visuals/ScrollVideo.astro';
     margin-bottom: var(--gap-half);
     background: #f5f5f5; /* 4% black over white, also on the black band */
     overflow: hidden;
+  }
+  /* A video card (owner, 2026-11-16: a grey line showed around it on a
+     phone): no grey behind it, so no hairline can show at a rounded edge. */
+  .article__visual--video {
+    background: transparent;
   }
   .article__visual img {
     width: 100%;
