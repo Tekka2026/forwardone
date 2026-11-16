@@ -928,7 +928,8 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
 
 ### Logo: FORWARD ↔ FWD (owner, 2026-11-16)
 
-- The logo is the FORWARD wordmark from the owner's storyboard
+- The logo is the FORWARD wordmark from the owner's storyboard, followed by
+  ".ONE"
   (`visuals/forward-wordmark/storyboard-*.svg`; glyphs and motion in
   `src/lib/wordmark.mjs`, component `src/components/ui/Logo.astro`). It
   replaces the FORWARD.one wordmark in the header on every page except the
@@ -958,8 +959,16 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   own, dark below 0.35 relative luminance. Pictures, video and canvases
   are looked past, to the card behind them; a box drawn with a gradient
   can be marked `[data-nav-light]` (the robot arm's studio backdrop is).
-- Size (owner, 2026-11-16: 4px higher): 24px high (19px at ≤420px), 135 ×
-  24 (the storyboard frame cropped to `498 456 942 168`). Without JavaScript: FORWARD in the header.
+- ".ONE" (owner, 2026-11-16): the owner's DOTONE.svg (`src/assets/brand/
+  dot-one.svg`: the full stop, O, N, E, at the wordmark's cap height)
+  follows the D on the same baseline, 18 units after the D's bowl, and
+  moves with it: FORWARD.ONE, and FWD.ONE when closed. About a second after
+  the page has loaded (FORWARD is there from the start) it slides out from
+  behind the D through a slanted slot (1.1s, ease out); with reduced
+  motion it is there at once, without scripting too.
+- Size (owner, 2026-11-16: 4px higher): 24px high (19px at ≤420px); with
+  ".ONE" 198 × 24 (the storyboard frame cropped to `498 456 1388 168`), as
+  wide as the old FORWARD.one wordmark. Without JavaScript: FORWARD in the header.
 - The stand-alone SVG animations of the same motion (FWD → FORWARD, loops,
   without fade, FORWARD → FWD) are built from the same module by
   `node visuals/forward-wordmark/build.mjs` into `public/visuals/`.
