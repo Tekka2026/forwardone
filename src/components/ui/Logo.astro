@@ -38,14 +38,13 @@ const SLOTS = ['O', 'R', 'A', 'R2'] as const;
 // full stop, O, N, E; 452 × 159, the wordmark's own cap height), placed in
 // the storyboard frame so the full stop sits 18 units after the D's bowl,
 // on the same baseline. It moves with the D (FORWARD.ONE, FWD.ONE) and
-// slides in from behind the D through a slanted slot a second after load.
+// rises from the bottom, masked at its baseline, a second after load.
 const ONE_PATHS = [...dotOneSvg.matchAll(/<path d="([^"]+)"/g)].map((m) => m[1]);
 const ONE_X = 1419 + 18 - 6.24; // D's right edge at the full stop's top, a gap, the stop's own inset
 const ONE_Y = 461;
-const SLANT = 0.1839;
-// The slot: everything right of a slanted line just before the full stop.
-const slotAt = (y: number) => ONE_X + 6.24 - 3 - SLANT * (y - 585);
-const ONE_SLOT = `${slotAt(430).toFixed(1)},430 2200,430 2200,650 ${slotAt(650).toFixed(1)},650`;
+// The mask it rises out of (owner, 2026-11-16: "from the bottom, masked"):
+// the letters' own height, from just before the full stop to the right.
+const ONE_MASK = `${(ONE_X - 12).toFixed(1)},${ONE_Y - 2} 2200,${ONE_Y - 2} 2200,${ONE_Y + 160} ${(ONE_X - 12).toFixed(1)},${ONE_Y + 160}`;
 // The storyboard's 1920×1080 frame, cropped to the wordmark and ".ONE".
 const VIEWBOX = '498 456 1388 168';
 ---
@@ -79,7 +78,7 @@ const VIEWBOX = '498 456 1388 168';
           <g data-glyph="D">
             <path d={GLYPHS.D} />
             <clipPath id="logo-slot-one" clipPathUnits="userSpaceOnUse">
-              <polygon points={ONE_SLOT} />
+              <polygon points={ONE_MASK} />
             </clipPath>
             <g clip-path="url(#logo-slot-one)">
               <g class="logo__one" transform={`translate(${ONE_X.toFixed(2)} ${ONE_Y})`}>
@@ -119,14 +118,13 @@ const VIEWBOX = '498 456 1388 168';
   .logo-slot {
     aspect-ratio: 1388 / 168;
   }
-  /* ".ONE" waits just behind the D until the script brings it in (a second
-     after load), gently (owner, 2026-11-16): a short slide out of the slot
-     while it fades in, over 1.8s with a soft ease. Without scripting it is
-     simply there. */
+  /* ".ONE" waits below its baseline, masked, until the script brings it in
+     (a second after load): it rises from the bottom into place, gently
+     (owner, 2026-11-16), over 1.6s with a soft ease. Without scripting it
+     is simply there. */
   @media (scripting: enabled) {
     .logo--forward:not(.is-one) :global(.logo__one-in) {
-      transform: translateX(-160px);
-      opacity: 0;
+      transform: translateY(170px);
     }
   }
   @media (max-width: 420px) {
@@ -166,11 +164,20 @@ const VIEWBOX = '498 456 1388 168';
     fill: var(--brand-yellow);
     transition:
       fill 200ms ease,
-      transform 1800ms cubic-bezier(0.25, 0.1, 0.25, 1),
-      opacity 1800ms cubic-bezier(0.25, 0.1, 0.25, 1);
+      transform 1600ms cubic-bezier(0.33, 1, 0.68, 1);
   }
   .logo--forward.is-founder :global(.logo__one-in) {
     fill: var(--nav-bg-founder);
+  }
+  /* On whites and light greys (owner, 2026-11-16) ".ONE" takes a deeper
+     shade of the same colour, so it reads next to the black FORWARD: the
+     site's darkened yellow (ochre, as on the robot's ring) for investors,
+     and Ice's own hue, deepened, for founders. */
+  .logo--forward.is-light :global(.logo__one-in) {
+    fill: #c4a014;
+  }
+  .logo--forward.is-light.is-founder :global(.logo__one-in) {
+    fill: #3989d5;
   }
   .logo--forward.is-ready {
     transition: color 200ms ease;

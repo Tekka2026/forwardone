@@ -955,7 +955,11 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   between them. ".ONE" carries the visitor's side, on every background:
   yellow (`--brand-yellow`, #FFEA6D) for investors and before a choice,
   light blue (`--nav-bg-founder`, #B3DAFF) once they chose founder in the
-  floating nav (it follows a switch or reset at once). What is actually
+  floating nav (it follows a switch or reset at once). On whites and light
+  greys (owner, 2026-11-16) a deeper shade of the same colour so it reads
+  next to the black: ochre #C4A014 (the site's darkened yellow) for
+  investors, #3989D5 (Ice's hue, deepened; no darker blue in the palette)
+  for founders. What is actually
   painted under the logo decides dark or light, so a white block sliding
   over the sticky dark intro turns it black: of the elements at the
   logo's spot (front to back) the first with a solid background of its
@@ -966,9 +970,9 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   dot-one.svg`: the full stop, O, N, E, at the wordmark's cap height)
   follows the D on the same baseline, 18 units after the D's bowl, and
   moves with it: FORWARD.ONE, and FWD.ONE when closed. About a second after
-  the page has loaded (FORWARD is there from the start) it comes in
-  gently (owner, 2026-11-16): a short slide (160 units) out of a slanted
-  slot just behind the D while it fades in, over 1.8s with a soft ease;
+  the page has loaded (FORWARD is there from the start) it rises in from
+  the bottom, masked at its own baseline (owner, 2026-11-16), gently: 1.6s
+  with a soft ease out;
   with reduced motion it is there at once, without scripting too.
 - Size (owner, 2026-11-16): 18px high (14px at ≤420px; 6px smaller than
   the 24px before, in proportion); with ".ONE" 149 × 18 (the storyboard
