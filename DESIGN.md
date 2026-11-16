@@ -250,7 +250,9 @@ Rules:
 ### What we do (homepage, owner 2026-11-16)
 
 - The visual (`whatWeDo.visual`, the ONE brush artwork on light blue,
-  `public/visuals/what-we-do-one.webp`, 2000 × 2000, with the FWD letters
+  `public/visuals/what-we-do-one-2.webp`, the owner's second version with a
+  soft light-blue gradient, re-encoded at 1800 × 1800 (WebP, 26 KB) for
+  the 2000 × 2000 frame, with the FWD letters
   from `src/assets/brand/fwd-letters.svg` laid over it at their place in
   the owner's composite) fills the section's left half edge to edge: from
   the window's left edge to the middle, and from the section's hairline

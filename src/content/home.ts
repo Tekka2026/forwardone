@@ -45,7 +45,7 @@ export const whatWeDo = {
    *  (owner, 2026-11-16): the ONE brush artwork on light blue (2000 × 2000),
    *  with the FWD letters (src/assets/brand/fwd-letters.svg) animating in
    *  over it (WhatWeDo.astro). Path under public/. */
-  visual: '/visuals/what-we-do-one.webp',
+  visual: '/visuals/what-we-do-one-2.webp', // second version with a soft gradient (owner, 2026-11-16), 1800 × 1800
   visualAlt: '',
   eyebrow: 'What we do',
   title: 'One strategy. Executed without exception.',
