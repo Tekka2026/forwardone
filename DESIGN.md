@@ -237,12 +237,25 @@ Rules:
 
 ### What we do (homepage, owner 2026-11-16)
 
-- The visual (`whatWeDo.visual`, the FWD artwork on light blue,
-  `public/visuals/what-we-do.webp`, 2000 × 2000) fills the section's left
-  half edge to edge: from the window's left edge to the middle, and from
-  the section's hairline above to the next section's hairline below
-  (`object-fit: cover`, light blue #B3DAFF behind it while it loads). The
-  copy sits in grid columns 8–12 (column 7 left open as room next to the
+- The visual (`whatWeDo.visual`, the ONE brush artwork on light blue,
+  `public/visuals/what-we-do-one.webp`, 2000 × 2000, with the FWD letters
+  from `src/assets/brand/fwd-letters.svg` laid over it at their place in
+  the owner's composite) fills the section's left half edge to edge: from
+  the window's left edge to the middle, and from the section's hairline
+  above to the next section's hairline below. Artwork and letters are one
+  SVG (2000 × 2000 frame, `xMidYMid slice`, i.e. cover), so the letters
+  crop with it and stay in place. Light blue #B3DAFF behind it while it
+  loads.
+- FWD animation (owner, 2026-11-16): when the letters are three quarters
+  of the way up the window, they come up from below, clipped at their own
+  baseline, onto their place: F and W like the H2's first words (the snap:
+  hidden, two steps low, one step, rest; 80ms frames), 90ms apart; the D
+  like the last word (hidden one frame, then rising smoothly over nine
+  frames). Over all three a gradient #FF0000 → #820400 (left to right) that
+  slowly fades away (48 frames, 3.8s, from 1s in) to the solid #820400.
+  Once; without JavaScript, with reduced motion or when already in view on
+  load: simply there.
+- The copy sits in grid columns 8–12 (column 7 left open as room next to the
   visual; owner, 2026-11-16: the first version felt dense), centred on the
   section's height: eyebrow, title, then, 48px under it, the three blocks
   as a quiet list like the Playbook's (no numbers): each title on its own

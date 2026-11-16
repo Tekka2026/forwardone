@@ -12,15 +12,51 @@ import { whatWeDo } from '@content/home';
 import { href, isPlaceholder } from '@lib/href';
 import Sentences from '@components/ui/Sentences.astro';
 import Placeholder from '@components/ui/Placeholder.astro';
+import fwdSvg from '../../assets/brand/fwd-letters.svg?raw';
+
+// The FWD letters (owner's file, 407 × 159; paths D, W, F in that order),
+// laid over the ONE artwork where they sat in the owner's composite: centred
+// on (1001, 1001) of its 2000 × 2000 frame, 1.85 × their size.
+const [D, W, F] = [...fwdSvg.matchAll(/<path d="([^"]+)"/g)].map((m) => m[1]);
+const LETTERS = [
+  { key: 'f', d: F },
+  { key: 'w', d: W },
+  { key: 'd', d: D },
+];
+const SCALE = 1.85;
+const AT = { x: 1001 - 203.5 * SCALE, y: 1001 - 79.5 * SCALE };
 ---
 
 <section class="section split">
-  <div class="split__visual">
+  <div class="split__visual" data-fwd>
     {
       isPlaceholder(whatWeDo.visual) ? (
         <Placeholder value={whatWeDo.visual} />
       ) : (
-        <img src={href(whatWeDo.visual)} alt={whatWeDo.visualAlt} loading="lazy" decoding="async" />
+        <svg class="fwd" viewBox="0 0 2000 2000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="FWD">
+          <defs>
+            <linearGradient id="fwd-tint" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="407" y2="0">
+              <stop offset="0" stop-color="#FF0000" />
+              <stop offset="1" stop-color="#820400" />
+            </linearGradient>
+            <!-- The letters rise out of this: their own height, at their place. -->
+            <clipPath id="fwd-clip" clipPathUnits="userSpaceOnUse">
+              <rect x="-20" y="-2" width="447" height="162" />
+            </clipPath>
+          </defs>
+          <image href={href(whatWeDo.visual)} width="2000" height="2000" preserveAspectRatio="xMidYMid slice" />
+          <g transform={`translate(${AT.x} ${AT.y}) scale(${SCALE})`}>
+            <rect class="fwd__anchor" x="0" y="0" width="407" height="159" fill="none" data-fwd-anchor />
+            <g clip-path="url(#fwd-clip)">
+              {LETTERS.map((l, i) => (
+                <g class={`fwd__l fwd__l--${l.key}`} style={`--i: ${i}`}>
+                  <path d={l.d} fill="#820400" />
+                  <path class="fwd__tint" d={l.d} fill="url(#fwd-tint)" />
+                </g>
+              ))}
+            </g>
+          </g>
+        </svg>
       )
     }
   </div>
@@ -45,6 +81,27 @@ import Placeholder from '@components/ui/Placeholder.astro';
   </div>
 </section>
 
+<script>
+  // Play the FWD once the letters are well in view (three quarters of the
+  // way up the window); letters already that far up on load just show.
+  const box = document.querySelector<HTMLElement>('[data-fwd]');
+  const anchor = box?.querySelector<SVGRectElement>('[data-fwd-anchor]');
+  if (box && anchor && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (anchor.getBoundingClientRect().top > innerHeight * 0.75) {
+      box.classList.add('is-waiting');
+      const io = new IntersectionObserver(
+        ([e]) => {
+          if (!e.isIntersecting) return;
+          box.classList.add('is-in');
+          io.disconnect();
+        },
+        { rootMargin: '0px 0px -25% 0px' },
+      );
+      io.observe(anchor);
+    }
+  }
+</script>
+
 <style>
   .split {
     position: relative;
@@ -64,11 +121,56 @@ import Placeholder from '@components/ui/Placeholder.astro';
     overflow: hidden;
     background: #b3daff; /* the artwork's own light blue, while it loads */
   }
-  .split__visual img {
+  .fwd {
     display: block;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+  }
+  /* FWD (owner, 2026-11-16): once the visual is in view, the letters come
+     up from below, clipped at their own baseline, onto their place. F and
+     W like the H2's first words (the snap: hidden, two steps low, one
+     step, rest, in 80ms frames), 90ms apart; the D like the last word
+     (hidden one frame, then rising smoothly over nine frames). Across the
+     three a gradient #FF0000 → #820400 that slowly fades to the solid
+     #820400. Without JavaScript or with reduced motion: simply there. */
+  .fwd__l {
+    --fwd-step: 22px; /* one step, in the letters' own units (159 high) */
+  }
+  .fwd__tint {
+    opacity: 0;
+  }
+  [data-fwd].is-waiting .fwd__l {
+    transform: translateY(170px);
+  }
+  [data-fwd].is-waiting .fwd__tint {
+    opacity: 1;
+  }
+  [data-fwd].is-waiting.is-in .fwd__l {
+    animation: fwd-snap calc(var(--reveal-frame) * 4) step-end both;
+    animation-delay: calc(var(--i) * var(--reveal-stagger));
+  }
+  [data-fwd].is-waiting.is-in .fwd__l--d {
+    animation: fwd-rise calc(var(--reveal-frame) * 9) cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: calc(var(--i) * var(--reveal-stagger));
+  }
+  [data-fwd].is-waiting.is-in .fwd__tint {
+    animation: fwd-tint calc(var(--reveal-frame) * 48) ease-in-out both;
+    animation-delay: calc(var(--reveal-frame) * 12);
+  }
+  @keyframes fwd-snap {
+    0%        { transform: translateY(170px); }
+    25%       { transform: translateY(calc(2 * var(--fwd-step))); }
+    50%       { transform: translateY(var(--fwd-step)); }
+    75%, 100% { transform: translateY(0); }
+  }
+  @keyframes fwd-rise {
+    0%      { transform: translateY(170px); }
+    11.111% { transform: translateY(160px); }
+    100%    { transform: translateY(0); }
+  }
+  @keyframes fwd-tint {
+    from { opacity: 1; }
+    to   { opacity: 0; }
   }
   /* Columns 8–12 (owner, 2026-11-16: it felt dense): column 7 stays empty
      as room next to the visual, and the lines stay short. */

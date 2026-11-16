@@ -42,9 +42,10 @@ export const stats: Stat[] = [
 
 export const whatWeDo = {
   /** Visual filling the section's left half, the copy in the right half
-   *  (owner, 2026-11-16: the FWD artwork on light blue, 2000 × 2000).
-   *  Path under public/. Decorative, so no alt text. */
-  visual: '/visuals/what-we-do.webp',
+   *  (owner, 2026-11-16): the ONE brush artwork on light blue (2000 × 2000),
+   *  with the FWD letters (src/assets/brand/fwd-letters.svg) animating in
+   *  over it (WhatWeDo.astro). Path under public/. */
+  visual: '/visuals/what-we-do-one.webp',
   visualAlt: '',
   eyebrow: 'What we do',
   title: 'One strategy. Executed without exception.',
