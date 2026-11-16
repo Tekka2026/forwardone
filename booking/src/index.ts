@@ -70,14 +70,15 @@ const LIMITS: Record<string, number> = {
 };
 const REQUIRED = ['company', 'building', 'name', 'role', 'linkedin', 'surprise', 'why', 'slot', 'email', 'first_name'];
 
-function clean(input: Record<string, unknown>) {
+function clean(input: Record<string, unknown>, waitlist = false) {
   const out: Record<string, string> = {};
   for (const k of Object.keys(LIMITS)) {
     const v = typeof input[k] === 'string' ? (input[k] as string).trim().replace(/\s+/g, ' ') : '';
     if (v.length > LIMITS[k]) return { field: k };
     out[k] = v;
   }
-  for (const k of REQUIRED) if (!out[k]) return { field: k };
+  // On the waiting list there is no slot to choose (owner, 2026-11-09).
+  for (const k of REQUIRED) if (!out[k] && !(waitlist && k === 'slot')) return { field: k };
   out.email = out.email.toLowerCase();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(out.email)) return { field: 'email' };
   // LinkedIn: the page sends the handle ("jeroendelange1976", owner
@@ -102,17 +103,19 @@ async function apply(env: Env, req: Request, ctx: ExecutionContext) {
   if (typeof body.website === 'string' && body.website) return json({ ok: true }, 201);
   if (await tooMany(env, req)) return json({ error: 'too_many', message: copy.errors.too_many }, 429);
   if (!(await human(env, req, body.turnstile))) return json({ error: 'robot', message: copy.errors.robot }, 400);
-  const c = clean(body);
+  // The page asks for the waiting list once every time is taken.
+  const waitlist = body.waitlist === '1' || body.waitlist === true;
+  const c = clean(body, waitlist);
   if (!c.data) return json({ error: 'invalid', field: c.field, message: copy.errors.invalid }, 400);
   const d = c.data;
-  const slot = await env.DB.prepare('SELECT * FROM slots WHERE id = ?').bind(d.slot).first<Slot>();
-  if (!slot) return json({ error: 'unknown_slot', message: copy.errors.unknown_slot }, 409);
+  const slot = waitlist ? null : await env.DB.prepare('SELECT * FROM slots WHERE id = ?').bind(d.slot).first<Slot>();
+  if (!waitlist && !slot) return json({ error: 'unknown_slot', message: copy.errors.unknown_slot }, 409);
 
   const a: Application = {
     id: crypto.randomUUID(),
     created_at: new Date().toISOString(),
-    slot_id: slot.id,
-    status: 'pending',
+    slot_id: slot ? slot.id : null,
+    status: waitlist ? 'waitlist' : 'pending',
     company: d.company,
     name: d.name,
     role: d.role || null,
@@ -131,9 +134,9 @@ async function apply(env: Env, req: Request, ctx: ExecutionContext) {
   try {
     await env.DB.prepare(
       `INSERT INTO applications (id, created_at, slot_id, status, company, name, role, email, phone, building, linkedin, surprise, why, first_name, cancel_token)
-       VALUES (?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
-      .bind(a.id, a.created_at, a.slot_id, a.company, a.name, a.role, a.email, a.phone, a.building, a.linkedin, a.surprise, a.why, a.first_name, a.cancel_token)
+      .bind(a.id, a.created_at, a.slot_id, a.status, a.company, a.name, a.role, a.email, a.phone, a.building, a.linkedin, a.surprise, a.why, a.first_name, a.cancel_token)
       .run();
   } catch (e) {
     const msg = String((e as Error).message);
@@ -144,8 +147,8 @@ async function apply(env: Env, req: Request, ctx: ExecutionContext) {
 
   const base = new URL(req.url).origin;
   // The team hears about it in the daily overview, not per request.
-  ctx.waitUntil(founderEmail(env, 'received', a, slot, `${base}/cancel?t=${a.cancel_token}`).then((m) => send(env, { to: a.email, ...m })));
-  return json({ ok: true, slot: slot.label }, 201);
+  ctx.waitUntil(founderEmail(env, slot ? 'received' : 'waitlisted', a, slot, `${base}/cancel?t=${a.cancel_token}`).then((m) => send(env, { to: a.email, ...m })));
+  return json(slot ? { ok: true, slot: slot.label } : { ok: true, waitlist: true }, 201);
 }
 
 // ---- Founder cancels ---------------------------------------------------------
@@ -153,17 +156,17 @@ async function apply(env: Env, req: Request, ctx: ExecutionContext) {
 async function cancelPage(env: Env, url: URL) {
   const t = url.searchParams.get('t') ?? '';
   const a = await env.DB.prepare(
-    `SELECT a.*, s.label FROM applications a JOIN slots s ON s.id = a.slot_id WHERE cancel_token = ? AND status IN ('pending', 'approved')`,
+    `SELECT a.*, s.label FROM applications a LEFT JOIN slots s ON s.id = a.slot_id WHERE cancel_token = ? AND status IN ('pending', 'approved', 'waitlist')`,
   )
     .bind(t)
-    .first<Application & { label: string }>();
+    .first<Application & { label: string | null }>();
   if (!a) return page('Cancel', `<div><h1 class="t-title">${esc(env.EVENT_NAME)}</h1><p class="t-intro">${copy.pages.cancelGone}</p></div>`);
   // A button, not the link itself, so mail scanners that open links do not cancel.
   return page(
     'Cancel',
     `<div><h1 class="t-title">${esc(env.EVENT_NAME)}</h1>
-     <p class="t-intro">Release the ${esc(a.label)} slot (Helsinki time) for ${esc(a.company)}? Someone else can then take it.</p></div>
-     <form method="post" action="/cancel" data-busy="Releasing…"><input type="hidden" name="t" value="${t.replace(/[^a-f0-9]/g, '')}"><button class="btn btn--warn" type="submit">Release the slot</button></form>
+     <p class="t-intro">${a.label ? `Release the ${esc(a.label)} slot (Helsinki time) for ${esc(a.company)}? Someone else can then take it.` : `Take ${esc(a.company)} off the waiting list?`}</p></div>
+     <form method="post" action="/cancel" data-busy="${a.label ? 'Releasing…' : 'Leaving…'}"><input type="hidden" name="t" value="${t.replace(/[^a-f0-9]/g, '')}"><button class="btn btn--warn" type="submit">${a.label ? 'Release the slot' : 'Leave the waiting list'}</button></form>
      <script>${BUSY_JS}</script>`,
   );
 }
@@ -173,13 +176,13 @@ async function cancel(env: Env, req: Request, ctx: ExecutionContext) {
   const t = String(form.get('t') ?? '');
   const a = await env.DB.prepare(
     `UPDATE applications SET status = 'cancelled', decided_at = ?, decided_by = 'founder'
-      WHERE cancel_token = ? AND status IN ('pending', 'approved') RETURNING *`,
+      WHERE cancel_token = ? AND status IN ('pending', 'approved', 'waitlist') RETURNING *`,
   )
     .bind(new Date().toISOString(), t)
     .first<Application>();
   if (!a) return page('Cancel', `<div><h1 class="t-title">${esc(env.EVENT_NAME)}</h1><p class="t-intro">${copy.pages.cancelGone}</p></div>`);
   // Reported in the daily overview.
-  return page('Cancelled', `<div><h1 class="t-title">${esc(env.EVENT_NAME)}</h1><p class="t-intro">${copy.pages.cancelled}</p></div>`);
+  return page('Cancelled', `<div><h1 class="t-title">${esc(env.EVENT_NAME)}</h1><p class="t-intro">${a.slot_id ? copy.pages.cancelled : copy.pages.leftList}</p></div>`);
 }
 
 // ---- Review ------------------------------------------------------------------
@@ -209,7 +212,7 @@ async function review(env: Env, req: Request, url: URL, ctx: ExecutionContext) {
   if (path === '/review/logout' && req.method === 'POST') return redirect('/review', { 'Set-Cookie': logoutCookie });
 
   const who = await currentReviewer(env, req);
-  if (!who) return path === '/review/decide' ? json({ error: 'auth', message: 'Your session has ended. Reload the page to log in again.' }, 401) : loginPage(env.EVENT_NAME);
+  if (!who) return path === '/review/decide' || path === '/review/assign' ? json({ error: 'auth', message: 'Your session has ended. Reload the page to log in again.' }, 401) : loginPage(env.EVENT_NAME);
 
   if (path === '/review/decide' && req.method === 'POST') {
     if (!sameOrigin(req)) return json({ error: 'forbidden', message: 'Forbidden.' }, 403);
@@ -223,12 +226,14 @@ async function review(env: Env, req: Request, url: URL, ctx: ExecutionContext) {
     const decision = String(body.decision ?? '') as Status;
     if (decision !== 'approved' && decision !== 'denied') return json({ error: 'invalid', message: 'Unknown decision.' }, 400);
     const a = await env.DB.prepare(
-      `UPDATE applications SET status = ?, decided_at = ?, decided_by = ? WHERE id = ? AND status = 'pending' RETURNING *`,
+      // Approve a pending request; deny a pending one or take one off the waiting list.
+      `UPDATE applications SET status = ?, decided_at = ?, decided_by = ?
+        WHERE id = ? AND (status = 'pending' OR (status = 'waitlist' AND ? = 'denied')) RETURNING *`,
     )
-      .bind(decision, new Date().toISOString(), who, id)
+      .bind(decision, new Date().toISOString(), who, id, decision)
       .first<Application>();
     if (a) {
-      const slot = (await env.DB.prepare('SELECT * FROM slots WHERE id = ?').bind(a.slot_id).first<Slot>())!;
+      const slot = a.slot_id ? await env.DB.prepare('SELECT * FROM slots WHERE id = ?').bind(a.slot_id).first<Slot>() : null;
       const place = await venue(env);
       ctx.waitUntil(
         founderEmail(env, decision, a, slot).then((m) =>
@@ -236,7 +241,7 @@ async function review(env: Env, req: Request, url: URL, ctx: ExecutionContext) {
             to: a.email,
             ...m,
             attachments:
-              decision === 'approved'
+              decision === 'approved' && slot
                 ? [{ filename: 'the-pitch.ics', content: ics(env, a.id, slot.starts_at, slot.ends_at, `${plainTitle(env)}: ${a.company}`, place), content_type: 'text/calendar' }]
                 : undefined,
           }),
@@ -244,6 +249,46 @@ async function review(env: Env, req: Request, url: URL, ctx: ExecutionContext) {
       );
     }
     return a ? json({ ok: true, status: decision }) : json({ error: 'stale', message: 'This request was already decided. Reload to see the latest state.' }, 409);
+  }
+
+  // ---- Waiting list: a reviewer gives a founder on the list a free slot
+  // (owner, 2026-11-09). That approves them at once; they get the "assigned"
+  // email with the calendar invite and a link to release the slot.
+  if (path === '/review/assign' && req.method === 'POST') {
+    if (!sameOrigin(req)) return json({ error: 'forbidden', message: 'Forbidden.' }, 403);
+    let body: { id?: unknown; slot?: unknown } = {};
+    try {
+      body = await req.json();
+    } catch {
+      /* falls through to the checks below */
+    }
+    const slot = await env.DB.prepare('SELECT * FROM slots WHERE id = ?').bind(String(body.slot ?? '')).first<Slot>();
+    if (!slot) return json({ error: 'unknown_slot', message: 'Pick a time first.' }, 400);
+    let a: Application | null;
+    try {
+      a = await env.DB.prepare(
+        `UPDATE applications SET slot_id = ?, status = 'approved', decided_at = ?, decided_by = ?
+          WHERE id = ? AND status = 'waitlist' RETURNING *`,
+      )
+        .bind(slot.id, new Date().toISOString(), who, String(body.id ?? ''))
+        .first<Application>();
+    } catch (e) {
+      if (String((e as Error).message).includes('applications.slot_id')) return json({ error: 'slot_taken', message: `${slot.label} was just taken. Pick another time.` }, 409);
+      throw e;
+    }
+    if (!a) return json({ error: 'stale', message: 'This founder is no longer on the waiting list. Reload to see the latest state.' }, 409);
+    const place = await venue(env);
+    const done = a;
+    ctx.waitUntil(
+      founderEmail(env, 'assigned', done, slot, `${url.origin}/cancel?t=${done.cancel_token}`).then((m) =>
+        send(env, {
+          to: done.email,
+          ...m,
+          attachments: [{ filename: 'the-pitch.ics', content: ics(env, done.id, slot.starts_at, slot.ends_at, `${plainTitle(env)}: ${done.company}`, place), content_type: 'text/calendar' }],
+        }),
+      ),
+    );
+    return json({ ok: true, status: 'approved', slot: slot.id, label: slot.label });
   }
 
   // ---- Page text: the pitch page's editable texts.
@@ -333,8 +378,8 @@ async function review(env: Env, req: Request, url: URL, ctx: ExecutionContext) {
     const [s, apps] = await Promise.all([
       env.DB.prepare('SELECT * FROM slots ORDER BY starts_at').all<Slot>(),
       env.DB.prepare(
-        `SELECT a.*, s.label FROM applications a JOIN slots s ON s.id = a.slot_id ORDER BY s.starts_at, a.created_at`,
-      ).all<Application & { label: string }>(),
+        `SELECT a.*, s.label FROM applications a LEFT JOIN slots s ON s.id = a.slot_id ORDER BY s.starts_at IS NULL, s.starts_at, a.created_at`,
+      ).all<Application & { label: string | null }>(),
     ]);
     return reviewPage({
       base: '/review',

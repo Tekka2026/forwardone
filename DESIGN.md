@@ -648,6 +648,13 @@ sheet, wording confirmed by the owner 2026-10-21).
       See you at Slush,
       [first name]
 
+  Once every time is taken (owner, 2026-11-09) the booking sentence reads
+  "I would like to be on the waiting list. Reach me at [email] or
+  [phone]." instead (the words before the email blank swap; the time is no
+  longer asked), and the letter puts the founder on the waiting list
+  (booking/README.md). A time that frees up brings the booking sentence
+  back.
+
   Every blank is required except phone. Tidied 2026-10-27 (owner): the
   three questions in the middle share one shape, the question on its own
   line and the answer full width below it (8px), 16px to the next question;

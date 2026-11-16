@@ -42,6 +42,19 @@ sent without it. The deck link is no longer asked for. The dashboard shows why a
 "not on LinkedIn" under the company, LinkedIn with the founder; the CSV
 has every field; emails can greet with `{first_name}`.
 
+## Waiting list (owner, 2026-11-09)
+
+Once every slot is taken, the letter's booking sentence reads "I would like
+to be on the waiting list. Reach me at [email] or [phone]." and the letter
+is sent with `waitlist=1`. Such a request has no slot and the status
+`waitlist` (migration 0006). The founder gets the "On the waiting list"
+email, with a link to leave the list. On the dashboard a reviewer picks a
+free time for them and clicks **Assign**: the request is approved for that
+time at once and the founder gets the "Slot assigned" email with the
+calendar invite and a link to release the slot. **Remove** takes them off
+the list (the "Denied" email). One live request per email address counts the
+waiting list too. The daily overview counts the list and names who joined.
+
 ## Spam, privacy and failures (CTO check, owner 2026-10-27)
 
 - **Per sender:** at most 5 letters an hour from one internet connection
@@ -82,10 +95,12 @@ not editable here.
 | Request sent | founder | "Your slot is on hold", with a cancel link |
 | Approved | founder | Confirmation with a calendar invite (`.ics`; venue from the Where fact on Page text, map link in the notes) |
 | Denied | founder | Polite no; the slot is released |
+| Joined the waiting list | founder | "You are on the waiting list", with a link to leave it |
+| Assigned a slot from the list | founder | Their time, with a calendar invite (`.ics`) and a link to release it |
 | Hold expired (`HOLD_DAYS`) | founder | The hold has ended |
 | Every day at 18:00 Amsterdam | reviewers | One short overview: how many new and waiting, the time and company of each new request (or of those waiting, on a day with none new), cancellations, the dashboard link, slots taken. The letters themselves are read on the dashboard (owner, 2026-11-02). Not sent when there is nothing new and nothing waiting. |
 
-The team edits the four founder emails on the dashboard (`/review/emails`):
+The team edits the six founder emails on the dashboard (`/review/emails`):
 subject and text with placeholders (`{name}`, `{company}`, `{time}`, …), a
 live example, Send test to me, and Revert to the default. Saved texts live in
 the `email_templates` table; the defaults are in `src/copy.ts`. Reviewers get

@@ -46,37 +46,41 @@ export function values(env: Env, a: Pick<Application, 'name' | 'company'> & { fi
 }
 
 /** A founder email, ready to send. */
-export async function founderEmail(env: Env, key: TemplateKey, a: Application, slot: Slot, cancelLink = '') {
+export async function founderEmail(env: Env, key: TemplateKey, a: Application, slot: Slot | null, cancelLink = '') {
   const t = await template(env, key);
-  const v = values(env, a, slot.label, cancelLink);
+  // No slot on the waiting list: {time} stays empty.
+  const v = values(env, a, slot?.label ?? '', cancelLink);
   return { subject: fill(t.subject, v), text: fill(t.body, v) };
 }
 
 // ---- Daily overview -----------------------------------------------------------
 
-type Listed = Application & { label: string };
+type Listed = Application & { label: string | null };
 
 /** The overview since `since`, or null when there is nothing to report. */
 export async function digest(env: Env, since: string, reviewUrl: string) {
   const all = (
     await env.DB.prepare(
-      `SELECT a.*, s.label FROM applications a JOIN slots s ON s.id = a.slot_id ORDER BY s.starts_at`,
+      `SELECT a.*, s.label FROM applications a LEFT JOIN slots s ON s.id = a.slot_id ORDER BY s.starts_at IS NULL, s.starts_at, a.created_at`,
     ).all<Listed>()
   ).results;
   const slotCount = (await env.DB.prepare('SELECT COUNT(*) AS n FROM slots').first<{ n: number }>())?.n ?? 0;
   const fresh = all.filter((a) => a.created_at > since);
+  const onList = all.filter((a) => a.status === 'waitlist').length;
   const cancelled = all.filter((a) => a.status === 'cancelled' && (a.decided_at ?? '') > since);
   const waiting = all.filter((a) => a.status === 'pending');
   const taken = all.filter((a) => a.status === 'pending' || a.status === 'approved').length;
-  if (!fresh.length && !cancelled.length && !waiting.length) return null;
+  if (!fresh.length && !cancelled.length && !waiting.length && !onList) return null;
 
   // Short on purpose (owner, 2026-11-02): who and when only; the letters
   // themselves are read on the dashboard.
   const n = (k: number, one: string, many: string) => `${k} ${k === 1 ? one : many}`;
-  const row = (a: Listed) => `${a.label}  ${a.company}`;
+  // No time yet: on the waiting list (owner, 2026-11-09).
+  const row = (a: Listed) => `${a.label ?? 'List '}  ${a.company}`;
   const text = [
     `${n(fresh.length, 'new pitch request', 'new pitch requests')} today. ${waiting.length} waiting for your review.`,
-    ...(fresh.length ? ['', 'New today (Helsinki time):', ...fresh.map(row)] : []),
+    ...(onList ? [`On the waiting list: ${onList}.`] : []),
+    ...(fresh.length ? ['', 'New today (Helsinki time; List: on the waiting list):', ...fresh.map(row)] : []),
     ...(!fresh.length && waiting.length ? ['', 'Waiting (Helsinki time):', ...waiting.map(row)] : []),
     ...(cancelled.length ? ['', 'Cancelled today:', ...cancelled.map(row)] : []),
     '',
@@ -85,7 +89,7 @@ export async function digest(env: Env, since: string, reviewUrl: string) {
     `Slots taken: ${taken} of ${slotCount}.`,
   ].join('\n');
   return {
-    subject: `${env.EVENT_NAME}: ${n(fresh.length, 'new request', 'new requests')} today, ${waiting.length} waiting`,
+    subject: `${env.EVENT_NAME}: ${n(fresh.length, 'new request', 'new requests')} today, ${waiting.length} waiting${onList ? `, ${onList} on the waiting list` : ''}`,
     text,
   };
 }
