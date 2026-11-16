@@ -133,8 +133,19 @@ Four families, loaded in `src/layouts/Base.astro` and `css/global.css`:
   (card titles, the Playbook list) and all body and UI text: lede, body,
   small, buttons, navigation, forms, footer.
 - `--font-mono`: **Geist Mono** (Vercel, SIL OFL; self-hosted from
-  `src/assets/fonts/geist-mono`, weights 400 and 500). Eyebrow, label, code, and
-  the nav panel column titles.
+  `src/assets/fonts/geist-mono`, weights 400 and 500). **No longer used for
+  labels on the site (owner, 2026-11-16: "remove all the mono tags, text
+  and numbers")**: the section eyebrows, the step numbers 01–04 (homepage
+  Playbook, founders page), the Proof cards' date label and facts row, the
+  stub pages' labels and the 404's "404" are gone; labels that carry
+  information are now Inter (track record table headings and their phone
+  labels, partner roles, the team profile's role, field labels, periods
+  and section labels, footnote numbers, the menu's and the footer's column
+  titles, the choice panel's label, the LP portal preview's badges and column heads).
+  Mono stays only for `code`, the `[PLACEHOLDER …]` markers, `/the-pitch`
+  (its own session; also on Webflow) and the `/brand` guidelines. Older
+  notes in this file that mention an eyebrow or a mono label describe the
+  design before 2026-11-16.
 
 **Sizes, line heights and tracking stay** whatever the family.
 
@@ -148,7 +159,7 @@ Four families, loaded in `src/layouts/Base.astro` and `css/global.css`:
 | Lede        | `.lede`       | `clamp(18px, 1.6vw, 21px)`             | 1.5  | 0        | 400    | max-width 784px (6 cols). Homepage section body copy uses it too: hero, Track record, What we do blocks, Playbook, Fund III. |
 | Body        | `.body`       | 17px; `clamp(17px, 1.4vw, 19px)` inside `.section--feature` | 1.55 | 0 | 400 | max-width 648px (5 cols); `.body--wide` allows 784px, never more. |
 | Small       | `.small`      | 15px (`.small--tight` = 14.5px)        | 1.55 | 0        | 400    | Card body, list items. |
-| Eyebrow     | `.eyebrow`    | 12px mono                              | 1.4  | +0.14em  | 500    | UPPERCASE. **Opens every section.** |
+| Eyebrow     | `.eyebrow`    | 12px mono                              | 1.4  | +0.14em  | 500    | UPPERCASE. Not used on the site since 2026-11-16 (owner: no mono labels); kept for /the-pitch and /brand. |
 | Label       | `.label`      | 12px mono                              | 1.4  | +0.16em  | 500    | UPPERCASE. Metadata, markers. |
 | Code        | `.code`       | 13.5px mono                            | 1.7  | 0        | 400    | As-is. Also the default for `code`, `pre`, `kbd`, `samp`. |
 
@@ -159,8 +170,9 @@ the design needs.
 
 Rules:
 
-- Headings are **sentence case, never all-caps**. UPPERCASE is reserved for the
-  mono `.eyebrow` and `.label` styles.
+- Headings are **sentence case, never all-caps**. UPPERCASE was reserved for
+  the mono `.eyebrow` and `.label` styles, which the site no longer uses
+  (2026-11-16).
 - Display and Section headings break onto a new line after every sentence:
   render them through `src/components/ui/Sentences.astro`.
   A `\n` in the content string forces an extra break mid-sentence
@@ -493,8 +505,9 @@ screens the list stacks under the CTA.
   the viewport (first frame as it comes in at the bottom, last as it leaves
   at the top), forward when scrolling down, backward when scrolling up,
   gliding after the scroll with a short ease. File:
-  `public/visuals/munich-flyover.mp4` (720 × 1008, cropped to 5:7, every
-  frame a keyframe for smooth seeking, no sound, 5.2 MB) with a poster
+  `public/visuals/munich-flyover-2.mp4` (the owner's second version,
+  2026-11-16; 720 × 1008, cropped to 5:7, every frame a keyframe for smooth
+  seeking, no sound) with a poster
   frame; it loads only when the card comes within 800px of the screen
   (encoding in `visuals/README.md`). It sits under the card's link.
 - Insights: on desktop the H2 runs at most 6 of the 12 grid
@@ -880,7 +893,7 @@ CLAUDE.md action A0005).
    (section 6); page spacing from `--page-margin`, `--gutter`, `--section-pad`.
 5. **No arbitrary type.** Sizes, line heights and tracking come from the type
    scale (section 5).
-6. **One `.h-display` per page.** Every section opens with an `.eyebrow`.
+6. **One `.h-display` per page.** No section eyebrows (owner, 2026-11-16: no mono labels); a section opens with its heading.
 7. **Full-bleed is opt-in** per element via `.bleed`, never a default.
 
 Link underlines (hover, current page) are 1px (`a` in global.css); the
@@ -1039,7 +1052,7 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   stays underlined ("Good afternoon, <u>founder</u>!", underlined while it
   types too). Pressing it opens the nav panel the usual way (it grows up
   out of the bar, the page is pushed back), but with only the choice
-  instead of the site menu: a mono label "Your choice: founder", then two
+  instead of the site menu: a label "Your choice: founder" (Inter, small, 70%), then two
   options in card-title type with a hairline between them, "Switch to
   investor" (or "…founder") and "Reset my choice". The bar keeps the
   greeting while it is open. Switching closes the panel; the bar takes the

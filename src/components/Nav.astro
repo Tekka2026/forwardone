@@ -610,12 +610,10 @@ const aud = navGreeting.audience;
   }
   .nav__choice-title {
     margin: 0;
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    line-height: var(--lh-mono);
-    letter-spacing: var(--ls-label);
+    font-family: var(--font-sans);
+    font-size: var(--fs-small);
+    line-height: var(--lh-small);
     font-weight: 500;
-    text-transform: uppercase;
     opacity: 0.7;
   }
   .nav__choice-list {
@@ -660,12 +658,10 @@ const aud = navGreeting.audience;
   }
 
   .nav__col-title {
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    line-height: var(--lh-mono);
-    letter-spacing: var(--ls-label);
+    font-family: var(--font-sans); /* Inter, no mono (owner, 2026-11-16) */
+    font-size: var(--fs-small);
+    line-height: var(--lh-small);
     font-weight: 500;
-    text-transform: uppercase;
     text-decoration-line: none;
     opacity: 0.7;
   }
@@ -956,7 +952,12 @@ const aud = navGreeting.audience;
     // the visit (sessionStorage).
     const AUDIENCE_KEY = 'forwardone-audience';
     try { audience = sessionStorage.getItem(AUDIENCE_KEY) || ''; } catch { /* storage blocked */ }
-    const applyAudience = () => root.toggleAttribute('data-founder', audience === 'founder');
+    // Also on <html>, so anything on the page can follow it (the key
+    // figures' hover colour, owner 2026-11-16).
+    const applyAudience = () => {
+      root.toggleAttribute('data-founder', audience === 'founder');
+      document.documentElement.toggleAttribute('data-founder', audience === 'founder');
+    };
     applyAudience();
     // Below the "I am a" zone (homepage section 4 on) the closed line asks
     // "How can we help you?" instead of welcoming (owner, 2026-11-05).

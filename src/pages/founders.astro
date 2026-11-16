@@ -32,7 +32,6 @@ import { href, isPlaceholder } from '@lib/href';
 // Copy with an embedded placeholder ("within [PLACEHOLDER: X days], yes or no").
 const chunks = (v: string) => v.split(/(\[PLACEHOLDER:[^\]]*\])/).filter(Boolean);
 const h1Words = f.hero.title.split(/\s+/).filter(Boolean).length;
-const two = (i: number) => String(i + 1).padStart(2, '0');
 // Portfolio logos: single-colour SVGs from src/assets/portfolio, inlined so
 // they take the text colour (as the footer's partner logos).
 const logos = import.meta.glob<string>('../assets/portfolio/*.svg', { query: '?raw', import: 'default', eager: true });
@@ -50,7 +49,6 @@ const labelled = (svg: string, label: string) =>
   <div class="f-intro theme-dark" data-nav-dark style={`--h1-words: ${h1Words}`}>
     <section class="section section--flush f-hero">
       <div class="wrap">
-        <p class="eyebrow"><Sentences text={f.hero.eyebrow} reveal tick /></p>
         <h1 class="h-display f-hero__title"><Sentences text={f.hero.title} reveal /></h1>
         <p class="lede f-hero__lede reveal-gentle">{f.hero.lede}</p>
         <div class="f-hero__actions">
@@ -107,7 +105,6 @@ const labelled = (svg: string, label: string) =>
   <!-- 3. Why founders pick us: a scroll-driven deck (after lassie.ai) -->
   <section class="section f-why-section">
     <div class="wrap">
-      <p class="eyebrow">{f.why.eyebrow}</p>
       <h2 class="h-section f-title"><Sentences text={f.why.title} /></h2>
     </div>
     <div class="f-deck" data-deck style={`--n: ${f.why.cards.length}`}>
@@ -167,7 +164,6 @@ const labelled = (svg: string, label: string) =>
   <!-- 4. How we work with you: the homepage Playbook pattern -->
   <section class="section section--feature">
     <div class="wrap">
-      <p class="eyebrow">{f.how.eyebrow}</p>
       <div class="grid f-playbook">
         <div class="col-7">
           <h2 class="h-feature"><Sentences text={f.how.title} reveal onScroll /></h2>
@@ -192,7 +188,6 @@ const labelled = (svg: string, label: string) =>
   <!-- 5. What we back -->
   <section class="section">
     <div class="wrap">
-      <p class="eyebrow">{f.back.eyebrow}</p>
       <h2 class="h-section f-title"><Sentences text={f.back.title} /></h2>
       <p class="lede f-body">{f.back.body}</p>
       <ul class="f-tags" aria-label="Sectors">
@@ -235,7 +230,6 @@ const labelled = (svg: string, label: string) =>
   <!-- 7. The partners: the homepage team pattern -->
   <section class="section" id="partners">
     <div class="wrap">
-      <p class="eyebrow">{f.partners.eyebrow}</p>
       <h2 class="h-section f-title"><Sentences text={f.partners.title} /></h2>
       <ul class="cards f-partners">
         {
@@ -249,7 +243,7 @@ const labelled = (svg: string, label: string) =>
                 )}
               </div>
               <h3 class="card-title f-partner__name">{p.name}</h3>
-              <p class="label f-partner__role">{p.role}</p>
+              <p class="small f-partner__role">{p.role}</p>
               {isPlaceholder(p.quote) ? (
                 <p class="small f-partner__quote">
                   <Placeholder value={p.quote} />
@@ -269,13 +263,11 @@ const labelled = (svg: string, label: string) =>
   <!-- 8. After you pitch -->
   <section class="section">
     <div class="wrap">
-      <p class="eyebrow">{f.after.eyebrow}</p>
       <h2 class="h-section f-title"><Sentences text={f.after.title} /></h2>
       <ol class="cards f-steps">
         {
-          f.after.steps.map((s, i) => (
+          f.after.steps.map((s) => (
             <li class="f-step">
-              <span class="label f-step__n" aria-hidden="true">{two(i)}</span>
               <h3 class="card-title f-step__title">{s.title}</h3>
               <p class="small f-step__body">
                 {chunks(s.body).map((c) => (
@@ -497,6 +489,17 @@ const labelled = (svg: string, label: string) =>
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
     animation-delay: var(--stat-at);
+    transition: color 200ms ease;
+  }
+  /* Hover (owner, 2026-11-16): the figure lights up yellow, or light blue
+     for a visitor who chose founder in the nav. */
+  @media (hover: hover) {
+    .f-stat:hover .f-stat__value {
+      color: var(--brand-yellow);
+    }
+    :global(html[data-founder]) .f-stat:hover .f-stat__value {
+      color: var(--nav-bg-founder);
+    }
   }
   .f-stat__label {
     margin: 0;
@@ -662,14 +665,6 @@ const labelled = (svg: string, label: string) =>
   .f-playbook__item:last-child {
     border-bottom: var(--hairline-w) solid var(--hairline);
   }
-  .f-playbook__item::before {
-    counter-increment: step;
-    content: '0' counter(step);
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    letter-spacing: var(--ls-label);
-    color: var(--muted);
-  }
   .f-playbook__text {
     display: flex;
     flex-direction: column;
@@ -791,9 +786,6 @@ const labelled = (svg: string, label: string) =>
   .f-step {
     padding-top: var(--space-4x);
     border-top: var(--hairline-w) solid var(--hairline);
-  }
-  .f-step__n {
-    color: var(--muted);
   }
   .f-step__title {
     margin: var(--space-2x) 0 0;

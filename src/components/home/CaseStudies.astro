@@ -16,19 +16,14 @@ import Button from '@components/ui/Button.astro';
 import Placeholder from '@components/ui/Placeholder.astro';
 import Sentences from '@components/ui/Sentences.astro';
 
-// Each card carries its group label ("Exit", "Traction") for the date line.
-const slides = caseStudies.groups.flatMap((g) => g.items.map((c) => ({ ...c, stage: g.label })));
+const slides = caseStudies.groups.flatMap((g) => g.items);
 const total = slides.length;
-// "April 11th, 2022" -> parts with the ordinal suffix marked, so it can stay
-// lowercase inside the uppercase label.
-const dateParts = (d: string) => d.split(/(?<=\d)(st|nd|rd|th)\b/);
 ---
 
 <section class="section cases" aria-labelledby="cases-title">
   <div class="wrap">
     <div class="grid cases__head">
       <div class="col-6">
-        <p class="eyebrow">{caseStudies.eyebrow}</p>
         <h2 class="h-section cases__title" id="cases-title"><Sentences text={caseStudies.title} /></h2>
       </div>
       <p class="col-4 start-9 body cases__intro">
@@ -61,17 +56,6 @@ const dateParts = (d: string) => d.split(/(?<=\d)(st|nd|rd|th)\b/);
                   <source src={href(c.video.mp4)} type="video/mp4" />
                 </video>
               )}
-              <p class="label case__date">
-                {isPlaceholder(c.date) ? (
-                  <Placeholder value={c.date} />
-                ) : (
-                  <>
-                    {c.stage}:{' '}
-                    {dateParts(c.date).map((part, j) => (j % 2 ? <span class="case__ord">{part}</span> : part))}
-                  </>
-                )}
-              </p>
-
               {!isPlaceholder(c.metric) && <p class="case__metric">{c.metric}</p>}
 
               {!c.video && (
@@ -89,15 +73,6 @@ const dateParts = (d: string) => d.split(/(?<=\d)(st|nd|rd|th)\b/);
                   <a class="case__link" href={href(`/portfolio/${c.slug}`)}>{c.name}</a>
                 </h3>
                 <p class="case__outcome">{c.outcome}</p>
-                {c.facts.length > 0 && (
-                  <ul class="case__facts">
-                    {c.facts.map((f) => (
-                      <li class="case__fact">
-                        <Placeholder value={f} />
-                      </li>
-                    ))}
-                  </ul>
-                )}
               </div>
             </li>
           ))
@@ -217,15 +192,6 @@ const dateParts = (d: string) => d.split(/(?<=\d)(st|nd|rd|th)\b/);
     background: var(--video-overlay);
   }
 
-  .case__ord {
-    text-transform: none;
-  }
-  .case__date {
-    grid-column: 1 / -1;
-    margin: 0;
-    color: var(--brand-yellow);
-    font-variant-numeric: tabular-nums;
-  }
   .case__metric {
     position: absolute;
     top: var(--gap-double);
@@ -277,22 +243,6 @@ const dateParts = (d: string) => d.split(/(?<=\d)(st|nd|rd|th)\b/);
     font-size: var(--fs-body-feature);
     line-height: var(--lh-body);
     color: var(--card-fg-soft);
-  }
-  .case__facts {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2x) var(--gap);
-    margin: var(--gap-double) 0 0;
-    padding: 0;
-    list-style: none;
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    line-height: var(--lh-mono);
-    color: var(--card-fg-soft);
-  }
-  .case__fact::before {
-    content: '\00b7\00a0';
-    color: var(--brand-yellow);
   }
 
   /* ---- Controls ---- */

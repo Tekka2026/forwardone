@@ -92,6 +92,19 @@ import Footnote from '@components/ui/Footnote.astro';
     margin: 0;
     color: var(--muted);
   }
+  /* Hover (owner, 2026-11-16): the figure lights up yellow, or light blue
+     for a visitor who chose founder in the nav. */
+  .stat__value {
+    transition: color 200ms ease;
+  }
+  @media (hover: hover) {
+    .stat:hover .stat__value {
+      color: var(--brand-yellow);
+    }
+    :global(html[data-founder]) .stat:hover .stat__value {
+      color: var(--nav-bg-founder);
+    }
+  }
   /* Held until the strip scrolls into view (see the script below). */
   .stats:global(.is-waiting) .stat__value,
   .stats:global(.is-waiting) .stat__label {

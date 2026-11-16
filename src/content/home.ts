@@ -349,7 +349,7 @@ export type Partner = {
 
 export const partners = {
   eyebrow: 'The team',
-  title: 'The partners behind the performance.',
+  title: 'The team behind the performance.', // owner, 2026-11-16 (was 'The partners …')
   people: [
     {
       name: 'Arjan Göbel',
@@ -537,9 +537,10 @@ export const insights = {
       slug: 'why-munich-matters-for-europes-next-generation-of-industrial-tech',
       intro: 'Universities, industrial leaders and a growing founder scene: why we look closely at Munich.',
       image: '',
-      // Aerial flyover supplied by the owner (2026-11-16), replacing the
-      // drawn street map; it plays forward and backward with the scroll.
-      video: { src: '/visuals/munich-flyover.mp4', poster: '/visuals/munich-flyover.jpg' },
+      // Aerial flyover supplied by the owner (2026-11-16; second version the
+      // same day), replacing the drawn street map; it plays forward and
+      // backward with the scroll.
+      video: { src: '/visuals/munich-flyover-2.mp4', poster: '/visuals/munich-flyover-2.jpg' },
     },
     {
       title: 'Fund III: doubling down on Europe’s industrial technology winners',

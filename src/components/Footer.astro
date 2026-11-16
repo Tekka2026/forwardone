@@ -41,7 +41,7 @@ const { minimal = false, links = [] } = Astro.props;
       {
         footer.columns.map((section) => (
           <nav class="footer-col" aria-labelledby={`footer-${section.label.toLowerCase()}`}>
-            <h2 class="footer-col__title label" id={`footer-${section.label.toLowerCase()}`}>
+            <h2 class="footer-col__title small" id={`footer-${section.label.toLowerCase()}`}>
               <a href={href(section.href)}>{section.label}</a>
             </h2>
             <ul class="footer-col__list">
@@ -65,7 +65,7 @@ const { minimal = false, links = [] } = Astro.props;
       }
 
       <div class="footer-col footer-col--contact">
-        <h2 class="footer-col__title label">{footer.contact.heading}</h2>
+        <h2 class="footer-col__title small">{footer.contact.heading}</h2>
         <ul class="footer-col__list">
           {
             footer.contact.lines.map((line) => (
@@ -132,8 +132,11 @@ const { minimal = false, links = [] } = Astro.props;
     gap: var(--gap-double) var(--gutter);
   }
 
+  /* Column titles in Inter (owner, 2026-11-16: no mono labels). */
   .footer-col__title {
     margin: 0 0 var(--space-4x);
+    font-family: var(--font-sans);
+    font-weight: 600;
   }
 
   .footer-col__title a {

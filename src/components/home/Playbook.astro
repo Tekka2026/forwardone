@@ -6,7 +6,6 @@ import Sentences from '@components/ui/Sentences.astro';
 
 <section class="section section--feature">
   <div class="wrap">
-    <p class="eyebrow">{playbook.eyebrow}</p>
     <div class="grid playbook">
       <div class="col-7">
         <h2 class="h-feature"><Sentences text={playbook.title} reveal onScroll /></h2>
@@ -78,14 +77,6 @@ import Sentences from '@components/ui/Sentences.astro';
     letter-spacing: 0;
     color: var(--muted);
     text-wrap: pretty; /* no single-word last lines */
-  }
-  .playbook__item::before {
-    counter-increment: step;
-    content: '0' counter(step);
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    letter-spacing: var(--ls-label);
-    color: var(--muted);
   }
   .playbook__item:last-child {
     border-bottom: var(--hairline-w) solid var(--hairline);

@@ -8,7 +8,6 @@ import Sentences from '@components/ui/Sentences.astro';
 
 <section class="section">
   <div class="wrap">
-    <p class="eyebrow">{partners.eyebrow}</p>
     <h2 class="h-section section-title"><Sentences text={partners.title} /></h2>
     <ul class="cards partners">
       {
@@ -22,7 +21,7 @@ import Sentences from '@components/ui/Sentences.astro';
               )}
             </div>
             <h3 class="card-title partner__name">{p.name}</h3>
-            <p class="label partner__role">{p.role}</p>
+            <p class="small partner__role">{p.role}</p>
             {isPlaceholder(p.quote) ? (
               <p class="small partner__quote">
                 <Placeholder value={p.quote} />

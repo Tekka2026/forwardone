@@ -37,7 +37,7 @@ const linkHref = (h: string) => (h.includes('@') && !h.startsWith('mailto:') ? `
           {isPlaceholder(m.photo) ? <Placeholder value={m.photo} /> : <img src={href(m.photo)} alt="" width="1200" height="1500" decoding="async" />}
         </div>
         <div class="col-6 start-7 profile__head">
-          <p class="eyebrow"><Placeholder value={m.role} /></p>
+          <p class="small profile__role"><Placeholder value={m.role} /></p>
           <h1 class="h-section profile__name">
             {isPlaceholder(m.name) ? <Placeholder value={m.name} /> : <Sentences text={m.name} reveal />}
           </h1>
@@ -46,7 +46,7 @@ const linkHref = (h: string) => (h.includes('@') && !h.startsWith('mailto:') ? `
             {
               m.facts.map((f) => (
                 <div>
-                  <dt class="label">{f.label}</dt>
+                  <dt class="small profile__fact-label">{f.label}</dt>
                   <dd class="body"><Placeholder value={f.value} /></dd>
                 </div>
               ))
@@ -76,7 +76,7 @@ const linkHref = (h: string) => (h.includes('@') && !h.startsWith('mailto:') ? `
 
   <section class="section">
     <div class="wrap grid profile__row">
-      <h2 class="col-3 eyebrow profile__label">{L.about}</h2>
+      <h2 class="col-3 profile__label">{L.about}</h2>
       <div class="col-7 start-5 profile__bio">
         {m.bio.map((p) => <p class="body"><Placeholder value={p} /></p>)}
       </div>
@@ -85,12 +85,12 @@ const linkHref = (h: string) => (h.includes('@') && !h.startsWith('mailto:') ? `
 
   <section class="section">
     <div class="wrap grid profile__row">
-      <h2 class="col-3 eyebrow profile__label">{L.background}</h2>
+      <h2 class="col-3 profile__label">{L.background}</h2>
       <ol class="col-8 start-5 profile__timeline">
         {
           m.background.map((b) => (
             <li>
-              <span class="label profile__period"><Placeholder value={b.period} /></span>
+              <span class="small profile__period"><Placeholder value={b.period} /></span>
               <span class="profile__entry">
                 <span class="card-title"><Placeholder value={b.title} /></span>
                 <span class="body profile__detail"><Placeholder value={b.detail} /></span>
@@ -104,7 +104,7 @@ const linkHref = (h: string) => (h.includes('@') && !h.startsWith('mailto:') ? `
 
   <section class="section">
     <div class="wrap grid profile__row">
-      <h2 class="col-3 eyebrow profile__label">{L.companies}</h2>
+      <h2 class="col-3 profile__label">{L.companies}</h2>
       <ul class="col-8 start-5 profile__companies">
         {m.companies.map((c) => <li class="profile__company"><Placeholder value={c} /></li>)}
       </ul>
@@ -115,7 +115,7 @@ const linkHref = (h: string) => (h.includes('@') && !h.startsWith('mailto:') ? `
     clips.length > 0 && (
       <section class="section">
         <div class="wrap grid profile__row">
-          <h2 class="col-3 eyebrow profile__label">{L.clips}</h2>
+          <h2 class="col-3 profile__label">{L.clips}</h2>
           <ul class="col-8 start-5 profile__clips">
             {clips.map((c) => (
               <li class="profile__clip">
@@ -134,7 +134,7 @@ const linkHref = (h: string) => (h.includes('@') && !h.startsWith('mailto:') ? `
 
   <section class="section">
     <div class="wrap grid profile__row">
-      <h2 class="col-3 eyebrow profile__label">{L.insights}</h2>
+      <h2 class="col-3 profile__label">{L.insights}</h2>
       <ul class="col-8 start-5 profile__insights">
         {
           m.insights.map((a) => (
@@ -218,7 +218,21 @@ const linkHref = (h: string) => (h.includes('@') && !h.startsWith('mailto:') ? `
   .profile__row {
     align-items: start;
   }
+  /* Section labels in Inter (owner, 2026-11-16: no mono labels). */
   .profile__label {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-card-title);
+    font-weight: var(--fw-card-title);
+    letter-spacing: var(--ls-card-title);
+    line-height: var(--lh-card-title);
+  }
+  .profile__role,
+  .profile__fact-label,
+  .profile__period {
+    color: var(--muted);
+  }
+  .profile__role {
     margin: 0;
   }
   .profile__bio p {

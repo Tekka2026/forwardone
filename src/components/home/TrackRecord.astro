@@ -11,7 +11,6 @@ const keys = ['size', 'companies', 'status'] as const;
 <section class="section section--tint">
   <div class="wrap">
     <div class="track__head">
-      <p class="eyebrow">{trackRecord.eyebrow}</p>
       <p class="track__figure" data-track-figure>
         <span class="track__unit">{trackRecord.figure.prefix}</span><span class="track__value">{trackRecord.figure.value}</span><span class="track__unit">{trackRecord.figure.suffix}</span>
       </p>
@@ -139,12 +138,10 @@ const keys = ['size', 'companies', 'status'] as const;
   }
   .funds thead th {
     border-top: 0; /* no rule above the column labels */
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    line-height: var(--lh-mono);
-    letter-spacing: var(--ls-label);
+    font-family: var(--font-sans); /* Inter, no mono (owner, 2026-11-16) */
+    font-size: var(--fs-small-tight);
+    line-height: var(--lh-small);
     font-weight: 500;
-    text-transform: uppercase;
     color: var(--muted);
   }
   .funds tbody th,
@@ -231,12 +228,10 @@ const keys = ['size', 'companies', 'status'] as const;
     }
     .funds td::before {
       content: attr(data-label);
-      font-family: var(--font-mono);
-      font-size: var(--fs-label);
+      font-family: var(--font-sans);
+      font-size: var(--fs-small-tight);
       line-height: var(--lh-small);
-      letter-spacing: var(--ls-label);
       font-weight: 500;
-      text-transform: uppercase;
       color: var(--muted);
     }
   }
