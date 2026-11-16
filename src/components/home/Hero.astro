@@ -22,6 +22,17 @@ import Sentences from '@components/ui/Sentences.astro';
   .hero__eyebrow-rest {
     --reveal-start: 0ms;
   }
+  /* Phones (owner, 2026-11-16): no forced break in the H1, the sentence
+     runs as one, balanced over its lines ("Every proven step" alone did
+     not fit on a line, so it broke into four). */
+  @media (max-width: 640px) {
+    .hero__title :global(br) {
+      display: none;
+    }
+    .hero__title {
+      text-wrap: balance;
+    }
+  }
   .hero__title {
     margin-top: var(--gap-half);
     max-width: var(--col-10);

@@ -377,6 +377,16 @@ const labelled = (svg: string, label: string) =>
 </script>
 
 <style>
+  /* Phones (owner, 2026-11-16, as on the homepage): no forced break in
+     the H1, the sentence runs as one, balanced over its lines. */
+  @media (max-width: 640px) {
+    .f-hero__title :global(br) {
+      display: none;
+    }
+    .f-hero__title {
+      text-wrap: balance;
+    }
+  }
   /* ---- 1–2. Black intro (as .intro on the homepage) ---------------------- */
   .f-intro {
     display: flex;

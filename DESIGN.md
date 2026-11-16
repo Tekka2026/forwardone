@@ -281,6 +281,14 @@ Rules:
   bottom line, owner 2026-11-16); then the link. At ≤880px the visual sits on top, full width and
   square, touching the hairline above, with the copy under it.
 
+### H1 on phones (owner, 2026-11-16)
+
+- The H1s have a forced break ("Every proven step / earns the next",
+  "Backing deeptech / from lab to exit"). On phones (≤640px) the break is
+  dropped and the sentence runs as one, balanced over its lines
+  (`text-wrap: balance`): "Every proven / step earns / the next". The
+  first half did not fit on one line, so it broke into four.
+
 ### Homepage curtain
 
 - 96px of black under the key figures (owner, 2026-11-05; was 48px), on

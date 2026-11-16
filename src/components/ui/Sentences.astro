@@ -44,7 +44,7 @@ let index = 0;
   reveal
     ? sentences.map((words, si) => (
         <>
-          {si > 0 && <br />}
+          {si > 0 && <> <br /></>}
           {words.map((word, wi) => {
             const i = index++;
             const last = !tick && i === total - 1;
@@ -61,7 +61,7 @@ let index = 0;
       ))
     : parts.map((part, i) => (
         <>
-          {i > 0 && <br />}
+          {i > 0 && <> <br /></>}
           {part}
         </>
       ))
