@@ -1,39 +1,89 @@
 ---
+/**
+ * What we do (owner, 2026-11-16): a square visual in the left half of the
+ * grid (columns 1–6), the copy in the right half (columns 7–12): eyebrow,
+ * title, the three blocks one under the other, and the link. At ≤880px the
+ * visual sits above the copy, full width.
+ */
 import { whatWeDo } from '@content/home';
-import { href } from '@lib/href';
+import { href, isPlaceholder } from '@lib/href';
 import Sentences from '@components/ui/Sentences.astro';
+import Placeholder from '@components/ui/Placeholder.astro';
 ---
 
 <section class="section">
-  <div class="wrap">
-    <p class="eyebrow">{whatWeDo.eyebrow}</p>
-    <h2 class="h-section section-title"><Sentences text={whatWeDo.title} /></h2>
-    <div class="grid blocks">
+  <div class="wrap grid split">
+    <div class="split__visual">
       {
-        whatWeDo.blocks.map((b) => (
-          <p class="col-4 lede block">
-            <strong class="block__title">{b.title}</strong> {b.body}
-          </p>
-        ))
+        isPlaceholder(whatWeDo.visual) ? (
+          <Placeholder value={whatWeDo.visual} />
+        ) : (
+          <img src={href(whatWeDo.visual)} alt={whatWeDo.visualAlt} loading="lazy" decoding="async" />
+        )
       }
     </div>
-    <p class="section-link">
-      <a class="arrow-link" href={href(whatWeDo.link.href)}>{whatWeDo.link.label}</a>
-    </p>
+    <div class="split__copy">
+      <p class="eyebrow">{whatWeDo.eyebrow}</p>
+      <h2 class="h-section section-title"><Sentences text={whatWeDo.title} /></h2>
+      <div class="blocks">
+        {
+          whatWeDo.blocks.map((b) => (
+            <p class="lede block">
+              <strong class="block__title">{b.title}</strong> {b.body}
+            </p>
+          ))
+        }
+      </div>
+      <p class="section-link">
+        <a class="arrow-link" href={href(whatWeDo.link.href)}>{whatWeDo.link.label}</a>
+      </p>
+    </div>
   </div>
 </section>
 
 <style>
+  .split {
+    align-items: center;
+  }
+  .split__visual {
+    grid-column: 1 / span 6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: #b3daff; /* the artwork's own light blue, while it loads */
+  }
+  .split__visual img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .split__copy {
+    grid-column: 7 / span 6;
+  }
   .section-title {
     margin-top: var(--gap-half);
   }
   .blocks {
-    margin-top: var(--space-4x);   /* heading → body: 16px */
+    display: grid;
+    gap: var(--space-4x);
+    margin-top: var(--space-4x); /* heading → body: 16px */
+  }
+  .block {
+    margin: 0;
   }
   .block__title {
     font-weight: 600;
   }
   .section-link {
     margin-top: var(--gap-double);
+  }
+  @media (max-width: 880px) {
+    .split__visual,
+    .split__copy {
+      grid-column: 1 / -1;
+    }
   }
 </style>

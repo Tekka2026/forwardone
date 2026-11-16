@@ -15,6 +15,7 @@ invented; replace the value in the file named and the marker disappears.
 | Founders strip | `founders.people[*].colour` | Brand colour (hex) per company card. Empty falls back to a site tone. |
 | Founders strip | `founders.people[*].blurb` | Check the one-liners under the company names (paraphrased from the forward.one portfolio pages). |
 | Founders strip | `founders.clips[*].video`, `.poster`, `.caption` | Five short vertical videos of FORWARD.one team members (MP4, about 9:16, cropped to 5:7; muted autoplay), with a poster frame and a one-line caption. Until then all five play `public/founders/clip-placeholder.mp4` (the owner's Slush Finland clip with its caption, 2026-10-19). |
+| What we do | `whatWeDo.visual`, `.visualAlt` | The square visual for the left half (the FWD artwork on light blue the owner showed on 2026-11-16), as a file: PNG or JPG, at least 1600 × 1600. Drop it in `public/visuals/` and set the path (A0039). |
 | Proof slider | `caseStudies.groups[*].items[*].date` | Date at the top of each card, written as month and year, like "April 2022" (shown as "EXIT: APRIL 2022"): the exit date for Axign (Sensorfact and Mayht supplied). For QuantWare and Edmund (traction, no exit) decide which date to show, e.g. first investment. |
 | Proof slider | `caseStudies.groups[*].items[*].visual` or `.video` | Visual per company card (Sensorfact, Mayht and QuantWare supplied as background videos). Either an image in the right half (transparent PNG/WebP works best on the dark card) or a short muted video filling the card (MP4; Claude adds a WebM copy and a poster frame). Drop files in `public/cases/`. |
 | Proof slider | `caseStudies.groups[*].items[*].facts` | Optional: two or three short facts per company for the mono row at the card's bottom edge (like "Raw material origin · Carbon footprint"). Hidden while empty. |
@@ -24,7 +25,7 @@ invented; replace the value in the file named and the marker disappears.
 | The team | `partners.people[*].photo` | Portrait of each partner. Drop files in `public/team/` and set the path (4:5 crop). |
 | The team | `partners.people[2].quote` | Quote from Robin van Boxsel. |
 | The team | `partners.people[3].quote` | Quote from Paul Pruijmboom. |
-| Insights | `insights.articles[2].image` | Visual for the third featured article (the first has the robot arm, the second the Munich map), 5:7 portrait (cropped to 7:5 landscape on phones, so keep the subject centred). Drop files in `public/insights/` and set the path; until then a flat light grey box. |
+| Insights | `insights.articles[2].image` | Visual for the third featured article (the first has the robot arm, the second the Munich flyover video), 5:7 portrait (cropped to 7:5 landscape on phones, so keep the subject centred). Drop files in `public/insights/` and set the path; until then a flat light grey box. |
 | Insights | `insights.articles[*].slug` | Slugs are derived from titles; match them to the CMS slugs when the news collection is migrated. |
 
 ## The ____ Pitch (`src/content/pitch.ts`, page `/the-pitch`)

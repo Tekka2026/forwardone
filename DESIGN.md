@@ -220,6 +220,15 @@ Rules:
   each row restacks into a block between hairlines (no box) with mono
   labels taken from `data-label`; tables never scroll horizontally.
 
+### What we do (homepage, owner 2026-11-16)
+
+- Two halves of the grid: a square visual in columns 1–6 (`whatWeDo.visual`,
+  the FWD artwork on light blue; light blue #B3DAFF behind it while it
+  loads, a placeholder until the file is supplied, A0039), the copy in
+  columns 7–12, centred on the visual's height: eyebrow, title, the three
+  blocks one under the other (16px apart, Lede type), and the link. At
+  ≤880px the visual sits above the copy, full width.
+
 ### Homepage curtain
 
 - 96px of black under the key figures (owner, 2026-11-05; was 48px), on

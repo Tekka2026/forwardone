@@ -41,6 +41,11 @@ export const stats: Stat[] = [
 ];
 
 export const whatWeDo = {
+  /** Square visual in the left half, the copy in the right half (owner,
+   *  2026-11-16: the FWD artwork on light blue). Path under public/; a
+   *  placeholder until the file is supplied (A0039). */
+  visual: '[PLACEHOLDER: What we do visual (FWD on light blue), square]',
+  visualAlt: '',
   eyebrow: 'What we do',
   title: 'One strategy. Executed without exception.',
   blocks: [
