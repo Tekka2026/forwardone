@@ -1,9 +1,11 @@
 ---
 /**
- * What we do (owner, 2026-11-16): a square visual in the left half of the
- * grid (columns 1–6), the copy in the right half (columns 7–12): eyebrow,
- * title, the three blocks one under the other, and the link. At ≤880px the
- * visual sits above the copy, full width.
+ * What we do (owner, 2026-11-16): the visual fills the left half of the
+ * section edge to edge, from the browser's left edge to the middle and from
+ * the separator line above to the one below; the copy sits in the right
+ * half of the grid (columns 7–12): eyebrow, title, the three blocks one
+ * under the other, and the link. At ≤880px the visual sits on top, full
+ * width and square, touching the separator line, with the copy under it.
  */
 import { whatWeDo } from '@content/home';
 import { href, isPlaceholder } from '@lib/href';
@@ -11,17 +13,17 @@ import Sentences from '@components/ui/Sentences.astro';
 import Placeholder from '@components/ui/Placeholder.astro';
 ---
 
-<section class="section">
-  <div class="wrap grid split">
-    <div class="split__visual">
-      {
-        isPlaceholder(whatWeDo.visual) ? (
-          <Placeholder value={whatWeDo.visual} />
-        ) : (
-          <img src={href(whatWeDo.visual)} alt={whatWeDo.visualAlt} loading="lazy" decoding="async" />
-        )
-      }
-    </div>
+<section class="section split">
+  <div class="split__visual">
+    {
+      isPlaceholder(whatWeDo.visual) ? (
+        <Placeholder value={whatWeDo.visual} />
+      ) : (
+        <img src={href(whatWeDo.visual)} alt={whatWeDo.visualAlt} loading="lazy" decoding="async" />
+      )
+    }
+  </div>
+  <div class="wrap grid">
     <div class="split__copy">
       <p class="eyebrow">{whatWeDo.eyebrow}</p>
       <h2 class="h-section section-title"><Sentences text={whatWeDo.title} /></h2>
@@ -43,14 +45,20 @@ import Placeholder from '@components/ui/Placeholder.astro';
 
 <style>
   .split {
-    align-items: center;
+    position: relative;
   }
+  /* Inside the section's border: from the hairline above to the next
+     section's hairline below, and from the window's left edge to the
+     middle. */
   .split__visual {
-    grid-column: 1 / span 6;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    aspect-ratio: 1 / 1;
     overflow: hidden;
     background: #b3daff; /* the artwork's own light blue, while it loads */
   }
@@ -81,7 +89,12 @@ import Placeholder from '@components/ui/Placeholder.astro';
     margin-top: var(--gap-double);
   }
   @media (max-width: 880px) {
-    .split__visual,
+    .split__visual {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      margin: calc(-1 * var(--section-pad)) 0 var(--section-pad);
+    }
     .split__copy {
       grid-column: 1 / -1;
     }

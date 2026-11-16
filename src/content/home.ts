@@ -41,10 +41,10 @@ export const stats: Stat[] = [
 ];
 
 export const whatWeDo = {
-  /** Square visual in the left half, the copy in the right half (owner,
-   *  2026-11-16: the FWD artwork on light blue). Path under public/; a
-   *  placeholder until the file is supplied (A0039). */
-  visual: '[PLACEHOLDER: What we do visual (FWD on light blue), square]',
+  /** Visual filling the section's left half, the copy in the right half
+   *  (owner, 2026-11-16: the FWD artwork on light blue, 2000 × 2000).
+   *  Path under public/. Decorative, so no alt text. */
+  visual: '/visuals/what-we-do.webp',
   visualAlt: '',
   eyebrow: 'What we do',
   title: 'One strategy. Executed without exception.',

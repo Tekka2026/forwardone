@@ -222,12 +222,15 @@ Rules:
 
 ### What we do (homepage, owner 2026-11-16)
 
-- Two halves of the grid: a square visual in columns 1–6 (`whatWeDo.visual`,
-  the FWD artwork on light blue; light blue #B3DAFF behind it while it
-  loads, a placeholder until the file is supplied, A0039), the copy in
-  columns 7–12, centred on the visual's height: eyebrow, title, the three
-  blocks one under the other (16px apart, Lede type), and the link. At
-  ≤880px the visual sits above the copy, full width.
+- The visual (`whatWeDo.visual`, the FWD artwork on light blue,
+  `public/visuals/what-we-do.webp`, 2000 × 2000) fills the section's left
+  half edge to edge: from the window's left edge to the middle, and from
+  the section's hairline above to the next section's hairline below
+  (`object-fit: cover`, light blue #B3DAFF behind it while it loads). The
+  copy sits in grid columns 7–12 with the section's usual padding:
+  eyebrow, title, the three blocks one under the other (16px apart, Lede
+  type), and the link. At ≤880px the visual sits on top, full width and
+  square, touching the hairline above, with the copy under it.
 
 ### Homepage curtain
 
