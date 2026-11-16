@@ -8,8 +8,8 @@
  * to FORWARD again, by how far you scroll (320px for the whole way); at the
  * top it is always FORWARD. No fade: solid letters,
  * revealed by their slots only. Colour (owner, 2026-11-16): yellow
- * (#FFEA6D) over dark areas (the dark intro, [data-nav-dark] sections),
- * black elsewhere. 24px high (19px on narrow phones).
+ * (#FFEA6D) over dark areas, black elsewhere; for a visitor who chose
+ * founder in the nav, light blue (#B3DAFF) over dark areas instead. 24px high (19px on narrow phones).
  *
  * A spacer keeps the logo's place in the header row; the link itself is
  * moved out of the header by the script and is position: fixed at the
@@ -126,6 +126,12 @@ const VIEWBOX = '498 456 942 168';
   }
   .logo--forward.is-dark {
     color: var(--brand-yellow);
+  }
+  /* Founders (owner, 2026-11-16): once a visitor has said they are a
+     founder, light blue on dark (the founder bar's colour) instead of
+     yellow; black on light as for everyone. */
+  .logo--forward.is-dark.is-founder {
+    color: var(--nav-bg-founder);
   }
   .logo--forward.is-ready {
     transition: color 200ms ease;
@@ -250,6 +256,21 @@ const VIEWBOX = '498 456 942 168';
     }
     tone();
     requestAnimationFrame(() => logo!.classList.add('is-ready'));
+
+    // ---- Founder or investor: follows the choice in the floating nav,
+    // which marks itself [data-founder] (and remembers it for the visit) ----
+    const nav = document.querySelector<HTMLElement>('[data-nav]');
+    const audience = () => {
+      if (nav) return nav.hasAttribute('data-founder');
+      try { return sessionStorage.getItem('forwardone-audience') === 'founder'; } catch { return false; }
+    };
+    logo.classList.toggle('is-founder', audience());
+    if (nav) {
+      new MutationObserver(() => logo!.classList.toggle('is-founder', audience())).observe(nav, {
+        attributes: true,
+        attributeFilter: ['data-founder'],
+      });
+    }
 
     let queued = 0;
     window.addEventListener(

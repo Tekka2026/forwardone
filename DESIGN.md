@@ -888,7 +888,10 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   motion: it switches at once, at the halfway point.
 - Colour (owner, 2026-11-16): yellow (`--brand-yellow`, #FFEA6D) over dark
   areas, black (`--black-ink`) on whites and light greys, 200ms between
-  them. What is actually painted under the logo decides, so a white block
+  them. Founders (owner, 2026-11-16): once the visitor has chosen
+  founder in the floating nav, the logo is light blue (`--nav-bg-founder`,
+  #B3DAFF, the founder bar's colour) over dark areas instead of yellow,
+  black on light as for everyone; it follows a switch or reset at once. What is actually painted under the logo decides, so a white block
   sliding over the sticky dark intro turns it black: of the elements at
   the logo's spot (front to back) the first with a solid background of its
   own, dark below 0.35 relative luminance. Pictures, video and canvases
