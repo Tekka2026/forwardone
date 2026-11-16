@@ -9,7 +9,7 @@
  * top it is always FORWARD. No fade: solid letters,
  * revealed by their slots only. Colour (owner, 2026-11-16): FORWARD / FWD
  * white over dark areas, black elsewhere; ".ONE" yellow (#FFEA6D) for
- * investors and before a choice, light blue (#B3DAFF) for founders. 24px high (19px on narrow phones).
+ * investors and before a choice, light blue (#B3DAFF) for founders. 18px high (14px on narrow phones).
  *
  * A spacer keeps the logo's place in the header row; the link itself is
  * moved out of the header by the script and is position: fixed at the
@@ -104,8 +104,8 @@ const VIEWBOX = '498 456 1388 168';
   }
   /* Classic: 199 × 20 artwork, 20px high (15px on narrow phones so the logo
      and the LP login button fit on one row, down to 320px wide). FORWARD:
-     4px higher (owner, 2026-11-16): 24px (19px on narrow phones), its
-     cropped frame with ".ONE" 1388 × 168, so 198 × 24. */
+     18px (14px on narrow phones; owner, 2026-11-16: 6px smaller than the
+     24px before), its cropped frame with ".ONE" 1388 × 168, so 149 × 18. */
   .logo :global(.logo__mark),
   .logo-slot {
     display: block;
@@ -114,20 +114,20 @@ const VIEWBOX = '498 456 1388 168';
   }
   .logo--forward :global(.logo__mark),
   .logo-slot {
-    height: 24px;
+    height: 18px;
   }
   .logo-slot {
     aspect-ratio: 1388 / 168;
   }
-  /* ".ONE" waits behind the D until the script slides it in (a second after
-     load); without scripting it is simply there. */
+  /* ".ONE" waits just behind the D until the script brings it in (a second
+     after load), gently (owner, 2026-11-16): a short slide out of the slot
+     while it fades in, over 1.8s with a soft ease. Without scripting it is
+     simply there. */
   @media (scripting: enabled) {
     .logo--forward:not(.is-one) :global(.logo__one-in) {
-      transform: translateX(-470px);
+      transform: translateX(-160px);
+      opacity: 0;
     }
-  }
-  .logo--forward :global(.logo__one-in) {
-    transition: transform 1100ms cubic-bezier(0.22, 1, 0.36, 1);
   }
   @media (max-width: 420px) {
     .logo :global(.logo__mark) {
@@ -135,7 +135,7 @@ const VIEWBOX = '498 456 1388 168';
     }
     .logo--forward :global(.logo__mark),
     .logo-slot {
-      height: 19px;
+      height: 14px;
     }
   }
 
@@ -145,7 +145,7 @@ const VIEWBOX = '498 456 1388 168';
   .logo--forward {
     position: fixed;
     z-index: 50;
-    top: var(--logo-y, calc(var(--gap) + (var(--form-height-small) - 24px) / 2));
+    top: var(--logo-y, calc(var(--gap) + (var(--form-height-small) - 18px) / 2));
     left: var(--logo-x, max(var(--pad), calc((100vw - var(--max)) / 2)));
   }
   /* Colour (owner, 2026-11-16): FORWARD / FWD always white on dark and
@@ -164,7 +164,10 @@ const VIEWBOX = '498 456 1388 168';
   }
   .logo--forward :global(.logo__one-in) {
     fill: var(--brand-yellow);
-    transition: fill 200ms ease;
+    transition:
+      fill 200ms ease,
+      transform 1800ms cubic-bezier(0.25, 0.1, 0.25, 1),
+      opacity 1800ms cubic-bezier(0.25, 0.1, 0.25, 1);
   }
   .logo--forward.is-founder :global(.logo__one-in) {
     fill: var(--nav-bg-founder);

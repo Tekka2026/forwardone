@@ -966,12 +966,13 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   dot-one.svg`: the full stop, O, N, E, at the wordmark's cap height)
   follows the D on the same baseline, 18 units after the D's bowl, and
   moves with it: FORWARD.ONE, and FWD.ONE when closed. About a second after
-  the page has loaded (FORWARD is there from the start) it slides out from
-  behind the D through a slanted slot (1.1s, ease out); with reduced
-  motion it is there at once, without scripting too.
-- Size (owner, 2026-11-16: 4px higher): 24px high (19px at ≤420px); with
-  ".ONE" 198 × 24 (the storyboard frame cropped to `498 456 1388 168`), as
-  wide as the old FORWARD.one wordmark. Without JavaScript: FORWARD in the header.
+  the page has loaded (FORWARD is there from the start) it comes in
+  gently (owner, 2026-11-16): a short slide (160 units) out of a slanted
+  slot just behind the D while it fades in, over 1.8s with a soft ease;
+  with reduced motion it is there at once, without scripting too.
+- Size (owner, 2026-11-16): 18px high (14px at ≤420px; 6px smaller than
+  the 24px before, in proportion); with ".ONE" 149 × 18 (the storyboard
+  frame cropped to `498 456 1388 168`). Without JavaScript: FORWARD in the header.
 - The stand-alone SVG animations of the same motion (FWD → FORWARD, loops,
   without fade, FORWARD → FWD) are built from the same module by
   `node visuals/forward-wordmark/build.mjs` into `public/visuals/`.
@@ -1153,7 +1154,7 @@ redefine any token or class from this file elsewhere.
 |---|---|
 | Global stylesheet | `css/global.css`, imported once in `src/layouts/Base.astro` |
 | Page shell, skip link, font loading | `src/layouts/Base.astro` |
-| Logo | Since 2026-11-16 the FORWARD wordmark (`src/lib/wordmark.mjs`, from the owner's storyboard), drawn by `src/components/ui/Logo.astro` in `currentColor` (yellow on dark, black on light), pinned and closing to FWD on scroll (§8, Logo). 24px high (19px at ≤420px). The classic FORWARD.one wordmark `src/assets/brand/forwardone.svg` (supplied 2026-10-14) stays on /the-pitch (`<Logo classic />`) and in the portal preview's top bar (16px desktop, 14px mobile) |
+| Logo | Since 2026-11-16 the FORWARD wordmark (`src/lib/wordmark.mjs`, from the owner's storyboard), drawn by `src/components/ui/Logo.astro` in `currentColor` (yellow on dark, black on light), pinned and closing to FWD on scroll (§8, Logo). 18px high (14px at ≤420px). The classic FORWARD.one wordmark `src/assets/brand/forwardone.svg` (supplied 2026-10-14) stays on /the-pitch (`<Logo classic />`) and in the portal preview's top bar (16px desktop, 14px mobile) |
 | Top strip (logo), floating nav, footer | `src/components/Header.astro`, `src/components/Nav.astro`, `src/components/Footer.astro` |
 | Footer partner logos (Invest Europe, EIF, EU) | `src/assets/partners/*.svg`: single-colour SVGs inlined in `currentColor` (black on the light footer), all 44px high. No hairline above. Desktop: one left-aligned row, "Member of:" (Inter, `.small`) 12px before the Invest Europe logo, 64px between logos. Phones (≤640px): "Member of:" centred with the three logos centred in one row 16px under it, 32px high; label and names in `footer.partnersLabel` / `footer.partners` (nav.ts) |
 | Shared UI | `src/components/ui/` (Button, Logo, Footnote, Placeholder) |
