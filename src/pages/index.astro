@@ -156,17 +156,5 @@ const h1Words = hero.title.split(/\s+/).filter(Boolean).length;
     background: var(--bg);
   }
 
-  /* Shared inline text link with arrow, used for section links. */
-  .arrow-link {
-    font-size: var(--fs-small);
-    font-weight: 500;
-    text-decoration-line: none;
-  }
-  .arrow-link::after {
-    content: ' \2192';
-  }
-  .arrow-link:hover {
-    text-decoration-line: underline;
-    text-underline-offset: 4px;
-  }
+  /* Section links with an arrow: src/components/ui/ArrowLink.astro. */
 </style>

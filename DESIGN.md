@@ -220,6 +220,19 @@ Rules:
   each row restacks into a block between hairlines (no box) with mono
   labels taken from `data-label`; tables never scroll horizontally.
 
+### Arrow links (owner, 2026-11-16)
+
+- Every text link ending in an arrow (the section links "Funds & track
+  record →", "Our strategy →", "Meet the team →", "All insights →") is
+  `src/components/ui/ArrowLink.astro`: 15px, weight 500, the arrow joined
+  to the last word. It animates in like the founders strip's "Discover
+  more about …": when it scrolls into view (12% above the window's bottom
+  edge), word by word, each word appearing two steps low and stepping up
+  in 80ms frames (`--reveal-frame`, `--reveal-stagger`), the last word with
+  the arrow rising smoothly; once. Links already in view on load, reduced
+  motion and no JavaScript: simply there. Hover: a 1px line 4px under the
+  whole link (words and gaps).
+
 ### What we do (homepage, owner 2026-11-16)
 
 - The visual (`whatWeDo.visual`, the FWD artwork on light blue,

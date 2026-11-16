@@ -1,4 +1,5 @@
 ---
+import ArrowLink from '@components/ui/ArrowLink.astro';
 import { insights } from '@content/home';
 import { href, isPlaceholder } from '@lib/href';
 import Placeholder from '@components/ui/Placeholder.astro';
@@ -36,7 +37,7 @@ import ScrollVideo from '@components/visuals/ScrollVideo.astro';
       }
     </ul>
     <p class="section-link">
-      <a class="arrow-link" href={href(insights.allLink.href)}>{insights.allLink.label}</a>
+      <ArrowLink href={href(insights.allLink.href)} label={insights.allLink.label} />
     </p>
 
   </div>

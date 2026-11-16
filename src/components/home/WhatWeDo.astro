@@ -7,6 +7,7 @@
  * under the other, and the link. At ≤880px the visual sits on top, full
  * width and square, touching the separator line, with the copy under it.
  */
+import ArrowLink from '@components/ui/ArrowLink.astro';
 import { whatWeDo } from '@content/home';
 import { href, isPlaceholder } from '@lib/href';
 import Sentences from '@components/ui/Sentences.astro';
@@ -37,7 +38,7 @@ import Placeholder from '@components/ui/Placeholder.astro';
         }
       </div>
       <p class="section-link">
-        <a class="arrow-link" href={href(whatWeDo.link.href)}>{whatWeDo.link.label}</a>
+        <ArrowLink href={href(whatWeDo.link.href)} label={whatWeDo.link.label} />
       </p>
     </div>
   </div>

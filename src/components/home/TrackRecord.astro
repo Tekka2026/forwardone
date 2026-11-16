@@ -1,4 +1,5 @@
 ---
+import ArrowLink from '@components/ui/ArrowLink.astro';
 import { trackRecord } from '@content/home';
 import { href } from '@lib/href';
 import Placeholder from '@components/ui/Placeholder.astro';
@@ -50,7 +51,7 @@ const keys = ['size', 'companies', 'status'] as const;
         <strong>{trackRecord.exits.label}</strong> {trackRecord.exits.items.join(', ')}.
       </p>
       <p class="funds__link">
-        <a class="arrow-link" href={href(trackRecord.link.href)}>{trackRecord.link.label}</a>
+        <ArrowLink href={href(trackRecord.link.href)} label={trackRecord.link.label} />
       </p>
     </div>
   </div>

@@ -1,0 +1,104 @@
+---
+/**
+ * A text link ending in an arrow ("Funds & track record →", "Meet the
+ * team →"). Owner, 2026-11-16: it animates in like the founders strip's
+ * "Discover more about …" link: when it scrolls into view, word by word,
+ * each word appearing two steps low and stepping up in 80ms frames
+ * (--reveal-frame, --reveal-stagger), the last word, which carries the
+ * arrow, rising smoothly. Plays once. Without JavaScript, or with reduced
+ * motion, it is simply there.
+ */
+interface Props {
+  href: string;
+  label: string;
+  class?: string;
+}
+const { href, label, class: cls } = Astro.props;
+const words = label.trim().split(/\s+/);
+words[words.length - 1] += ' →';
+---
+
+<a class:list={['arrow-link', cls]} href={href} data-arrow-link
+  >{
+    words.map((w, i) => (
+      <>
+        <span class:list={['arrow-link__w', i === words.length - 1 && 'arrow-link__w--last']} style={`--i: ${i}`}>{w}</span>
+        {i < words.length - 1 && ' '}
+      </>
+    ))
+  }</a
+>
+
+<script>
+  const links = document.querySelectorAll<HTMLElement>('[data-arrow-link]');
+  if (links.length && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          e.target.classList.add('is-in');
+          io.unobserve(e.target);
+        }
+      },
+      { rootMargin: '0px 0px -12% 0px' },
+    );
+    for (const l of Array.from(links)) {
+      // Only links still below the fold wait to animate in.
+      if (l.getBoundingClientRect().top > innerHeight * 0.88) {
+        l.classList.add('is-waiting');
+        io.observe(l);
+      }
+    }
+  }
+</script>
+
+<style>
+  .arrow-link {
+    --reveal-step: 0.14em; /* the same ~2px as the H1's steps at this size */
+    font-size: var(--fs-small);
+    font-weight: 500;
+    text-decoration-line: none;
+  }
+  /* Hover: a 1px line 4px under the text, across the words and the gaps
+     between them (a text underline would not reach into the word boxes). */
+  .arrow-link {
+    padding-bottom: 4px;
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  }
+  .arrow-link:hover {
+    background-size: 100% 1px;
+  }
+  .arrow-link__w {
+    display: inline-block;
+  }
+  .arrow-link.is-waiting .arrow-link__w {
+    opacity: 0;
+  }
+  .arrow-link.is-waiting.is-in .arrow-link__w {
+    animation: arrow-w-in calc(var(--reveal-frame) * 4) step-end forwards;
+    animation-delay: calc(var(--i) * var(--reveal-stagger));
+  }
+  .arrow-link.is-waiting.is-in .arrow-link__w--last {
+    animation:
+      arrow-w-show calc(var(--reveal-frame) * 9) step-end forwards,
+      arrow-w-rise calc(var(--reveal-frame) * 9) cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+    animation-delay:
+      calc(var(--i) * var(--reveal-stagger)),
+      calc(var(--i) * var(--reveal-stagger));
+  }
+  /* 4 frames: invisible, then two steps down, one step, rest */
+  @keyframes arrow-w-in {
+    0%   { opacity: 0; transform: translateY(calc(2 * var(--reveal-step))); }
+    25%  { opacity: 1; transform: translateY(calc(2 * var(--reveal-step))); }
+    50%  { opacity: 1; transform: translateY(var(--reveal-step)); }
+    75%, 100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes arrow-w-show {
+    0%      { opacity: 0; }
+    11.111%, 100% { opacity: 1; }
+  }
+  @keyframes arrow-w-rise {
+    0%   { transform: translateY(calc(7 * var(--reveal-step))); }
+    100% { transform: translateY(0); }
+  }
+</style>
