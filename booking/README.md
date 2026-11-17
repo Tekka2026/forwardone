@@ -97,10 +97,11 @@ not editable here.
 | Denied | founder | Polite no; the slot is released |
 | Joined the waiting list | founder | "You are on the waiting list", with a link to leave it |
 | Assigned a slot from the list | founder | Their time, with a calendar invite (`.ics`) and a link to release it |
+| "Email approved founders" on Requests | every approved founder | "Final details": their own time, the location (Where on Page text) and the map link. Sent only on that click, after a confirm; refused while the text still holds a `[placeholder]` such as `[phone number]` (owner, 2026-11-17) |
 | Hold expired (`HOLD_DAYS`) | founder | The hold has ended |
 | Every day at 18:00 Amsterdam | reviewers | One short overview: how many new and waiting, the time and company of each new request (or of those waiting, on a day with none new), cancellations, the dashboard link, slots taken. The letters themselves are read on the dashboard (owner, 2026-11-02). Not sent when there is nothing new and nothing waiting. |
 
-The team edits the six founder emails on the dashboard (`/review/emails`):
+The team edits the seven founder emails on the dashboard (`/review/emails`):
 subject and text with placeholders (`{name}`, `{company}`, `{time}`, …), a
 live example, Send test to me, and Revert to the default. Saved texts live in
 the `email_templates` table; the defaults are in `src/copy.ts`. Reviewers get

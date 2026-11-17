@@ -48,6 +48,36 @@ export async function send(env: Env, mail: Mail) {
 }
 
 /**
+ * Many emails at once (the "Final details" send, owner 2026-11-17) through
+ * Resend's batch endpoint, 100 per request, so a dozen founders do not hit
+ * the per-second limit. Failures warn the reviewers like a single send.
+ */
+export async function sendMany(env: Env, mails: Mail[]) {
+  if (!env.MAIL_FROM || !env.RESEND_API_KEY) {
+    for (const m of mails) console.log('mail (not sent, email not configured)', JSON.stringify({ to: m.to, subject: m.subject, text: m.text }));
+    return;
+  }
+  for (let i = 0; i < mails.length; i += 100) {
+    const chunk = mails.slice(i, i + 100);
+    let why = '';
+    try {
+      const res = await fetch('https://api.resend.com/emails/batch', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(chunk.map((m) => ({ from: env.MAIL_FROM, to: m.to, subject: m.subject, text: m.text }))),
+      });
+      if (!res.ok) why = `Resend answered ${res.status}: ${(await res.text()).slice(0, 300)}`;
+    } catch (e) {
+      why = `Resend could not be reached: ${String((e as Error).message)}`;
+    }
+    if (why) {
+      console.error('batch mail failed', why);
+      await warn(env, chunk.flatMap((m) => (Array.isArray(m.to) ? m.to : [m.to])), chunk[0].subject, why);
+    }
+  }
+}
+
+/**
  * Resend's webhook (Resend > Webhooks, events email.bounced and
  * email.complained) at POST /resend-events, signed the Svix way with
  * RESEND_WEBHOOK_SECRET ("whsec_…"). A bounce reaches the reviewers at once.

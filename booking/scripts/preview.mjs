@@ -48,6 +48,7 @@ const data = {
 const sample = {
   ...SAMPLE, event: EVENT, event_plain: plain({ EVENT_NAME: EVENT }),
   cancel_link: 'https://forwardone-pitch-booking.workers.dev/cancel?t=example', page_link: PAGE,
+  location: 'Haaga-Helia Pasila Campus, Room 1206 (entrance level). Ratapihantie 13, 00520 Helsinki.', map_link: 'https://maps.app.goo.gl/SiHnx1zd7Eh2fTnD7',
 };
 const defaults = TEMPLATE_KEYS.map((key) => ({ key, subject: TEMPLATES[key].subject, body: TEMPLATES[key].body, changed: false, updated_at: null, updated_by: null }));
 
@@ -60,7 +61,7 @@ var PREVIEW_KEY = 'pitch-preview-emails';
 function previewEmails() { try { return JSON.parse(localStorage.getItem(PREVIEW_KEY) || '{}'); } catch (e) { return {}; } }
 function previewSave(all) { try { localStorage.setItem(PREVIEW_KEY, JSON.stringify(all)); } catch (e) {} }
 var later = function (v) { return new Promise(function (ok) { setTimeout(function () { ok(v); }, 450); }); };
-window.REVIEW_API = { decide: function () { return later({ ok: true }); }, assign: function () { return later({ ok: true }); } };
+window.REVIEW_API = { decide: function () { return later({ ok: true }); }, assign: function () { return later({ ok: true }); }, blast: function () { return later({ ok: true, count: 1, at: new Date().toISOString() }); } };
 window.EMAIL_API = {
   save: function (b) {
     var all = previewEmails(); all[b.key] = { subject: b.subject, body: b.body, updated_at: new Date().toISOString(), updated_by: 'you (preview)' }; previewSave(all);

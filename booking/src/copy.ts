@@ -1,5 +1,5 @@
 /**
- * Texts the service sends or shows. The six founder emails are templates
+ * Texts the service sends or shows. The seven founder emails are templates
  * the team can edit on the dashboard (/review/emails, owner 2026-10-26); the
  * defaults below apply until someone saves a change, and "Revert to the
  * default" brings them back. Placeholders in {braces} are filled per email.
@@ -7,7 +7,7 @@
  */
 import type { Env } from './env';
 
-export type TemplateKey = 'received' | 'approved' | 'denied' | 'expired' | 'waitlisted' | 'assigned';
+export type TemplateKey = 'received' | 'approved' | 'denied' | 'expired' | 'waitlisted' | 'assigned' | 'details';
 
 /** What each placeholder means, shown next to the editor. */
 export const VARIABLES: Record<string, string> = {
@@ -19,6 +19,8 @@ export const VARIABLES: Record<string, string> = {
   event_plain: 'Event name without the blank: The Pitch at Slush',
   cancel_link: 'Link that releases their slot',
   page_link: 'Link to the pitch page',
+  location: 'Where the pitches are (Where on Page text)',
+  map_link: 'The map link behind Where',
 };
 
 export const TEMPLATES: Record<
@@ -100,6 +102,28 @@ export const TEMPLATES: Record<
       'Can no longer make it? Release the slot here, so someone else can take it: {cancel_link}',
       '',
       'FORWARD.one, Balnord, HCVC',
+    ].join('\n'),
+  },
+  details: {
+    title: 'Final details (to every approved founder)',
+    when: 'Only when a reviewer clicks “Email approved founders” on Requests; each founder gets their own time',
+    vars: ['first_name', 'name', 'company', 'time', 'event', 'event_plain', 'location', 'map_link', 'page_link'],
+    note: 'Fill in the phone number before sending: the send button refuses while [phone number] is still in the text. It is kept out of the code because the code is public.',
+    subject: '{event}: your slot is final ({time})',
+    body: [
+      'Hi {first_name},',
+      '',
+      'Your slot for {event} is final. Your time is {time} (Helsinki time) on Wednesday 18 November.',
+      '',
+      'Location: {location}',
+      'Map: {map_link}',
+      '',
+      'If anything prevents you from coming, please call [phone number].',
+      '',
+      'Regards,',
+      '',
+      'Julia Kuijs',
+      'FORWARD.one',
     ].join('\n'),
   },
   expired: {

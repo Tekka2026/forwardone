@@ -133,6 +133,7 @@ select.field {
 .toolbar { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center; }
 .toolbar-left { display: flex; gap: 8px; flex-wrap: wrap; flex: 1 1 320px; }
 .toolbar-left .field { height: var(--btn-sm); padding-block: 0; }
+.toolbar-right { display: flex; gap: 8px; flex-wrap: wrap; }
 .toolbar-left input.field { flex: 1 1 200px; max-width: 320px; }
 
 /* Records: a real table in a bordered wrapper (§4). */
@@ -334,6 +335,8 @@ export type ReviewData = {
   emailConfigured: boolean;
   pageUrl: string;
   slots: Pick<Slot, 'id' | 'label'>[];
+  /** When "Final details" last went to the approved founders. */
+  detailsSent?: { at: string; by: string; count: number } | null;
   apps: (Pick<Application, 'id' | 'slot_id' | 'status' | 'company' | 'name' | 'role' | 'email' | 'phone' | 'building' | 'deck' | 'linkedin' | 'surprise' | 'why' | 'first_name' | 'created_at' | 'decided_by'> & { label: string | null })[];
 };
 
@@ -364,7 +367,10 @@ export function dashboardHtml(data: ReviewData) {
           <option value="expired">Expired</option>
         </select>
       </div>
-      <button class="btn btn--sm" type="button" id="export">Export CSV</button>
+      <div class="toolbar-right">
+        <button class="btn btn--sm" type="button" id="blast">Email approved founders</button>
+        <button class="btn btn--sm" type="button" id="export">Export CSV</button>
+      </div>
     </div>
     <div id="list"></div>
     <script type="application/json" id="review-data">${json}</script>`;
@@ -382,6 +388,10 @@ export const CLIENT_JS = String.raw`(function () {
     decide: function (id, decision) {
       return fetch(data.base + '/decide', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ id: id, decision: decision }) })
         .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d.message || 'The decision was not saved.'); return d; }); });
+    },
+    blast: function () {
+      return fetch(data.base + '/blast', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: '{}' })
+        .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d.message || 'The emails were not sent.'); return d; }); });
     },
     assign: function (id, slot) {
       return fetch(data.base + '/assign', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ id: id, slot: slot }) })
@@ -557,6 +567,22 @@ export const CLIENT_JS = String.raw`(function () {
       if (d.status === 'waitlist') return confirmAsk('Take ' + d.company + ' off the waiting list?', data.emailConfigured ? 'The founder gets an email that they cannot pitch this time.' : 'They are removed from the list.', 'Yes, remove', function () { decide(d, 'denied', dn); });
       confirmAsk('Deny ' + d.company + '?', 'The ' + d.label + ' slot becomes free again' + (data.emailConfigured ? ' and the founder gets an email that they cannot pitch this time.' : '.'), 'Yes, deny', function () { decide(d, 'denied', dn); });
     }
+  });
+
+  // ---- "Final details" to every approved founder (owner, 2026-11-17).
+  document.getElementById('blast').addEventListener('click', function () {
+    var btn = this;
+    var n = data.apps.filter(function (a) { return a.status === 'approved' && a.slot_id; }).length;
+    if (!n) return toast('There are no approved founders to email yet.', true);
+    var last = data.detailsSent ? ' Already sent ' + when(data.detailsSent.at) + ' by ' + data.detailsSent.by + ' to ' + data.detailsSent.count + '; they would get it again.' : '';
+    confirmAsk('Email ' + n + ' approved founder' + (n === 1 ? '' : 's') + '?', 'Each gets the “Final details” email with their own time and the location. Check the text under Emails first.' + last, 'Yes, send', function () {
+      btn.disabled = true; btn.textContent = 'Sending…';
+      api.blast().then(function (d) {
+        data.detailsSent = { at: d.at, by: data.who, count: d.count };
+        toast((data.emailConfigured ? 'Sent' : 'Saved, but email is not connected, so not sent') + ': “Final details” to ' + d.count + ' founder' + (d.count === 1 ? '' : 's') + '.');
+      }).catch(function (e) { toast(e.message || 'The emails were not sent. Try again.', true); })
+        .then(function () { btn.disabled = false; btn.textContent = 'Email approved founders'; });
+    });
   });
 
   // ---- Export: the table as it is filtered now.

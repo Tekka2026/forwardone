@@ -31,7 +31,13 @@ export async function template(env: Env, key: TemplateKey) {
   return (await templates(env)).find((t) => t.key === key)!;
 }
 
-export function values(env: Env, a: Pick<Application, 'name' | 'company'> & { first_name?: string | null }, time: string, cancelLink = '') {
+export function values(
+  env: Env,
+  a: Pick<Application, 'name' | 'company'> & { first_name?: string | null },
+  time: string,
+  cancelLink = '',
+  place: { location: string; map: string } = { location: '', map: '' },
+) {
   return {
     // Earlier letters had no sign-off name: the first word of the full name.
     first_name: a.first_name || a.name.trim().split(/\s+/)[0],
@@ -42,6 +48,8 @@ export function values(env: Env, a: Pick<Application, 'name' | 'company'> & { fi
     event_plain: plain(env),
     cancel_link: cancelLink,
     page_link: env.PAGE_URL,
+    location: place.location,
+    map_link: place.map,
   };
 }
 

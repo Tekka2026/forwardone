@@ -28,7 +28,7 @@ import { currentReviewer, LOGIN_MS, logoutCookie, sessionCookie, sign, verify } 
 import { copy, fill, isTemplateKey, SAMPLE, TEMPLATES, unknownVars } from './copy';
 import { digest, founderEmail, template, templates, values } from './emails';
 import { reviewers, type Application, type Env, type Slot, type Status } from './env';
-import { ics, resendEvent, send } from './mail';
+import { ics, resendEvent, send, sendMany } from './mail';
 import { human, tidy, tooMany, turnstileOn } from './guard';
 import { BUSY_JS, emailEditPage, emailsPage, esc, loginPage, page, pageTextPage, reviewPage } from './review';
 import { PAGE_DEFAULTS, PAGE_KEYS, pageField } from './pagecopy';
@@ -212,7 +212,7 @@ async function review(env: Env, req: Request, url: URL, ctx: ExecutionContext) {
   if (path === '/review/logout' && req.method === 'POST') return redirect('/review', { 'Set-Cookie': logoutCookie });
 
   const who = await currentReviewer(env, req);
-  if (!who) return path === '/review/decide' || path === '/review/assign' ? json({ error: 'auth', message: 'Your session has ended. Reload the page to log in again.' }, 401) : loginPage(env.EVENT_NAME);
+  if (!who) return path === '/review/decide' || path === '/review/assign' || path === '/review/blast' ? json({ error: 'auth', message: 'Your session has ended. Reload the page to log in again.' }, 401) : loginPage(env.EVENT_NAME);
 
   if (path === '/review/decide' && req.method === 'POST') {
     if (!sameOrigin(req)) return json({ error: 'forbidden', message: 'Forbidden.' }, 403);
@@ -249,6 +249,29 @@ async function review(env: Env, req: Request, url: URL, ctx: ExecutionContext) {
       );
     }
     return a ? json({ ok: true, status: decision }) : json({ error: 'stale', message: 'This request was already decided. Reload to see the latest state.' }, 409);
+  }
+
+  // ---- "Final details" to every approved founder at once (owner,
+  // 2026-11-17), each with their own time and the venue. Refused while the
+  // text still holds a [placeholder] such as the phone number.
+  if (path === '/review/blast' && req.method === 'POST') {
+    if (!sameOrigin(req)) return json({ error: 'forbidden', message: 'Forbidden.' }, 403);
+    const t = await template(env, 'details');
+    const gap = (t.subject + '\n' + t.body).match(/\[[^\]]+\]/);
+    if (gap) return json({ error: 'placeholder', message: `Fill in ${gap[0]} in the “Final details” email first (Emails).` }, 400);
+    const { results } = await env.DB.prepare(
+      `SELECT a.*, s.label FROM applications a JOIN slots s ON s.id = a.slot_id WHERE a.status = 'approved' ORDER BY s.starts_at`,
+    ).all<Application & { label: string }>();
+    if (!results.length) return json({ error: 'none', message: 'There are no approved founders to email.' }, 400);
+    const place = await venue(env);
+    const mails = results.map((a) => {
+      const v = values(env, a, a.label, '', place);
+      return { to: a.email, subject: fill(t.subject, v), text: fill(t.body, v) };
+    });
+    const now = new Date().toISOString();
+    await setMeta(env, 'details_sent', JSON.stringify({ at: now, by: who, count: mails.length }));
+    ctx.waitUntil(sendMany(env, mails));
+    return json({ ok: true, count: mails.length, at: now });
   }
 
   // ---- Waiting list: a reviewer gives a founder on the list a free slot
@@ -334,7 +357,7 @@ async function review(env: Env, req: Request, url: URL, ctx: ExecutionContext) {
   const edit = emailPath.match(/^\/review\/emails\/([a-z]+)$/);
   if (edit && req.method === 'GET') {
     if (!isTemplateKey(edit[1])) return new Response('Not found', { status: 404 });
-    const v = values(env, SAMPLE, SAMPLE.time, `${url.origin}/cancel?t=example`);
+    const v = values(env, SAMPLE, SAMPLE.time, `${url.origin}/cancel?t=example`, await venue(env));
     return emailEditPage({ who, base: '/review', template: await template(env, edit[1]), emailConfigured: !!(env.MAIL_FROM && env.RESEND_API_KEY), sample: v });
   }
   const act = emailPath.match(/^\/review\/emails\/(save|test|reset)$/);
@@ -360,7 +383,7 @@ async function review(env: Env, req: Request, url: URL, ctx: ExecutionContext) {
     if (unknown.length)
       return json({ error: 'invalid', message: `This email does not know ${unknown.map((u) => `{${u}}`).join(', ')}. Use only the placeholders listed.` }, 400);
     if (act[1] === 'test') {
-      const v = values(env, SAMPLE, SAMPLE.time, `${url.origin}/cancel?t=test`);
+      const v = values(env, SAMPLE, SAMPLE.time, `${url.origin}/cancel?t=test`, await venue(env));
       await send(env, { to: who, subject: `[Test] ${fill(subject, v)}`, text: fill(text, v) });
       return json({ ok: true, sentTo: who, emailConfigured: !!(env.MAIL_FROM && env.RESEND_API_KEY) });
     }
@@ -388,6 +411,7 @@ async function review(env: Env, req: Request, url: URL, ctx: ExecutionContext) {
       emailConfigured: !!(env.MAIL_FROM && env.RESEND_API_KEY),
       pageUrl: env.PAGE_URL,
       slots: s.results.map(({ id, label }) => ({ id, label })),
+      detailsSent: JSON.parse((await meta(env, 'details_sent')) ?? 'null'),
       apps: apps.results.map(({ cancel_token: _, decided_at: __, ...a }) => a),
     });
   }
