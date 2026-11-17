@@ -49,7 +49,9 @@ const h1Words = hero.title.split(/\s+/).filter(Boolean).length;
       }
       place();
       window.addEventListener('resize', place);
-      window.addEventListener('load', place);
+      // Once more when everything has loaded. Checked, not awaited: a page
+      // unlocked by the remembered site password never fires 'load'.
+      (function loaded() { document.readyState === 'complete' ? place() : setTimeout(loaded, 100); })();
     })();
   </script>
   <TrackRecord />

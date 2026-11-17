@@ -268,7 +268,13 @@ const VIEWBOX = '498 456 1388 168';
     measureDist();
     window.addEventListener('resize', place);
     window.addEventListener('resize', measureDist);
-    window.addEventListener('load', place);
+    // Checked, not awaited: a page unlocked by the remembered site password
+    // (scripts/protect.mjs) never fires 'load' (owner, 2026-11-17: .ONE gone).
+    const whenLoaded = (fn: () => void) => {
+      const check = () => (document.readyState === 'complete' ? fn() : setTimeout(check, 100));
+      check();
+    };
+    whenLoaded(place);
 
     // ---- Colour: yellow over dark areas, black elsewhere ----
     // What is actually painted under the logo decides (owner, 2026-11-16: a
@@ -310,8 +316,7 @@ const VIEWBOX = '498 456 1388 168';
     // (owner, 2026-11-16); at once with reduced motion.
     const showOne = () => logo!.classList.add('is-one');
     if (reduceMotion.matches) showOne();
-    else if (document.readyState === 'complete') setTimeout(showOne, 1000);
-    else addEventListener('load', () => setTimeout(showOne, 1000), { once: true });
+    else whenLoaded(() => setTimeout(showOne, 1000));
 
 
     let queued = 0;
