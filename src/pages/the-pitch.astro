@@ -115,6 +115,8 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
           ))}
         </div>
 
+        {/* After the deadline (the booking service says so) this replaces the letter. */}
+        <p class="lede pitch__closed" data-pitch-closed data-copy="closed" hidden>{pitch.closed}</p>
         <form
           class="pitch__form"
           data-pitch-form
@@ -323,6 +325,11 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
         .then(function (r) { return r.ok ? r.json() : { values: {} }; })
         .then(function (d) {
           if (d.turnstile) check(d.turnstile);
+          if (d.closed) {
+            form.hidden = true;
+            var shut = document.querySelector('[data-pitch-closed]');
+            if (shut) shut.hidden = false;
+          }
           Object.keys(d.values || {}).forEach(function (k) {
             var v = d.values[k];
             if (k === 'submit') return SETTERS.submit(null, v);
@@ -805,6 +812,15 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
   }
 
   /* ---- What the event is ------------------------------------------------ */
+  /* After the deadline: the closed message instead of the letter. */
+  .pitch__closed {
+    max-width: var(--col-6);
+    margin-top: var(--gap);
+  }
+  .pitch__closed[hidden],
+  .pitch__form[hidden] {
+    display: none;
+  }
   .pitch__intro {
     max-width: var(--col-6);
     margin-top: var(--gap);

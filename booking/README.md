@@ -42,6 +42,14 @@ sent without it. The deck link is no longer asked for. The dashboard shows why a
 "not on LinkedIn" under the company, LinkedIn with the founder; the CSV
 has every field; emails can greet with `{first_name}`.
 
+## Closing (owner, 2026-11-17)
+
+`CLOSES_AT` in `wrangler.toml` (Monday 16 November, 23:59 Helsinki time):
+after it `/apply` answers `410 closed` to every letter, waiting list
+included, and `GET /copy` says `closed: true`, so the page shows the closed
+message (Page text) instead of the letter. The dashboard keeps working
+(Assign from the waiting list, the emails). Empty it to reopen.
+
 ## Waiting list (owner, 2026-11-09)
 
 Once every slot is taken, the letter's booking sentence reads "I would like

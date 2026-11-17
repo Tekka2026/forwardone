@@ -11,6 +11,7 @@ const defaults = {
   submit: pitch.submit,
   sent: pitch.sent,
   sent_waitlist: pitch.sentWaitlist,
+  closed: pitch.closed,
   privacy: pitch.privacy,
   ...Object.fromEntries(pitch.facts.map((f) => [f.key, f.value])),
   ...Object.fromEntries(pitch.facts.filter((f) => 'href' in f && f.href).map((f) => [`${f.key}_link`, f.href])),

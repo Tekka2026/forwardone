@@ -741,6 +741,11 @@ sheet, wording confirmed by the owner 2026-10-21).
   (booking/README.md). A time that frees up brings the booking sentence
   back.
 
+  After the deadline (Monday 16 November, 23:59 Helsinki time; owner,
+  2026-11-17) the booking service says so and the letter, button and
+  privacy note give way to one paragraph, the closed message (lede size,
+  editable on Page text); heading, intro and facts stay.
+
   Every blank is required except phone. Tidied 2026-10-27 (owner): the
   three questions in the middle share one shape, the question on its own
   line and the answer full width below it (8px), 16px to the next question;

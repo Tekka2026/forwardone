@@ -16,6 +16,8 @@ export interface Env {
   RESEND_WEBHOOK_SECRET?: string;
   /** YYYY-MM-DD: from this day every request is deleted. */
   DELETE_AFTER: string;
+  /** ISO time after which applications are closed; empty: open. */
+  CLOSES_AT?: string;
 }
 
 export type Status = 'pending' | 'approved' | 'denied' | 'expired' | 'cancelled' | 'waitlist';

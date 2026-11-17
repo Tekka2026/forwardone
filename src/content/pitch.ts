@@ -115,6 +115,9 @@ export const pitch = {
    * sentence ("I’d like to grab the [slot] slot, Helsinki time. Reach me at")
    * becomes this, and the letter puts the founder on the waiting list. */
   waitlist: 'I would like to be on the waiting list. Reach me at',
+  /** Shown instead of the letter once applications close (CLOSES_AT in
+   * booking/wrangler.toml; owner, 2026-11-17). Editable on Page text. */
+  closed: 'Applications are closed. Thank you to everyone who applied: we have emailed every founder about their slot. See you at Slush.',
   sentWaitlist: 'Thank you. You are on the waiting list. We’ll email you if a time opens up for you.',
   slotsFailed: 'The pitch times could not be loaded. Please try again in a minute.',
   failed: 'Your request could not be sent. Please try again in a minute.',

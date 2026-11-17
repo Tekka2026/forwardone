@@ -35,6 +35,10 @@ HOLD_DAYS = ""
 # The privacy promise on the page: requests are deleted three months after
 # Slush (owner, 2026-10-27, CTO check). Download the CSV before this day.
 DELETE_AFTER = "2027-02-18"
+# Applications close (owner, 2026-11-17: Monday 16 November, 23:59 Helsinki
+# time). After it /apply refuses every letter and the page shows the closed
+# message (Page text). Empty: open.
+CLOSES_AT = "2026-11-16T23:59:00+02:00"
 # TURNSTILE_SITE_KEY (the bot check's public key) is set at deploy time from
 # the GitHub variable PITCH_TURNSTILE_SITE_KEY; empty: no bot check.
 

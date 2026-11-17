@@ -92,7 +92,11 @@ function clean(input: Record<string, unknown>, waitlist = false) {
   return { data: out };
 }
 
+/** Applications closed (CLOSES_AT passed). */
+const closed = (env: Env) => !!env.CLOSES_AT && Date.now() >= Date.parse(env.CLOSES_AT);
+
 async function apply(env: Env, req: Request, ctx: ExecutionContext) {
+  if (closed(env)) return json({ error: 'closed', message: copy.errors.closed }, 410);
   let body: Record<string, unknown>;
   try {
     body = await req.json();
@@ -498,7 +502,9 @@ export default {
         // The bot check's public key goes with the texts, so the page shows
         // the check exactly when the service asks for it.
         const check = turnstileOn(env) ? { turnstile: env.TURNSTILE_SITE_KEY } : {};
-        return json({ values: (await pageCopy(env)).values, ...check }, 200, { ...h, 'Cache-Control': 'public, max-age=60' });
+        // After the deadline the page swaps the letter for the closed message.
+        const shut = closed(env) ? { closed: true } : {};
+        return json({ values: (await pageCopy(env)).values, ...check, ...shut }, 200, { ...h, 'Cache-Control': 'public, max-age=60' });
       }
       if (url.pathname === '/slots' || url.pathname === '/apply') {
         const h = cors(env, req);
