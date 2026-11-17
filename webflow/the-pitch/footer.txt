@@ -53,6 +53,7 @@ var e=-266.47,t=-533.675,n=641.517,r=1041.59,i={O:-132.95387758696302,R:e,A:-399
     var SETTERS = {
       intro: function (el, v) {
         el.textContent = '';
+        el.hidden = !v.trim();
         v.split(/\n\s*\n/).forEach(function (para) {
           var p = document.createElement('p'); p.className = 'fo-lede'; linked(p, para.trim()); el.appendChild(p);
         });

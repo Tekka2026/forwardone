@@ -102,7 +102,7 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
           </span>
         </h1>
 
-        <div class="pitch__intro reveal-gentle" data-copy="intro" data-partner-name={pitch.partner.name} data-partner-href={pitch.partner.href}>
+        <div class="pitch__intro reveal-gentle" hidden={introParas.length === 0} data-copy="intro" data-partner-name={pitch.partner.name} data-partner-href={pitch.partner.href}>
           {introParas.map((parts) => (
             <p class="lede">
               {parts.map((t, i) => (
@@ -312,6 +312,7 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
     var SETTERS = {
       intro: function (el, v) {
         el.textContent = '';
+        el.hidden = !v.trim();
         v.split(/\n\s*\n/).forEach(function (para) {
           var p = document.createElement('p'); p.className = 'lede'; linked(p, para.trim()); el.appendChild(p);
         });
@@ -819,6 +820,9 @@ const partners = pitch.hosts.map((h) => ({ name: h.name, href: h.href, svg: logo
   }
   .pitch__closed[hidden],
   .pitch__form[hidden] {
+    display: none;
+  }
+  .pitch__intro[hidden] {
     display: none;
   }
   .pitch__intro {

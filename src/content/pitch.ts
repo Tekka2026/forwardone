@@ -51,9 +51,11 @@ export const pitch = {
   title: { before: 'The', after: 'Pitch' },
   /** What the event is, under the H1: one paragraph per entry; Balnord is
    * linked where it is named (owner's wording, 2026-10-27). */
-  intro: [
-    '20 minutes, three deeptech investors, no slides. Tell us who you are and how big your ambitions are. If we have conviction, you could leave with a term sheet.',
-  ],
+  /** Removed by the owner on 2026-11-17 (applications closed). Was: "20
+   * minutes, three deeptech investors, no slides. Tell us who you are and
+   * how big your ambitions are. If we have conviction, you could leave with
+   * a term sheet." Text saved on Page text still shows here. */
+  intro: [] as string[],
   /** The second VC on the panel. */
   partner: { name: 'Balnord', href: 'https://www.balnord.vc/' },
   /** Links in the footer, after the copyright line (owner, 2026-10-27). */

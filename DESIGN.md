@@ -741,6 +741,9 @@ sheet, wording confirmed by the owner 2026-10-21).
   (booking/README.md). A time that frees up brings the booking sentence
   back.
 
+  The text under the heading was removed on 2026-11-17 (owner); a text
+  saved on Page text ("Text under the heading") brings it back.
+
   After the deadline (Monday 16 November, 23:59 Helsinki time; owner,
   2026-11-17) the booking service says so and the letter, button and
   privacy note give way to one paragraph, the closed message (lede size,
