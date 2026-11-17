@@ -27,6 +27,13 @@
   over without a push. Builds run with `TZ=Europe/Amsterdam`.
 - Before pushing, run `npm run check` and `npm run build` locally. Both must
   be clean.
+- Password (owner, 2026-11-17, work in progress): the deploy workflow runs
+  `scripts/protect.mjs` after the build. Every page except `/the-pitch` and
+  `/brand` is encrypted with StatiCrypt and opens only with the password in
+  the GitHub secret `SITE_PASSWORD` ("Remember me" keeps it 30 days per
+  device); without that secret those pages show a plain "Work in progress."
+  page. Local builds (`npm run build`) are not affected. To open the site
+  to everyone again, remove the step from `.github/workflows/deploy.yml`.
 - Since 2026-10-26 a second session works on `/the-pitch` only (branch
   `claude/the-pitch`) and also fast-forwards the default branch. Before
   every push, fetch the default branch and merge it in; never force-push
@@ -102,3 +109,4 @@
 | A0037 | cancelled | F37 Lineca (Medium and Bold): tried on the headings and display numbers as a test on 2026-11-06; the owner meant Aeonik one weight heavier instead (A0038) and the font files were removed the same day. |
 | A0038 | open   | Aeonik (CoType) is the font going forward (owner, 2026-11-06): Regular for the headings and the key figures, SemiBold for the €388M. The site still runs on the trial files, which are in the public repo and lack € % ’ quotes, dashes and accents (those fall back to KMR Apparat). Buy a web licence for Aeonik Regular and SemiBold and supply the WOFF2 files. Claude then swaps them in and removes the trial files and KMR Apparat. |
 | A0039 | done   | What we do visual (the FWD artwork on light blue): supplied as a file by the owner on 2026-11-16 and placed the same day (`public/visuals/what-we-do.webp`). |
+| A0040 | open   | Set the website password (owner, 2026-11-17: the site is work in progress): GitHub → Tekka2026/forwardone → Settings → Secrets and variables → Actions → New repository secret, name `SITE_PASSWORD`, value the password you choose. Then Actions → "Deploy to GitHub Pages" → Run workflow. Until then every page except /the-pitch and /brand shows "Work in progress." Share the password only with people who may see the site. |

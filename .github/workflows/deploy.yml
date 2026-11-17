@@ -37,6 +37,13 @@ jobs:
           BASE_PATH: /forwardone
           # Build-time dates (the footer year) use Amsterdam time.
           TZ: Europe/Amsterdam
+      # Work in progress (owner, 2026-11-17): every page except /the-pitch and
+      # /brand opens only with the password in the SITE_PASSWORD secret
+      # (encrypted with StatiCrypt); without that secret they show a plain
+      # "work in progress" page. See scripts/protect.mjs.
+      - run: node scripts/protect.mjs dist
+        env:
+          SITE_PASSWORD: ${{ secrets.SITE_PASSWORD }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
