@@ -180,7 +180,7 @@ const sliders = {
   .bgm__chip input, .bgm__swatch input, .bgm__switch input:not([type="checkbox"]) { position: absolute; opacity: 0; pointer-events: none; }
   .bgm__chip span {
     display: inline-block; min-width: 52px; text-align: center; padding: 6px 10px; border-radius: 999px;
-    border: 1px solid var(--line); font-family: var(--mono); font-size: 0.75rem; cursor: pointer;
+    border: 1px solid var(--line); font-family: var(--sans); font-size: 0.75rem; cursor: pointer;
   }
   .bgm__chip input:checked + span { background: var(--ink); color: var(--white); border-color: var(--ink); }
   .bgm__chip input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -220,7 +220,7 @@ const sliders = {
 
   .bgm__range { display: grid; gap: 4px; font-size: var(--fs-small); }
   .bgm__range span { display: flex; justify-content: space-between; }
-  .bgm__range output { font-family: var(--mono); font-size: 0.75rem; color: var(--ink-2); }
+  .bgm__range output { font-family: var(--sans); font-size: 0.75rem; color: var(--ink-2); }
   .bgm__range input { width: 100%; accent-color: var(--accent); }
   .bgm__range[hidden] { display: none; }
 

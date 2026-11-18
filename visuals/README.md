@@ -8,10 +8,14 @@ Notes on the files in `public/visuals/`, served as they are under `/forwardone/v
   card (owner, 2026-11-16), played with the scroll by
   `src/components/visuals/ScrollVideo.astro`. Encoded for seeking from the
   supplied 1080 × 1920 file: scaled to 720 wide, cropped to the card's 5:7
-  (720 × 1008, centred), every frame a keyframe, no sound, fast start:
+  (720 × 1008, centred), a keyframe every 6th frame (a quarter second) and
+  no B-frames, no sound, fast start. Re-encoded 2026-11-18 (owner, page
+  weight): 2.0 MB instead of 4.9 MB with every frame a keyframe, at the same
+  or better quality (SSIM 0.83 against 0.79); a jump decodes at most five
+  extra frames, which the scroll easing hides.
 
   ```
   ffmpeg -i in.mp4 -an -vf "scale=720:-2,crop=720:1008" -c:v libx264 -preset slow \
-    -crf 27 -g 1 -keyint_min 1 -pix_fmt yuv420p -movflags +faststart munich-flyover-2.mp4
+    -crf 30 -g 6 -keyint_min 6 -bf 0 -pix_fmt yuv420p -movflags +faststart munich-flyover-2.mp4
   ffmpeg -i munich-flyover-2.mp4 -vf "select=eq(n\,0)" -frames:v 1 -q:v 5 munich-flyover-2.jpg
   ```

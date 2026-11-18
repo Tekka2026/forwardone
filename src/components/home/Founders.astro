@@ -109,7 +109,7 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
                           <Placeholder value={v.video} />
                         </div>
                       ) : (
-                        <video class="fc__video" poster={v.poster ? href(v.poster) : undefined} muted loop playsinline preload="metadata" data-fc-video>
+                        <video class="fc__video" poster={v.poster ? href(v.poster) : undefined} muted loop playsinline preload="none" data-fc-video>
                           {v.webm && <source src={href(v.webm)} type="video/webm" />}
                           <source src={href(v.video)} type="video/mp4" />
                         </video>
@@ -238,6 +238,9 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
     }
 
     // ---- Clips: play muted while in view; progress bar follows the video --
+    // preload="none" (owner, 2026-11-18, page weight): a clip downloads only
+    // when its card is half in view and plays; until then its poster shows.
+    // With "metadata" browsers fetched every clip in full on load.
     var videos = [].slice.call(track.querySelectorAll('[data-fc-video]'));
     if (videos.length && 'IntersectionObserver' in window) {
       var vio = new IntersectionObserver(function (entries) {

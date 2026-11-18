@@ -125,27 +125,27 @@ Four families, loaded in `src/layouts/Base.astro` and `css/global.css`:
 - **For now these are the trial files.** They hold only letters, digits
   and `. ,`. So € % ’ ‘ “ ” – — ~ & ? ! and accented letters fall back,
   glyph by glyph, to **KMR Apparat** (`src/assets/fonts/kmr-apparat`,
-  still loaded for that reason). Clash Display is the last fallback.
+  still loaded for that reason), then Inter. Clash Display (Fontshare) was
+  removed on 2026-11-18 (owner): it never showed and its two stylesheets
+  held up the first paint.
 - **When the licensed Aeonik arrives (A0038):** put its Regular and
   SemiBold WOFF2 in place of the trial files and rename the family. Then
   KMR Apparat and its font-faces can go.
 - `--font-sans`: **Inter** (Google Fonts, variable 400–600). H3 and below
   (card titles, the Playbook list) and all body and UI text: lede, body,
   small, buttons, navigation, forms, footer.
-- `--font-mono`: **Geist Mono** (Vercel, SIL OFL; self-hosted from
-  `src/assets/fonts/geist-mono`, weights 400 and 500). **No longer used for
-  labels on the site (owner, 2026-11-16: "remove all the mono tags, text
-  and numbers")**: the section eyebrows, the step numbers 01–04 (homepage
-  Playbook, founders page), the Proof cards' date label and facts row, the
-  stub pages' labels and the 404's "404" are gone; labels that carry
-  information are now Inter (track record table headings and their phone
-  labels, partner roles, the team profile's role, field labels, periods
-  and section labels, footnote numbers, the menu's and the footer's column
-  titles, the choice panel's label, the LP portal preview's badges and column heads).
-  Mono stays only for `code`, the `[PLACEHOLDER …]` markers, `/the-pitch`
-  (its own session; also on Webflow) and the `/brand` guidelines. Older
-  notes in this file that mention an eyebrow or a mono label describe the
-  design before 2026-11-16.
+- **No mono font since 2026-11-18 (owner: "Don't need both fonts. Replace
+  with Inter where needed").** Geist Mono and `--font-mono` are gone. The
+  labels that took it (the `.eyebrow`, `.label` and `.code` classes, `code`,
+  the `[PLACEHOLDER …]` markers, `/the-pitch`'s eyebrow and fact labels,
+  the `/brand` guidelines' labels) are Inter, with their own sizes, capitals
+  and tracking unchanged. Since 2026-11-16 the site already had no mono
+  labels otherwise (owner: "remove all the mono tags, text and numbers").
+  The Geist Mono files stay in `src/assets/fonts/geist-mono` only for the
+  LinkedIn visuals in `visuals/`; the site no longer loads them. The
+  Webflow copy of the pitch page (`webflow/the-pitch/`) is left as pasted.
+  Older notes in this file that mention an eyebrow or a mono label
+  describe the design before 2026-11-16.
 
 **Sizes, line heights and tracking stay** whatever the family.
 
@@ -366,7 +366,8 @@ Rules:
 - Clip card (TikTok-style): a muted, looping vertical video that plays while
   in view (until the team videos arrive, all five play the owner's
   Slush Finland clip `public/founders/clip-placeholder.mp4`, 14s, each from a
-  different moment); a thin progress bar at the top that follows the video; right
+  different moment; a clip downloads only when its card is half in view and
+  plays, `preload="none"`, owner 2026-11-18, until then its poster shows); a thin progress bar at the top that follows the video; right
   rail (small: avatar 28px, icons 15px, labels 9px) with the FORWARD.one
   avatar (the presenter's photo, cropped round; "F." without one) and red
   follow "+", Like (heart, fills
@@ -529,8 +530,8 @@ screens the list stacks under the CTA.
   gliding after the scroll with a short ease. File:
   `public/visuals/munich-flyover-2.mp4` (the owner's second version, back
   after a third was tried the same day;
-  2026-11-16; 720 × 1008, cropped to 5:7, every frame a keyframe for smooth
-  seeking, no sound) with a poster
+  2026-11-16; 720 × 1008, cropped to 5:7, a keyframe every 6th frame for
+  smooth seeking, 2.0 MB since 2026-11-18, no sound) with a poster
   frame; it loads only when the card comes within 800px of the screen
   (encoding in `visuals/README.md`). It sits under the card's link.
 - Insights: on desktop the H2 runs at most 6 of the 12 grid

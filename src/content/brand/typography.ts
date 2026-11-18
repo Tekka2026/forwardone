@@ -8,7 +8,7 @@ import { P } from './palette';
 export const typography: BrandPage = {
   slug: 'typography',
   title: 'Typography',
-  lead: 'Three typefaces, each with one job: Aeonik for headlines and figures, Inter for reading, Geist Mono for labels.',
+  lead: 'Two typefaces, each with one job: Aeonik for headlines and figures, Inter for reading and labels.',
   tile: { color: P.cream, icon: 'type', cover: { art: 'dots', tone: 'dark' } },
   sections: [
     {
@@ -21,13 +21,8 @@ export const typography: BrandPage = {
     },
     {
       label: 'Body',
-      notes: ['Inter for third-level headings and below, body copy and the interface.'],
+      notes: ['Inter for third-level headings and below, body copy, the interface and labels.'],
       blocks: [{ type: 'specimen', name: 'Inter', font: 'sans', meta: ['Body and interface', 'Weights 400–600'] }],
-    },
-    {
-      label: 'Labels',
-      notes: ['Geist Mono for eyebrows, labels and figures in small type, set in capitals with wide tracking.'],
-      blocks: [{ type: 'specimen', name: 'Geist Mono', font: 'mono', meta: ['Labels', 'Weights 400 and 500', 'SIL Open Font License'] }],
     },
     {
       label: 'Type scale',
@@ -42,7 +37,7 @@ export const typography: BrandPage = {
             { meta: ['Lede', 'Inter', '18–21 px / 1.5'], sample: 'We turn Europe’s breakthrough technologies into commercial victories.', style: 'lede' },
             { meta: ['Body', 'Inter', '17 px / 1.55'], sample: 'We invest early and follow on deliberately, so the strongest companies get more. We bring capital, a network across Europe, fast decisions, and staying power when a company hits a setback.', style: 'body' },
             { meta: ['Small', 'Inter', '15 px / 1.55'], sample: 'We screen about 2,500 companies a year and back about 8.', style: 'caption' },
-            { meta: ['Label', 'Geist Mono', '12 px, capitals, +0.16 em'], sample: 'Future of compute', style: 'mono' },
+            { meta: ['Label', 'Inter Medium', '12 px, capitals, +0.16 em'], sample: 'Future of compute', style: 'mono' },
           ],
         },
       ],
@@ -64,7 +59,7 @@ export const typography: BrandPage = {
           cols: 3,
           items: [
             { media: { tone: 'white', ratio: 'landscape', typeMisuse: 'typeface' }, caption: 'Don’t use other typefaces', verdict: 'bad' },
-            { media: { tone: 'dark', ratio: 'landscape', typeMisuse: 'mono' }, caption: 'Don’t set headlines in the mono', verdict: 'bad' },
+            { media: { tone: 'dark', ratio: 'landscape', typeMisuse: 'caps' }, caption: 'Don’t set headlines in capitals', verdict: 'bad' },
             { media: { tone: 'white', ratio: 'landscape', typeMisuse: 'tight' }, caption: 'Don’t set lines too close together', verdict: 'bad' },
             { media: { tone: 'dark', ratio: 'landscape', typeMisuse: 'tracking' }, caption: 'Don’t track out headlines', verdict: 'bad' },
             { media: { tone: 'white', ratio: 'landscape', typeMisuse: 'size' }, caption: 'Don’t set levels too close in size', verdict: 'bad' },
