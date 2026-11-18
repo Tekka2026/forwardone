@@ -308,10 +308,12 @@ Rules:
   once the page has loaded (the H1 and the figures come first) and pauses
   while the intro is off screen. With reduced motion the still stays. The
   logo stays white over it (the block's own background is black).
-- File: `public/visuals/intro-film.mp4` (2.4 MB) and `.jpg`, path in
-  `hero.film` (`src/content/home.ts`). For now ASML's brand film (by
-  Wolfstreet), **for the password-protected preview only** (A0044); the
-  supplied file is only 640 × 360, so it is soft on large screens.
+- Files: `public/visuals/intro-film.mp4` (1080p, 5.4 MB, screens wider
+  than 900px), `intro-film-720.mp4` (720p, 2.7 MB, phones, where only a
+  narrow middle strip of the 16:9 film shows) and `intro-film.jpg`; paths
+  in `hero.film` (`src/content/home.ts`). For now a 34-second cut of ASML's
+  brand film (by Wolfstreet), supplied by the owner in 1080p, **for the
+  password-protected preview only** (A0044).
 
 ### Homepage curtain
 

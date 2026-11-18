@@ -19,14 +19,17 @@ Notes on the files in `public/visuals/`, served as they are under `/forwardone/v
     -crf 30 -g 6 -keyint_min 6 -bf 0 -pix_fmt yuv420p -movflags +faststart munich-flyover-2.mp4
   ffmpeg -i munich-flyover-2.mp4 -vf "select=eq(n\,0)" -frames:v 1 -q:v 5 munich-flyover-2.jpg
   ```
-- `intro-film.mp4` and `.jpg` (2026-11-18): the background film of the
-  homepage intro (owner). For now ASML's brand film (by Wolfstreet), for
-  the password-protected preview only (A0044). From the supplied
-  640 × 360 file: sound removed, cut at 73.6 s before the ASML end card,
-  first frame as the poster:
+- `intro-film.mp4`, `intro-film-720.mp4` and `intro-film.jpg` (2026-11-18):
+  the background film of the homepage intro (owner). For now a 34-second
+  cut of ASML's brand film (by Wolfstreet), supplied by the owner in
+  1920 × 1080, for the password-protected preview only (A0044). Sound
+  removed; 1080p (5.4 MB) for screens wider than 900px, 720p (2.7 MB) for
+  phones; the first frame (black, the film fades in) as the poster:
 
   ```
-  ffmpeg -i in.mp4 -t 73.6 -an -c:v libx264 -preset slower -crf 28 -profile:v high \
+  ffmpeg -i in.mp4 -an -c:v libx264 -preset slower -crf 30 -profile:v high \
     -pix_fmt yuv420p -g 50 -movflags +faststart intro-film.mp4
-  ffmpeg -i intro-film.mp4 -frames:v 1 -q:v 4 intro-film.jpg
+  ffmpeg -i in.mp4 -an -vf scale=1280:-2 -c:v libx264 -preset slower -crf 29 -profile:v high \
+    -pix_fmt yuv420p -g 50 -movflags +faststart intro-film-720.mp4
+  ffmpeg -i intro-film.mp4 -frames:v 1 -vf scale=1280:-2 -q:v 5 intro-film.jpg
   ```

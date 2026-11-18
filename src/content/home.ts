@@ -32,10 +32,16 @@ export const hero = {
    * Background film of the black intro (owner, 2026-11-18): muted, looping,
    * autoplaying. For now ASML's brand film (by Wolfstreet), for the
    * password-protected preview ONLY: replace it with FORWARD.one's own
-   * footage before the site opens to the public (A0043). Cut before its
-   * ASML end card; encoding in visuals/README.md.
+   * footage before the site opens to the public (A0044). The owner's
+   * 34-second 1080p cut (2026-11-18); `video` (1080p) for screens wider
+   * than 900px, `videoSmall` (720p) for phones. Encoding in
+   * visuals/README.md.
    */
-  film: { video: '/visuals/intro-film.mp4', poster: '/visuals/intro-film.jpg' },
+  film: {
+    video: '/visuals/intro-film.mp4',
+    videoSmall: '/visuals/intro-film-720.mp4',
+    poster: '/visuals/intro-film.jpg',
+  },
 };
 
 /** `value` renders first in the DOM and on top visually; it never wraps. */

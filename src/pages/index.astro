@@ -29,7 +29,7 @@ const h1Words = hero.title.split(/\s+/).filter(Boolean).length;
     <div class="intro theme-dark" data-nav-dark style={`--h1-words: ${h1Words}`}>
       <!-- Background film (owner, 2026-11-18; see hero.film in home.ts). -->
       <div class="intro__film" aria-hidden="true">
-        <video muted loop playsinline preload="none" poster={href(hero.film.poster)} data-src={href(hero.film.video)} data-intro-film tabindex="-1"></video>
+        <video muted loop playsinline preload="none" poster={href(hero.film.poster)} data-src={href(hero.film.video)} data-src-small={href(hero.film.videoSmall)} data-intro-film tabindex="-1"></video>
       </div>
       <Hero />
       <Stats />
@@ -68,7 +68,9 @@ const h1Words = hero.title.split(/\s+/).filter(Boolean).length;
     if (film && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
       let onScreen = true;
       const start = () => {
-        film.src = film.dataset.src!;
+        // 720p on phones (only a narrow middle strip of the 16:9 film shows
+        // there), 1080p on larger screens.
+        film.src = (matchMedia('(max-width: 900px)').matches ? film.dataset.srcSmall : film.dataset.src)!;
         if (onScreen) film.play().catch(() => {});
       };
       // Checked, not awaited: a password-unlocked page never fires 'load'.
