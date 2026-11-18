@@ -13,6 +13,7 @@ import FundIII from '@components/home/FundIII.astro';
 import Insights from '@components/home/Insights.astro';
 import ClosingCta from '@components/home/ClosingCta.astro';
 import Footnotes from '@components/home/Footnotes.astro';
+import { href } from '@lib/href';
 // The intro sequence starts after the H1's last word has landed.
 const h1Words = hero.title.split(/\s+/).filter(Boolean).length;
 ---
@@ -26,6 +27,10 @@ const h1Words = hero.title.split(/\s+/).filter(Boolean).length;
   <div class="curtain" data-curtain data-nav-audience-after>
     <!-- Black intro: header, hero and figures, 130% of the viewport high. -->
     <div class="intro theme-dark" data-nav-dark style={`--h1-words: ${h1Words}`}>
+      <!-- Background film (owner, 2026-11-18; see hero.film in home.ts). -->
+      <div class="intro__film" aria-hidden="true">
+        <video muted loop playsinline preload="none" poster={href(hero.film.poster)} data-src={href(hero.film.video)} data-intro-film tabindex="-1"></video>
+      </div>
       <Hero />
       <Stats />
     </div>
@@ -53,6 +58,29 @@ const h1Words = hero.title.split(/\s+/).filter(Boolean).length;
       // unlocked by the remembered site password never fires 'load'.
       (function loaded() { document.readyState === 'complete' ? place() : setTimeout(loaded, 100); })();
     })();
+  </script>
+  <script>
+    // The intro's background film: muted, looping, autoplaying. It starts
+    // loading once the page itself has loaded (so the H1 and the figures come
+    // first; until then its first frame shows as the poster) and pauses
+    // while the intro is off screen. With reduced motion the still stays.
+    const film = document.querySelector<HTMLVideoElement>('[data-intro-film]');
+    if (film && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      let onScreen = true;
+      const start = () => {
+        film.src = film.dataset.src!;
+        if (onScreen) film.play().catch(() => {});
+      };
+      // Checked, not awaited: a password-unlocked page never fires 'load'.
+      const loaded = () => (document.readyState === 'complete' ? start() : setTimeout(loaded, 100));
+      loaded();
+      new IntersectionObserver(([e]) => {
+        onScreen = e.isIntersecting;
+        if (!film.src) return;
+        if (onScreen) film.play().catch(() => {});
+        else film.pause();
+      }).observe(film.parentElement!);
+    }
   </script>
   <TrackRecord />
   <WhatWeDo />
@@ -86,6 +114,34 @@ const h1Words = hero.title.split(/\s+/).filter(Boolean).length;
        and they end on the same (fractional) pixel, no black hairline shows
        through between sections (owner, 2026-11-04). */
     clip-path: inset(-100vmax -100vmax 1px);
+  }
+  /* Background film (owner, 2026-11-18): fills the whole block, under the
+     header, hero and figures; darkened so the white type stays readable,
+     more at the bottom where the figures sit. Black while it loads. */
+  .intro__film {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    background: var(--bg);
+  }
+  .intro__film video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .intro__film::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.55) 60%, rgba(0, 0, 0, 0.8));
+  }
+  .intro > .hero,
+  .intro > .stats {
+    position: relative;
+    z-index: 1;
   }
   /* Tighter rhythm inside the block so it fits 90% where the content allows;
      on narrow screens it grows with its content. */

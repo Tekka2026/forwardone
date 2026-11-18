@@ -298,6 +298,21 @@ Rules:
   (`text-wrap: balance`): "Every proven / step earns / the next". The
   first half did not fit on one line, so it broke into four.
 
+### Homepage intro film
+
+- (Owner, 2026-11-18.) The black intro (header, hero and figures) has a
+  background film: muted, looping, autoplaying, filling the whole block
+  (`object-fit: cover`), under a black veil (45% at the top, 55% at 60%,
+  80% at the bottom where the figures sit) so the white type stays
+  readable. Its first frame shows as the poster; the film starts loading
+  once the page has loaded (the H1 and the figures come first) and pauses
+  while the intro is off screen. With reduced motion the still stays. The
+  logo stays white over it (the block's own background is black).
+- File: `public/visuals/intro-film.mp4` (2.4 MB) and `.jpg`, path in
+  `hero.film` (`src/content/home.ts`). For now ASML's brand film (by
+  Wolfstreet), **for the password-protected preview only** (A0044); the
+  supplied file is only 640 × 360, so it is soft on large screens.
+
 ### Homepage curtain
 
 - 96px of black under the key figures (owner, 2026-11-05; was 48px), on
