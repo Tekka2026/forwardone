@@ -1,0 +1,48 @@
+---
+/**
+ * The FWD.ONE logo as a still mark (owner, 2026-11-19: the LP portal
+ * preview's top bar takes "the FWD.one version" in place of the old
+ * FORWARD.one wordmark). The same artwork as the site logo (Logo.astro) in
+ * its closed state: F, W and D from src/lib/wordmark.mjs, ".ONE" from
+ * src/assets/brand/dot-one.svg in a tint of the same colour. No animation,
+ * no link; it takes the text colour (currentColor) and is decorative
+ * (aria-hidden); size it by height.
+ */
+import { GLYPHS, layout } from '@lib/wordmark.mjs';
+import dotOneSvg from '../../assets/brand/dot-one.svg?raw';
+
+interface Props {
+  class?: string;
+}
+const { class: cls } = Astro.props;
+
+const closed = layout(0);
+const ONE_PATHS = [...dotOneSvg.matchAll(/<path d="([^"]+)"/g)].map((m) => m[1]);
+// As in Logo.astro: ".ONE" 18 units after the D, on its baseline.
+const ONE_X = 1419 + 18 - 6.24;
+const ONE_Y = 461;
+const ONE_W = 452; // dot-one.svg's width
+// The storyboard frame cropped to F to the end of ".ONE".
+const x0 = 498;
+const x1 = closed.D + ONE_X + ONE_W;
+const viewBox = `${x0} 456 ${(x1 - x0).toFixed(1)} 168`;
+---
+
+<svg class:list={['logo-mark', cls]} viewBox={viewBox} fill="currentColor" aria-hidden="true" focusable="false">
+  <path d={GLYPHS.F} />
+  <path d={GLYPHS.W} transform={`translate(${closed.W.toFixed(2)} 0)`} />
+  <g transform={`translate(${closed.D.toFixed(2)} 0)`}>
+    <path d={GLYPHS.D} />
+    <g transform={`translate(${ONE_X.toFixed(2)} ${ONE_Y})`} fill-opacity="0.5">
+      {ONE_PATHS.map((d) => <path d={d} />)}
+    </g>
+  </g>
+</svg>
+
+<style>
+  .logo-mark {
+    display: block;
+    height: 100%;
+    width: auto;
+  }
+</style>
