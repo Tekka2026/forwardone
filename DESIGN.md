@@ -111,7 +111,7 @@ Four families, loaded in `src/layouts/Base.astro` and `css/global.css`:
   `h1`/`h2`, and the headings set in the display face (case names in the
   Proof slider, the founders page deck titles). Exception: the pitch page
   H1 stays in Inter 500 (owner, 2026-10-22).
-- `--font-display`: **Aeonik** as well. **SemiBold** for the €388M only
+- `--font-display`: **Aeonik** as well. **SemiBold** for the €383M only
   (`--fw-figure`, 400). **Regular** for everything else: the stat values in
   the first section of the homepage and founders page (`--fw-stat`, 300;
   owner 2026-11-06, was SemiBold), the company names on the founders strip
@@ -151,7 +151,7 @@ Four families, loaded in `src/layouts/Base.astro` and `css/global.css`:
 
 | Role        | Class         | Size                                   | Line | Tracking | Weight | Notes |
 |-------------|---------------|----------------------------------------|------|----------|--------|-------|
-| Display/H1  | `.h-display`  | `clamp(52px, 8.4vw, 120px)` (`--fs-h1`, owner 2026-11-02; was 44–100px) | 0.98 (`--lh-h1`, owner 2026-11-06; was 1.04) | 0 | 300 | **One per page.** Aeonik Regular (CSS weight 300 maps to the Regular cut). The €388M figure and the pitch page keep `--fs-display` (44–100px). |
+| Display/H1  | `.h-display`  | `clamp(52px, 8.4vw, 120px)` (`--fs-h1`, owner 2026-11-02; was 44–100px) | 0.98 (`--lh-h1`, owner 2026-11-06; was 1.04) | 0 | 300 | **One per page.** Aeonik Regular (CSS weight 300 maps to the Regular cut). The €383M figure and the pitch page keep `--fs-display` (44–100px). |
 | Section/H2  | `.h-section`  | `clamp(30px, 4.2vw, 56px)`             | 1.12 (owner 2026-11-06; was 1.06) | 0        | 450    | max-width 1056px (8 cols). |
 | Feature/H3  | `.h-feature`  | `clamp(34px, 5vw, 72px)`               | 1.1 (owner 2026-11-06; was 1.04; also the case names in Proof) | 0        | 450    | max-width 1056px (8 cols). |
 | Card title  | `.card-title` | 19px                                   | 1.35 (owner 2026-11-06; was 1.3) | −0.01em  | 550    | |
@@ -218,7 +218,7 @@ Rules:
   300 (display headings, `--fw-heading`, which loads Aeonik Regular)
   / 550 (card titles, Inter variable); display names use 300 too
   (`--fw-display`), and so do the key figures (`--fw-stat`); only the
-  €388M uses 400 (`--fw-figure`, Aeonik SemiBold). Stat values keep line
+  €383M uses 400 (`--fw-figure`, Aeonik SemiBold). Stat values keep line
   height 1.06 (`--lh-stat`) while H2 went to 1.12.
 
 ### Figures and tables
@@ -395,7 +395,7 @@ Rules:
 
 ### Track record head
 
-Centred: eyebrow, then the headline figure (`€388M`, the three funds' total commitments) with the number at
+Centred: eyebrow, then the headline figure (`€383M` since 2026-11-19, the sum of the three fund sizes in the table; was `€383M`) with the number at
 twice the H1 size (`calc(var(--fs-display) * 2)`) and the € and M at H1
 size (`--fs-display`) on one baseline, weight `--fw-figure` (= `--fw-heading`, 450, like the H1) and
 tracking `--ls-figure` (0), then the H2 centred below it. Same rhythm as
@@ -421,7 +421,30 @@ The whole section sits on a tinted band, `.section--tint`
 full window width, with no hairline at its top (the colour change marks
 the edge).
 
-Under the table one row: the exits line on the left, the "Funds & track
+### Track record tables (owner, 2026-11-19)
+
+From the owner's slide "About us: Serious about performance" (content in
+`trackRecord`, `src/content/home.ts`):
+
+- Funds table: Fund · Vintage · Fund size · Paid-in · Total value · DPI ·
+  Companies (remaining; Fund III's target), newest fund first, at the
+  card-title size. Fund I carries a "Top 5%" badge after its name (12px,
+  black on `--brand-yellow`, pill) and, under its row without a rule
+  between, a line of further results: label (small, muted) and value
+  (Net IRR to LPs, Net TVPI, Gross portfolio multiple, Gross IRR).
+- Co-investment funds (Fund I and Fund II): a card-title heading 48px
+  under the funds table, then a second table at the small size: Fund ·
+  Year · Fund size* · Paid-in · Total value · DPI · Net TVPI · Net IRR ·
+  Companies remaining. Empty cells stay empty, as on the slide; the two
+  "Total CIF Fund …" rows in the card-title weight. Fund names never wrap;
+  "Paid‑in" has a non-breaking hyphen; at ≤1100px the columns sit 12px
+  apart.
+- The slide's notes under the tables (small, muted): "* Includes the RVO
+  seed facility." and "** In progress."
+- At ≤760px both tables restack into blocks with labels, as before; empty
+  cells are left out.
+
+Under the notes one row: the exits line on the left, the "Funds & track
 record" link on the right (right-aligned with the table); stacked, exits
 first, at ≤760px.
 
@@ -903,7 +926,7 @@ Fixed uses:
   `.h-feature` from Aeonik's metrics: half-leading + ascent 0.93 − capital
   height 0.703), so the capitals' tops sit on the section's padding line
   (128 / 96 / 64px) and the space above the text equals the space below
-  the content. The track record's €388M does the same for its digits
+  the content. The track record's €383M does the same for its digits
   (−0.1375 × the H1 size). No 12px gap above the first heading any more
   (it belonged to the eyebrows, removed the same day). Measured: every
   section's first capitals within 2px of the padding line at 1440, 1024

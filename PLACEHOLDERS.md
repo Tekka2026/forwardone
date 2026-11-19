@@ -20,7 +20,6 @@ invented; replace the value in the file named and the marker disappears.
 | Proof slider | `caseStudies.groups[*].items[*].facts` | Optional: two or three short facts per company for the mono row at the card's bottom edge (like "Raw material origin · Carbon footprint"). Hidden while empty. |
 | Proof slider | `caseStudies.groups[*].items[*].metric` | Outcome figure per company, e.g. "8× revenue in 3 years". Shown as a large figure in the card's top-right corner once filled; hidden while it is a placeholder. |
 | Proof slider | `caseStudies.groups[*].items[*].logo` | Logo file per company (company pages). Drop SVGs in `public/logos/` and set the path. |
-| Track record | `trackRecord.funds[1].status`, `trackRecord.funds[2].status` | Status of Fund II and Fund I (e.g. investing, follow-on only, harvesting). |
 | The team | `partners.people[*].photo` | Portrait of each partner. Drop files in `public/team/` and set the path (4:5 crop). |
 | The team | `partners.people[2].quote` | Quote from Robin van Boxsel. |
 | The team | `partners.people[3].quote` | Quote from Paul Pruijmboom. |

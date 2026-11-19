@@ -76,7 +76,7 @@
 | A0001 | cancelled | Disable GitHub Pages. Withdrawn: the live site is wanted, so Pages stays on. |
 | A0002 | done   | Live site updates via the default branch. Decided 2026-10-12: see "Publishing" above. |
 | A0003 | done   | Pages source is GitHub Actions. The first workflow deploy succeeded on 2026-10-12 without a settings change. |
-| A0004 | open   | Supply the values in `PLACEHOLDERS.md` (benchmark source, disclaimer, Proof outcome figures and logos, Fund I and II status, partner photos and two quotes, LP login URL, article images). |
+| A0004 | open   | Supply the values in `PLACEHOLDERS.md` (benchmark source, disclaimer, Proof outcome figures and logos, partner photos and two quotes, LP login URL, article images). |
 | A0005 | done   | Geist spacing values in `DESIGN.md` §6 (transcribed from memory of Geist's CSS variables): accepted as they are by the owner on 2026-10-26, no check against vercel.com/geist needed. |
 | A0006 | done   | Live homepage checked by the owner on 2026-10-13: Clash Display headings render, no console errors. |
 | A0007 | done   | Button reference supplied by the owner on 2026-10-13 (vercel.com screenshot). Buttons take Geist's shape only (pill, sizes, type size); colours stay the site's own. |
@@ -110,7 +110,7 @@
 | A0035 | cancelled | F37 Lineca Arabic (Book and Medium): tried on the headings and display numbers as a test on 2026-11-06; the owner switched back to KMR Apparat the same day and the font files were removed. |
 | A0036 | cancelled | Aeonik TRIAL (CoType, Light and Medium): tried on the headings and display numbers as a test on 2026-11-06; the owner moved on to F37 Lineca one weight heavier the same day (A0037) and the trial files were removed. |
 | A0037 | cancelled | F37 Lineca (Medium and Bold): tried on the headings and display numbers as a test on 2026-11-06; the owner meant Aeonik one weight heavier instead (A0038) and the font files were removed the same day. |
-| A0038 | open   | Aeonik (CoType) is the font going forward (owner, 2026-11-06): Regular for the headings and the key figures, SemiBold for the €388M. The site still runs on the trial files, which are in the public repo and lack € % ’ quotes, dashes and accents (those fall back to KMR Apparat). Buy a web licence for Aeonik Regular and SemiBold and supply the WOFF2 files. Claude then swaps them in and removes the trial files and KMR Apparat. |
+| A0038 | open   | Aeonik (CoType) is the font going forward (owner, 2026-11-06): Regular for the headings and the key figures, SemiBold for the €383M. The site still runs on the trial files, which are in the public repo and lack € % ’ quotes, dashes and accents (those fall back to KMR Apparat). Buy a web licence for Aeonik Regular and SemiBold and supply the WOFF2 files. Claude then swaps them in and removes the trial files and KMR Apparat. |
 | A0039 | done   | What we do visual (the FWD artwork on light blue): supplied as a file by the owner on 2026-11-16 and placed the same day (`public/visuals/what-we-do.webp`). |
 | A0040 | done   | Website password: `SITE_PASSWORD` set and "Deploy to GitHub Pages" run by the owner on 2026-11-17 (confirmed: "It works!"). Every page except /the-pitch and /brand asks for it. |
 | A0041 | done   | /the-pitch closes Monday 16 November, 23:59 Helsinki time (owner, 2026-11-17; `CLOSES_AT` in `booking/wrangler.toml`): after it `/apply` refuses every letter and the page shows the closed message instead of the letter (editable on Page text, "Closed message"). Pasted on Webflow by the owner on 2026-11-17 (smoke test confirms). |

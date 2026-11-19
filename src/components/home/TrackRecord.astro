@@ -2,10 +2,10 @@
 import ArrowLink from '@components/ui/ArrowLink.astro';
 import { trackRecord } from '@content/home';
 import { href } from '@lib/href';
-import Placeholder from '@components/ui/Placeholder.astro';
 
-const { columns: col } = trackRecord;
-const keys = ['size', 'companies', 'status'] as const;
+const { columns: col, coInvest: cif } = trackRecord;
+const keys = ['vintage', 'size', 'paidIn', 'totalValue', 'dpi', 'companies'] as const;
+const cifKeys = ['year', 'size', 'paidIn', 'totalValue', 'dpi', 'tvpi', 'irr', 'companies'] as const;
 ---
 
 <section class="section section--tint">
@@ -31,18 +31,56 @@ const keys = ['size', 'companies', 'status'] as const;
       <tbody>
         {
           trackRecord.funds.map((f) => (
-            <tr>
-              <th scope="row" class="funds__name">{f.fund}</th>
-              {keys.map((k) => (
-                <td data-label={col[k]}>
-                  <Placeholder value={f[k]} />
-                </td>
-              ))}
+            <>
+              <tr class:list={[f.results && 'has-results']}>
+                <th scope="row" class="funds__name">
+                  {f.fund}
+                  {f.badge && <span class="funds__badge">{f.badge}</span>}
+                </th>
+                {keys.map((k) => <td data-label={col[k]}>{f[k]}</td>)}
+              </tr>
+              {f.results && (
+                <tr class="funds__results">
+                  <td colspan={keys.length + 1}>
+                    <dl class="funds__results-list">
+                      {f.results.map((r) => (
+                        <div>
+                          <dt>{r.label}</dt>
+                          <dd>{r.value}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </td>
+                </tr>
+              )}
+            </>
+          ))
+        }
+      </tbody>
+    </table>
+
+    <!-- Co-investment funds (owner, 2026-11-19, from the same slide). -->
+    <h3 class="card-title cif__title">{cif.title}</h3>
+    <table class="funds funds--cif">
+      <caption class="visually-hidden">{cif.caption}</caption>
+      <thead>
+        <tr>
+          <th scope="col">{cif.columns.fund}</th>
+          {cifKeys.map((k) => <th scope="col">{cif.columns[k]}</th>)}
+        </tr>
+      </thead>
+      <tbody>
+        {
+          cif.rows.map((r) => (
+            <tr class:list={[r.total && 'is-total']}>
+              <th scope="row" class="funds__name">{r.fund}</th>
+              {cifKeys.map((k) => <td data-label={cif.columns[k]}>{r[k]}</td>)}
             </tr>
           ))
         }
       </tbody>
     </table>
+    <p class="small funds__notes">{trackRecord.notes.map((n) => <span>{n}</span>)}</p>
 
     <!-- One row under the table: exits left, link right (stacks when narrow). -->
     <div class="funds__foot">
@@ -156,6 +194,79 @@ const keys = ['size', 'companies', 'status'] as const;
   .funds__name {
     font-weight: var(--fw-card-title);
   }
+  /* "Top 5%" after Fund I's name (owner's slide, 2026-11-19). */
+  .funds__badge {
+    display: inline-block;
+    margin-left: var(--space-2x);
+    padding: 0 8px;
+    border-radius: 999px;
+    background: var(--brand-yellow);
+    color: var(--black-ink);
+    font-size: 12px;
+    line-height: 20px;
+    font-weight: 500;
+    vertical-align: 2px;
+    white-space: nowrap;
+  }
+  /* Fund I's further results: one line under its row, no rule between. */
+  .funds .funds__results > td {
+    border-top: 0;
+    padding-top: 0;
+  }
+  .has-results > * {
+    padding-bottom: var(--space-2x);
+  }
+  .funds__results-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2x) var(--gap-double);
+    margin: 0;
+  }
+  .funds__results-list > div {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2x);
+  }
+  .funds__results-list dt {
+    font-size: var(--fs-small-tight);
+    line-height: var(--lh-small);
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .funds__results-list dd {
+    margin: 0;
+  }
+  /* Co-investment funds: a heading, then a smaller table; the group totals
+     in a heavier weight. */
+  .cif__title {
+    margin: var(--gap-double) 0 0;
+  }
+  .funds--cif tbody th,
+  .funds--cif td {
+    font-size: var(--fs-small);
+    line-height: var(--lh-small);
+    padding-block: var(--space-2x);
+  }
+  .funds--cif .is-total > * {
+    font-weight: var(--fw-card-title);
+  }
+  .funds--cif tbody th {
+    white-space: nowrap; /* "Total CIF Fund II" on one line */
+  }
+  /* Tablets: nine columns, closer together. */
+  @media (max-width: 1100px) {
+    .funds--cif th,
+    .funds--cif td {
+      padding-right: var(--gap-half);
+    }
+  }
+  .funds__notes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--gap);
+    margin: var(--gap-half) 0 0;
+    color: var(--muted);
+  }
   .funds td {
     font-weight: 400;
   }
@@ -218,6 +329,17 @@ const keys = ['size', 'companies', 'status'] as const;
     }
     .funds tbody th {
       margin-bottom: var(--gap-half);
+    }
+    /* Fund I's results stay with its block; empty cells are left out. */
+    .funds tbody tr.has-results {
+      padding-bottom: 0;
+    }
+    .funds tbody tr.funds__results {
+      border-top: 0;
+      padding-top: var(--space-2x);
+    }
+    .funds tbody td[data-label]:empty {
+      display: none;
     }
     /* Label and value share a baseline, so the smaller mono label lines up
        with the value text (and with its first line when it wraps). */

@@ -190,9 +190,31 @@ export const allCaseStudies: CaseStudy[] = caseStudies.groups.flatMap((g) => g.i
 
 export type FundRow = {
   fund: string;
+  /** A small badge after the fund's name (Fund I: Top 5%). */
+  badge?: string;
+  vintage: string;
   size: string;
+  paidIn: string;
+  totalValue: string;
+  dpi: string;
   companies: string;
-  status: string;
+  /** Further results, in a line under the fund's row. */
+  results?: { label: string; value: string }[];
+};
+
+/** A co-investment fund, or (`total`) the total line of a group. Empty
+ *  cells stay empty, as on the owner's slide. */
+export type CoInvestRow = {
+  fund: string;
+  total?: boolean;
+  year: string;
+  size: string;
+  paidIn: string;
+  totalValue: string;
+  dpi: string;
+  tvpi: string;
+  irr: string;
+  companies: string;
 };
 
 /**
@@ -309,27 +331,77 @@ export const trackRecord = {
   /**
    * Headline figure, centred above the title: the number at twice the H1
    * size, prefix and suffix at H1 size. The sum of the three fund sizes
-   * below: €31,951,000 + €139,082,800 + €217,250,000 = €388,283,800.
-   * (Excludes the six co-investment SPVs, €114,499,762.04 together.)
+   * below (owner, 2026-11-19, from the "Serious about performance" slide):
+   * €38M + €145M + €200M = €383M (was €388M from the fund overview of
+   * 2026-10-15). Excludes the co-investment funds.
    */
-  figure: { prefix: '€', value: '388', suffix: 'M' },
+  figure: { prefix: '€', value: '383', suffix: 'M' },
   title: 'Three funds. One discipline.',
   /** Body copy, centred under the title. */
   body: 'Every fund has been more ambitious than the last. The strategy hasn’t changed: invest early in European industrial tech, then put most of the capital behind the companies that deliver.',
   /** Column headings, in table order. Also the labels on mobile cards. */
-  columns: { fund: 'Fund', size: 'Size', companies: 'Companies', status: 'Status' },
-  caption: 'FORWARD.one funds by size, number of companies and status',
+  columns: {
+    fund: 'Fund',
+    vintage: 'Vintage',
+    size: 'Fund size',
+    paidIn: 'Paid‑in', // non-breaking hyphen
+    totalValue: 'Total value',
+    dpi: 'DPI',
+    companies: 'Companies',
+  },
+  caption: 'FORWARD.one funds: vintage, fund size, paid-in capital, total value, DPI and companies',
   /**
-   * Size = total commitments at the last closing, from the owner's fund
-   * overview (2026-10-15), rounded to whole millions:
-   * Fund I (vintage 2018) €31,951,000; Fund II (2021) €139,082,800;
-   * Fund III (2025) €217,250,000.
+   * From the owner's slide "About us: Serious about performance"
+   * (2026-11-19). Fund I's size includes the RVO seed facility (note *).
+   * Companies: remaining in the portfolio; for Fund III the target number.
    */
   funds: [
-    { fund: 'Fund III', size: '€217M (hard cap €250M)', companies: '~30 (target)', status: 'Investing' },
-    { fund: 'Fund II', size: '€139M', companies: '20', status: '[PLACEHOLDER: status]' },
-    { fund: 'Fund I', size: '€32M', companies: '12', status: '[PLACEHOLDER: status]' },
+    { fund: 'Fund III', vintage: '2025', size: '€200M', paidIn: '–', totalValue: '–', dpi: '–', companies: '30 (target)' },
+    { fund: 'Fund II', vintage: '2021', size: '€145M', paidIn: '€91M', totalValue: '€83M', dpi: '0.01x', companies: '18 remaining' },
+    {
+      fund: 'Fund I',
+      badge: 'Top 5%',
+      vintage: '2018',
+      size: '€38M*',
+      paidIn: '€31M',
+      totalValue: '€75M',
+      dpi: '1.9x',
+      companies: '5 remaining',
+      results: [
+        { label: 'Net IRR to LPs', value: '39%' },
+        { label: 'Net TVPI', value: '2.3x' },
+        { label: 'Gross portfolio multiple', value: '2.6x' },
+        { label: 'Gross IRR', value: '45%' },
+      ],
+    },
   ] as FundRow[],
+  /** Co-investment funds, from the same slide. */
+  coInvest: {
+    title: 'Co-investment funds (Fund I and Fund II)',
+    caption: 'FORWARD.one co-investment funds: year, fund size, paid-in capital, total value, DPI, net TVPI, net IRR and companies remaining',
+    columns: {
+      fund: 'Fund',
+      year: 'Year',
+      size: 'Fund size*',
+      paidIn: 'Paid‑in', // non-breaking hyphen
+      totalValue: 'Total value',
+      dpi: 'DPI',
+      tvpi: 'Net TVPI',
+      irr: 'Net IRR',
+      companies: 'Companies remaining',
+    },
+    rows: [
+      { fund: 'CIF I', year: '2019', size: '', paidIn: '', totalValue: '', dpi: '1.2x', tvpi: '1.2x', irr: '9%', companies: '–' },
+      { fund: 'CIF II', year: '2021', size: '', paidIn: '', totalValue: '', dpi: '–', tvpi: '1.3x', irr: '9%', companies: '1' },
+      { fund: 'CIF III', year: '2021', size: '', paidIn: '', totalValue: '', dpi: '2.5x', tvpi: '2.5x', irr: '68%', companies: '–' },
+      { fund: 'Total CIF Fund I', total: true, year: '', size: '€28M', paidIn: '€28M', totalValue: '€52M', dpi: '', tvpi: '', irr: '', companies: '' },
+      { fund: 'CIF IV', year: '2025', size: '', paidIn: '', totalValue: '', dpi: '–', tvpi: '–', irr: '–', companies: '1' },
+      { fund: 'CIF V', year: '2026', size: '', paidIn: '', totalValue: '', dpi: '–', tvpi: '–', irr: '–', companies: '1' },
+      { fund: 'Total CIF Fund II', total: true, year: '', size: '€68M**', paidIn: '', totalValue: '', dpi: '', tvpi: '', irr: '', companies: '' },
+    ] as CoInvestRow[],
+  },
+  /** The slide's notes, under the tables. */
+  notes: ['* Includes the RVO seed facility.', '** In progress.'],
   exits: {
     label: 'Exits:',
     items: ['Mayht (Sonos)', 'Sensorfact (ABB)', 'Axign (MPS)', 'Aito', 'Nuventura'],
