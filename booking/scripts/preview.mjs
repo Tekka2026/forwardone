@@ -9,7 +9,7 @@
 // Usage: node --experimental-strip-types scripts/preview.mjs [fragment-out.html]
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { TEMPLATES, TEMPLATE_KEYS, SAMPLE, plain } from '../src/copy.ts';
-import { CLIENT_JS, CSS, EMAIL_JS, FONTS, PAGE_JS, appHtml, dashboardHtml, emailEditHtml, emailsHtml, loginHtml, pageTextHtml } from '../src/review.ts';
+import { CLIENT_JS, CSS, EMAIL_JS, FONTS, PAGE_JS, SEND_JS, appHtml, dashboardHtml, emailEditHtml, emailsHtml, loginHtml, pageTextHtml, sendHtml } from '../src/review.ts';
 
 const BASE = '/forwardone/the-pitch/review-preview';
 const EVENT = 'The _____ Pitch at Slush';
@@ -75,6 +75,10 @@ window.EMAIL_API = {
   },
 };
 try { var w = sessionStorage.getItem('pitch-preview-who'); if (w) document.getElementById('who').textContent = w; } catch (e) {}
+window.SEND_API = {
+  test: function () { return later({ ok: true, sentTo: 'you@forward.one', emailConfigured: true }); },
+  go: function (b) { return later({ ok: true, count: 1, emailConfigured: true, row: { id: 'x', at: new Date().toISOString(), by: 'you (preview)', grp: b.group, subject: b.subject, body: b.body, count: 1 } }); },
+};
 window.PAGE_API = {
   save: function (values) {
     var defaults = JSON.parse(document.getElementById('page-data').textContent).defaults, out = {};
@@ -176,6 +180,16 @@ const pageLoadJs = String.raw`<script>(function () {
 const pageText = doc('Page text', appHtml(shell('Page text'), notice + pageTextHtml({ base: BASE, pageUrl: PAGE, values: {}, meta: {} })), pageLoadJs + `<script>${PAGE_JS}</script>`);
 
 // Served at the same path as before: npx serve booking/preview-site
+// Send: the groups from the sample requests.
+const groupOf = { approved: 'Approved founders (pitching)', waitlist: 'Waiting list', pending: 'Waiting for review', denied: 'Denied', all: 'Everyone who applied' };
+const groups = Object.entries(groupOf).map(([key, label]) => {
+  const list = data.apps.filter((a) => key === 'all' || a.status === key);
+  const a = list[0];
+  return { key, label, count: list.length, sample: a ? { ...sample, first_name: a.first_name, name: a.name, company: a.company, time: a.label ?? '' } : sample };
+});
+const sendVars = { first_name: 'Founder’s first name', name: 'Founder’s full name', company: 'Company name', time: 'Their slot, e.g. 09:30 (empty when they have none)', location: 'Where the pitches are', map_link: 'The map link behind Where', event: 'Event name with the blank', event_plain: 'Event name without the blank', page_link: 'Link to the pitch page' };
+const sendScreen = doc('Send', appHtml(shell('Send'), notice + sendHtml({ base: BASE, emailConfigured: true, groups, history: [], vars: sendVars })), `<script>${SEND_JS}</script>`);
+
 const root = new URL('../preview-site/forwardone/the-pitch/review-preview/', import.meta.url);
 const write = (rel, html) => {
   const dir = new URL(rel, root);
@@ -185,6 +199,7 @@ const write = (rel, html) => {
 write('./', requests);
 write('emails/', emails);
 write('page/', pageText);
+write('send/', sendScreen);
 for (const [key, html] of editors) write(`emails/${key}/`, html);
 console.log(`preview: booking/preview-site/ (npx serve booking/preview-site, then /forwardone/the-pitch/review-preview/)`, ` (requests, emails, ${editors.length} editors, page text)`);
 

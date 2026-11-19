@@ -545,6 +545,8 @@ screens the list stacks under the CTA.
   the viewport (first frame as it comes in at the bottom, last as it leaves
   at the top), forward when scrolling down, backward when scrolling up,
   gliding after the scroll with a short ease. File:
+  `public/visuals/munich-dither.mp4` since 2026-11-18 (the owner's dithered
+  version, a trial: 810 × 1134, 15 fps, 8.9 MB); before it
   `public/visuals/munich-flyover-2.mp4` (the owner's second version, back
   after a third was tried the same day;
   2026-11-16; 720 × 1008, cropped to 5:7, a keyframe every 6th frame for
