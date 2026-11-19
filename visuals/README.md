@@ -33,3 +33,25 @@ Notes on the files in `public/visuals/`, served as they are under `/forwardone/v
     -pix_fmt yuv420p -g 50 -movflags +faststart intro-film-720.mp4
   ffmpeg -i intro-film.mp4 -frames:v 1 -vf scale=1280:-2 -q:v 5 intro-film.jpg
   ```
+
+## Dither Track (`public/tools/dither-track/`, 2026-11-19)
+
+A one-file browser tool (no build step, nothing uploaded: files stay on the
+device) that puts the look of the owner's reference clip on any video or
+image, live at `/forwardone/tools/dither-track/` behind the site password.
+Its defaults are measured from that clip (720 × 1280, 24 fps; the clip
+itself is not in the repository):
+
+- Dither: every colour channel is on or off (eight colours), error
+  diffusion, 2px dots at 720 wide, with noise added before the dither and
+  renewed every frame, less of it in pure black and white.
+- Palette: brightness mapped onto black, navy `#0d0c32`, steel blue
+  `#3a5681`, pale blue `#9fb6e0`, white; an accent (purple, orange
+  `#ff5a14`, pink) where the source is warm, in a brightness band, or as a
+  glow around the tracked item.
+- Overlays: boxes around dark and bright areas with thin lines that run on
+  toward the frame edges, dotted verticals, plus marks and `#number` tags.
+- Tracking: click one item; it is followed by template matching and drawn
+  as a ring with a trail.
+- Output: "Record video" plays the source once and saves MP4 (WebM where
+  the browser has no MP4 recorder); "Save PNG" saves the frame.

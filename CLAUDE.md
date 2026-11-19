@@ -46,6 +46,9 @@
   brand guidelines at `/brand`, see `src/content/brand/README.md`); components contain no
   copy. Internal links go through `href()` from `src/lib/href.ts` so the
   `/forwardone` base path is applied.
+- `public/tools/dither-track/` is a standalone one-file tool (dither, overlays
+  and tracking for videos, see `visuals/README.md`); it is not part of the
+  site's design system.
 - Unknown values are visible `[PLACEHOLDER …]` markers and are listed in
   `PLACEHOLDERS.md`. Never invent a number, quote or outcome.
 
