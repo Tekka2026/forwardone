@@ -293,6 +293,7 @@ input.hue::-moz-range-progress { background: transparent; }
 
     <section class="block">
       <h2>Look</h2>
+      <div class="field"><div class="field-head"><label for="mix">Effect strength</label><output id="mixOut" for="mix"></output></div><input id="mix" type="range" min="0" max="1" step="0.05" value="0.7"></div>
       <div class="field"><div class="field-head"><label for="dot">Dot size</label><output id="dotOut" for="dot"></output></div><input id="dot" type="range" min="1" max="6" step="0.5" value="2"></div>
       <div class="field"><div class="field-head"><label for="grain">Grain</label><output id="grainOut" for="grain"></output></div><input id="grain" type="range" min="0" max="0.2" step="0.01" value="0.07"></div>
       <div class="field"><div class="field-head"><label for="lift">Shadow lift</label><output id="liftOut" for="lift"></output></div><input id="lift" type="range" min="0" max="0.4" step="0.01" value="0.15"></div>
@@ -356,9 +357,9 @@ input.hue::-moz-range-progress { background: transparent; }
   }
 
   const $ = id => document.getElementById(id);
-  const S = { dot: 2, grain: .07, lift: .15, contrast: 1.35, warm: true, points: 5, guides: true, trails: true };
-  const fmt = { dot: v => v.toFixed(1)+"×", grain: v => v.toFixed(2), lift: v => v.toFixed(2), contrast: v => v.toFixed(2), points: v => String(v) };
-  for (const k of ["dot","grain","lift","contrast","points"]) {
+  const S = { mix: .7, dot: 2, grain: .07, lift: .15, contrast: 1.35, warm: true, points: 5, guides: true, trails: true };
+  const fmt = { mix: v => Math.round(v*100) + "%", dot: v => v.toFixed(1)+"×", grain: v => v.toFixed(2), lift: v => v.toFixed(2), contrast: v => v.toFixed(2), points: v => String(v) };
+  for (const k of ["mix","dot","grain","lift","contrast","points"]) {
     const el = $(k), out = $(k+"Out");
     const upd = () => { S[k] = parseFloat(el.value); out.textContent = fmt[k](S[k]); el.style.setProperty('--p', ((S[k]-el.min)/(el.max-el.min)*100) + '%'); dirty = true; };
     el.addEventListener("input", upd); upd();
@@ -712,8 +713,15 @@ input.hue::-moz-range-progress { background: transparent; }
     processPixels(img.data, w, h);
     sctx.putImageData(img, 0, 0);
     if (advance) stepTracker(w, h, fps);
+    // original video underneath, pixelated layer on top at the chosen strength
+    if (S.mix < 1) {
+      octx.globalAlpha = 1; octx.imageSmoothingEnabled = true; octx.imageSmoothingQuality = "high";
+      octx.drawImage(source, crop.x, crop.y, crop.w, crop.h, 0, 0, W, H);
+    }
+    octx.globalAlpha = S.mix;
     octx.imageSmoothingEnabled = false;
     octx.drawImage(small, 0, 0, W, H);
+    octx.globalAlpha = 1;
     drawHUD(W, H, W / w);
   }
 
