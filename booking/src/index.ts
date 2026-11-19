@@ -297,12 +297,12 @@ async function review(env: Env, req: Request, url: URL, ctx: ExecutionContext) {
       return { ...g, count: list.length, sample: first ? values(env, first, first.label ?? '', '', place) : values(env, SAMPLE, SAMPLE.time, '', place) };
     }));
     const history = (await env.DB.prepare('SELECT * FROM sends ORDER BY at DESC LIMIT 30').all<SendRow>()).results;
-    return sendPage({ who, base: '/review', emailConfigured: !!(env.MAIL_FROM && env.RESEND_API_KEY), groups, history, vars: SEND_VARS });
+    return sendPage({ who, base: '/review', emailConfigured: !!(env.MAIL_FROM && env.RESEND_API_KEY), groups, history, vars: SEND_VARS, investors: reviewers(env).length });
   }
   const sendAct = path.match(/^\/review\/send\/(test|go)$/);
   if (sendAct && req.method === 'POST') {
     if (!sameOrigin(req)) return json({ error: 'forbidden', message: 'Forbidden.' }, 403);
-    let body: { group?: unknown; subject?: unknown; body?: unknown } = {};
+    let body: { group?: unknown; subject?: unknown; body?: unknown; cc?: unknown } = {};
     try {
       body = await req.json();
     } catch {
@@ -327,13 +327,16 @@ async function review(env: Env, req: Request, url: URL, ctx: ExecutionContext) {
       return json({ ok: true, sentTo: who, emailConfigured: configured });
     }
     if (!list.length) return json({ error: 'none', message: `Nobody is in “${group.label}”.` }, 400);
+    // CC the investors (every dashboard login) on each founder's own email,
+    // so both sides have each other's address (owner, 2026-11-19).
+    const cc = body.cc === true ? reviewers(env) : [];
     const mails = list.map((a) => {
       const v = values(env, a, a.label ?? '', '', place);
-      return { to: a.email, subject: fill(subject, v), text: fill(text, v) };
+      return { to: a.email, cc: cc.filter((r) => r !== a.email), subject: fill(subject, v), text: fill(text, v) };
     });
-    const row: SendRow = { id: crypto.randomUUID(), at: new Date().toISOString(), by: who, grp: group.key, subject, body: text, count: mails.length };
-    await env.DB.prepare('INSERT INTO sends (id, at, by, grp, subject, body, count) VALUES (?, ?, ?, ?, ?, ?, ?)')
-      .bind(row.id, row.at, row.by, row.grp, row.subject, row.body, row.count).run();
+    const row: SendRow = { id: crypto.randomUUID(), at: new Date().toISOString(), by: who, grp: group.key, subject, body: text, count: mails.length, cc: cc.length ? 1 : 0 };
+    await env.DB.prepare('INSERT INTO sends (id, at, by, grp, subject, body, count, cc) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+      .bind(row.id, row.at, row.by, row.grp, row.subject, row.body, row.count, row.cc).run();
     ctx.waitUntil(sendMany(env, mails));
     return json({ ok: true, count: mails.length, emailConfigured: configured, row });
   }

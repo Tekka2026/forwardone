@@ -188,7 +188,7 @@ const groups = Object.entries(groupOf).map(([key, label]) => {
   return { key, label, count: list.length, sample: a ? { ...sample, first_name: a.first_name, name: a.name, company: a.company, time: a.label ?? '' } : sample };
 });
 const sendVars = { first_name: 'Founder’s first name', name: 'Founder’s full name', company: 'Company name', time: 'Their slot, e.g. 09:30 (empty when they have none)', location: 'Where the pitches are', map_link: 'The map link behind Where', event: 'Event name with the blank', event_plain: 'Event name without the blank', page_link: 'Link to the pitch page' };
-const sendScreen = doc('Send', appHtml(shell('Send'), notice + sendHtml({ base: BASE, emailConfigured: true, groups, history: [], vars: sendVars })), `<script>${SEND_JS}</script>`);
+const sendScreen = doc('Send', appHtml(shell('Send'), notice + sendHtml({ base: BASE, emailConfigured: true, groups, history: [], vars: sendVars, investors: 5 })), `<script>${SEND_JS}</script>`);
 
 const root = new URL('../preview-site/forwardone/the-pitch/review-preview/', import.meta.url);
 const write = (rel, html) => {

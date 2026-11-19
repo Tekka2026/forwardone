@@ -95,6 +95,9 @@ a { color: inherit; }
   font: inherit; font-size: 14px; padding: 9px 11px; border-radius: var(--radius-sm);
   border: 1px solid var(--border); background: var(--bg-elev); color: var(--fg); min-width: 0;
 }
+/* A checkbox with its label (Send: CC the investors). */
+.check { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; line-height: 1.4; cursor: pointer; }
+.check input { margin-top: 3px; accent-color: var(--fg); }
 /* A choice next to small buttons (waiting list: Assign), the same height. */
 .field--sm { height: var(--btn-sm); width: auto; padding: 0 8px; font-size: 13px; }
 .field::placeholder { color: var(--placeholder); }
@@ -885,9 +888,9 @@ export const PAGE_JS = String.raw`(function () {
 
 // ---- Send: one email to a group of founders (owner, 2026-11-19). -----------
 
-export type SendRow = { id: string; at: string; by: string; grp: string; subject: string; body: string; count: number };
+export type SendRow = { id: string; at: string; by: string; grp: string; subject: string; body: string; count: number; cc?: number };
 export type SendGroup = { key: string; label: string; count: number; sample: Record<string, string> };
-export type SendData = { base: string; emailConfigured: boolean; groups: SendGroup[]; history: SendRow[]; vars: Record<string, string> };
+export type SendData = { base: string; emailConfigured: boolean; groups: SendGroup[]; history: SendRow[]; vars: Record<string, string>; investors: number };
 
 export function sendHtml(o: SendData) {
   const data = JSON.stringify({ base: o.base, emailConfigured: o.emailConfigured, groups: o.groups, history: o.history }).replace(/</g, '\\u003c');
@@ -913,6 +916,7 @@ export function sendHtml(o: SendData) {
             <textarea class="field" id="body" name="body" maxlength="5000" required></textarea>
             <p class="t-help">Your draft is kept in this browser until you send it.</p>
           </div>
+          <label class="check"><input type="checkbox" id="cc"> CC the investors (the ${o.investors} dashboard logins) on each founder’s email, so both have each other’s address</label>
           <div class="form-actions">
             <button class="btn btn--primary" type="submit" id="go">Send</button>
             <button class="btn" type="button" id="test">Send test to me</button>
@@ -946,6 +950,7 @@ export const SEND_JS = String.raw`(function () {
   };
   var api = window.SEND_API || { test: function (b) { return post('test', b); }, go: function (b) { return post('go', b); } };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var cc = document.getElementById('cc');
   var form = document.getElementById('send-form'), group = document.getElementById('group'), subject = document.getElementById('subject'), body = document.getElementById('body'), go = document.getElementById('go');
   var KEY = 'pitch-send-draft';
   var g = function () { return d.groups.find(function (x) { return x.key === group.value; }); };
@@ -954,13 +959,13 @@ export const SEND_JS = String.raw`(function () {
     var cur = g();
     document.getElementById('ex-subject').textContent = fill(subject.value);
     document.getElementById('ex-body').textContent = fill(body.value);
-    document.getElementById('ex-who').textContent = cur.count ? 'As ' + cur.sample.name + ' sees it' : 'Example details';
+    document.getElementById('ex-who').textContent = (cur.count ? 'As ' + cur.sample.name + ' sees it' : 'Example details') + (cc.checked ? ', investors in CC' : '');
     go.textContent = 'Send to ' + cur.count + (cur.count === 1 ? ' founder' : ' founders');
     go.disabled = !cur.count;
   }
-  function save() { try { localStorage.setItem(KEY, JSON.stringify({ group: group.value, subject: subject.value, body: body.value })); } catch (e) {} }
-  try { var draft = JSON.parse(localStorage.getItem(KEY) || 'null'); if (draft) { group.value = draft.group || group.value; subject.value = draft.subject || ''; body.value = draft.body || ''; } } catch (e) {}
-  [group, subject, body].forEach(function (el) { el.addEventListener('input', function () { save(); render(); }); el.addEventListener('change', function () { save(); render(); }); });
+  function save() { try { localStorage.setItem(KEY, JSON.stringify({ group: group.value, subject: subject.value, body: body.value, cc: cc.checked })); } catch (e) {} }
+  try { var draft = JSON.parse(localStorage.getItem(KEY) || 'null'); if (draft) { group.value = draft.group || group.value; subject.value = draft.subject || ''; body.value = draft.body || ''; cc.checked = !!draft.cc; } } catch (e) {}
+  [group, subject, body, cc].forEach(function (el) { el.addEventListener('input', function () { save(); render(); }); el.addEventListener('change', function () { save(); render(); }); });
 
   var label = function (k) { var x = d.groups.find(function (y) { return y.key === k; }); return x ? x.label : k; };
   var when = function (iso) { var t = new Date(iso); return t.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ', ' + t.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); };
@@ -968,7 +973,7 @@ export const SEND_JS = String.raw`(function () {
     var h = document.getElementById('history');
     h.innerHTML = d.history.length
       ? '<div class="table-wrap"><table><thead><tr><th>Sent</th><th>To</th><th>Subject</th><th class="hide-sm">By</th></tr></thead><tbody>' +
-        d.history.map(function (r) { return '<tr><td class="cell-sub">' + esc(when(r.at)) + '</td><td>' + esc(label(r.grp)) + ' <span class="cell-sub">(' + r.count + ')</span></td><td>' + esc(r.subject) + '</td><td class="hide-sm cell-sub">' + esc(r.by) + '</td></tr>'; }).join('') +
+        d.history.map(function (r) { return '<tr><td class="cell-sub">' + esc(when(r.at)) + '</td><td>' + esc(label(r.grp)) + ' <span class="cell-sub">(' + r.count + (r.cc ? ', investors in CC' : '') + ')</span></td><td>' + esc(r.subject) + '</td><td class="hide-sm cell-sub">' + esc(r.by) + '</td></tr>'; }).join('') +
         '</tbody></table></div>'
       : '<div class="empty"><p class="flush">Nothing sent from here yet.</p></div>';
   }
@@ -983,12 +988,12 @@ export const SEND_JS = String.raw`(function () {
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var cur = g();
-    UI.confirm('Send to ' + cur.count + (cur.count === 1 ? ' founder?' : ' founders?'), '“' + subject.value + '” goes to ' + cur.label.toLowerCase() + ', each with their own details. This cannot be undone.', 'Yes, send', function () {
+    UI.confirm('Send to ' + cur.count + (cur.count === 1 ? ' founder?' : ' founders?'), '“' + subject.value + '” goes to ' + cur.label.toLowerCase() + ', each with their own details' + (cc.checked ? ', with the investors in CC on every email' : '') + '. This cannot be undone.', 'Yes, send', function () {
       var done = UI.busy(go, 'Sending…');
-      api.go({ group: group.value, subject: subject.value, body: body.value }).then(function (x) {
+      api.go({ group: group.value, subject: subject.value, body: body.value, cc: cc.checked }).then(function (x) {
         d.history.unshift(x.row); history();
         try { localStorage.removeItem(KEY); } catch (e) {}
-        subject.value = ''; body.value = '';
+        subject.value = ''; body.value = ''; cc.checked = false;
         UI.toast((x.emailConfigured ? 'Sent to ' : 'Saved, but email is not connected, so not sent to ') + x.count + (x.count === 1 ? ' founder.' : ' founders.'));
       }).catch(function (err) { UI.toast(err.message, true); }).then(function () { done(); render(); });
     });

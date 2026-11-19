@@ -7,6 +7,7 @@ import { reviewers, type Env } from './env';
 
 export interface Mail {
   to: string | string[];
+  cc?: string[];
   subject: string;
   text: string;
   attachments?: { filename: string; content: string; content_type?: string }[];
@@ -54,7 +55,7 @@ export async function send(env: Env, mail: Mail) {
  */
 export async function sendMany(env: Env, mails: Mail[]) {
   if (!env.MAIL_FROM || !env.RESEND_API_KEY) {
-    for (const m of mails) console.log('mail (not sent, email not configured)', JSON.stringify({ to: m.to, subject: m.subject, text: m.text }));
+    for (const m of mails) console.log('mail (not sent, email not configured)', JSON.stringify({ to: m.to, cc: m.cc, subject: m.subject, text: m.text }));
     return;
   }
   for (let i = 0; i < mails.length; i += 100) {
@@ -64,7 +65,7 @@ export async function sendMany(env: Env, mails: Mail[]) {
       const res = await fetch('https://api.resend.com/emails/batch', {
         method: 'POST',
         headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify(chunk.map((m) => ({ from: env.MAIL_FROM, to: m.to, subject: m.subject, text: m.text }))),
+        body: JSON.stringify(chunk.map((m) => ({ from: env.MAIL_FROM, to: m.to, ...(m.cc?.length ? { cc: m.cc } : {}), subject: m.subject, text: m.text }))),
       });
       if (!res.ok) why = `Resend answered ${res.status}: ${(await res.text()).slice(0, 300)}`;
     } catch (e) {
