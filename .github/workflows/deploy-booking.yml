@@ -85,6 +85,7 @@ jobs:
           SESSION_SECRET: ${{ secrets.PITCH_SESSION_SECRET }}
           TURNSTILE_SECRET: ${{ secrets.PITCH_TURNSTILE_SECRET }}
           RESEND_WEBHOOK_SECRET: ${{ secrets.PITCH_RESEND_WEBHOOK_SECRET }}
+          CC_SKIP: ${{ secrets.PITCH_CC_SKIP }}
         run: |
           have=$(npx wrangler secret list --format json || echo '[]')
           put() { printf '%s' "$2" | npx wrangler secret put "$1"; }
@@ -92,6 +93,7 @@ jobs:
           [ -n "$RESEND_API_KEY" ] && put RESEND_API_KEY "$RESEND_API_KEY"
           [ -n "$TURNSTILE_SECRET" ] && put TURNSTILE_SECRET "$TURNSTILE_SECRET"
           [ -n "$RESEND_WEBHOOK_SECRET" ] && put RESEND_WEBHOOK_SECRET "$RESEND_WEBHOOK_SECRET"
+          [ -n "$CC_SKIP" ] && put CC_SKIP "$CC_SKIP"
           if [ -n "$SESSION_SECRET" ]; then
             put SESSION_SECRET "$SESSION_SECRET"
           elif ! printf '%s' "$have" | grep -q '"SESSION_SECRET"'; then

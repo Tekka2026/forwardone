@@ -18,6 +18,8 @@ export interface Env {
   DELETE_AFTER: string;
   /** ISO time after which applications are closed; empty: open. */
   CLOSES_AT?: string;
+  /** Secret: logins never put in CC by Send (comma separated). */
+  CC_SKIP?: string;
 }
 
 export type Status = 'pending' | 'approved' | 'denied' | 'expired' | 'cancelled' | 'waitlist';

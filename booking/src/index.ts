@@ -111,6 +111,12 @@ const SEND_VARS: Record<string, string> = {
   event_plain: VARIABLES.event_plain,
   page_link: VARIABLES.page_link,
 };
+/** Who "CC the investors" copies: every dashboard login except those in
+ * the secret CC_SKIP (owner, 2026-11-19: he wants no copies). */
+const ccList = (env: Env) => {
+  const skip = (env.CC_SKIP ?? '').split(',').map((s) => s.trim().toLowerCase()).filter(Boolean);
+  return reviewers(env).filter((r) => !skip.includes(r));
+};
 type Recipient = Application & { label: string | null };
 /** One per email address (the latest request), so nobody gets it twice. */
 async function recipients(env: Env, group: string): Promise<Recipient[]> {
@@ -297,7 +303,7 @@ async function review(env: Env, req: Request, url: URL, ctx: ExecutionContext) {
       return { ...g, count: list.length, sample: first ? values(env, first, first.label ?? '', '', place) : values(env, SAMPLE, SAMPLE.time, '', place) };
     }));
     const history = (await env.DB.prepare('SELECT * FROM sends ORDER BY at DESC LIMIT 30').all<SendRow>()).results;
-    return sendPage({ who, base: '/review', emailConfigured: !!(env.MAIL_FROM && env.RESEND_API_KEY), groups, history, vars: SEND_VARS, investors: reviewers(env).length });
+    return sendPage({ who, base: '/review', emailConfigured: !!(env.MAIL_FROM && env.RESEND_API_KEY), groups, history, vars: SEND_VARS, investors: ccList(env).length });
   }
   const sendAct = path.match(/^\/review\/send\/(test|go)$/);
   if (sendAct && req.method === 'POST') {
@@ -329,7 +335,7 @@ async function review(env: Env, req: Request, url: URL, ctx: ExecutionContext) {
     if (!list.length) return json({ error: 'none', message: `Nobody is in “${group.label}”.` }, 400);
     // CC the investors (every dashboard login) on each founder's own email,
     // so both sides have each other's address (owner, 2026-11-19).
-    const cc = body.cc === true ? reviewers(env) : [];
+    const cc = body.cc === true ? ccList(env) : [];
     const mails = list.map((a) => {
       const v = values(env, a, a.label ?? '', '', place);
       return { to: a.email, cc: cc.filter((r) => r !== a.email), subject: fill(subject, v), text: fill(text, v) };

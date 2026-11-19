@@ -52,7 +52,8 @@ address gets it once (its latest request). A live example shows it as the
 group's first founder sees it; **Send test to me** sends that example to the
 reviewer; **Send** asks to confirm with the number of founders. Every send
 is kept in the `sends` table (migration 0007) and listed under Sent.
-**CC the investors** (off by default) puts every dashboard login in CC of
+**CC the investors** (off by default) puts every dashboard login, except
+those in the secret `PITCH_CC_SKIP` (comma separated), in CC of
 each founder's own email, so founders and investors have each other's
 address (owner, 2026-11-19; migration 0008 records it). Founders never see
 each other: each gets a separate email. The

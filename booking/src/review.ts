@@ -916,7 +916,7 @@ export function sendHtml(o: SendData) {
             <textarea class="field" id="body" name="body" maxlength="5000" required></textarea>
             <p class="t-help">Your draft is kept in this browser until you send it.</p>
           </div>
-          <label class="check"><input type="checkbox" id="cc"> CC the investors (the ${o.investors} dashboard logins) on each founder’s email, so both have each other’s address</label>
+          <label class="check"><input type="checkbox" id="cc"> CC the investors (${o.investors} dashboard logins) on each founder’s email, so both have each other’s address</label>
           <div class="form-actions">
             <button class="btn btn--primary" type="submit" id="go">Send</button>
             <button class="btn" type="button" id="test">Send test to me</button>
