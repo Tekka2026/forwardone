@@ -421,30 +421,24 @@ The whole section sits on a tinted band, `.section--tint`
 full window width, with no hairline at its top (the colour change marks
 the edge).
 
-### Track record tables (owner, 2026-11-19)
+### Track record table (owner, 2026-11-19)
 
-From the owner's slide "About us: Serious about performance" (content in
-`trackRecord`, `src/content/home.ts`):
+From the owner's slide "About us: Serious about performance", cut back the
+same day to the essentials (owner: "way too extensive … keep it as clear as
+previously"); content in `trackRecord`, `src/content/home.ts`:
 
-- Funds table: Fund · Vintage · Fund size · Paid-in · Total value · DPI ·
+- One table as before, four columns: Fund · Vintage · Fund size ·
   Companies (remaining; Fund III's target), newest fund first, at the
-  card-title size. Fund I carries a "Top 5%" badge after its name (12px,
-  black on `--brand-yellow`, pill) and, under its row without a rule
-  between, a line of further results: label (small, muted) and value
-  (Net IRR to LPs, Net TVPI, Gross portfolio multiple, Gross IRR).
-- Co-investment funds (Fund I and Fund II): a card-title heading 48px
-  under the funds table, then a second table at the small size: Fund ·
-  Year · Fund size* · Paid-in · Total value · DPI · Net TVPI · Net IRR ·
-  Companies remaining. Empty cells stay empty, as on the slide; the two
-  "Total CIF Fund …" rows in the card-title weight. Fund names never wrap;
-  "Paid‑in" has a non-breaking hyphen; at ≤1100px the columns sit 12px
-  apart.
-- The slide's notes under the tables (small, muted): "* Includes the RVO
-  seed facility." and "** In progress."
-- At ≤760px both tables restack into blocks with labels, as before; empty
-  cells are left out.
+  card-title size.
+- Fund I carries a "Top 5%" badge after its name (12px, black on
+  `--brand-yellow`, pill) and, under its row without a rule between, one
+  line of key results: label (small, muted) and value (DPI, Net IRR to
+  LPs, Net TVPI).
+- The slide's note under the table (small, muted): "* Includes the RVO
+  seed facility." (Fund I's size).
+- At ≤760px the table restacks into blocks with labels, as before.
 
-Under the notes one row: the exits line on the left, the "Funds & track
+Under the note one row: on the left the exits line and, under it, the co-investment funds in one line ("€28M with Fund I, €68M with Fund II (in progress)"); the "Funds & track
 record" link on the right (right-aligned with the table); stacked, exits
 first, at ≤760px.
 

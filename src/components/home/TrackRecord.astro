@@ -3,9 +3,8 @@ import ArrowLink from '@components/ui/ArrowLink.astro';
 import { trackRecord } from '@content/home';
 import { href } from '@lib/href';
 
-const { columns: col, coInvest: cif } = trackRecord;
-const keys = ['vintage', 'size', 'paidIn', 'totalValue', 'dpi', 'companies'] as const;
-const cifKeys = ['year', 'size', 'paidIn', 'totalValue', 'dpi', 'tvpi', 'irr', 'companies'] as const;
+const { columns: col } = trackRecord;
+const keys = ['vintage', 'size', 'companies'] as const;
 ---
 
 <section class="section section--tint">
@@ -59,34 +58,18 @@ const cifKeys = ['year', 'size', 'paidIn', 'totalValue', 'dpi', 'tvpi', 'irr', '
       </tbody>
     </table>
 
-    <!-- Co-investment funds (owner, 2026-11-19, from the same slide). -->
-    <h3 class="card-title cif__title">{cif.title}</h3>
-    <table class="funds funds--cif">
-      <caption class="visually-hidden">{cif.caption}</caption>
-      <thead>
-        <tr>
-          <th scope="col">{cif.columns.fund}</th>
-          {cifKeys.map((k) => <th scope="col">{cif.columns[k]}</th>)}
-        </tr>
-      </thead>
-      <tbody>
-        {
-          cif.rows.map((r) => (
-            <tr class:list={[r.total && 'is-total']}>
-              <th scope="row" class="funds__name">{r.fund}</th>
-              {cifKeys.map((k) => <td data-label={cif.columns[k]}>{r[k]}</td>)}
-            </tr>
-          ))
-        }
-      </tbody>
-    </table>
     <p class="small funds__notes">{trackRecord.notes.map((n) => <span>{n}</span>)}</p>
 
     <!-- One row under the table: exits left, link right (stacks when narrow). -->
     <div class="funds__foot">
-      <p class="small funds__exits">
-        <strong>{trackRecord.exits.label}</strong> {trackRecord.exits.items.join(', ')}.
-      </p>
+      <div class="funds__facts">
+        <p class="small">
+          <strong>{trackRecord.exits.label}</strong> {trackRecord.exits.items.join(', ')}.
+        </p>
+        <p class="small">
+          <strong>{trackRecord.coInvest.label}</strong> {trackRecord.coInvest.text}
+        </p>
+      </div>
       <p class="funds__link">
         <ArrowLink href={href(trackRecord.link.href)} label={trackRecord.link.label} />
       </p>
@@ -236,30 +219,6 @@ const cifKeys = ['year', 'size', 'paidIn', 'totalValue', 'dpi', 'tvpi', 'irr', '
   .funds__results-list dd {
     margin: 0;
   }
-  /* Co-investment funds: a heading, then a smaller table; the group totals
-     in a heavier weight. */
-  .cif__title {
-    margin: var(--gap-double) 0 0;
-  }
-  .funds--cif tbody th,
-  .funds--cif td {
-    font-size: var(--fs-small);
-    line-height: var(--lh-small);
-    padding-block: var(--space-2x);
-  }
-  .funds--cif .is-total > * {
-    font-weight: var(--fw-card-title);
-  }
-  .funds--cif tbody th {
-    white-space: nowrap; /* "Total CIF Fund II" on one line */
-  }
-  /* Tablets: nine columns, closer together. */
-  @media (max-width: 1100px) {
-    .funds--cif th,
-    .funds--cif td {
-      padding-right: var(--gap-half);
-    }
-  }
   .funds__notes {
     display: flex;
     flex-wrap: wrap;
@@ -279,7 +238,7 @@ const cifKeys = ['year', 'size', 'paidIn', 'totalValue', 'dpi', 'tvpi', 'irr', '
     margin-top: var(--gap); /* annotation directly under the table: 24px */
   }
   .funds__link,
-  .funds__exits {
+  .funds__facts p {
     margin: 0;
   }
   .funds__link {
