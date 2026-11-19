@@ -525,6 +525,9 @@ export type Article = {
   /** Instead of an image: a video that plays with the scroll (paths under
    *  public/; ScrollVideo.astro). */
   video?: { src: string; poster: string };
+  /** Instead of an image: a photo that drifts with the scroll, with an
+   * optional photo credit in its top-left corner. */
+  scrollPhoto?: { src: string; credit?: { label: string; href: string } };
 };
 
 export const insights = {
@@ -551,12 +554,15 @@ export const insights = {
       slug: 'why-munich-matters-for-europes-next-generation-of-industrial-tech',
       intro: 'Universities, industrial leaders and a growing founder scene: why we look closely at Munich.',
       image: '',
-      // Aerial flyover supplied by the owner, replacing the drawn street
-      // map; it plays forward and backward with the scroll. Since
-      // 2026-11-18 the dithered version (owner: "try this video file"); the
-      // plain flyover of 2026-11-16 is '/visuals/munich-flyover-2.mp4' /
-      // '.jpg', kept for switching back.
-      video: { src: '/visuals/munich-dither.mp4', poster: '/visuals/munich-dither.jpg' },
+      // Munich skyline with the Alps (owner, 2026-11-19; photo by Julian
+      // Ostarek on Unsplash), replacing the dithered flyover video tried on
+      // 2026-11-18. It drifts with the scroll like the video, half as much.
+      // The plain flyover of 2026-11-16 ('/visuals/munich-flyover-2.mp4' /
+      // '.jpg', as `video`) is kept for switching back.
+      scrollPhoto: {
+        src: '/visuals/munich-skyline.jpg',
+        credit: { label: 'Photo: Julian Ostarek', href: 'https://unsplash.com/@jlnstrk' },
+      },
     },
     {
       title: 'Fund III: doubling down on Europe’s industrial technology winners',

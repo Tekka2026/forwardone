@@ -6,6 +6,7 @@ import Placeholder from '@components/ui/Placeholder.astro';
 import Sentences from '@components/ui/Sentences.astro';
 import RobotArm from '@components/visuals/RobotArm.astro';
 import ScrollVideo from '@components/visuals/ScrollVideo.astro';
+import ScrollPhoto from '@components/visuals/ScrollPhoto.astro';
 ---
 
 <section class="section section--dark theme-dark" data-nav-dark>
@@ -16,9 +17,11 @@ import ScrollVideo from '@components/visuals/ScrollVideo.astro';
       {
         insights.articles.map((a) => (
           <li class="article">
-            <div class:list={['article__visual', a.visual === 'robot-arm' && 'article__visual--live', a.video && 'article__visual--video']}>
+            <div class:list={['article__visual', a.visual === 'robot-arm' && 'article__visual--live', (a.video || a.scrollPhoto) && 'article__visual--video']}>
               {a.visual === 'robot-arm' ? (
                 <RobotArm />
+              ) : a.scrollPhoto ? (
+                <ScrollPhoto src={href(a.scrollPhoto.src)} credit={a.scrollPhoto.credit} />
               ) : a.video ? (
                 <ScrollVideo src={href(a.video.src)} poster={href(a.video.poster)} />
               ) : isPlaceholder(a.image) ? (

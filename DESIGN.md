@@ -538,21 +538,22 @@ screens the list stacks under the CTA.
   the viewer when it leaves; drag turns the view, and while dragging the arm
   holds still; a click or tap (under 6px of movement) opens the article;
   the SENSORFACT label sits behind the arm. Coded visuals sit above the card's full-size link, so
-  dragging works; the title still links. The second (Munich) is an aerial flyover video
-  supplied by the owner (2026-11-16; it replaced the drawn street map of
-  2026-10-19, `MunichMap.astro`, in the git history), played with the
-  scroll by `ScrollVideo.astro`: its time follows the card's way through
-  the viewport (first frame as it comes in at the bottom, last as it leaves
-  at the top), forward when scrolling down, backward when scrolling up,
-  gliding after the scroll with a short ease. File:
-  `public/visuals/munich-dither.mp4` since 2026-11-18 (the owner's dithered
-  version, a trial: 810 × 1134, 15 fps, 8.9 MB); before it
-  `public/visuals/munich-flyover-2.mp4` (the owner's second version, back
-  after a third was tried the same day;
-  2026-11-16; 720 × 1008, cropped to 5:7, a keyframe every 6th frame for
-  smooth seeking, 2.0 MB since 2026-11-18, no sound) with a poster
-  frame; it loads only when the card comes within 800px of the screen
-  (encoding in `visuals/README.md`). It sits under the card's link.
+  dragging works; the title still links. The second (Munich) is, since
+  2026-11-19 (owner), a photo of the skyline with the Alps
+  (`public/visuals/munich-skyline.jpg`, 148 KB, by Julian Ostarek on
+  Unsplash) shown by `ScrollPhoto.astro`: it drifts upward as the card
+  travels through the viewport, as the flyover video moved but half as
+  much ("less visible, 50%"): the photo is 12% taller than the card and
+  moves by that much over the card's whole pass, gliding after the scroll
+  with the same short ease; at rest in the middle with reduced motion. A
+  small credit, "Photo: Julian Ostarek" (11px, white on a 35% black
+  pill, top-left, `--gap-half` in), links to the photographer's Unsplash
+  page; it sits above the card's link, the photo under it. Before: the
+  aerial flyover video played with the scroll by `ScrollVideo.astro`
+  (2026-11-16, `public/visuals/munich-flyover-2.mp4`, kept for switching
+  back; the dithered version tried on 2026-11-18 was removed), and before
+  that the drawn street map of 2026-10-19 (`MunichMap.astro`, in the git
+  history).
 - Insights: on desktop the H2 runs at most 6 of the 12 grid
   columns (fluid, from the wrap width); full width at ≤880px.
 - Closing ("Serious about performance? So are we."): title and buttons
