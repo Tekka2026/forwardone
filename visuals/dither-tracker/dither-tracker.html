@@ -162,10 +162,36 @@ input.switch:checked::before { transform: translateX(20px); background: var(--kn
 .swatch-head small { font-size: 13px; color: var(--muted); }
 .swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 8px; }
 .swatches.four { grid-template-columns: repeat(5, 1fr); }
-.swatch { position: relative; aspect-ratio: 1; max-width: 100%; border-radius: 8px; cursor: pointer; box-shadow: inset 0 0 0 1px rgba(128,128,128,.28); }
+.sw-cell { display: grid; gap: 6px; min-width: 0; }
+.swatch { display: block; width: 100%; aspect-ratio: 1; border: 0; padding: 0; border-radius: 8px; cursor: pointer; box-shadow: inset 0 0 0 1px rgba(128,128,128,.28); }
 .swatch:hover { transform: translateY(-1px); }
-.swatch:focus-within { outline: 2px solid var(--fg); outline-offset: 2px; }
-.swatch input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; border: 0; padding: 0; }
+.swatch.open { outline: 2px solid var(--fg); outline-offset: 2px; }
+.sw-cell .hex { font-size: 12px; color: var(--muted); text-align: center; font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+
+/* colour picker popover: colour square, hue bar, HEX field */
+.picker {
+  position: fixed; z-index: 30; width: 272px; max-width: calc(100vw - 24px); background: var(--bg); border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.24), 0 0 0 1px var(--line); padding: 16px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px;
+}
+.picker[hidden] { display: none !important; }
+.picker-title { display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
+.picker-close { width: 32px; height: 32px; border: 0; border-radius: 50%; background: var(--surface); cursor: pointer; display: grid; place-items: center; }
+.picker-close:hover { background: var(--surface-2); }
+.sv { position: relative; height: 168px; border-radius: 8px; touch-action: none; cursor: crosshair; }
+.sv-thumb { position: absolute; width: 20px; height: 20px; border-radius: 50%; border: 3px solid #ffffff; box-shadow: 0 0 0 1px rgba(0,0,0,.3), 0 1px 4px rgba(0,0,0,.4); transform: translate(-50%, -50%); pointer-events: none; }
+input.hue { margin: 0; height: 24px; }
+input.hue::-webkit-slider-runnable-track { height: 12px; border-radius: 6px; background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00); }
+input.hue::-webkit-slider-thumb { margin-top: -5px; }
+input.hue::-moz-range-track { height: 12px; border-radius: 6px; background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00); }
+input.hue::-moz-range-progress { background: transparent; }
+.hex-row { display: flex; align-items: center; gap: 10px; }
+.pk-preview { width: 44px; height: 44px; border-radius: 8px; flex: none; box-shadow: inset 0 0 0 1px rgba(128,128,128,.28); }
+.hex-field { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px; background: var(--surface); border-radius: 8px; cursor: text; }
+.hex-field .tag { font-size: 12px; font-weight: 600; letter-spacing: .06em; color: var(--muted); }
+.hex-field .hash { color: var(--muted); font-weight: 500; margin-right: -6px; }
+.hex-field input { flex: 1; min-width: 0; width: 0; border: 0; background: transparent; outline: none; color: var(--fg); font: 500 16px var(--font); text-transform: uppercase; font-variant-numeric: tabular-nums; letter-spacing: .03em; }
+.hex-field:focus-within { box-shadow: 0 0 0 2px var(--fg); }
+.hex-field.bad { box-shadow: 0 0 0 2px var(--danger); }
 .ramp { height: 8px; border-radius: 4px; margin-top: 8px; }
 .btn-secondary { background: var(--surface); color: var(--fg); margin-top: 16px; width: 100%; }
 .btn-secondary:hover { background: var(--surface-2); }
@@ -252,6 +278,16 @@ input.switch:checked::before { transform: translateX(20px); background: var(--kn
   </aside>
 </main>
 
+<div class="picker" id="picker" role="dialog" aria-label="Edit colour" hidden>
+  <div class="picker-title"><span id="pkTitle">Colour</span><button class="picker-close" id="pkClose" type="button" aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="sv" id="sv"><div class="sv-thumb" id="svThumb"></div></div>
+  <input id="hue" class="hue" type="range" min="0" max="360" step="1" value="0" aria-label="Hue">
+  <div class="hex-row">
+    <div class="pk-preview" id="pkPreview"></div>
+    <label class="hex-field" id="hexField" for="hexIn"><span class="tag">HEX</span><span class="hash">#</span><input id="hexIn" type="text" inputmode="text" maxlength="7" spellcheck="false" autocomplete="off" aria-label="HEX colour"></label>
+  </div>
+</div>
+
 <div class="toast" id="status" role="status" aria-live="polite"></div>
 
 <script>
@@ -299,12 +335,80 @@ input.switch:checked::before { transform: translateX(20px); background: var(--kn
 
   // ---------- colour palette UI ----------
   const SWATCH_NAMES = ["Shadows","Dark","Mid","Light","Highlights"];
+  // ---------- HEX colour picker ----------
+  const rgbToHex = (r, g, b) => [r, g, b].map(v => Math.round(v).toString(16).padStart(2, "0")).join("");
+  function hexToHsv(hex) {
+    const [r, g, b] = hex2(hex).map(v => v/255), mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+    let h = 0;
+    if (d) h = mx === r ? ((g-b)/d) % 6 : mx === g ? (b-r)/d + 2 : (r-g)/d + 4;
+    h = (h*60 + 360) % 360;
+    return { h, s: mx ? d/mx : 0, v: mx };
+  }
+  function hsvToHex(h, s, v) {
+    const f = n => { const k = (n + h/60) % 6; return v - v*s*Math.max(0, Math.min(k, 4-k, 1)); };
+    return rgbToHex(f(5)*255, f(3)*255, f(1)*255);
+  }
+  const pk = { h: 0, s: 0, v: 0, hex: "000000", cb: null, anchor: null };
+  const picker = $("picker"), sv = $("sv"), hueIn = $("hue"), hexIn = $("hexIn");
+  function paintPicker(writeHex) {
+    sv.style.background = `linear-gradient(to top, #000, rgba(0,0,0,0)), linear-gradient(to right, #fff, hsl(${pk.h}, 100%, 50%))`;
+    $("svThumb").style.left = (pk.s*100) + "%"; $("svThumb").style.top = ((1-pk.v)*100) + "%";
+    $("svThumb").style.background = "#" + pk.hex;
+    hueIn.value = pk.h; $("pkPreview").style.background = "#" + pk.hex;
+    if (writeHex) { hexIn.value = pk.hex.toUpperCase(); $("hexField").classList.remove("bad"); }
+  }
+  function commit(writeHex) { paintPicker(writeHex); if (pk.cb) pk.cb(pk.hex); }
+  function openPicker(btn, hex, label, cb) {
+    if (pk.anchor) pk.anchor.classList.remove("open");
+    Object.assign(pk, hexToHsv(hex), { hex, cb, anchor: btn });
+    btn.classList.add("open"); $("pkTitle").textContent = label;
+    picker.hidden = false; paintPicker(true);
+    const r = btn.getBoundingClientRect(), pw = picker.offsetWidth, ph = picker.offsetHeight;
+    const left = Math.min(innerWidth - pw - 12, Math.max(12, r.left + r.width/2 - pw/2));
+    let top = r.bottom + 10; if (top + ph > innerHeight - 12) top = Math.max(12, r.top - ph - 10);
+    picker.style.left = left + "px"; picker.style.top = top + "px";
+  }
+  function closePicker(refocus) {
+    if (picker.hidden) return;
+    picker.hidden = true;
+    if (pk.anchor) { pk.anchor.classList.remove("open"); if (refocus) pk.anchor.focus(); }
+    pk.anchor = null; pk.cb = null;
+  }
+  let svDrag = false;
+  function svAt(e) {
+    const r = sv.getBoundingClientRect();
+    pk.s = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+    pk.v = 1 - Math.min(1, Math.max(0, (e.clientY - r.top) / r.height));
+    pk.hex = hsvToHex(pk.h, pk.s, pk.v); commit(true);
+  }
+  sv.addEventListener("pointerdown", e => { svDrag = true; sv.setPointerCapture(e.pointerId); svAt(e); });
+  sv.addEventListener("pointermove", e => { if (svDrag) svAt(e); });
+  sv.addEventListener("pointerup", () => { svDrag = false; });
+  hueIn.addEventListener("input", () => { pk.h = +hueIn.value; pk.hex = hsvToHex(pk.h, pk.s, pk.v); commit(true); });
+  hexIn.addEventListener("input", () => {
+    let v = hexIn.value.replace(/[^0-9a-f]/gi, "");
+    if (hexIn.value !== v.toUpperCase()) hexIn.value = v.toUpperCase();
+    if (v.length === 3) v = v.split("").map(c => c + c).join("");
+    const ok = v.length === 6;
+    $("hexField").classList.toggle("bad", !ok && hexIn.value.length > 0);
+    if (ok) { Object.assign(pk, hexToHsv(v), { hex: v.toLowerCase() }); commit(false); }
+  });
+  hexIn.addEventListener("blur", () => { hexIn.value = pk.hex.toUpperCase(); $("hexField").classList.remove("bad"); });
+  hexIn.addEventListener("keydown", e => { if (e.key === "Enter") closePicker(true); });
+  $("pkClose").addEventListener("click", () => closePicker(true));
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closePicker(true); });
+  document.addEventListener("pointerdown", e => { if (!picker.hidden && !picker.contains(e.target) && !e.target.closest(".swatch")) closePicker(false); });
+  addEventListener("resize", () => closePicker(false));
+
   function swatch(hex, label, onPick) {
-    const l = document.createElement("label"); l.className = "swatch"; l.title = label;
-    const inp = document.createElement("input"); inp.type = "color"; inp.value = "#" + hex; inp.setAttribute("aria-label", label);
-    l.style.background = "#" + hex;
-    inp.addEventListener("input", () => { l.style.background = inp.value; onPick(inp.value.slice(1)); });
-    l.appendChild(inp); return l;
+    const cell = document.createElement("div"); cell.className = "sw-cell";
+    const b = document.createElement("button"); b.type = "button"; b.className = "swatch";
+    b.style.background = "#" + hex; b.setAttribute("aria-label", label + ", #" + hex.toUpperCase()); b.title = label;
+    const cap = document.createElement("span"); cap.className = "hex"; cap.textContent = "#" + hex.toUpperCase();
+    let cur = hex;
+    const set = v => { cur = v; b.style.background = "#" + v; cap.textContent = "#" + v.toUpperCase(); b.setAttribute("aria-label", label + ", #" + v.toUpperCase()); onPick(v); };
+    b.addEventListener("click", () => { if (pk.anchor === b) closePicker(false); else openPicker(b, cur, label, set); });
+    cell.append(b, cap); return cell;
   }
   function renderSwatches() {
     const tones = $("tones"), acc = $("accents"); tones.textContent = ""; acc.textContent = "";
@@ -324,7 +428,7 @@ input.switch:checked::before { transform: translateX(20px); background: var(--kn
       const dots = document.createElement("span"); dots.className = "dots";
       [p.tones[1], p.tones[3], p.speckle, p.warm[0]].forEach(h => { const d = document.createElement("i"); d.style.background = "#" + h; dots.appendChild(d); });
       b.append(dots, document.createTextNode(name));
-      b.addEventListener("click", () => { if (name !== "Custom") { activePreset = name; applyPalette(PRESETS[name]); save(); renderSwatches(); renderPresets(); } });
+      b.addEventListener("click", () => { if (name !== "Custom") { closePicker(false); activePreset = name; applyPalette(PRESETS[name]); save(); renderSwatches(); renderPresets(); } });
       box.appendChild(b);
     }
   }
