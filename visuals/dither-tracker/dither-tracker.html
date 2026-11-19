@@ -69,6 +69,8 @@ button { font: inherit; color: inherit; }
   padding-block: 24px 48px;
 }
 .layout > * { min-width: 0; }
+.layout > section { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 88px); }
+@media (max-width: 860px) { .layout > section { position: static; } }
 
 /* stage */
 .stage { position: relative; background: var(--stage); border-radius: 12px; overflow: hidden; display: grid; place-items: center; min-height: 360px; }
@@ -196,6 +198,24 @@ input.hue::-moz-range-progress { background: transparent; }
 .btn-secondary { background: var(--surface); color: var(--fg); margin-top: 16px; width: 100%; }
 .btn-secondary:hover { background: var(--surface-2); }
 
+/* saved palettes and formats */
+.save-row { display: flex; gap: 8px; margin-top: 16px; }
+.save-row .btn { flex: none; }
+.text-field { flex: 1; min-width: 0; height: 44px; background: var(--surface); border-radius: 8px; display: flex; align-items: center; padding: 0 12px; cursor: text; }
+.text-field input { border: 0; background: transparent; outline: none; font: 500 15px var(--font); color: var(--fg); width: 100%; min-width: 0; }
+.text-field input::placeholder { color: var(--muted); font-weight: 400; }
+.text-field:focus-within { box-shadow: 0 0 0 2px var(--fg); }
+.saved-chip { display: inline-flex; align-items: center; height: 36px; border-radius: 999px; background: var(--surface); max-width: 100%; }
+.saved-chip.on { background: var(--fg); color: var(--bg); }
+.saved-chip .apply { border: 0; background: transparent; color: inherit; height: 100%; padding: 0 4px 0 10px; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; cursor: pointer; min-width: 0; }
+.saved-chip .apply span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 160px; }
+.saved-chip .del { border: 0; background: transparent; color: inherit; width: 28px; height: 28px; margin-right: 4px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; opacity: .55; flex: none; }
+.saved-chip .del:hover { opacity: 1; background: rgba(128,128,128,.22); }
+.saved-chip:not(.on):hover { background: var(--surface-2); }
+.saved-chip.on .dots i { box-shadow: 0 0 0 2px var(--fg); }
+.empty { margin: 0; font-size: 13px; color: var(--muted); }
+.preset .shape { display: inline-block; border: 1.5px solid currentColor; border-radius: 2px; flex: none; }
+
 /* snackbar */
 .toast {
   position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); z-index: 20;
@@ -249,6 +269,12 @@ input.hue::-moz-range-progress { background: transparent; }
     </section>
 
     <section class="block">
+      <h2>Format</h2>
+      <div class="presets" id="ratios" role="group" aria-label="Aspect ratio"></div>
+      <p class="hint">Crops from the centre of your video. The export uses the same format.</p>
+    </section>
+
+    <section class="block">
       <h2>Colours</h2>
       <div class="presets" id="presets" role="group" aria-label="Palette presets"></div>
       <div class="swatch-head"><span>Tones</span><small>Shadows to highlights</small></div>
@@ -256,6 +282,12 @@ input.hue::-moz-range-progress { background: transparent; }
       <div class="ramp" id="ramp" aria-hidden="true"></div>
       <div class="swatch-head"><span>Accents</span><small>Speckle, then warm tones</small></div>
       <div class="swatches four" id="accents"></div>
+      <form class="save-row" id="saveForm">
+        <label class="text-field" for="palName"><input id="palName" type="text" maxlength="40" placeholder="Name this palette" autocomplete="off"></label>
+        <button id="savePal" class="btn btn-primary" type="submit">Save</button>
+      </form>
+      <div class="swatch-head"><span>Your palettes</span><small id="savedNote">Saved in this browser</small></div>
+      <div class="presets" id="saved" style="margin-top:8px"></div>
       <button id="copyPal" class="btn btn-secondary" type="button">Copy hex codes</button>
     </section>
 
@@ -428,14 +460,14 @@ input.hue::-moz-range-progress { background: transparent; }
       const dots = document.createElement("span"); dots.className = "dots";
       [p.tones[1], p.tones[3], p.speckle, p.warm[0]].forEach(h => { const d = document.createElement("i"); d.style.background = "#" + h; dots.appendChild(d); });
       b.append(dots, document.createTextNode(name));
-      b.addEventListener("click", () => { if (name !== "Custom") { closePicker(false); activePreset = name; applyPalette(PRESETS[name]); save(); renderSwatches(); renderPresets(); } });
+      b.addEventListener("click", () => { if (name !== "Custom") { closePicker(false); activePreset = name; applyPalette(PRESETS[name]); save(); renderSwatches(); renderPresets(); renderSaved(); } });
       box.appendChild(b);
     }
   }
   let renderTimer;
   function edited() {
     applyPalette(palette);
-    if (activePreset !== "Custom") { activePreset = "Custom"; renderPresets(); }
+    if (activePreset !== "Custom") { activePreset = "Custom"; renderPresets(); renderSaved(); }
     clearTimeout(renderTimer); renderTimer = setTimeout(() => { $("ramp").style.background = "linear-gradient(to right," + palette.tones.map(h => "#" + h).join(",") + ")"; renderPresets(); save(); }, 120);
   }
   function save() { try { localStorage.setItem("dt-palette", JSON.stringify({ name: activePreset, palette })); } catch (e) {} }
@@ -444,6 +476,79 @@ input.hue::-moz-range-progress { background: transparent; }
     if (saved && saved.palette && saved.palette.tones && saved.palette.tones.length === 5) { activePreset = saved.name in PRESETS ? saved.name : "Custom"; applyPalette(saved.palette); }
     else applyPalette(PRESETS.Ice);
     renderSwatches(); renderPresets();
+  })();
+
+  // ---------- your saved palettes ----------
+  // Stored in the viewer's private area of the artifact database when available
+  // (follows them to other devices), otherwise in this browser.
+  let savedList = [], savedCol = null;
+  const cleanPal = p => ({ tones: [...p.tones], speckle: p.speckle, warm: [...p.warm] });
+  try { savedList = JSON.parse(localStorage.getItem("dt-saved") || "[]"); } catch (e) { savedList = []; }
+  if (!Array.isArray(savedList)) savedList = [];
+  const mirror = () => { try { localStorage.setItem("dt-saved", JSON.stringify(savedList)); } catch (e) {} };
+  const validPal = p => p && Array.isArray(p.tones) && p.tones.length === 5 && Array.isArray(p.warm) && p.warm.length === 3 && typeof p.speckle === "string";
+  function renderSaved() {
+    const box = $("saved"); box.textContent = "";
+    if (!savedList.length) { const e = document.createElement("p"); e.className = "empty"; e.textContent = "Nothing saved yet. Name the current colours and press Save."; box.appendChild(e); return; }
+    for (const item of savedList) {
+      const on = activePreset === "saved:" + item.id;
+      const chip = document.createElement("div"); chip.className = "saved-chip" + (on ? " on" : "");
+      const a = document.createElement("button"); a.type = "button"; a.className = "apply"; a.setAttribute("aria-pressed", on);
+      const dots = document.createElement("span"); dots.className = "dots";
+      [item.palette.tones[1], item.palette.tones[3], item.palette.speckle, item.palette.warm[0]].forEach(h => { const d = document.createElement("i"); d.style.background = "#" + h; dots.appendChild(d); });
+      const nm = document.createElement("span"); nm.textContent = item.name;
+      a.append(dots, nm);
+      a.addEventListener("click", () => { closePicker(false); activePreset = "saved:" + item.id; applyPalette(item.palette); save(); renderSwatches(); renderPresets(); renderSaved(); $("palName").value = item.name; });
+      const del = document.createElement("button"); del.type = "button"; del.className = "del"; del.setAttribute("aria-label", "Delete " + item.name);
+      del.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+      del.addEventListener("click", () => removeSaved(item));
+      chip.append(a, del); box.appendChild(chip);
+    }
+  }
+  async function writeSaved(item) {
+    if (!savedCol) return;
+    await savedCol.doc(item.id).set({ name: item.name, palette: item.palette, savedAt: item.savedAt });
+  }
+  $("saveForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const name = $("palName").value.trim() || "Palette " + (savedList.length + 1);
+    let item = savedList.find(x => x.name.toLowerCase() === name.toLowerCase());
+    if (item) { item.palette = cleanPal(palette); item.savedAt = Date.now(); }
+    else { item = { id: "p" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name, palette: cleanPal(palette), savedAt: Date.now() }; savedList.push(item); }
+    activePreset = "saved:" + item.id; $("palName").value = name;
+    mirror(); renderPresets(); renderSaved();
+    try { await writeSaved(item); setStatus(`Saved “${name}”`); }
+    catch (err) { setStatus(`Saved “${name}” in this browser only. Your account couldn't be reached.`, true); }
+  });
+  async function removeSaved(item) {
+    savedList = savedList.filter(x => x.id !== item.id);
+    if (activePreset === "saved:" + item.id) { activePreset = "Custom"; renderPresets(); }
+    mirror(); renderSaved();
+    try { if (savedCol) await savedCol.doc(item.id).delete(); setStatus(`Deleted “${item.name}”`); }
+    catch (err) { setStatus("Couldn't delete it from your account. Try again later.", true); }
+  }
+  renderSaved();
+  (async function connectAccount() {
+    if (!window.claude || !window.claude.use) return;
+    let db = null, user = null;
+    try { [db, user] = await Promise.all([window.claude.use("db"), window.claude.use("user")]); } catch (e) { return; }
+    if (!db || !user) return;
+    let uid = null; try { uid = await user.id(); } catch (e) {}
+    if (!uid) return;
+    savedCol = db.collection("data/users/" + uid + "/palettes");
+    let first = true;
+    savedCol.orderBy("savedAt").onSnapshot(async snap => {
+      const remote = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(x => typeof x.name === "string" && validPal(x.palette));
+      if (first && !snap.metadata.fromCache) {
+        first = false;
+        // bring palettes saved in this browser before the account was reachable
+        const missing = savedList.filter(l => !remote.some(r => r.id === l.id));
+        for (const m of missing) { try { await writeSaved(m); } catch (e) {} }
+        if (missing.length) return; // the next snapshot carries them
+      }
+      savedList = remote; mirror(); renderSaved();
+      $("savedNote").textContent = "Saved to your account";
+    }, () => { savedCol = null; $("savedNote").textContent = "Saved in this browser"; });
   })();
   $("copyPal").addEventListener("click", () => {
     const text = "Tones: " + palette.tones.map(h => "#" + h).join(" ") + "\nSpeckle: #" + palette.speckle + "\nWarm: " + palette.warm.map(h => "#" + h).join(" ");
@@ -602,7 +707,7 @@ input.hue::-moz-range-progress { background: transparent; }
     const cell = Math.max(1, S.dot * Math.min(W, H) / 720);
     const w = Math.max(16, Math.round(W / cell)), h = Math.max(16, Math.round(H / cell));
     if (small.width !== w || small.height !== h) { small.width = w; small.height = h; pts = []; prevGray = null; }
-    sctx.drawImage(source, 0, 0, sw, sh, 0, 0, w, h);
+    sctx.drawImage(source, crop.x, crop.y, crop.w, crop.h, 0, 0, w, h);
     const img = sctx.getImageData(0, 0, w, h);
     processPixels(img.data, w, h);
     sctx.putImageData(img, 0, 0);
@@ -652,10 +757,31 @@ input.hue::-moz-range-progress { background: transparent; }
   }
 
   let mode = "demo", playing = true, demoT = 0, lastTs = performance.now(), lastVideoT = -1;
-  function setSize(w, h) {
-    const k = Math.min(1, 1920 / Math.max(w, h));
-    out.width = Math.round(w*k/2)*2; out.height = Math.round(h*k/2)*2;
+  // ---------- format (aspect ratio, centre crop) ----------
+  const RATIOS = [["Original", 0], ["1:1", 1], ["4:5", 4/5], ["3:4", 3/4], ["2:3", 2/3], ["9:16", 9/16], ["1:2", 1/2], ["16:9", 16/9], ["4:3", 4/3], ["2:1", 2]];
+  let ratioName = "Original", srcW = 720, srcH = 1280, crop = { x: 0, y: 0, w: 720, h: 1280 };
+  try { const r = localStorage.getItem("dt-ratio"); if (RATIOS.some(x => x[0] === r)) ratioName = r; } catch (e) {}
+  function layout() {
+    const rv = RATIOS.find(x => x[0] === ratioName)[1] || srcW / srcH;
+    let cw = srcW, ch = srcH;
+    if (srcW / srcH > rv) cw = srcH * rv; else ch = srcW / rv;
+    crop = { x: (srcW - cw) / 2, y: (srcH - ch) / 2, w: cw, h: ch };
+    const k = Math.min(1920 / Math.max(cw, ch), Math.max(1, 720 / Math.min(cw, ch)));
+    out.width = Math.max(2, Math.round(cw * k / 2) * 2); out.height = Math.max(2, Math.round(ch * k / 2) * 2);
     pts = []; prevGray = null; frameNo = 0; dirty = true;
+  }
+  function setSize(w, h) { srcW = w; srcH = h; layout(); renderRatios(); }
+  function renderRatios() {
+    const box = $("ratios"); box.textContent = "";
+    for (const [name, rv] of RATIOS) {
+      const b = document.createElement("button"); b.type = "button"; b.className = "preset" + (name === ratioName ? " on" : "");
+      b.setAttribute("aria-pressed", name === ratioName); b.style.paddingLeft = "12px";
+      const r = rv || srcW / srcH, sh = document.createElement("span"); sh.className = "shape";
+      sh.style.width = Math.round(r >= 1 ? 14 : 14 * r) + "px"; sh.style.height = Math.round(r >= 1 ? 14 / r : 14) + "px";
+      b.append(sh, document.createTextNode(name));
+      b.addEventListener("click", () => { if (rec) return; ratioName = name; try { localStorage.setItem("dt-ratio", name); } catch (e) {} layout(); renderRatios(); });
+      box.appendChild(b);
+    }
   }
   function useDemo() {
     video.pause(); mode = "demo"; demoT = 0; playing = true; setSize(720, 1280);
