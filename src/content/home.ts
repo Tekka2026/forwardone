@@ -551,10 +551,12 @@ export const insights = {
       slug: 'why-munich-matters-for-europes-next-generation-of-industrial-tech',
       intro: 'Universities, industrial leaders and a growing founder scene: why we look closely at Munich.',
       image: '',
-      // Aerial flyover supplied by the owner (2026-11-16; the second version,
-      // back after a third was tried the same day), replacing the drawn
-      // street map; it plays forward and backward with the scroll.
-      video: { src: '/visuals/munich-flyover-2.mp4', poster: '/visuals/munich-flyover-2.jpg' },
+      // Aerial flyover supplied by the owner, replacing the drawn street
+      // map; it plays forward and backward with the scroll. Since
+      // 2026-11-18 the dithered version (owner: "try this video file"); the
+      // plain flyover of 2026-11-16 is '/visuals/munich-flyover-2.mp4' /
+      // '.jpg', kept for switching back.
+      video: { src: '/visuals/munich-dither.mp4', poster: '/visuals/munich-dither.jpg' },
     },
     {
       title: 'Fund III: doubling down on Europe’s industrial technology winners',

@@ -19,6 +19,20 @@ Notes on the files in `public/visuals/`, served as they are under `/forwardone/v
     -crf 30 -g 6 -keyint_min 6 -bf 0 -pix_fmt yuv420p -movflags +faststart munich-flyover-2.mp4
   ffmpeg -i munich-flyover-2.mp4 -vf "select=eq(n\,0)" -frames:v 1 -q:v 5 munich-flyover-2.jpg
   ```
+- `munich-dither.mp4` and `.jpg` (2026-11-18, a trial on the owner's
+  request): the dithered version of the Munich flyover, now on the Insights
+  card instead of `munich-flyover-2` (kept for switching back, in
+  `src/content/home.ts`). From the supplied 810 × 1440 file (12 s, 16
+  Mbit/s, 23.9 MB): sound removed, cropped to the card's 5:7 (810 × 1134,
+  centred), **not scaled** (scaling smears single-pixel dither), 15 fps,
+  a keyframe every 4th frame for seeking. 8.9 MB: dither changes every
+  frame, so it compresses badly; below this the dark areas start to smear.
+
+  ```
+  ffmpeg -i in.mp4 -an -vf "crop=810:1134:0:153,format=yuv420p" -r 15 -c:v libx264 -preset medium \
+    -crf 30 -g 4 -keyint_min 4 -bf 0 -movflags +faststart munich-dither.mp4
+  ffmpeg -i munich-dither.mp4 -frames:v 1 -q:v 4 munich-dither.jpg
+  ```
 - `intro-film.mp4`, `intro-film-720.mp4` and `intro-film.jpg` (2026-11-18):
   the background film of the homepage intro (owner). For now a 34-second
   cut of ASML's brand film (by Wolfstreet), supplied by the owner in
