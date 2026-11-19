@@ -25,12 +25,12 @@
  * winter), the daily overview to the reviewers (owner, 2026-10-26).
  */
 import { currentReviewer, LOGIN_MS, logoutCookie, sessionCookie, sign, verify } from './auth';
-import { copy, fill, isTemplateKey, SAMPLE, TEMPLATES, unknownVars } from './copy';
+import { copy, fill, isTemplateKey, SAMPLE, TEMPLATES, unknownVars, VARIABLES } from './copy';
 import { digest, founderEmail, template, templates, values } from './emails';
 import { reviewers, type Application, type Env, type Slot, type Status } from './env';
 import { ics, resendEvent, send, sendMany } from './mail';
 import { human, tidy, tooMany, turnstileOn } from './guard';
-import { BUSY_JS, emailEditPage, emailsPage, esc, loginPage, page, pageTextPage, reviewPage } from './review';
+import { BUSY_JS, emailEditPage, emailsPage, esc, loginPage, page, pageTextPage, reviewPage, sendPage, type SendRow } from './review';
 import { PAGE_DEFAULTS, PAGE_KEYS, pageField } from './pagecopy';
 
 /** 18:00 Amsterdam in winter (UTC+1); keep in step with wrangler.toml. */
@@ -90,6 +90,38 @@ function clean(input: Record<string, unknown>, waitlist = false) {
   else if (!/^https?:\/\//i.test(out.linkedin)) out.linkedin = 'https://' + out.linkedin;
   if (!/^https?:\/\/[^\s.]+\.\S+$/i.test(out.linkedin)) return { field: 'linkedin' };
   return { data: out };
+}
+
+// ---- Send screen: who can get a group email, and the placeholders it knows.
+const SEND_GROUPS = [
+  { key: 'approved', label: 'Approved founders (pitching)' },
+  { key: 'waitlist', label: 'Waiting list' },
+  { key: 'pending', label: 'Waiting for review' },
+  { key: 'denied', label: 'Denied' },
+  { key: 'all', label: 'Everyone who applied' },
+] as const;
+const SEND_VARS: Record<string, string> = {
+  first_name: VARIABLES.first_name,
+  name: VARIABLES.name,
+  company: VARIABLES.company,
+  time: 'Their slot, e.g. 09:30 (empty when they have none)',
+  location: VARIABLES.location,
+  map_link: VARIABLES.map_link,
+  event: VARIABLES.event,
+  event_plain: VARIABLES.event_plain,
+  page_link: VARIABLES.page_link,
+};
+type Recipient = Application & { label: string | null };
+/** One per email address (the latest request), so nobody gets it twice. */
+async function recipients(env: Env, group: string): Promise<Recipient[]> {
+  const { results } = await env.DB.prepare(
+    `SELECT a.*, s.label FROM applications a LEFT JOIN slots s ON s.id = a.slot_id
+      WHERE ? = 'all' OR a.status = ? ORDER BY a.created_at DESC`,
+  )
+    .bind(group, group)
+    .all<Recipient>();
+  const seen = new Set<string>();
+  return results.filter((a) => (seen.has(a.email) ? false : (seen.add(a.email), true))).sort((x, y) => (x.label ?? '~').localeCompare(y.label ?? '~'));
 }
 
 /** Applications closed (CLOSES_AT passed). */
@@ -216,7 +248,7 @@ async function review(env: Env, req: Request, url: URL, ctx: ExecutionContext) {
   if (path === '/review/logout' && req.method === 'POST') return redirect('/review', { 'Set-Cookie': logoutCookie });
 
   const who = await currentReviewer(env, req);
-  if (!who) return path === '/review/decide' || path === '/review/assign' || path === '/review/blast' ? json({ error: 'auth', message: 'Your session has ended. Reload the page to log in again.' }, 401) : loginPage(env.EVENT_NAME);
+  if (!who) return path === '/review/decide' || path === '/review/assign' || path === '/review/blast' || path.startsWith('/review/send/') ? json({ error: 'auth', message: 'Your session has ended. Reload the page to log in again.' }, 401) : loginPage(env.EVENT_NAME);
 
   if (path === '/review/decide' && req.method === 'POST') {
     if (!sameOrigin(req)) return json({ error: 'forbidden', message: 'Forbidden.' }, 403);
@@ -253,6 +285,57 @@ async function review(env: Env, req: Request, url: URL, ctx: ExecutionContext) {
       );
     }
     return a ? json({ ok: true, status: decision }) : json({ error: 'stale', message: 'This request was already decided. Reload to see the latest state.' }, 409);
+  }
+
+  // ---- Send: one email to a group of founders, written on the dashboard
+  // (owner, 2026-11-19). Placeholders are filled per founder.
+  if (path === '/review/send' && req.method === 'GET') {
+    const place = await venue(env);
+    const groups = await Promise.all(SEND_GROUPS.map(async (g) => {
+      const list = await recipients(env, g.key);
+      const first = list[0];
+      return { ...g, count: list.length, sample: first ? values(env, first, first.label ?? '', '', place) : values(env, SAMPLE, SAMPLE.time, '', place) };
+    }));
+    const history = (await env.DB.prepare('SELECT * FROM sends ORDER BY at DESC LIMIT 30').all<SendRow>()).results;
+    return sendPage({ who, base: '/review', emailConfigured: !!(env.MAIL_FROM && env.RESEND_API_KEY), groups, history, vars: SEND_VARS });
+  }
+  const sendAct = path.match(/^\/review\/send\/(test|go)$/);
+  if (sendAct && req.method === 'POST') {
+    if (!sameOrigin(req)) return json({ error: 'forbidden', message: 'Forbidden.' }, 403);
+    let body: { group?: unknown; subject?: unknown; body?: unknown } = {};
+    try {
+      body = await req.json();
+    } catch {
+      /* checked below */
+    }
+    const group = SEND_GROUPS.find((g) => g.key === String(body.group ?? ''));
+    if (!group) return json({ error: 'invalid', message: 'Pick who gets the email.' }, 400);
+    const subject = String(body.subject ?? '').trim();
+    const text = String(body.body ?? '').replace(/\r\n/g, '\n').trim();
+    if (!subject || !text) return json({ error: 'invalid', message: 'Subject and text cannot be empty.' }, 400);
+    if (subject.length > 200 || text.length > 5000) return json({ error: 'invalid', message: 'The subject or text is too long.' }, 400);
+    const unknown = [...new Set([...(subject + '\n' + text).matchAll(/\{([a-z_]+)\}/g)].map((m) => m[1]))].filter((v) => !SEND_VARS[v]);
+    if (unknown.length) return json({ error: 'invalid', message: `Unknown placeholder ${unknown.map((u) => `{${u}}`).join(', ')}. Use only the ones listed.` }, 400);
+    const list = await recipients(env, group.key);
+    const place = await venue(env);
+    const configured = !!(env.MAIL_FROM && env.RESEND_API_KEY);
+    if (sendAct[1] === 'test') {
+      // A real founder of the group as the example, so the test reads true.
+      const first = list[0];
+      const v = first ? values(env, first, first.label ?? '', '', place) : values(env, SAMPLE, SAMPLE.time, '', place);
+      await send(env, { to: who, subject: `[Test] ${fill(subject, v)}`, text: fill(text, v) });
+      return json({ ok: true, sentTo: who, emailConfigured: configured });
+    }
+    if (!list.length) return json({ error: 'none', message: `Nobody is in “${group.label}”.` }, 400);
+    const mails = list.map((a) => {
+      const v = values(env, a, a.label ?? '', '', place);
+      return { to: a.email, subject: fill(subject, v), text: fill(text, v) };
+    });
+    const row: SendRow = { id: crypto.randomUUID(), at: new Date().toISOString(), by: who, grp: group.key, subject, body: text, count: mails.length };
+    await env.DB.prepare('INSERT INTO sends (id, at, by, grp, subject, body, count) VALUES (?, ?, ?, ?, ?, ?, ?)')
+      .bind(row.id, row.at, row.by, row.grp, row.subject, row.body, row.count).run();
+    ctx.waitUntil(sendMany(env, mails));
+    return json({ ok: true, count: mails.length, emailConfigured: configured, row });
   }
 
   // ---- "Final details" to every approved founder at once (owner,

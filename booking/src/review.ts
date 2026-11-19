@@ -260,6 +260,7 @@ export const NAV = [
   { group: 'The Pitch', items: [
     { label: 'Requests', path: '/' },
     { label: 'Emails', path: '/emails/' },
+    { label: 'Send', path: '/send/' },
     { label: 'Page text', path: '/page/' },
   ] },
 ];
@@ -880,3 +881,121 @@ export const PAGE_JS = String.raw`(function () {
   });
   mark();
 })();`;
+
+
+// ---- Send: one email to a group of founders (owner, 2026-11-19). -----------
+
+export type SendRow = { id: string; at: string; by: string; grp: string; subject: string; body: string; count: number };
+export type SendGroup = { key: string; label: string; count: number; sample: Record<string, string> };
+export type SendData = { base: string; emailConfigured: boolean; groups: SendGroup[]; history: SendRow[]; vars: Record<string, string> };
+
+export function sendHtml(o: SendData) {
+  const data = JSON.stringify({ base: o.base, emailConfigured: o.emailConfigured, groups: o.groups, history: o.history }).replace(/</g, '\\u003c');
+  return `<div>
+      <h1 class="t-title">Send an email</h1>
+      <p class="t-intro">One email to a group of founders. Placeholders in braces, like {first_name}, are filled in for each founder, so everyone gets their own. Each address gets it once.</p>
+    </div>
+    <div id="banners">${o.emailConfigured ? '' : '<p class="banner banner--warn">Emails are not sent yet: the email service is not connected.</p>'}</div>
+    <div class="grid-2">
+      <section class="card" aria-labelledby="send-h">
+        <div class="card-head"><h2 class="t-section" id="send-h">Email</h2><span class="t-eyebrow" id="draft-state"></span></div>
+        <form class="form" id="send-form">
+          <div>
+            <label class="t-label" for="group">To</label>
+            <select class="field block" id="group" name="group">${o.groups.map((g) => `<option value="${esc(g.key)}">${esc(g.label)} (${g.count})</option>`).join('')}</select>
+          </div>
+          <div>
+            <label class="t-label" for="subject">Subject</label>
+            <input class="field block" id="subject" name="subject" maxlength="200" required>
+          </div>
+          <div>
+            <label class="t-label" for="body">Text</label>
+            <textarea class="field" id="body" name="body" maxlength="5000" required></textarea>
+            <p class="t-help">Your draft is kept in this browser until you send it.</p>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn--primary" type="submit" id="go">Send</button>
+            <button class="btn" type="button" id="test">Send test to me</button>
+          </div>
+        </form>
+      </section>
+      <div class="form">
+        <section class="card" aria-labelledby="ex-h">
+          <div class="card-head"><h2 class="t-section" id="ex-h">Example</h2><span class="t-eyebrow" id="ex-who"></span></div>
+          <p class="sample-subject" id="ex-subject"></p>
+          <p class="sample" id="ex-body"></p>
+        </section>
+        <section class="card" aria-labelledby="vars-h">
+          <h2 class="t-section" id="vars-h">Placeholders</h2>
+          <table class="var-table"><tbody>${Object.entries(o.vars).map(([k, v]) => `<tr><td class="mono">{${esc(k)}}</td><td class="cell-sub">${esc(v)}</td></tr>`).join('')}</tbody></table>
+        </section>
+      </div>
+    </div>
+    <section class="card" aria-labelledby="hist-h">
+      <h2 class="t-section" id="hist-h">Sent</h2>
+      <div id="history"></div>
+    </section>
+    <script type="application/json" id="send-data">${data}</script>`;
+}
+
+export const SEND_JS = String.raw`(function () {
+  var d = JSON.parse(document.getElementById('send-data').textContent);
+  var post = function (what, body) {
+    return fetch(d.base + '/send/' + what, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json().then(function (x) { if (!r.ok) throw new Error(x.message || 'That did not work. Try again.'); return x; }); });
+  };
+  var api = window.SEND_API || { test: function (b) { return post('test', b); }, go: function (b) { return post('go', b); } };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var form = document.getElementById('send-form'), group = document.getElementById('group'), subject = document.getElementById('subject'), body = document.getElementById('body'), go = document.getElementById('go');
+  var KEY = 'pitch-send-draft';
+  var g = function () { return d.groups.find(function (x) { return x.key === group.value; }); };
+  var fill = function (text) { var s = g().sample; return text.replace(/\{([a-z_]+)\}/g, function (m, k) { return k in s ? s[k] : m; }); };
+  function render() {
+    var cur = g();
+    document.getElementById('ex-subject').textContent = fill(subject.value);
+    document.getElementById('ex-body').textContent = fill(body.value);
+    document.getElementById('ex-who').textContent = cur.count ? 'As ' + cur.sample.name + ' sees it' : 'Example details';
+    go.textContent = 'Send to ' + cur.count + (cur.count === 1 ? ' founder' : ' founders');
+    go.disabled = !cur.count;
+  }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify({ group: group.value, subject: subject.value, body: body.value })); } catch (e) {} }
+  try { var draft = JSON.parse(localStorage.getItem(KEY) || 'null'); if (draft) { group.value = draft.group || group.value; subject.value = draft.subject || ''; body.value = draft.body || ''; } } catch (e) {}
+  [group, subject, body].forEach(function (el) { el.addEventListener('input', function () { save(); render(); }); el.addEventListener('change', function () { save(); render(); }); });
+
+  var label = function (k) { var x = d.groups.find(function (y) { return y.key === k; }); return x ? x.label : k; };
+  var when = function (iso) { var t = new Date(iso); return t.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ', ' + t.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); };
+  function history() {
+    var h = document.getElementById('history');
+    h.innerHTML = d.history.length
+      ? '<div class="table-wrap"><table><thead><tr><th>Sent</th><th>To</th><th>Subject</th><th class="hide-sm">By</th></tr></thead><tbody>' +
+        d.history.map(function (r) { return '<tr><td class="cell-sub">' + esc(when(r.at)) + '</td><td>' + esc(label(r.grp)) + ' <span class="cell-sub">(' + r.count + ')</span></td><td>' + esc(r.subject) + '</td><td class="hide-sm cell-sub">' + esc(r.by) + '</td></tr>'; }).join('') +
+        '</tbody></table></div>'
+      : '<div class="empty"><p class="flush">Nothing sent from here yet.</p></div>';
+  }
+
+  document.getElementById('test').addEventListener('click', function () {
+    if (!form.reportValidity()) return;
+    var done = UI.busy(this, 'Sending…');
+    api.test({ group: group.value, subject: subject.value, body: body.value }).then(function (x) {
+      UI.toast(x.emailConfigured ? 'Test sent to ' + x.sentTo + ', filled in for ' + (g().count ? g().sample.name : 'an example founder') + '.' : 'Not sent: the email service is not connected yet.', !x.emailConfigured);
+    }).catch(function (err) { UI.toast(err.message, true); }).then(done);
+  });
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var cur = g();
+    UI.confirm('Send to ' + cur.count + (cur.count === 1 ? ' founder?' : ' founders?'), '“' + subject.value + '” goes to ' + cur.label.toLowerCase() + ', each with their own details. This cannot be undone.', 'Yes, send', function () {
+      var done = UI.busy(go, 'Sending…');
+      api.go({ group: group.value, subject: subject.value, body: body.value }).then(function (x) {
+        d.history.unshift(x.row); history();
+        try { localStorage.removeItem(KEY); } catch (e) {}
+        subject.value = ''; body.value = '';
+        UI.toast((x.emailConfigured ? 'Sent to ' : 'Saved, but email is not connected, so not sent to ') + x.count + (x.count === 1 ? ' founder.' : ' founders.'));
+      }).catch(function (err) { UI.toast(err.message, true); }).then(function () { done(); render(); });
+    });
+  });
+  render(); history();
+})();`;
+
+export function sendPage(o: SendData & { who: string }) {
+  return appPage('Send', { who: o.who, base: o.base, active: 'Send' }, sendHtml(o), SEND_JS);
+}

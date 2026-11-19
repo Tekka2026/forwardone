@@ -42,6 +42,18 @@ sent without it. The deck link is no longer asked for. The dashboard shows why a
 "not on LinkedIn" under the company, LinkedIn with the founder; the CSV
 has every field; emails can greet with `{first_name}`.
 
+## Send (owner, 2026-11-19)
+
+**Send** in the dashboard menu: one email to a group of founders (approved,
+waiting list, waiting for review, denied, or everyone who applied), with a
+subject and text written there. Placeholders (`{first_name}`, `{company}`,
+`{time}`, `{location}`, `{map_link}`, …) are filled in per founder; each
+address gets it once (its latest request). A live example shows it as the
+group's first founder sees it; **Send test to me** sends that example to the
+reviewer; **Send** asks to confirm with the number of founders. Every send
+is kept in the `sends` table (migration 0007) and listed under Sent. The
+draft stays in the reviewer's browser until it is sent.
+
 ## Closing (owner, 2026-11-17)
 
 `CLOSES_AT` in `wrangler.toml` (Monday 16 November, 23:59 Helsinki time):
