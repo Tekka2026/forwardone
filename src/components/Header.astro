@@ -2,9 +2,9 @@
 /**
  * Top strip: the logo on the left (FORWARD, pinned while the page scrolls
  * and closing to FWD, see Logo.astro; the classic FORWARD.one wordmark on
- * the co-branded landing page); on the right Pitch us (solid: white with
- * black text on the dark intro, inverted on light pages) and LP login
- * (outlined).
+ * the co-branded landing page); on the right LP login (outlined). Pitch us
+ * was there too, removed by the owner on 2026-11-20 (the hero's first
+ * button is Pitch us).
  * Navigation lives in Nav.astro, floating at the bottom of the viewport.
  * With `dark`, it sits transparently on top of the page's black intro block
  * (see .intro in src/pages/index.astro) and uses the dark theme.
@@ -25,9 +25,6 @@ interface Props {
   dark?: boolean;
   /** Landing pages: no LP login. */
   minimal?: boolean;
-  /** The founders page: no Pitch us (it would link to the page itself);
-   *  "For investors" was there too, removed by the owner on 2026-10-27. */
-  forFounders?: boolean;
   /** Landing pages run with partners (owner, 2026-10-26, /the-pitch):
    *  their logos sit next to the wordmark, each as high as it. */
   partners?: Partner[];
@@ -35,7 +32,7 @@ interface Props {
    *  the pitch itself). */
   noActions?: boolean;
 }
-const { dark = false, minimal = false, forFounders = false, partners = [], noActions = false } = Astro.props;
+const { dark = false, minimal = false, partners = [], noActions = false } = Astro.props;
 const marks = partners.map((p) => ({
   ...p,
   svg: p.svg.replace('<svg ', '<svg class="site-top__partner-mark" role="img" aria-label="' + p.name + '" focusable="false" '),
@@ -63,11 +60,6 @@ const marks = partners.map((p) => ({
     {
       !noActions && (
         <div class="site-top__actions">
-          {
-            !forFounders && (
-              <Button href={utilityNav.pitch.href} size="small" class="site-top__pitch">{utilityNav.pitch.label}</Button>
-            )
-          }
           {
             !minimal && (
               <Button href={utilityNav.lpLogin.href} variant="ghost" size="small" external={utilityNav.lpLogin.external}>
@@ -144,12 +136,5 @@ const marks = partners.map((p) => ({
     display: block;
     height: var(--brand-h);
     width: auto;
-  }
-  /* Phones: no Pitch us in the top strip (owner, 2026-10-14); founders
-     still reach it from the closing section ("Founders: pitch us"). */
-  @media (max-width: 640px) {
-    .site-top__actions :global(.site-top__pitch) {
-      display: none;
-    }
   }
 </style>

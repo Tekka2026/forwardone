@@ -53,11 +53,13 @@ export const hero = {
 /** `value` renders first in the DOM and on top visually; it never wraps. */
 export type Stat = { value: string; label: string; footnote?: number };
 
+// Owner, 2026-11-20: new order, and "2,500 companies screened a year" in
+// place of "~8 of 2,500 companies backed per year".
 export const stats: Stat[] = [
-  { value: 'Top 5%', label: 'European VC (Funds I & II)', footnote: 1 },
   { value: '5', label: 'exits to strategic buyers' },
-  { value: '~8 of 2,500', label: 'companies backed per year' },
+  { value: '2,500', label: 'companies screened a year' },
   { value: '75–80%', label: 'of each fund reserved for follow-on' },
+  { value: 'Top 5%', label: 'European VC (Funds I & II)', footnote: 1 },
 ];
 
 export const whatWeDo = {

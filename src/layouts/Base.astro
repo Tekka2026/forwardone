@@ -14,8 +14,6 @@ interface Props {
   /** Landing page (e.g. /the-pitch): header without LP login, footer with
    *  the copyright line only, no floating navigation bar. */
   minimal?: boolean;
-  /** The founders page: "For investors" in the header (see Header.astro). */
-  forFounders?: boolean;
   /** Partner logos next to the wordmark (see Header.astro). */
   partners?: Partner[];
   /** Links in the minimal footer (see Footer.astro). */
@@ -24,7 +22,7 @@ interface Props {
   noHeaderActions?: boolean;
 }
 
-const { title, description = site.description, darkTop = false, minimal = false, forFounders = false, partners = [], noHeaderActions = false, footerLinks = [] } = Astro.props;
+const { title, description = site.description, darkTop = false, minimal = false, partners = [], noHeaderActions = false, footerLinks = [] } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 
@@ -52,7 +50,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   <body>
     <a class="skip-link" href="#main">{site.skipLinkLabel}</a>
     <div class:list={['page', minimal && 'page--minimal']} data-page>
-      <Header dark={darkTop} minimal={minimal} forFounders={forFounders} partners={partners} noActions={noHeaderActions} />
+      <Header dark={darkTop} minimal={minimal} partners={partners} noActions={noHeaderActions} />
       <main id="main" tabindex="-1">
         <slot />
       </main>

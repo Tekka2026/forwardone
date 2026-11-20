@@ -40,7 +40,7 @@ const labelled = (svg: string, label: string) =>
   svg.replace('<svg ', `<svg role="img" aria-label="${label}" class="f-logo__svg" `);
 ---
 
-<Base title={f.meta.title} description={f.meta.description} darkTop forFounders>
+<Base title={f.meta.title} description={f.meta.description} darkTop>
   <!-- The intro and "Why founders pick us" share a wrapper: the intro stays
        put once the next section is 30px above the floating nav, and that
        section scrolls over it (owner, 2026-11-04). -->

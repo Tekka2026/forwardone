@@ -607,9 +607,8 @@ Built like the "Follow the battery." section on vikka.io
 reuses the homepage's patterns, composed in the page from the shared tokens
 and classes, because the homepage components read their copy from `home.ts`:
 
-- Header: logo and LP login only. No Pitch us (it would link to the page
-  itself) and no "For investors" (removed by the owner, 2026-10-27;
-  `<Base forFounders>`).
+- Header: logo and LP login only, as on every page since 2026-11-20 (no
+  Pitch us; no "For investors", removed by the owner on 2026-10-27).
 - Black intro (as `.intro` on the homepage, at least 130% of the viewport
   high, owner 2026-10-26, so the figures start below the fold):
   eyebrow (ticks in), H1 (word reveal), lede, "Pitch us" (to the closing, `#pitch`) and "Meet the
@@ -953,7 +952,7 @@ CLAUDE.md action A0005).
    states. **Shape** follows the Vercel Geist / vercel.com button; **colours**
    are the site's own (Geist colours deliberately not used, 2026-10-13):
    - Pill shape on every size (`--btn-radius`).
-   - Sizes `.btn--small` (32px, 14px/20px text, header "Pitch us"), default
+   - Sizes `.btn--small` (32px, 14px/20px text, header "LP login"), default
      (40px, 16px/24px) and `.btn--large` (48px, 16px/24px); weight 500;
      padding `--btn-pad-small` / `--btn-pad` / `--btn-pad-large`.
    - `.btn`: `--accent` fill, 1px `--fg` border. `.btn--ghost`: transparent
@@ -985,12 +984,11 @@ font's default underline is too heavy.
 ## 8. Navigation
 
 The primary navigation is a bar that floats at the bottom of the viewport
-(`src/components/Nav.astro`), not a top header. The logo and two small
-buttons sit in a plain strip at the top of the page
-(`src/components/Header.astro`): Pitch us (solid: white with black text on
-the dark intro, black with white text on light pages) and, to its right,
-LP login (outlined, opens the LP portal in a new tab, ↗). On phones
-(≤640px) Pitch us is hidden; founders reach it from the closing section.
+(`src/components/Nav.astro`), not a top header. The logo and one small
+button sit in a plain strip at the top of the page
+(`src/components/Header.astro`): LP login (outlined, opens the LP portal in
+a new tab, ↗). Pitch us was a button there too; removed by the owner on
+2026-11-20, as the hero's first button is now Pitch us.
 
 ### Logo: FORWARD ↔ FWD (owner, 2026-11-16)
 
@@ -1080,7 +1078,7 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   typed or erased. Copy lives in `src/content/nav.ts` (`navGreeting`).
 - Open: the panel expands upward from the bar in `--nav-bg-open` (#000000)
   with the section columns (accordions on mobile). LP login is also reached via
-  the Investors column; Pitch us and LP login are buttons in the top strip. The
+  the Investors column; LP login is a button in the top strip. The
   page behind is pushed back 3% (scale 0.97) from the centre of the visible
   viewport, covered by an 80% white layer and made inert. Opening and closing
   use the same fluid, snappy motion (420ms, ease-out). The panel never fades:
