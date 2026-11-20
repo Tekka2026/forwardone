@@ -1037,8 +1037,8 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   the white logo, `rgba(255,255,255,0.8)` under the black one), with a
   10px backdrop blur beneath it. One radial mask (`closest-side`: full to
   35%, 60% at 65%, nothing at the edge) fades the tint and the blur out
-  together, so there is no hard edge. It reaches 44px beyond the letters
-  left and right and 26px above and below (32 and 22px at ≤420px), spans
+  together, so there is no hard edge. It reaches 32px beyond the letters
+  left and right and 22px above and below (24 and 18px at ≤420px), spans
   the drawn letters as FWD opens to FORWARD (`--logo-fill`, set by the
   script), fades in over 300ms, and is not there at the very top, on the
   black intro.

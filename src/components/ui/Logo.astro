@@ -189,8 +189,8 @@ const fill = (d: number) => ((d + ONE_END - 498) / 1388).toFixed(4);
      the very top, on the black intro, it is not there. It spans the drawn
      letters (--logo-fill, set by the script as FWD opens to FORWARD). */
   .logo--forward {
-    --logo-glow-x: 44px;
-    --logo-glow-y: 26px;
+    --logo-glow-x: 32px;
+    --logo-glow-y: 22px;
   }
   .logo--forward::before {
     content: '';
@@ -218,8 +218,8 @@ const fill = (d: number) => ((d + ONE_END - 498) / 1388).toFixed(4);
   /* Narrow phones: a smaller glow. */
   @media (max-width: 420px) {
     .logo--forward {
-      --logo-glow-x: 32px;
-      --logo-glow-y: 22px;
+      --logo-glow-x: 24px;
+      --logo-glow-y: 18px;
     }
   }
 </style>
