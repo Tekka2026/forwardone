@@ -393,7 +393,7 @@ export const partners = {
     {
       name: 'Arjan Göbel',
       role: 'General Partner',
-      photo: '[PLACEHOLDER: photo]',
+      photo: '/team/arjan-gobel.jpg', // owner, 2026-11-20; 800 × 1000 (4:5), 49 KB
       quote: 'Set near-impossible deadlines, make them holy, and reach them.',
     },
     {

@@ -71,7 +71,7 @@ Every route other than the homepage renders a heading, a one-line intro and
 | Founders we back | (homepage) | The founders strip is the homepage's: its open items are under Homepage, Founders strip. |
 | Why founders pick us | `why.visual` | One visual per card (four), 16:10 landscape, for the scroll deck. Until then each is a light grey box with the marker. |
 | In the portfolio | `src/assets/portfolio/<logo>.svg` | The 12 company logos as SVG, single colour, file names as in `backed.portfolio[*].logo` (quantware, quix-quantum, optics11, exrobotics, fizyr, voltfang, ore-energy, sapient-perception, fibersail, senseglove, collo, zuriq). Drop a file in and its tile shows the logo. |
-| The partners | `partners.people[*]` in `home.ts` | Shared with the homepage: the four partner photos, and the quotes from Robin van Boxsel and Paul Pruijmboom. |
+| The partners | `partners.people[*]` in `home.ts` | Shared with the homepage: three partner photos (Riemer Smink, Robin van Boxsel, Paul Pruijmboom; Arjan Göbel's supplied 2026-11-20), and the quotes from Robin van Boxsel and Paul Pruijmboom. |
 | After you pitch | `after.steps[1].body`, `after.steps[3].body` | How many days until a founder hears back, and how many weeks from the first meeting to a decision. |
 | Closing | `closing.cta.href` | Where "Pitch us" goes: a pitch form URL or a mailto link. Until set, the button shows disabled with the marker next to it. |
 | Closing | `closing.email` | The pitch email address. |
