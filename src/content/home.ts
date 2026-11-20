@@ -20,13 +20,19 @@ export const hero = {
   /** `\n` forces the line break. */
   // Owner, 2026-11-16 (was 'Performance,\nengineered.'); no full stop.
   title: 'Every proven step\nearns the next',
-  /** `text`, then the footnote marker, then `after`. */
+  /**
+   * `text`; with `footnote`, a footnote marker after it, then `after`.
+   * Owner, 2026-11-20 (was "Our Funds I and II rank in the top 5% of
+   * European VC.¹ Fund III invests early and puts most of its capital
+   * behind the companies that prove it."; the top 5% stays in the figures
+   * under it, with footnote ¹).
+   */
   sub: {
-    text: 'Our Funds I and II rank in the top 5% of European VC.',
-    footnote: 1,
-    after: 'Fund III invests early and puts most of its capital behind the companies that prove it.',
-  },
-  primary: { label: 'See the track record', href: '/investors/funds' } as Cta,
+    text: 'We back Europe’s industrial tech founders early, help them win paying customers, and invest more as they prove themselves.',
+  } as { text: string; footnote?: number; after?: string },
+  // Owner, 2026-11-20 (was 'See the track record' → /investors/funds); the
+  // same target as the header's Pitch us (nav.ts).
+  primary: { label: 'Pitch us', href: '/founders' } as Cta,
   secondary: { label: 'Invest with us', href: '/investors/contact' } as Cta,
   /**
    * Background film of the black intro (owner, 2026-11-18): muted, looping,
