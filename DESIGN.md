@@ -1033,14 +1033,14 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
 - Top band (owner, 2026-11-20: the logo was hard to read over text,
   photos and video; a frosted pill and a glow around the logo were tried
   first the same day and dropped): once the page has scrolled, a gradient
-  across the full width of the window from the top edge to 80px down,
-  black or white by the logo's tone (black 72% at the top, 55% at 55% of
-  the height, transparent at the bottom, under the white logo; white 90%,
-  75%, transparent under the black one), with a 10px backdrop blur beneath
-  it; one mask (full to 55% of its height, nothing at the bottom) fades
-  the blur out with the gradient. The logo sits in its strong part.
-  Fixed to the window, over the page and under the logo and the nav;
-  fades in over 300ms; not there at the very top, on the black intro.
+  across the full width of the window from the top edge to 140px down
+  (80px first; owner: "longer and more subtle"), black or white by the
+  logo's tone, eased in five stops: black 50% → 38% → 20% → 7% → 0 under
+  the white logo, white 72% → 55% → 30% → 10% → 0 under the black one.
+  A 6px backdrop blur beneath it fades out with it (mask: full to 25%,
+  half at 55%, nothing at the bottom). Fixed to the window, over the page
+  and under the logo and the nav; fades in over 300ms; not there at the
+  very top, on the black intro.
 - ".ONE" (owner, 2026-11-16): the owner's DOTONE.svg (`src/assets/brand/
   dot-one.svg`: the full stop, O, N, E, at the wordmark's cap height)
   follows the D on the same baseline, 18 units after the D's bowl, and

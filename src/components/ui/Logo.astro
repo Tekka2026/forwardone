@@ -178,7 +178,8 @@ const VIEWBOX = '498 456 1388 168';
   /* Top band (owner, 2026-11-20: the logo was hard to read over text,
      photos and video; a frosted pill and then a glow around the logo were
      tried first the same day): once the page has scrolled, a gradient
-     across the full width of the window, from the top edge to 80px down,
+     across the full width of the window, from the top edge to 140px down
+     (owner: 80px, then "longer and more subtle"),
      black or white by the logo's tone (black under the white logo, white
      under the black one), fading out downwards, with a blur beneath it
      that fades out with it (one mask over both). At the very top, on the
@@ -191,18 +192,19 @@ const VIEWBOX = '498 456 1388 168';
     top: 0;
     left: 0;
     right: 0;
-    height: 80px;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.55) 55%, rgba(0, 0, 0, 0));
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent);
-    mask-image: linear-gradient(to bottom, #000 55%, transparent);
+    height: 140px;
+    /* Eased fade (more stops), so the long tail has no visible edge. */
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.38) 25%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.07) 75%, rgba(0, 0, 0, 0));
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    -webkit-mask-image: linear-gradient(to bottom, #000 25%, rgba(0, 0, 0, 0.5) 55%, transparent);
+    mask-image: linear-gradient(to bottom, #000 25%, rgba(0, 0, 0, 0.5) 55%, transparent);
     opacity: 0;
     transition: opacity 300ms ease;
     pointer-events: none;
   }
   .logo--forward.is-light::before {
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.75) 55%, rgba(255, 255, 255, 0));
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.55) 25%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0.1) 75%, rgba(255, 255, 255, 0));
   }
   .logo--forward.is-scrolled::before {
     opacity: 1;
