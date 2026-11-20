@@ -399,19 +399,19 @@ export const partners = {
     {
       name: 'Riemer Smink',
       role: 'Managing Partner',
-      photo: '[PLACEHOLDER: photo]',
+      photo: '/team/riemer-smink.jpg', // owner, 2026-11-20; 800 × 1000 (4:5)
       quote: 'Commercial execution always beats technical elegance.',
     },
     {
       name: 'Robin van Boxsel',
       role: 'General Partner',
-      photo: '[PLACEHOLDER: photo]',
+      photo: '/team/robin-van-boxsel.jpg', // owner, 2026-11-20; 800 × 1000 (4:5)
       quote: '[PLACEHOLDER: quote]',
     },
     {
       name: 'Paul Pruijmboom',
       role: 'Managing Partner',
-      photo: '[PLACEHOLDER: photo]',
+      photo: '/team/paul-pruijmboom.jpg', // owner, 2026-11-20; 800 × 1000 (4:5)
       quote: '[PLACEHOLDER: quote]',
     },
   ] as Partner[],

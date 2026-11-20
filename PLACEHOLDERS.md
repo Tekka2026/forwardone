@@ -20,7 +20,6 @@ invented; replace the value in the file named and the marker disappears.
 | Proof slider | `caseStudies.groups[*].items[*].facts` | Optional: two or three short facts per company for the mono row at the card's bottom edge (like "Raw material origin · Carbon footprint"). Hidden while empty. |
 | Proof slider | `caseStudies.groups[*].items[*].metric` | Outcome figure per company, e.g. "8× revenue in 3 years". Shown as a large figure in the card's top-right corner once filled; hidden while it is a placeholder. |
 | Proof slider | `caseStudies.groups[*].items[*].logo` | Logo file per company (company pages). Drop SVGs in `public/logos/` and set the path. |
-| The team | `partners.people[*].photo` | Portrait of each partner. Drop files in `public/team/` and set the path (4:5 crop). |
 | The team | `partners.people[2].quote` | Quote from Robin van Boxsel. |
 | The team | `partners.people[3].quote` | Quote from Paul Pruijmboom. |
 | Insights | `insights.articles[2].image` | Visual for the third featured article (the first has the robot arm, the second the Munich flyover video), 5:7 portrait (cropped to 7:5 landscape on phones, so keep the subject centred). Drop files in `public/insights/` and set the path; until then a flat light grey box. |
@@ -71,7 +70,7 @@ Every route other than the homepage renders a heading, a one-line intro and
 | Founders we back | (homepage) | The founders strip is the homepage's: its open items are under Homepage, Founders strip. |
 | Why founders pick us | `why.visual` | One visual per card (four), 16:10 landscape, for the scroll deck. Until then each is a light grey box with the marker. |
 | In the portfolio | `src/assets/portfolio/<logo>.svg` | The 12 company logos as SVG, single colour, file names as in `backed.portfolio[*].logo` (quantware, quix-quantum, optics11, exrobotics, fizyr, voltfang, ore-energy, sapient-perception, fibersail, senseglove, collo, zuriq). Drop a file in and its tile shows the logo. |
-| The partners | `partners.people[*]` in `home.ts` | Shared with the homepage: three partner photos (Riemer Smink, Robin van Boxsel, Paul Pruijmboom; Arjan Göbel's supplied 2026-11-20), and the quotes from Robin van Boxsel and Paul Pruijmboom. |
+| The partners | `partners.people[*]` in `home.ts` | Shared with the homepage: the quotes from Robin van Boxsel and Paul Pruijmboom. |
 | After you pitch | `after.steps[1].body`, `after.steps[3].body` | How many days until a founder hears back, and how many weeks from the first meeting to a decision. |
 | Closing | `closing.cta.href` | Where "Pitch us" goes: a pitch form URL or a mailto link. Until set, the button shows disabled with the marker next to it. |
 | Closing | `closing.email` | The pitch email address. |
