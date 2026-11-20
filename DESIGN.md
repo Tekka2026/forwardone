@@ -1037,8 +1037,8 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   (80px first; owner: "longer and more subtle"), black or white by the
   logo's tone, eased in five stops: black 50% → 38% → 20% → 7% → 0 under
   the white logo, white 72% → 55% → 30% → 10% → 0 under the black one.
-  A 6px backdrop blur beneath it fades out with it (mask: full to 25%,
-  half at 55%, nothing at the bottom). Fixed to the window, over the page
+  No blur (owner, 2026-11-20: "just the gradient"; a blur beneath it was
+  tried the same day). Fixed to the window, over the page
   and under the logo and the nav; fades in over 300ms; not there at the
   very top, on the black intro.
 - ".ONE" (owner, 2026-11-16): the owner's DOTONE.svg (`src/assets/brand/

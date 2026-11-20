@@ -181,8 +181,8 @@ const VIEWBOX = '498 456 1388 168';
      across the full width of the window, from the top edge to 140px down
      (owner: 80px, then "longer and more subtle"),
      black or white by the logo's tone (black under the white logo, white
-     under the black one), fading out downwards, with a blur beneath it
-     that fades out with it (one mask over both). At the very top, on the
+     under the black one), fading out downwards; no blur (owner: "just the
+     gradient"). At the very top, on the
      black intro, it is not there. Fixed to the window; part of the logo's
      layer, so it lies over the page and under the logo and the nav. */
   .logo--forward::before {
@@ -195,10 +195,6 @@ const VIEWBOX = '498 456 1388 168';
     height: 140px;
     /* Eased fade (more stops), so the long tail has no visible edge. */
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.38) 25%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.07) 75%, rgba(0, 0, 0, 0));
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
-    -webkit-mask-image: linear-gradient(to bottom, #000 25%, rgba(0, 0, 0, 0.5) 55%, transparent);
-    mask-image: linear-gradient(to bottom, #000 25%, rgba(0, 0, 0, 0.5) 55%, transparent);
     opacity: 0;
     transition: opacity 300ms ease;
     pointer-events: none;
