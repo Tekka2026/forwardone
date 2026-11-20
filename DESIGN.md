@@ -1030,6 +1030,16 @@ LP login (outlined, opens the LP portal in a new tab, ↗). On phones
   own, dark below 0.35 relative luminance. Pictures, video and canvases
   are looked past, to the card behind them; a box drawn with a gradient
   can be marked `[data-nav-light]` (the robot arm's studio backdrop is).
+- Frosted pill (owner, 2026-11-20: the logo was hard to read over text,
+  photos and video): once the page has scrolled, a pill sits behind the
+  logo (`::before`, fades in over 300ms; not at the very top, on the black
+  intro). It blurs what passes under it (`backdrop-filter: blur(20px)
+  saturate(1.4)`) and is tinted to the logo's tone: `rgba(12,14,20,0.6)`
+  under the white logo, `rgba(255,255,255,0.82)` under the black one (78%
+  and 90% where the browser has no backdrop blur). 9px above and below the
+  letters, 14px left and right (8 and 10px at ≤420px), fully rounded. It
+  spans the drawn letters only, F to the end of ".ONE", following them as
+  FWD opens to FORWARD (`--logo-fill`, set by the script).
 - ".ONE" (owner, 2026-11-16): the owner's DOTONE.svg (`src/assets/brand/
   dot-one.svg`: the full stop, O, N, E, at the wordmark's cap height)
   follows the D on the same baseline, 18 units after the D's bowl, and
