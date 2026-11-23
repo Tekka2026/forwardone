@@ -70,7 +70,7 @@ export const whatWeDo = {
   visual: '/visuals/what-we-do-one-2.webp', // second version with a soft gradient (owner, 2026-11-16), 1800 × 1800
   visualAlt: '',
   eyebrow: 'What we do',
-  title: 'One strategy. Executed without exception.',
+  title: 'Early is our edge.', // owner, 2026-11-23 (was 'One strategy. Executed without exception.')
   blocks: [
     {
       title: 'Invest early.',
@@ -78,7 +78,7 @@ export const whatWeDo = {
     },
     {
       title: 'Follow on deliberately.',
-      body: 'Most of the fund is held back for companies that prove commercial traction, up to €30M each.',
+      body: 'Most of each fund is reserved for companies that prove commercial traction, up to €30M each.', // owner, 2026-11-23
     },
     {
       title: 'Industrial tech only.',
@@ -124,7 +124,8 @@ export const caseStudies = {
   eyebrow: 'Proof',
   title: 'From lab to exit.',
   /** Line to the right of the heading. */
-  intro: 'Five exits so far. Five engineering companies that global industry leaders chose to buy.',
+  // Owner, 2026-11-23 (was '… Five engineering companies that global industry leaders chose to buy.').
+  intro: 'Five exits so far. Five engineering companies, bought by the industries they set out to change.',
   groups: [
     {
       label: 'Exit',
@@ -133,7 +134,7 @@ export const caseStudies = {
           name: 'Mayht',
           slug: 'mayht',
           date: 'April 2022',
-          outcome: 'Loudspeaker technology. Acquired by Sonos.',
+          outcome: 'Big sound from small speakers. Acquired by Sonos.', // owner, 2026-11-23
           metric: '[PLACEHOLDER: outcome figure]',
           logo: '[PLACEHOLDER: /logos/mayht.svg]',
           visual: '',
@@ -144,7 +145,7 @@ export const caseStudies = {
           name: 'Sensorfact',
           slug: 'sensorfact',
           date: 'January 2025',
-          outcome: 'Energy intelligence for SMEs. Acquired by ABB.',
+          outcome: 'Helps factories cut energy waste. Acquired by ABB.', // owner, 2026-11-23
           metric: '[PLACEHOLDER: outcome figure]',
           logo: '[PLACEHOLDER: /logos/sensorfact.svg]',
           visual: '',
@@ -155,9 +156,30 @@ export const caseStudies = {
           name: 'Axign',
           slug: 'axign',
           date: '[PLACEHOLDER: exit date]',
-          outcome: 'Audio semiconductors. Acquired by MPS.',
+          outcome: 'Chips for more efficient audio amplifiers. Acquired by MPS.', // owner, 2026-11-23
           metric: '[PLACEHOLDER: outcome figure]',
           logo: '[PLACEHOLDER: /logos/axign.svg]',
+          visual: '[PLACEHOLDER: image]',
+          facts: [],
+        },
+        // Nuventura and Aito added by the owner on 2026-11-23.
+        {
+          name: 'Nuventura',
+          slug: 'nuventura',
+          date: '[PLACEHOLDER: exit date]',
+          outcome: 'Greener switchgear for power grids, without SF₆ gas. Acquired by Lucy Group.',
+          metric: '[PLACEHOLDER: outcome figure]',
+          logo: '[PLACEHOLDER: /logos/nuventura.svg]',
+          visual: '[PLACEHOLDER: image]',
+          facts: [],
+        },
+        {
+          name: 'Aito',
+          slug: 'aito',
+          date: '[PLACEHOLDER: exit date]',
+          outcome: 'Touch and haptic feedback for any surface. Acquired by [PLACEHOLDER: buyer].',
+          metric: '[PLACEHOLDER: outcome figure]',
+          logo: '[PLACEHOLDER: /logos/aito.svg]',
           visual: '[PLACEHOLDER: image]',
           facts: [],
         },
@@ -367,7 +389,7 @@ export const trackRecord = {
   notes: ['* Includes the RVO seed facility.'],
   exits: {
     label: 'Exits:',
-    items: ['Mayht (Sonos)', 'Sensorfact (ABB)', 'Axign (MPS)', 'Aito', 'Nuventura'],
+    items: ['Mayht (Sonos)', 'Sensorfact (ABB)', 'Axign (MPS)', 'Aito', 'Nuventura (Lucy Group)'],
   },
   link: { label: 'Funds & track record', href: '/investors/funds' } as Cta,
 };

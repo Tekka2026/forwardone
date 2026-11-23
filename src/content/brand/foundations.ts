@@ -79,7 +79,7 @@ export const foundations: BrandPage = {
           type: 'stats',
           items: [
             { value: 'Top 5%', text: 'Funds I and II rank in the top 5% of European VC ([benchmark], [year]).' },
-            { value: '5 exits', text: 'Mayht to Sonos, Sensorfact to ABB, Axign to MPS, Aito to [buyer] and Nuventura to [buyer].' },
+            { value: '5 exits', text: 'Mayht to Sonos, Sensorfact to ABB, Axign to MPS, Aito to [buyer] and Nuventura to Lucy Group.' },
             { value: 'About 1 in 300', text: 'We screen about 2,500 companies a year and back about 8.' },
             { value: '75–80%', text: 'Of each fund kept for follow-on investment in the companies that perform.' },
           ],

@@ -99,7 +99,7 @@ export const forFounders = {
       { name: 'ZuriQ', logo: 'zuriq' },
     ] as PortfolioItem[],
     logoMissing: PH('SVG logo'),
-    exits: { lead: 'From lab to exit.', text: 'Mayht (acquired by Sonos), Sensorfact (ABB), Axign (MPS), Aito and Nuventura.' },
+    exits: { lead: 'From lab to exit.', text: 'Mayht (acquired by Sonos), Sensorfact (ABB), Axign (MPS), Aito and Nuventura (Lucy Group).' },
   },
 
   /** People, roles, photos and quotes come from `partners` in home.ts. */

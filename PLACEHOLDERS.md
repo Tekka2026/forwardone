@@ -15,11 +15,12 @@ invented; replace the value in the file named and the marker disappears.
 | Founders strip | `founders.people[*].colour` | Brand colour (hex) per company card. Empty falls back to a site tone. |
 | Founders strip | `founders.people[*].blurb` | Check the one-liners under the company names (paraphrased from the forward.one portfolio pages). |
 | Founders strip | `founders.clips[*].video`, `.poster`, `.caption` | Five short vertical videos of FORWARD.one team members (MP4, about 9:16, cropped to 5:7; muted autoplay), with a poster frame and a one-line caption. Until then all five play `public/founders/clip-placeholder.mp4` (the owner's Slush Finland clip with its caption, 2026-10-19). |
-| Proof slider | `caseStudies.groups[*].items[*].date` | Date at the top of each card, written as month and year, like "April 2022" (shown as "EXIT: APRIL 2022"): the exit date for Axign (Sensorfact and Mayht supplied). For QuantWare and Edmund (traction, no exit) decide which date to show, e.g. first investment. |
+| Proof slider | `caseStudies.groups[*].items[*].date` | Date at the top of each card, written as month and year, like "April 2022" (shown as "EXIT: APRIL 2022"): the exit dates for Axign, Nuventura and Aito (Sensorfact and Mayht supplied). For QuantWare and Edmund (traction, no exit) decide which date to show, e.g. first investment. |
 | Proof slider | `caseStudies.groups[*].items[*].visual` or `.video` | Visual per company card (Sensorfact, Mayht and QuantWare supplied as background videos). Either an image in the right half (transparent PNG/WebP works best on the dark card) or a short muted video filling the card (MP4; Claude adds a WebM copy and a poster frame). Drop files in `public/cases/`. |
 | Proof slider | `caseStudies.groups[*].items[*].facts` | Optional: two or three short facts per company for the mono row at the card's bottom edge (like "Raw material origin · Carbon footprint"). Hidden while empty. |
 | Proof slider | `caseStudies.groups[*].items[*].metric` | Outcome figure per company, e.g. "8× revenue in 3 years". Shown as a large figure in the card's top-right corner once filled; hidden while it is a placeholder. |
 | Proof slider | `caseStudies.groups[*].items[*].logo` | Logo file per company (company pages). Drop SVGs in `public/logos/` and set the path. |
+| Proof slider | `caseStudies.groups[0].items[4].outcome` | The buyer of Aito ("Acquired by [buyer]."). Also in the brand guidelines' Foundations. |
 | The team | `partners.people[2].quote` | Quote from Robin van Boxsel. |
 | The team | `partners.people[3].quote` | Quote from Paul Pruijmboom. |
 | Insights | `insights.articles[2].image` | Visual for the third featured article (the first has the robot arm, the second the Munich flyover video), 5:7 portrait (cropped to 7:5 landscape on phones, so keep the subject centred). Drop files in `public/insights/` and set the path; until then a flat light grey box. |
@@ -51,7 +52,7 @@ Welcome, Foundations and Color follow the FORWARD.one Brand Foundation doc (2026
 | Where | Key | Needed |
 |---|---|---|
 | Footer, all pages | `site.ts` → `contact.people` | Name and email of the brand contact. |
-| Foundations, Who we are | `foundations.ts` | Benchmark source and year for the top-5% ranking; buyers of Aito and Nuventura; the partners, one line each on what they bring. |
+| Foundations, Who we are | `foundations.ts` | Benchmark source and year for the top-5% ranking; the buyer of Aito (Nuventura: Lucy Group, owner 2026-11-23); the partners, one line each on what they bring. |
 | Foundations, What we believe and What we do | `foundations.ts` | One portfolio company for applied AI (belief 2) and for Robotics, Autonomy, Manufacturing and Dual-use. |
 | Color, Color story | `color.ts` | Riemer's personal story, which may replace the 1964 opening. CMYK and Pantone values if print is needed (only hex is supplied). |
 | Typography | `typography.ts` | Web licence and full files for Aeonik Regular and SemiBold (A0038). |
