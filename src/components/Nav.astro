@@ -1279,12 +1279,14 @@ const aud = navGreeting.audience;
        its bottom has scrolled above the bar's centre line the bar shrinks
        and asks, and scrolling back above it restores the welcome line. */
     const audienceAfter = document.querySelector<HTMLElement>('[data-nav-audience-after]');
-    // The bar asks only while it is over the section right after that
-    // element (on the homepage section 3, What we do since 2026-11-23); from
-    // the next one on (section 4) it is back to the full bar (owner,
-    // 2026-11-05).
-    let audienceZone: Element | null = audienceAfter ? audienceAfter.nextElementSibling : null;
-    while (audienceZone && audienceZone.tagName === 'SCRIPT') audienceZone = audienceZone.nextElementSibling;
+    // The bar asks only while it is over one section: the one marked
+    // [data-nav-audience-zone] (on the homepage the track record, section 4,
+    // owner 2026-11-23), or else the section right after that element
+    // (owner, 2026-11-05). Above it, and from the next section on, it is the
+    // full bar.
+    const markedZone = document.querySelector<HTMLElement>('[data-nav-audience-zone]');
+    let audienceZone: Element | null = markedZone ?? (audienceAfter ? audienceAfter.nextElementSibling : null);
+    while (!markedZone && audienceZone && audienceZone.tagName === 'SCRIPT') audienceZone = audienceZone.nextElementSibling;
     // Erase back to what both lines share, type the rest.
     async function retypeTo(text: string, id: number) {
       if (reduceMotion.matches) { setTyped(text); idle(); return; }
@@ -1341,7 +1343,11 @@ const aud = navGreeting.audience;
       const bottom = parseFloat(getComputedStyle(root).bottom) || 0;
       const y = window.innerHeight - bottom - bar.offsetHeight / 2;
       // Once the visitor has chosen, the bar does not ask again.
-      const afterPassed = audienceAfter.getBoundingClientRect().bottom < y;
+      // Into the zone: its top above the bar's centre line (or, without a
+      // marked zone, the opt-in element's bottom).
+      const afterPassed = markedZone
+        ? markedZone.getBoundingClientRect().top < y
+        : audienceAfter.getBoundingClientRect().bottom < y;
       const zonePassed = !!audienceZone && audienceZone.getBoundingClientRect().bottom < y;
       const wasPast = pastAudienceZone;
       pastAudienceZone = afterPassed && zonePassed;
@@ -1381,7 +1387,7 @@ const aud = navGreeting.audience;
     // The choice panel (owner, 2026-11-06), opened from the greeting's
     // audience word: switch to the other audience, or reset. Either one
     // closes the panel; the closed bar then greets anew (or welcomes, and
-    // over section 3 asks again).
+    // over the question's section asks again).
     const choiceTitle = panel.querySelector<HTMLElement>('[data-nav-choice-title]')!;
     const choiceSwitch = panel.querySelector<HTMLButtonElement>('[data-nav-choice-switch]')!;
     const choiceReset = panel.querySelector<HTMLButtonElement>('[data-nav-choice-reset]')!;

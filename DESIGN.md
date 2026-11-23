@@ -1115,11 +1115,13 @@ a new tab, ↗). Pitch us was a button there too; removed by the owner on
 
 - A page opts in by marking an element `data-nav-audience-after`; on the
   homepage that is the wrapper of the intro and the founders strip. Once
-  its bottom has scrolled above the bar's centre line, the bar turns
-  compact; it stays compact only while the bar is over the section right
-  after it (section 3: What we do since 2026-11-23, when the owner swapped it with the track record, now section 4) and is full again from the next
-  section on (owner, 2026-11-05), or when scrolling back above it.
-  Expanding into section 4 (and anywhere below it) the closed line reads
+  its bottom has scrolled above the bar's centre line, the bar can turn
+  compact; it is compact only while the bar is over the section marked
+  `data-nav-audience-zone` (owner, 2026-11-23: the track record, section 4,
+  after the swap with What we do; without a marked zone, the section right
+  after the opt-in element) and is full again from the next section on
+  (owner, 2026-11-05), or when scrolling back above it. Past that section
+  (and anywhere below it) the closed line reads
   "How can we help you?" instead of "Welcome to FORWARD.one" (owner,
   2026-11-05); above the strip it is the welcome again. After a choice the
   greeting replaces both.
@@ -1161,8 +1163,8 @@ a new tab, ↗). Pitch us was a button there too; removed by the owner on
   greeting while it is open. Switching closes the panel; the bar takes the
   new colour (light blue or black) and types the new greeting. Reset closes
   it, forgets the choice, and the bar goes back to black with the welcome
-  line (or "How can we help you?" below section 3); over section 3 it asks
-  again. The hamburger, the bar, Escape or the scrim close it without a
+  line (or "How can we help you?" below the question's section); over that
+  section (the track record) it asks again. The hamburger, the bar, Escape or the scrim close it without a
   change. The hamburger still opens the full menu.
 - How the links work: the line is typed as plain text with the linked
   words underlined; once it is out, `[data-nav-switch]` takes its place
