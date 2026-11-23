@@ -84,13 +84,16 @@ const h1Words = hero.title.split(/\s+/).filter(Boolean).length;
       }).observe(film.parentElement!);
     }
   </script>
-  <!-- Owner, 2026-11-23: What we do is section 3, the track record section 4
-       (they were the other way round). -->
+  <!-- Order (owner, 2026-11-23, "the exact order"): 1 hero, 2 data bar
+       (both in the intro above), 3 founders strip, 4 strategy, 5 exits,
+       6 how we help, 7 team, 8 funds, 9 Fund III + LP portal, 10 insights,
+       11 closing. The menu bar asks "Are you a founder or investor?" over
+       the funds (data-nav-audience-zone in TrackRecord.astro). -->
   <WhatWeDo />
-  <TrackRecord />
   <CaseStudies />
   <Playbook />
   <Partners />
+  <TrackRecord />
   <FundIII />
   <Insights />
   <ClosingCta />

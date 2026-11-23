@@ -298,6 +298,28 @@ Rules:
   (`text-wrap: balance`): "Every proven / step earns / the next". The
   first half did not fit on one line, so it broke into four.
 
+### Homepage order (owner, 2026-11-23, "the exact order")
+
+| # | Section | Main audience |
+|---|---|---|
+| 1 | Hero: "Every proven step earns the next" | Founders |
+| 2 | Data bar (the figures under the hero) | Both |
+| 3 | Founders strip: "We go where Europe's builders are." | Founders |
+| 4 | Strategy (What we do): "One strategy. Executed without exception." | Founders |
+| 5 | Exits (Proof): "From lab to exit." | Both |
+| 6 | How we help (Playbook): "We help them win. Then we double down." | Founders |
+| 7 | Team: "The team behind the performance." | Both |
+| 8 | Funds (track record): "Three funds. One discipline." | Investors |
+| 9 | Fund III and the LP portal preview | Investors |
+| 10 | Insights | Both |
+| 11 | Closing: "Serious about performance? So are we." | Both |
+
+Sections 1 and 2 share the black intro, 1–3 the curtain. The owner's table
+named some sections with other titles (Strategy "Early is our edge", Team
+"We push hard. We stay close.", Fund III "Bigger fund. Same high bar."); the
+site keeps its current titles (owner, 2026-11-23). The menu bar asks
+"Are you a founder or investor?" over section 8.
+
 ### Homepage intro film
 
 - (Owner, 2026-11-18.) The black intro (header, hero and figures) has a
@@ -1117,8 +1139,8 @@ a new tab, ↗). Pitch us was a button there too; removed by the owner on
   homepage that is the wrapper of the intro and the founders strip. Once
   its bottom has scrolled above the bar's centre line, the bar can turn
   compact; it is compact only while the bar is over the section marked
-  `data-nav-audience-zone` (owner, 2026-11-23: the track record, section 4,
-  after the swap with What we do; without a marked zone, the section right
+  `data-nav-audience-zone` (owner, 2026-11-23: the funds, "Three funds. One
+  discipline.", section 8 in the order of that day; without a marked zone, the section right
   after the opt-in element) and is full again from the next section on
   (owner, 2026-11-05), or when scrolling back above it. Past that section
   (and anywhere below it) the closed line reads
