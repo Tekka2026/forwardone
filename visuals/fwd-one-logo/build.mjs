@@ -2,15 +2,15 @@
 //
 // From the owner's slides 13 (FWD.one) and 14 (FORWARD.one), both on
 // #0F121A with the letters in #F5F5F5. The motion is the website logo's
-// (src/lib/wordmark.mjs, the same glyphs): F, W and D move apart and O, R,
-// A and R come in through slots that open with the space, solid letters
-// revealed by their slots (as on the site). Two things the slides add:
-// - "one" (lowercase, no full stop) follows the D: full white in FWD.one,
-//   75% in FORWARD.one. It first rises in from below its baseline, masked,
-//   as the site's ".ONE" does after load.
-// - The lockup stays centred: FWD.one sits 255 px right of the storyboard's
-//   frame, FORWARD.one 87 px left of it (read from the slides' paths), and
-//   the whole moves between the two with the opening.
+// (src/lib/wordmark.mjs, the same glyphs): F stays put, W and D move apart
+// to the right and O, R, A and R come in through slots that open with the
+// space, solid letters revealed by their slots (as on the site).
+// Owner, 2026-11-23 (second version): the F in one place throughout (where
+// slide 14 has it, so the end matches that slide), opening to the right;
+// "one" (lowercase, as on the slides, at 75%) comes in only once FORWARD
+// is complete, rising from below its baseline, masked, as the site's
+// ".ONE" does. (The first version kept the lockup centred and showed "one"
+// before the opening, as on slide 13.)
 //
 // Run: node visuals/fwd-one-logo/build.mjs          → public/visuals/fwd-one-logo.svg
 //      node visuals/fwd-one-logo/build.mjs --video  → also public/visuals/fwd-one-logo.mp4
@@ -40,22 +40,17 @@ const ONE = [
 // "M542.268 528.69" is the frame's "M629.038 528.862". "one" is placed in
 // frame coordinates by undoing that, inside the D's group.
 const S14 = { x: -86.769, y: -0.172 };
-// Slide 13: F's "M884.177 528.69" → the frame shifted by +255.139. Its
-// "one" sits 1.86 px further from the D and 0.76 px higher than in slide 14
-// (e: "M1292.36 562.589" against D "M1157.28 …").
-const S13 = { x: 255.139 };
-const ONE_FWD = { dx: 1.855, dy: -0.758 };
-// Both slides sit 0.172 px above the frame (S14.y): the whole lockup is moved by that.
+// The slide sits 0.172 px above the frame (S14.y): the whole lockup is moved by that.
 const ONE_TOP = 515; // above the letters' x-height, in frame coordinates
 const ONE_BASE = 563.6; // just under the baseline (o and e overshoot)
 const ONE_LEFT = 1363 - S14.x - 12;
 
 // ---- Timing (seconds) ----
 const T = {
-  rise: 0.5, // "one" starts rising in
-  riseDur: 1.6, // as the site (cubic-bezier(0.33, 1, 0.68, 1))
-  open: 2.6, // FWD starts opening to FORWARD
+  open: 0.8, // FWD starts opening to FORWARD
   openDur: 2.8,
+  rise: 3.8, // "one" starts rising in, once FORWARD is complete
+  riseDur: 1.6, // as the site (cubic-bezier(0.33, 1, 0.68, 1))
   end: 7.0, // holds FORWARD.one until then
 };
 const clamp = (x) => Math.min(1, Math.max(0, x));
@@ -68,10 +63,10 @@ function state(t) {
   const rise = easeOutCubic(clamp((t - T.rise) / T.riseDur));
   return {
     ...l,
-    shift: lerp(S13.x, S14.x, p),
-    oneX: lerp(ONE_FWD.dx, 0, p),
-    oneY: lerp(ONE_FWD.dy, 0, p) + (1 - rise) * 60, // 60: below the mask
-    oneOpacity: lerp(1, 0.75, p),
+    shift: S14.x, // F fixed where slide 14 has it
+    oneX: 0,
+    oneY: (1 - rise) * 60, // 60: below the mask
+    oneOpacity: 0.75, // as on slide 14
   };
 }
 
