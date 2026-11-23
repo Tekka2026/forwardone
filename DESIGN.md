@@ -388,7 +388,10 @@ site keeps its current titles (owner, 2026-11-23). The menu bar asks
   company, and a clip after every fourth founder (25 cards).
 - Founder card: the CEO's photo, full bleed (#ECECEA until supplied); name
   (card title) and "CEO, company" (small, muted) at the bottom, white over a
-  soft dark gradient when there is a photo.
+  soft dark gradient when there is a photo; optionally one line about the
+  company under that (owner, 2026-11-23: Rocsys, Qualinx), small, 12px
+  lower, at most 30 characters wide, white 92% (a step brighter than the
+  role).
 - Company card: the brand colour (else the site's tones in turn: yellow,
   ink, purple, sand, amber, deep red, grey-blue); the name in the display
   face (28–44px), one line of small body copy under it; text dark or white

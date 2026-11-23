@@ -236,7 +236,8 @@ export type FounderEntry = {
   role?: string;
   /** Company card: brand colour as hex; empty = a site tone. */
   colour: string;
-  /** Company card: one line under the name. */
+  /** Company card: one line under the name. Founder card: one line about
+   *  the company under the role (empty = none). */
   blurb: string;
   /** Company card: "Discover more about <company>" link. Empty = the portfolio overview. */
   href?: string;
@@ -258,13 +259,13 @@ export const founders = {
    * companies we meet, the places we go: all of Europe, not one region. The
    * 2,500 a year is the site's own figure (stats). */
   title: 'We go where\nEurope’s builders are.',
-  intro: 'Across Europe, we screen 2,500 companies a year and back the few who will lead.',
+  intro: 'We back the few who will lead their markets.', // owner, 2026-11-23 (was 'Across Europe, we screen 2,500 companies a year and back the few who will lead.')
   role: 'CEO',
   /** 20 founders; the card type alternates. */
   people: [
-    { ...founder('ROCSYS'), name: 'Crijn Bouman', role: 'CEO & Co-founder', photo: '/founders/rocsys.jpg' }, // owner, 2026-10-19
+    { ...founder('Rocsys'), name: 'Crijn Bouman', role: 'CEO & Co-founder', photo: '/founders/rocsys.jpg', blurb: 'Automating the last step in electric mobility.' }, // owner, 2026-10-19; Rocsys spelling and the line: 2026-11-23
     company('Voltfang', 'Grid-scale storage from used EV batteries.', 'https://www.forward.one/portfolio-companies/voltfang'),
-    { ...founder('Qualinx'), name: 'Tom Trill', photo: '/founders/qualinx.jpg' }, // owner, 2026-10-19
+    { ...founder('Qualinx'), name: 'Tom Trill', photo: '/founders/qualinx.jpg', blurb: 'Redefining radio with software-defined silicon.' }, // owner, 2026-10-19; the line: 2026-11-23
     company('ORE Energy', 'Iron-air batteries for long-duration grid storage.', 'https://www.forward.one/portfolio/ore-energy'),
     founder('driveblocks'),
     company('QuiX Quantum', 'Photonic quantum computers.', 'https://www.forward.one/portfolio-companies/quix-quantum'),
@@ -328,7 +329,8 @@ export const trackRecord = {
   figure: { prefix: '€', value: '383', suffix: 'M' },
   title: 'Three funds. One discipline.',
   /** Body copy, centred under the title. */
-  body: 'Every fund has been more ambitious than the last. The strategy hasn’t changed: invest early in European industrial tech, then put most of the capital behind the companies that deliver.',
+  // Owner, 2026-11-23 (was 'Every fund has been more ambitious than the last. …').
+  body: 'Each fund has been bigger than the last. The strategy hasn’t changed: invest early in European industrial tech, then put most of the capital behind the companies that deliver.',
   /** Column headings, in table order. Also the labels on mobile cards. */
   columns: { fund: 'Fund', vintage: 'Vintage', size: 'Fund size', companies: 'Companies' },
   caption: 'FORWARD.one funds by vintage, fund size and number of companies',
