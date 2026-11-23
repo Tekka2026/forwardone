@@ -66,8 +66,15 @@ const IN_CLOSED = {
 export const easeInOutCubic = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
 
 const r2 = (n) => (Math.round(n * 100) / 100).toString();
-// Parallelogram between two slanted edges given at the cap line.
-function gap(left, right) {
+// Parallelogram between two slanted edges given at the cap line. `inset`
+// narrows it on both sides (never below zero width), for a strip of
+// negative space between a letter coming in and its neighbours.
+function gap(left, right, inset = 0) {
+  if (inset) {
+    const mid = (left + right) / 2;
+    left = Math.min(left + inset, mid);
+    right = Math.max(right - inset, mid);
+  }
   const at = (x461, y) => x461 - SLANT * (y - 461);
   return [
     [at(left, Y_TOP), Y_TOP],
@@ -79,7 +86,10 @@ function gap(left, right) {
     .join(' ');
 }
 
-export function layout(p, closed = true) {
+// `inset` (frame units, default 0 as on the site logo): the slots are that
+// much narrower on each side, so the letters coming in never touch F, W, D
+// or each other (owner, 2026-11-23, for the logo animation).
+export function layout(p, closed = true, inset = 0) {
   const w = W_FROM * (1 - p);
   const d = D_FROM * (1 - p);
   const from = closed ? IN_CLOSED : IN_OPEN;
@@ -95,10 +105,10 @@ export function layout(p, closed = true) {
     A: from.A * (1 - p),
     R2: from.R2 * (1 - p),
     slots: {
-      O: gap(F_RIGHT, or),
-      R: gap(or, end1),
-      A: gap(W_RIGHT + w, ar),
-      R2: gap(ar, end2),
+      O: gap(F_RIGHT, or, inset),
+      R: gap(or, end1, inset),
+      A: gap(W_RIGHT + w, ar, inset),
+      R2: gap(ar, end2, inset),
     },
   };
 }

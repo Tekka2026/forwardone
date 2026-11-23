@@ -28,6 +28,7 @@ const out = join(here, '../../public/visuals');
 const { F, O, R, W, A, R2, D } = GLYPHS;
 
 const BG = '#0F121A';
+const GAP = 5; // px of background between a letter coming in and its neighbours
 const INK = '#F5F5F5';
 
 // "one" from slide 14 (FORWARD.one), in that slide's coordinates.
@@ -59,7 +60,10 @@ const easeOutCubic = (x) => 1 - Math.pow(1 - x, 3); // ≈ cubic-bezier(0.33, 1,
 
 function state(t) {
   const p = easeInOutCubic(clamp((t - T.open) / T.openDur));
-  const l = layout(p, true); // closed slots, solid letters: as the site logo
+  // Closed slots, solid letters, as the site logo; GAP narrows each slot on
+  // both sides (owner, 2026-11-23: "a couple px negative space in between
+  // the letters appearing").
+  const l = layout(p, true, GAP);
   const rise = easeOutCubic(clamp((t - T.rise) / T.riseDur));
   return {
     ...l,
