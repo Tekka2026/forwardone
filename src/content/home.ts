@@ -399,13 +399,19 @@ export type PlaybookStep = { title: string; line: string };
 export const playbook = {
   eyebrow: 'The Playbook',
   title: 'We help them win. Then we double down.',
-  body: 'We work hands-on with every company on the commercial side that deep-tech founders tend to skip. The ones that prove traction get most of our follow-on capital.',
+  // Body, list items 3 and 4 and the proof line: owner, 2026-11-23 (body was
+  // 'We work hands-on with every company on the commercial side that
+  // deep-tech founders tend to skip. …'; item 4 was 'Follow-on / 75–80% of
+  // each fund goes to the companies that prove it.').
+  body: 'A technology isn’t a business until someone pays for it. So we work hands-on with every company on customers, pricing and sales. The ones that prove traction get most of our follow-on capital.',
+  /** A real example under the body, before the button. */
+  proof: 'At Sensorfact, that meant helping to rebuild the back end, ways of working and sales strategy, all the way to an exit to ABB.',
   /** Numbered list, right column: a title and one line each. */
   list: [
     { title: 'First customers', line: 'Paying customers early, not after the product is perfect.' },
     { title: 'Pricing', line: 'Priced on value from day one.' },
-    { title: 'Repeatable sales', line: 'From founder-led deals to a process that scales.' },
-    { title: 'Follow-on', line: '75–80% of each fund goes to the companies that prove it.' },
+    { title: 'Repeatable sales', line: 'From founder-led deals to a sales process that scales.' },
+    { title: 'Right help, right time', line: 'A young company doesn’t need a CFO yet. We bring in the help each stage needs.' },
   ] as PlaybookStep[],
   cta: { label: 'How we commercialize', href: '/strategy/playbook' } as Cta,
 };
@@ -420,7 +426,7 @@ export type Partner = {
 
 export const partners = {
   eyebrow: 'The team',
-  title: 'The team behind the performance.', // owner, 2026-11-16 (was 'The partners …')
+  title: 'We push hard. We stay close.', // owner, 2026-11-23 (was 'The team behind the performance.', before that 'The partners …')
   people: [
     {
       name: 'Arjan Göbel',
@@ -452,9 +458,14 @@ export const partners = {
 
 export const fundIII = {
   eyebrow: 'Fund III',
-  title: 'More capital. Same discipline.',
+  title: 'Bigger fund. Same high bar.', // owner, 2026-11-23 (was 'More capital. Same discipline.')
+  /**
+   * If the €217M may not go public (owner, 2026-11-23), use instead:
+   * 'Fund III is raising towards a €250M hard cap, backed by investors
+   * including ABN AMRO Corporate Investments and the European Investment Fund.'
+   */
   body: 'Fund III has reached €217M of a €250M hard cap, backed by investors including ABN AMRO Corporate Investments and the European Investment Fund.',
-  cta: { label: 'Talk to investor relations', href: '/investors/contact' } as Cta,
+  cta: { label: 'Contact investor relations', href: '/investors/contact' } as Cta, // owner, 2026-11-23 (was 'Talk to …')
 };
 
 /**
@@ -589,7 +600,7 @@ export type Article = {
 
 export const insights = {
   eyebrow: 'Insights',
-  title: 'Intelligence from the front line of European industrial tech.',
+  title: 'Insights from the front line.', // owner, 2026-11-23 (was 'Intelligence from the front line of European industrial tech.')
   /**
    * Default featured articles from the existing news collection. Slugs are
    * derived from the titles and must be matched to the CMS slugs when the

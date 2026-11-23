@@ -305,20 +305,20 @@ Rules:
 | 1 | Hero: "Every proven step earns the next" | Founders |
 | 2 | Data bar (the figures under the hero) | Both |
 | 3 | Founders strip: "We go where Europe's builders are." | Founders |
-| 4 | Strategy (What we do): "One strategy. Executed without exception." | Founders |
+| 4 | Strategy (What we do): "Early is our edge." | Founders |
 | 5 | Exits (Proof): "From lab to exit." | Both |
 | 6 | How we help (Playbook): "We help them win. Then we double down." | Founders |
-| 7 | Team: "The team behind the performance." | Both |
+| 7 | Team: "We push hard. We stay close." | Both |
 | 8 | Funds (track record): "Three funds. One discipline." | Investors |
-| 9 | Fund III and the LP portal preview | Investors |
-| 10 | Insights | Both |
+| 9 | Fund III: "Bigger fund. Same high bar." and the LP portal preview | Investors |
+| 10 | Insights: "Insights from the front line." | Both |
 | 11 | Closing: "Serious about performance? So are we." | Both |
 
-Sections 1 and 2 share the black intro, 1–3 the curtain. The owner's table
-named some sections with other titles (Strategy "Early is our edge", Team
-"We push hard. We stay close.", Fund III "Bigger fund. Same high bar."); the
-site keeps its current titles (owner, 2026-11-23). The menu bar asks
+Sections 1 and 2 share the black intro, 1–3 the curtain. Titles as of
+2026-11-23 (the owner's copy for sections 3–10 that day). The menu bar asks
 "Are you a founder or investor?" over section 8.
+- How we help (section 6): under the body a proof line (body size, muted,
+  16px lower): "At Sensorfact, that meant …", then the button.
 
 ### Homepage intro film
 

@@ -10,6 +10,7 @@ import Sentences from '@components/ui/Sentences.astro';
       <div class="col-7">
         <h2 class="h-feature"><Sentences text={playbook.title} reveal onScroll /></h2>
         <p class="lede playbook__body">{playbook.body}</p>
+        {playbook.proof && <p class="body playbook__proof">{playbook.proof}</p>}
         <div class="section-cta">
           <Button href={playbook.cta.href}>{playbook.cta.label}</Button>
         </div>
@@ -40,6 +41,11 @@ import Sentences from '@components/ui/Sentences.astro';
   }
   .playbook__body {
     margin-top: var(--space-4x);
+  }
+  /* A real example under the body (owner, 2026-11-23): body size, muted. */
+  .playbook__proof {
+    margin: var(--space-4x) 0 0;
+    color: var(--muted);
   }
   .section-cta {
     margin-top: var(--gap-double);
