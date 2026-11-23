@@ -644,8 +644,10 @@ export const insights = {
 
 export const closing = {
   title: 'Serious about performance? So are we.',
-  primary: { label: 'Contact investor relations', href: '/investors/contact' } as Cta,
-  secondary: { label: 'Founders: pitch us', href: '/founders' } as Cta,
+  // Owner, 2026-11-23 (was 'Contact investor relations' and 'Founders: pitch
+  // us'): the same two buttons as the hero.
+  primary: { label: 'Pitch us', href: '/founders' } as Cta,
+  secondary: { label: 'Invest with us', href: '/investors/contact' } as Cta,
 };
 
 /** footnotes[0] is ¹, footnotes[1] is ², ... */
