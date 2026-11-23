@@ -1280,8 +1280,9 @@ const aud = navGreeting.audience;
        and asks, and scrolling back above it restores the welcome line. */
     const audienceAfter = document.querySelector<HTMLElement>('[data-nav-audience-after]');
     // The bar asks only while it is over the section right after that
-    // element (on the homepage the track record, section 3); from the next
-    // one on (section 4) it is back to the full bar (owner, 2026-11-05).
+    // element (on the homepage section 3, What we do since 2026-11-23); from
+    // the next one on (section 4) it is back to the full bar (owner,
+    // 2026-11-05).
     let audienceZone: Element | null = audienceAfter ? audienceAfter.nextElementSibling : null;
     while (audienceZone && audienceZone.tagName === 'SCRIPT') audienceZone = audienceZone.nextElementSibling;
     // Erase back to what both lines share, type the rest.

@@ -1117,7 +1117,7 @@ a new tab, ↗). Pitch us was a button there too; removed by the owner on
   homepage that is the wrapper of the intro and the founders strip. Once
   its bottom has scrolled above the bar's centre line, the bar turns
   compact; it stays compact only while the bar is over the section right
-  after it (the track record, section 3) and is full again from the next
+  after it (section 3: What we do since 2026-11-23, when the owner swapped it with the track record, now section 4) and is full again from the next
   section on (owner, 2026-11-05), or when scrolling back above it.
   Expanding into section 4 (and anywhere below it) the closed line reads
   "How can we help you?" instead of "Welcome to FORWARD.one" (owner,
