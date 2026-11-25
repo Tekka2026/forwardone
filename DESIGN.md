@@ -457,9 +457,10 @@ previously"); content in `trackRecord`, `src/content/home.ts`:
   card-title size.
 - Fund I carries a "Top 5%" badge after its name (12px, black on
   `--brand-yellow`, pill) and, under its row without a rule between, one
-  line of key results: label (small) and value (DPI, Net IRR to LPs, Net
-  TVPI), both in #0F121A at 80% (owner, 2026-11-25; a row of larger
-  figures in the table's columns was tried the same day and dropped).
+  line of key results: label and value (DPI, Net IRR to LPs, Net TVPI),
+  both in #0F121A at 80%, italic, at one size, the note's (`--fs-small`, 15px)
+  (owner, 2026-11-25; a row of larger figures in the table's columns was
+  tried the same day and dropped). The label in weight 500, the value 400.
 - The slide's note under the table (small, muted): "* Includes the RVO
   seed facility." (Fund I's size).
 - At ≤760px the table restacks into blocks with labels, as before.

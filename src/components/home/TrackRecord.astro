@@ -212,14 +212,17 @@ const keys = ['vintage', 'size', 'companies'] as const;
     align-items: baseline;
     gap: var(--space-2x);
   }
-  /* Labels and values in the site's black at 80% (owner, 2026-11-25; the
-     labels were the muted grey). */
+  /* Labels and values in the site's black at 80%, italic, one size for
+     both: the note's under the table (small, 15px) (owner, 2026-11-25; the
+     labels were smaller and the muted grey, the values the rows' size).
+     Inter's real italic is loaded in Base.astro. */
   .funds__results-list {
     color: color-mix(in srgb, var(--black-ink) 80%, transparent);
+    font-style: italic;
+    font-size: var(--fs-small);
+    line-height: var(--lh-small);
   }
   .funds__results-list dt {
-    font-size: var(--fs-small-tight);
-    line-height: var(--lh-small);
     font-weight: 500;
   }
   .funds__results-list dd {
