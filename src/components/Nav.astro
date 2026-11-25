@@ -103,6 +103,11 @@ const aud = navGreeting.audience;
         data-nav-ask
         data-first={navGreeting.first}
         data-second={navGreeting.second}
+        data-hint={navGreeting.hint.line}
+        data-hint-explored={navGreeting.hint.explored}
+        data-hint-short={navGreeting.hint.lineShort}
+        data-hint-explored-short={navGreeting.hint.exploredShort}
+        data-hint-after={navGreeting.hint.afterMs}
         data-not-connected={navGreeting.ask.notConnected}
         data-placeholder={navGreeting.ask.placeholder}
         data-placeholder-after={navGreeting.ask.placeholderAfterMs}
@@ -916,9 +921,15 @@ const aud = navGreeting.audience;
 
     /* ---- Entrance on first scroll ---- */
     let shown = false;
+    // Hint (owner, 2026-11-25): 0 none, 1 "…, scroll to explore" (the bar
+    // came in on its own after a wait on the first section), 2 explored
+    // ("…, how can we help you?", from the first scroll after the hint).
+    let hint = 0;
+    let hintTimer = 0;
     function show() {
       if (shown) return;
       shown = true;
+      window.clearTimeout(hintTimer);
       root.setAttribute('data-visible', '');
       window.removeEventListener('scroll', show);
       window.removeEventListener('wheel', show);
@@ -937,6 +948,22 @@ const aud = navGreeting.audience;
       window.addEventListener('wheel', show, { passive: true });
       window.addEventListener('touchmove', show, { passive: true });
       document.addEventListener('keydown', onFirstTab);
+      // Still on the first section after a while: the bar comes in anyway
+      // and invites the visitor to scroll.
+      hintTimer = window.setTimeout(() => {
+        if (shown || window.scrollY > 0) return;
+        hint = 1;
+        show();
+        window.addEventListener('scroll', onExplore, { passive: true });
+      }, Number(greeting.dataset.hintAfter) || 6000);
+    }
+    // The first scroll after the hint: erase "scroll to explore", type
+    // "how can we help you?" (retypeTo keeps the shared "Welcome to
+    // FORWARD.one, ").
+    function onExplore() {
+      window.removeEventListener('scroll', onExplore);
+      hint = 2;
+      if (!isOpen && !compact && input.hidden && !audience && !pastAudienceZone) retypeTo(welcomeLine(), ++runId);
     }
 
     /* ---- Typewriter greeting ----
@@ -964,9 +991,13 @@ const aud = navGreeting.audience;
     let pastAudienceZone = false;
     function welcomeLine() {
       const g = greetingLine();
-      return g ? g.text : pastAudienceZone ? second : first;
+      return g ? g.text : pastAudienceZone ? second : hint === 1 ? hintLineOf() : hint === 2 ? exploredLineOf() : first;
     }
     const second = greeting.dataset.second || '';
+    // Phones get the short hint lines: the long ones do not fit the bar.
+    const narrow = window.matchMedia('(max-width: 560px)');
+    const hintLineOf = () => (narrow.matches ? greeting.dataset.hintShort : greeting.dataset.hint) || first;
+    const exploredLineOf = () => (narrow.matches ? greeting.dataset.hintExploredShort : greeting.dataset.hintExplored) || first;
     const TYPE_MS = 55;
     const ERASE_MS = 30;
     const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));

@@ -1138,6 +1138,20 @@ a new tab, ↗). Pitch us was a button there too; removed by the owner on
   welcome included, the field opening, the "not connected" note). A swap
   under way is never restarted, so erase-then-type reads as one movement.
 
+### Scroll hint (owner, 2026-11-25)
+
+- The bar comes in on the first scroll, as before. If the visitor stays on
+  the first section without scrolling for 6 seconds, it comes in anyway
+  (the same slide up from the bottom) and types "Welcome to FORWARD.one,
+  scroll to explore". On their first scroll after that, "scroll to explore"
+  is erased and "how can we help you?" typed in its place: "Welcome to
+  FORWARD.one, how can we help you?", which then stays the closed line
+  where "Welcome to FORWARD.one" would be (the greeting after a choice and
+  "How can we help you?" below the question's section still take over).
+- Phones (≤560px), where the long lines do not fit the bar: "Welcome,
+  scroll to explore" → "Welcome, how can we help you?".
+- Copy in `navGreeting.hint` (`src/content/nav.ts`), the wait included.
+
 ### Compact bar: "Are you a founder or investor?" (homepage, owner 2026-11-04; question since 2026-11-06)
 
 - A page opts in by marking an element `data-nav-audience-after`; on the

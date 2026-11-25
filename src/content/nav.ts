@@ -82,6 +82,20 @@ export const primaryNav: NavSection[] = [
 export const navGreeting = {
   first: 'Welcome to FORWARD.one',
   second: 'How can we help you?',
+  /**
+   * Owner, 2026-11-25: when a visitor stays on the first section without
+   * scrolling for `afterMs`, the bar comes in anyway with `line`; on their
+   * first scroll "scroll to explore" is erased and the rest typed, so it
+   * reads `explored` (which then stays the closed line, as `first` would).
+   */
+  hint: {
+    afterMs: 6000,
+    line: 'Welcome to FORWARD.one, scroll to explore',
+    explored: 'Welcome to FORWARD.one, how can we help you?',
+    /** Phones (≤560px): the long lines do not fit the bar. */
+    lineShort: 'Welcome, scroll to explore',
+    exploredShort: 'Welcome, how can we help you?',
+  },
   /** Click-to-type prompt in the bar. No backend yet (see PLACEHOLDERS.md). */
   ask: {
     label: 'Ask FORWARD.one a question',
