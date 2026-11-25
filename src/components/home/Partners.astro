@@ -3,12 +3,13 @@ import ArrowLink from '@components/ui/ArrowLink.astro';
 import { partners } from '@content/home';
 import { href, isPlaceholder } from '@lib/href';
 import Placeholder from '@components/ui/Placeholder.astro';
-import Sentences from '@components/ui/Sentences.astro';
 ---
 
 <section class="section">
   <div class="wrap">
-    <h2 class="h-section section-title"><Sentences text={partners.title} /></h2>
+    <!-- One line (owner, 2026-11-25): no break after the first sentence; it
+         wraps only where it does not fit. -->
+    <h2 class="h-section section-title">{partners.title}</h2>
     <ul class="cards partners">
       {
         partners.people.map((p) => (
@@ -44,6 +45,7 @@ import Sentences from '@components/ui/Sentences.astro';
 <style>
   .section-title {
     margin-top: var(--cap-top); /* opens the section: capitals on the padding line */
+    text-wrap: balance; /* where it must wrap (phones), two even lines */
   }
   .partners {
     --cards-cols: 4;
