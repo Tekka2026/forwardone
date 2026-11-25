@@ -456,9 +456,13 @@ previously"); content in `trackRecord`, `src/content/home.ts`:
   Companies (remaining; Fund III's target), newest fund first, at the
   card-title size.
 - Fund I carries a "Top 5%" badge after its name (12px, black on
-  `--brand-yellow`, pill) and, under its row without a rule between, one
-  line of key results: label (small, muted) and value (DPI, Net IRR to
-  LPs, Net TVPI).
+  `--brand-yellow`, pill) and, under its row without a rule between, its
+  key results as a row of figures (owner, 2026-11-23; a single small line
+  "felt lost"): one per column, under Vintage, Fund size and Companies
+  (DPI 1.9x, Net IRR to LPs 39%, Net TVPI 2.3x), the value in the display
+  face at `--fs-metric` (24–32px, weight `--fw-stat`), the label small and
+  muted under it. On phones the three sit side by side under Fund I's
+  block.
 - The slide's note under the table (small, muted): "* Includes the RVO
   seed facility." (Fund I's size).
 - At ≤760px the table restacks into blocks with labels, as before.
