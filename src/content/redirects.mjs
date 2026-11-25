@@ -18,6 +18,8 @@ export const staticRedirects = {
   '/news': '/insights/news',
   '/media-kit': '/insights/media-kit',
   '/sfdr': '/investors/sfdr',
+  // The founders page was dropped by the owner on 2026-11-25.
+  '/founders': '/',
 };
 
 /**

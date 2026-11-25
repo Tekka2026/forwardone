@@ -42,7 +42,7 @@
 ## Stack
 
 - Astro (static output), no UI framework. Content lives in `src/content/`
-  (`home.ts`, `nav.ts`, `pages.ts`, `team.ts`, `pitch.ts`, `founders.ts`, `redirects.mjs`, and `brand/` for the
+  (`home.ts`, `nav.ts`, `pages.ts`, `team.ts`, `pitch.ts`, `redirects.mjs`, and `brand/` for the
   brand guidelines at `/brand`, see `src/content/brand/README.md`); components contain no
   copy. Internal links go through `href()` from `src/lib/href.ts` so the
   `/forwardone` base path is applied.
@@ -89,7 +89,7 @@
 | A0014 | open   | Supply the details for the clip presenter's team profile (`/about/team/presenter`, see `PLACEHOLDERS.md`, Team profiles): name, role, city, bio, focus, year joined, LinkedIn and email, background, the companies they work with, their articles, and a larger portrait. |
 | A0015 | cancelled | Licence for CB Install (Calame Bureau). Withdrawn 2026-10-21: the headings went back to Clash Display and the trial font was removed. |
 | A0016 | done   | The Pitch at Slush venue and deadline: entered on the dashboard (Page text) by 2026-10-27: Where "Haaga-Helia Pasila Campus, Room 1206 (entrance level). Ratapihantie 13, 00520 Helsinki. A short walk from Slush.", Apply by "Friday Nov 6th". 18 November, 08:00–16:00 Helsinki time, 30-minute slots. The calendar invite takes its venue from Where. |
-| A0017 | open   | Founders page (`/founders`, see `PLACEHOLDERS.md`, Founders page): four visuals for the "Why founders pick us" deck, the 12 portfolio logos as SVG (the company sites are unreachable from Claude's environment), the reply time (days) and decision time (weeks), the pitch form URL or mailto, and the pitch email. |
+| A0017 | cancelled | Founders page (`/founders`) content (visuals, portfolio logos, reply and decision times, pitch link and email). Withdrawn 2026-11-25: the owner dropped the page ("We don't need it"); `/founders` redirects to the homepage. The pitch link moved to A0047. |
 | A0018 | done   | The Pitch booking service (`booking/`; dashboard rules in `booking/DESIGN.md`): live since 2026-10-26 at https://forwardone-pitch-booking.jeroen-191.workers.dev (dashboard: `/review`; Cloudflare account of the owner; deployed by `.github/workflows/deploy-booking.yml`). Tested by the team 2026-10-26/27; the Webflow page carries the 2026-11-17 code (waiting list and closed message, smoke test). Expiry of unreviewed requests no longer needed: applications closed on 16 November (A0041). |
 | A0019 | done   | The Pitch on Webflow: live at https://www.forward.one/events/2026/the-pitch-at-slush-2026 (owner, 2026-10-27), pasted from `webflow/the-pitch/` (`head` into Inside <head>, `body-all` into Before </body>; see `webflow/README.md`). Text edits come from the dashboard (Page text) without pasting; after a layout or behaviour change, paste both files again. |
 | A0020 | done   | Repository location: FORWARD.one created FORWARDoneVC/forward.one (2026-10-26), but the owner decided the same day to keep the project in Tekka2026/forwardone for now. Moving later needs the Claude GitHub app installed on FORWARDoneVC by an owner of that organisation, and Admin rights for the owner. |
@@ -119,3 +119,4 @@
 | A0044 | open   | Replace the homepage intro film (`public/visuals/intro-film.mp4`) with FORWARD.one's own footage before the site opens to the public: it is ASML's brand film, for the password-protected preview only (owner, 2026-11-18). The owner chose to push it although the repository is public, so the file is in its history and reachable by its direct address. Now the owner's 34-second 1080p cut (2026-11-18); the first, 640 × 360 version is also in the history. Supply the replacement in at least 1920 × 1080. |
 | A0045 | done   | Pitch page on Webflow: the files of 2026-11-17 (the text under the heading removed) pasted and published by the owner (confirmed 2026-11-19). |
 | A0046 | done   | The owner is left out of "CC the investors" on the dashboard's Send screen: secret `PITCH_CC_SKIP` set by him on 2026-11-19, deployed the same day (the deploy uploaded CC_SKIP). The address stays out of this public repository. He still gets the daily overview and the failed-email warnings. |
+| A0047 | open   | Supply the link for the homepage's two "Pitch us" buttons (hero and closing): a pitch form URL or a mailto address (owner, 2026-11-25: "will provide this later"). Until then they are buttons without a link. |

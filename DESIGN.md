@@ -628,7 +628,14 @@ Built like the "Follow the battery." section on vikka.io
   filling by slide in `--fg` (black), and round back/next buttons at the content's right edge
   (disabled at the ends). Swipe, trackpad and keyboard scroll the track too.
 
-### Founders page (`/founders`)
+### Founders page (`/founders`): dropped 2026-11-25
+
+**The owner dropped this page on 2026-11-25** ("We don't need it"):
+`src/pages/founders.astro` and `src/content/founders.ts` were removed (in
+the git history), `/founders` redirects to the homepage, and the
+homepage's two "Pitch us" buttons have no link until the owner supplies one
+(A0047). The notes below describe the page as it was.
+
 
 `src/pages/founders.astro`; copy in `src/content/founders.ts` (owner,
 2026-10-26). The homepage is for investors; this page is for founders. It

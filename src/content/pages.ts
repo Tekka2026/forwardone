@@ -158,7 +158,8 @@ export const stubPages: StubPage[] = [
     todos: ['Open roles', 'Application contact'],
   },
 
-  // Founders: /founders is a full page now (src/pages/founders.astro).
+  // Founders: the /founders page was dropped by the owner on 2026-11-25
+  // (it redirects to the homepage, see redirects.mjs).
 
   // Legal (footer)
   {

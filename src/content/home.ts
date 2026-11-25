@@ -30,9 +30,10 @@ export const hero = {
   sub: {
     text: 'We back Europe’s industrial tech founders early, help them win paying customers, and invest more as they prove themselves.',
   } as { text: string; footnote?: number; after?: string },
-  // Owner, 2026-11-20 (was 'See the track record' → /investors/funds); the
-  // same target as the header's Pitch us (nav.ts).
-  primary: { label: 'Pitch us', href: '/founders' } as Cta,
+  // Owner, 2026-11-20 (was 'See the track record' → /investors/funds). No
+  // link yet (owner, 2026-11-25, the founders page it went to was dropped):
+  // an empty href renders a plain button; set the pitch link here (A0047).
+  primary: { label: 'Pitch us', href: '' } as Cta,
   secondary: { label: 'Invest with us', href: '/investors/contact' } as Cta,
   /**
    * Background film of the black intro (owner, 2026-11-18): muted, looping,
@@ -646,7 +647,8 @@ export const closing = {
   title: 'Serious about performance? So are we.',
   // Owner, 2026-11-23 (was 'Contact investor relations' and 'Founders: pitch
   // us'): the same two buttons as the hero.
-  primary: { label: 'Pitch us', href: '/founders' } as Cta,
+  // No link yet, as the hero's (A0047).
+  primary: { label: 'Pitch us', href: '' } as Cta,
   secondary: { label: 'Invest with us', href: '/investors/contact' } as Cta,
 };
 
