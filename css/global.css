@@ -98,9 +98,9 @@
   --header-h: calc(2 * var(--gap) + var(--form-height-small));
   --nav-bg: var(--black-bar);
   --nav-bg-open: var(--black-bg);
-  --nav-fg: #ffffff;
+  --nav-fg: var(--white);
   /* Closed bar over a dark area ([data-nav-dark]): inverted. */
-  --nav-bg-inverse: #ffffff;
+  --nav-bg-inverse: var(--white);
   --nav-fg-inverse: var(--black-bar);
   /* Closed bar once the visitor has said they are a founder (owner,
      2026-11-06): light blue (the brand's Ice) with black text and icons. */
@@ -194,16 +194,20 @@
   --black: #0F121A;
   --black-bg: var(--black);   /* dark sections, intros, open nav; was #000000 */
   --black-ink: var(--black);  /* text, solid buttons, dark cards; was #111111 */
+  /* The site's white (owner, 2026-11-25): the brand's 8086 white,
+     #F5F5F5, everywhere the site used pure white (#FFFFFF): page
+     background, text and the logo on dark, the white bar, button fills. */
+  --white: #F5F5F5;
   --black-bar: #000000;       /* the floating nav bar when closed (owner, 2026-11-05: pure black; it turns --black-bg, #0F121A, as it opens); was #1a1a1a */
 
   /* Colours (PLACEHOLDERS — brand later) */
-  --bg: #ffffff;
+  --bg: var(--white);
   --fg: var(--black-ink);
   --muted: #666666;
   --hairline: rgba(0, 0, 0, 0.14);
   --bg-tint: rgba(0, 0, 0, 0.04);   /* tinted section band (.section--tint) */
   --accent: var(--black-ink);
-  --accent-fg: #ffffff;
+  --accent-fg: var(--white);
 
   /* Corner radius for the navigation bar. Everything else stays square
      (the reset sets border-radius: 0 on every element), except buttons. */
@@ -224,7 +228,7 @@
      theme) + 20% black; text colour unchanged. Outlined buttons keep the
      vercel.com overlay, #fff → #f0f0f0 (6% black). */
   --btn-hover-amount: 20%;
-  --btn-hover-mix: #ffffff;        /* overlay colour on filled buttons */
+  --btn-hover-mix: var(--white);        /* overlay colour on filled buttons */
   --btn-hover-shade: rgba(0, 0, 0, 0.06);
 }
 
@@ -723,8 +727,8 @@ code, kbd, samp, pre {
    (text, muted labels, hairlines, buttons, focus outlines) inverts. */
 .theme-dark {
   --bg: var(--black-bg);
-  --fg: #ffffff;
-  --accent: #ffffff;
+  --fg: var(--white);
+  --accent: var(--white);
   --accent-fg: var(--black-bg);
   --muted: #a1a1a1;
   --hairline: rgba(255, 255, 255, 0.2);

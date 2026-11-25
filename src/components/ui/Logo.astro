@@ -152,13 +152,13 @@ const VIEWBOX = '498 456 1388 168';
      light greys (before the script has placed it: white in the dark
      header); ".ONE" in a tint of the same. */
   :global(.theme-dark) .logo--forward {
-    color: #ffffff;
+    color: var(--white);
   }
   .logo--forward.is-light {
     color: var(--black-ink);
   }
   .logo--forward.is-dark {
-    color: #ffffff;
+    color: var(--white);
   }
   /* ".ONE" (owner, 2026-11-16): a tint of the logo's own colour, white at
      half strength on dark, black at half strength on light; no other
@@ -200,7 +200,7 @@ const VIEWBOX = '498 456 1388 168';
     pointer-events: none;
   }
   .logo--forward.is-light::before {
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.55) 25%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0.1) 75%, rgba(255, 255, 255, 0));
+    background: linear-gradient(to bottom, rgba(245, 245, 245, 0.72), rgba(245, 245, 245, 0.55) 25%, rgba(245, 245, 245, 0.3) 50%, rgba(245, 245, 245, 0.1) 75%, rgba(245, 245, 245, 0));
   }
   .logo--forward.is-scrolled::before {
     opacity: 1;

@@ -69,7 +69,7 @@ const companyStyle = (colour: string) => {
     return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
   });
   const light = 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.35;
-  return `--fc-bg: ${bg}; --fc-fg: ${light ? 'var(--black-ink)' : '#ffffff'};`;
+  return `--fc-bg: ${bg}; --fc-fg: ${light ? 'var(--black-ink)' : 'var(--white)'};`;
 };
 const isPh = (v: string) => isPlaceholder(v);
 // "Discover more about <company> →", word by word for the H1-style reveal;
@@ -387,7 +387,7 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
     color: var(--muted);
   }
   .fc--founder.has-photo .fc__who {
-    color: #ffffff;
+    color: var(--white);
     background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
     padding-top: var(--gap-double);
   }
@@ -497,7 +497,7 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
   /* ---- Clip card: TikTok-style video ------------------------------------ */
   .fc--clip {
     background: var(--black-bg);
-    color: #ffffff;
+    color: var(--white);
   }
   .fc__video,
   .fc__clip-empty {
@@ -538,7 +538,7 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
   .fc__progress span {
     display: block;
     height: 100%;
-    background: #ffffff;
+    background: var(--white);
     transform: scaleX(0.35);
     transform-origin: 0 50%;
   }
@@ -561,14 +561,14 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
     width: 28px;
     height: 28px;
     margin-bottom: 4px;
-    border: 1px solid #ffffff;
+    border: 1px solid var(--white);
     border-radius: 50%;
     background: var(--black-ink);
     font-family: var(--font-display);
     font-size: 11px;
   }
   a.fc__avatar {
-    color: #ffffff;
+    color: var(--white);
     text-decoration: none;
     transition: transform 150ms ease;
   }
@@ -576,7 +576,7 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
     transform: scale(1.08);
   }
   a.fc__avatar:focus-visible {
-    outline: 2px solid #ffffff;
+    outline: 2px solid var(--white);
     outline-offset: 3px;
   }
   .fc__avatar img {
@@ -608,21 +608,21 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
     padding: 0;
     border: 0;
     background: none;
-    color: #ffffff;
+    color: var(--white);
     text-decoration: none;
     font: 600 9px/1.2 var(--font-sans);
     cursor: pointer;
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
   }
   .fc__action svg {
-    fill: #ffffff;
+    fill: var(--white);
     transition: transform 200ms ease, fill 200ms ease;
   }
   .fc__action:active svg {
     transform: scale(0.88);
   }
   .fc__action:focus-visible {
-    outline: 2px solid #ffffff;
+    outline: 2px solid var(--white);
     outline-offset: 4px;
     border-radius: 4px;
   }
