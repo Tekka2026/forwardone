@@ -198,6 +198,10 @@
      #F5F5F5, everywhere the site used pure white (#FFFFFF): page
      background, text and the logo on dark, the white bar, button fills. */
   --white: #F5F5F5;
+  /* Buttons stay pure white (owner, 2026-11-25): the filled button on dark,
+     and outlined buttons and the round arrow buttons on light, filled. */
+  --white-button: #FFFFFF;
+  --btn-ghost-bg: var(--white-button);
   --black-bar: #000000;       /* the floating nav bar when closed (owner, 2026-11-05: pure black; it turns --black-bg, #0F121A, as it opens); was #1a1a1a */
 
   /* Colours (PLACEHOLDERS — brand later) */
@@ -619,7 +623,7 @@ code, kbd, samp, pre {
   margin: 0;
   padding: 0 var(--btn-pad);
   height: var(--form-height);
-  border: 1px solid var(--fg);
+  border: 1px solid var(--accent); /* the fill's own colour (a filled button has no ring) */
   border-radius: var(--btn-radius);
   background: var(--accent);
   color: var(--accent-fg);
@@ -657,7 +661,8 @@ code, kbd, samp, pre {
 }
 
 .btn--ghost {
-  background: transparent;
+  border-color: var(--fg);
+  background: var(--btn-ghost-bg);
   color: var(--fg);
 }
 
@@ -728,8 +733,9 @@ code, kbd, samp, pre {
 .theme-dark {
   --bg: var(--black-bg);
   --fg: var(--white);
-  --accent: var(--white);
+  --accent: var(--white-button);
   --accent-fg: var(--black-bg);
+  --btn-ghost-bg: transparent;                 /* outlined buttons on dark: see-through */
   --muted: #a1a1a1;
   --hairline: rgba(255, 255, 255, 0.2);
   --bg-tint: rgba(255, 255, 255, 0.04);

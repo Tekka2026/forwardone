@@ -279,7 +279,7 @@ const total = slides.length;
     padding: 0;
     border: 1px solid var(--fg);
     border-radius: var(--btn-radius);
-    background: transparent;
+    background: var(--btn-ghost-bg); /* pure white on light (owner, 2026-11-25) */
     color: var(--fg);
     cursor: pointer;
     transition: background-color 120ms ease, opacity 120ms ease;
@@ -294,7 +294,7 @@ const total = slides.length;
   .cases__btn:disabled {
     opacity: 0.3;
     cursor: default;
-    background: transparent;
+    background: var(--btn-ghost-bg);
   }
 
   .section-cta {

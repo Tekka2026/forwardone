@@ -1221,7 +1221,13 @@ a new tab, ↗). Pitch us was a button there too; removed by the owner on
   logo's white band. Token `--white` in `css/global.css` (`--bg`, `--fg` on
   dark, `--nav-fg`, `--nav-bg-inverse`, `--accent`/`--accent-fg` use it).
   Exception: the LP portal preview keeps its own white cards and bar, as
-  an illustration of the portal app. The brand palette (owner, 2026-11-25):
+  an illustration of the portal app.
+  Buttons stay pure white #FFFFFF (owner, 2026-11-25; `--white-button`):
+  the filled button on dark (the intro's "Pitch us"), and on light
+  sections the outlined buttons and the round back/next arrows of the
+  Proof slider, which are filled with it (`--btn-ghost-bg`); outlined
+  buttons on dark stay see-through. A filled button's border takes its
+  fill colour. The brand palette (owner, 2026-11-25):
   R/LED #FF0000, Maroon #820400, Harvest #DB8E00, Solar #FFEA6D, Silk
   #FFF4C6, Space black #0F121A, Commodore sand #EBE4CA, Silver #D5D5D5,
   8086 white #F5F5F5, Atlantic #00386D, Electric #0685FD, Ice #B3DAFF.
