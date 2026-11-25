@@ -87,8 +87,10 @@ import Sentences from '@components/ui/Sentences.astro';
     color: var(--muted);
     text-wrap: pretty; /* no single-word last lines */
   }
-  .playbook__item:last-child {
-    border-bottom: var(--hairline-w) solid var(--hairline);
+  /* Hairlines only between the items, none above the first or below the
+     last (owner, 2026-11-25). */
+  .playbook__item:first-child {
+    border-top: 0;
   }
 
   @media (max-width: 880px) {

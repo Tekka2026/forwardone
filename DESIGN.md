@@ -474,7 +474,8 @@ first, at ≤760px.
 Numbered list in the right column (`src/components/home/Playbook.astro`):
 mono number (`01`–`04`), then a title (card-title size) with one line under
 it in small, muted text (`--muted`), aligned with the title; hairline
-dividers between items (8px above and below each item). The list
+dividers between items only, none above the first or below the last
+(owner, 2026-11-25) (8px above and below each item). The list
 stretches to the text column's height and shares spare room between its
 items, so both columns end on the same line where the list fits; on narrow
 screens the list stacks under the CTA.
