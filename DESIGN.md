@@ -389,9 +389,9 @@ Sections 1 and 2 share the black intro, 1–3 the curtain. Titles as of
 - Founder card: the CEO's photo, full bleed (#ECECEA until supplied); name
   (card title) and "CEO, company" (small, muted) at the bottom, white over a
   soft dark gradient when there is a photo; optionally one line about the
-  company (owner, 2026-11-23: Rocsys, Qualinx) above the name and role
-  (owner, 2026-11-25; it was under them), small, 12px above the name, at
-  most 30 characters wide, white 92% (a step brighter than the role).
+  company under that (owner, 2026-11-23: Rocsys, Qualinx), small, 12px
+  lower, at most 30 characters wide, white 92% (a step brighter than the
+  role).
 - Company card: the brand colour (else the site's tones in turn: yellow,
   ink, purple, sand, amber, deep red, grey-blue); the name in the display
   face (28–44px), one line of small body copy under it; text dark or white
@@ -1223,6 +1223,8 @@ a new tab, ↗). Pitch us was a button there too; removed by the owner on
   dark, `--nav-fg`, `--nav-bg-inverse`, `--accent`/`--accent-fg` use it).
   Exception: the LP portal preview keeps its own white cards and bar, as
   an illustration of the portal app.
+  The floating bar's white version (over dark areas) is pure white
+  #FFFFFF too (owner, 2026-11-25; `--nav-bg-inverse`).
   Buttons stay pure white #FFFFFF (owner, 2026-11-25; `--white-button`):
   the filled button on dark (the intro's "Pitch us"), and on light
   sections the outlined buttons and the round back/next arrows of the

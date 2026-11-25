@@ -100,7 +100,7 @@
   --nav-bg-open: var(--black-bg);
   --nav-fg: var(--white);
   /* Closed bar over a dark area ([data-nav-dark]): inverted. */
-  --nav-bg-inverse: var(--white);
+  --nav-bg-inverse: var(--white-button); /* pure white #FFFFFF (owner, 2026-11-25) */
   --nav-fg-inverse: var(--black-bar);
   /* Closed bar once the visitor has said they are a founder (owner,
      2026-11-06): light blue (the brand's Ice) with black text and icons. */
