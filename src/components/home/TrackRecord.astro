@@ -42,22 +42,16 @@ const keys = ['vintage', 'size', 'companies'] as const;
               </tr>
               {f.results && (
                 <tr class="funds__results">
-                  {/* Under the fund's name: empty; then one figure per column
-                      (owner, 2026-11-23: the single line "felt lost"). */}
-                  <td class="funds__results-spacer" />
-                  {keys.map((_, i) => {
-                    const r = f.results![i];
-                    return (
-                      <td class="funds__result">
-                        {r && (
-                          <>
-                            <span class="funds__result-value">{r.value}</span>
-                            <span class="funds__result-label">{r.label}</span>
-                          </>
-                        )}
-                      </td>
-                    );
-                  })}
+                  <td colspan={keys.length + 1}>
+                    <dl class="funds__results-list">
+                      {f.results.map((r) => (
+                        <div>
+                          <dt>{r.label}</dt>
+                          <dd>{r.value}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </td>
                 </tr>
               )}
             </>
@@ -199,35 +193,37 @@ const keys = ['vintage', 'size', 'companies'] as const;
     vertical-align: 2px;
     white-space: nowrap;
   }
-  /* Fund I's results (owner, 2026-11-23, was one small line that "felt
-     lost"): a row of key figures under its row, one per column (under
-     Vintage, Fund size, Companies), no rule between: the value in the
-     display face at the metric size, as the figures under the hero, its
-     label small and muted below. */
+  /* Fund I's further results: one line under its row, no rule between. */
   .funds .funds__results > td {
     border-top: 0;
     padding-top: 0;
-    padding-bottom: var(--gap);
-    vertical-align: top;
   }
   .has-results > * {
-    padding-bottom: var(--gap-half);
+    padding-bottom: var(--space-2x);
   }
-  .funds__result-value {
-    display: block;
-    font-family: var(--font-display);
-    font-weight: var(--fw-stat);
-    font-size: var(--fs-metric);
-    line-height: var(--lh-stat);
-    letter-spacing: var(--ls-figure);
+  .funds__results-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2x) var(--gap-double);
+    margin: 0;
   }
-  .funds__result-label {
-    display: block;
-    margin-top: var(--space-2x);
+  .funds__results-list > div {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2x);
+  }
+  /* Labels and values in the site's black at 80% (owner, 2026-11-25; the
+     labels were the muted grey). */
+  .funds__results-list {
+    color: color-mix(in srgb, var(--black-ink) 80%, transparent);
+  }
+  .funds__results-list dt {
     font-size: var(--fs-small-tight);
     line-height: var(--lh-small);
     font-weight: 500;
-    color: var(--muted);
+  }
+  .funds__results-list dd {
+    margin: 0;
   }
   .funds__notes {
     display: flex;
@@ -303,19 +299,9 @@ const keys = ['vintage', 'size', 'companies'] as const;
     .funds tbody tr.has-results {
       padding-bottom: 0;
     }
-    /* Fund I's results: three figures side by side under its block. */
     .funds tbody tr.funds__results {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: var(--gap-half);
       border-top: 0;
-      padding-top: var(--gap-half);
-    }
-    .funds .funds__results-spacer {
-      display: none;
-    }
-    .funds .funds__results > td {
-      padding-bottom: 0;
+      padding-top: var(--space-2x);
     }
     .funds tbody td[data-label]:empty {
       display: none;
