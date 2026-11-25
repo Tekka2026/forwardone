@@ -173,11 +173,13 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
                       <img class="fc__photo" src={href(p.photo)} alt="" loading="lazy" decoding="async" />
                     )}
                     <div class="fc__who">
+                      {/* The line about the company first, then who
+                          (owner, 2026-11-25). */}
+                      {p.blurb && <p class="fc__line">{p.blurb}</p>}
                       <p class="card-title fc__name"><Placeholder value={p.name} /></p>
                       <p class="fc__role">
                         {p.role ?? founders.role}, <Placeholder value={p.company} />
                       </p>
-                      {p.blurb && <p class="fc__line">{p.blurb}</p>}
                     </div>
                   </li>
                 );
@@ -398,11 +400,12 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
   .fc--founder.has-photo .fc__role {
     color: rgba(255, 255, 255, 0.78);
   }
-  /* One line about the company under the role (owner, 2026-11-23), in the
-     company cards' small size; a step brighter than the role. */
+  /* One line about the company (owner, 2026-11-23), in the company cards'
+     small size, a step brighter than the role; above the name and role
+     since 2026-11-25 (owner), 12px clear of them. */
   .fc__who .fc__line {
     max-width: 30ch;
-    margin: var(--gap-half) 0 0;
+    margin: 0 0 var(--gap-half);
     font-size: var(--fs-small);
     line-height: 1.45;
   }
