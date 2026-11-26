@@ -1,5 +1,9 @@
 ---
 import '../../css/global.css';
+// The headings' font, fetched from the start (owner, 2026-11-25: fonts
+// popped in after a reload): the same files global.css declares.
+import aeonikRegular from '../assets/fonts/aeonik-trial/AeonikTRIAL-Regular.woff2?url';
+import aeonikSemiBold from '../assets/fonts/aeonik-trial/AeonikTRIAL-SemiBold.woff2?url';
 import Header, { type Partner } from '@components/Header.astro';
 import Nav from '@components/Nav.astro';
 import Footer from '@components/Footer.astro';
@@ -31,6 +35,19 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- No unstyled flash (owner, 2026-11-25: "a glitch of white, some fonts
+         not rendered properly"): until the site's stylesheet has loaded only
+         the page's first background shows (dark for pages that open dark);
+         global.css makes the page visible. Never longer than 3s, so a page
+         whose stylesheet fails still appears. -->
+    <style is:inline set:html={`html{background:${darkTop ? '#0F121A' : '#F5F5F5'}}body{visibility:hidden;animation:fo-show 0s 3s forwards}@keyframes fo-show{to{visibility:visible}}`} />
+    <!-- No colour transitions while the page loads (a button faded in from
+         the browser's link blue after a reload); on once it has loaded.
+         Checked, not awaited: a password-unlocked page never fires 'load'. -->
+    <style is:inline>html:not(.fo-ready) *{transition:none!important}</style>
+    <script is:inline>(function r(){document.readyState==='complete'?requestAnimationFrame(function(){requestAnimationFrame(function(){document.documentElement.classList.add('fo-ready')})}):setTimeout(r,50)})();</script>
+    <link rel="preload" href={aeonikRegular} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={aeonikSemiBold} as="font" type="font/woff2" crossorigin />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical.href} />

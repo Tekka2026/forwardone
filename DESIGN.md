@@ -1228,6 +1228,14 @@ a new tab, ↗). Pitch us was a button there too; removed by the owner on
 
 ## 9. Colour (placeholders)
 
+- **No flash on load (owner, 2026-11-25: "a glitch of white, some fonts
+  not rendered properly"):** the page is hidden until its stylesheet has
+  loaded, against the page's first background (`#0F121A` for pages that
+  open dark, else 8086 white), at most 3s (`src/layouts/Base.astro`); the
+  Aeonik files are preloaded; colour transitions are off until the page has
+  loaded. The password page (`scripts/protect.mjs`) takes the same
+  background as the page it unlocks and shows no spinner, so a remembered
+  password goes from that colour straight to the page.
 - **White (owner, 2026-11-25): the brand's 8086 white, #F5F5F5**, in
   place of pure white (#FFFFFF) everywhere on the site: page background,
   text and the logo on dark, the white floating bar, button fills, the

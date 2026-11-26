@@ -331,6 +331,13 @@ html {
 /* No width cap on body: section bands (dark, tinted, gradient) and
    hairlines run to the window edges at any width; content is held to
    --max by .wrap. */
+/* The stylesheet has loaded: show the page (Base.astro hides it until
+   then, against an unstyled flash; `html body` outranks that inline rule). */
+html body {
+  visibility: visible;
+  animation: none;
+}
+
 body {
   margin: 0;
   background: var(--bg);

@@ -15,7 +15,8 @@
 //
 // Run: SITE_PASSWORD=… node scripts/protect.mjs [dist]
 
-import { readdirSync, statSync, writeFileSync } from 'node:fs';
+import { readdirSync, statSync, writeFileSync, readFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join, relative, dirname, sep } from 'node:path';
 import { execFileSync } from 'node:child_process';
 
@@ -50,7 +51,22 @@ if (!password) {
   console.log(`protect: no SITE_PASSWORD set, ${files.length} pages replaced by a work-in-progress page`);
 } else {
   const bin = join('node_modules', '.bin', 'staticrypt');
+  // StatiCrypt's own template, with two changes (owner, 2026-11-25: a white
+  // flash on reload): the page behind the password takes the background of
+  // the page it unlocks (the secondary colour, set per page below), and the
+  // loading spinner is not shown, so a remembered password goes straight
+  // from that colour to the page.
+  const template = join(tmpdir(), 'forwardone-staticrypt-template.html');
+  writeFileSync(
+    template,
+    readFileSync(join('node_modules', 'staticrypt', 'lib', 'password_template.html'), 'utf8').replace(
+      '</head>',
+      '<style>html,body{background:/*[|template_color_secondary|]*/0}.staticrypt-spinner{visibility:hidden}</style></head>',
+    ),
+  );
   for (const f of files) {
+    // Pages that open dark (the homepage and others with a dark header).
+    const dark = /site-top--dark/.test(readFileSync(f, 'utf8'));
     execFileSync(bin, [
       f,
       '-d', dirname(f),
@@ -65,7 +81,8 @@ if (!password) {
       '--template-remember', 'Remember me on this device',
       '--template-error', 'That is not the password.',
       '--template-color-primary', '#0f121a',
-      '--template-color-secondary', '#f5f5f5',
+      '--template-color-secondary', dark ? '#0f121a' : '#f5f5f5',
+      '-t', template,
     ], { env: { ...process.env, STATICRYPT_PASSWORD: password }, stdio: 'ignore' });
   }
   console.log(`protect: ${files.length} pages encrypted (open: ${OPEN.map((o) => '/' + o).join(', ')})`);
