@@ -81,6 +81,9 @@ const moreWords = (company: string) => {
   w[w.length - 1] += '\u00a0\u2192';
   return w;
 };
+// A founder's role and company ("CEO & Co-founder, Rocsys"), word by word for
+// the same reveal on hover (owner, 2026-11-26).
+const roleWords = (role: string, company: string) => `${role}, ${company}`.split(/\s+/);
 // Share (owner, 2026-10-19): straight to LinkedIn's share dialog, to post the
 // site on the visitor's own feed.
 const pageUrl = new URL(import.meta.env.BASE_URL.replace(/\/?$/, '/'), Astro.site).href;
@@ -174,9 +177,23 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
                     )}
                     <div class="fc__who">
                       <p class="card-title fc__name"><Placeholder value={p.name} /></p>
-                      <p class="fc__role">
-                        {p.role ?? founders.role}, <Placeholder value={p.company} />
-                      </p>
+                      {/* Role and company: opens on hover, pushing the name up,
+                          the words stepping in as on the company cards'
+                          "Discover more" (owner, 2026-11-26). */}
+                      <div class="fc__role-wrap">
+                        <p class="fc__role">
+                          {isPh(p.company) ? (
+                            <>{p.role ?? founders.role}, <Placeholder value={p.company} /></>
+                          ) : (
+                            roleWords(p.role ?? founders.role, p.company).map((w, i, all) => (
+                              <>
+                                <span class:list={['fc__w', i === all.length - 1 && 'fc__w--last']} style={`--i: ${i}`}>{w}</span>
+                                {i < all.length - 1 && ' '}
+                              </>
+                            ))
+                          )}
+                        </p>
+                      </div>
                       {p.blurb && <p class="fc__line">{p.blurb}</p>}
                     </div>
                   </li>
@@ -382,9 +399,46 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
     padding: var(--gap);
   }
   .fc__role {
-    margin-top: var(--space-2x);
+    --reveal-step: 0.14em; /* as .fc__more: the H1's ~2px steps */
+    margin: 0;
+    padding-top: var(--space-2x);
     font-size: var(--fs-small);
     color: var(--muted);
+  }
+  /* The role's own row: on screens with hover it has no height until the
+     card is hovered (or focused); then it opens over 360ms, pushing the name
+     up, and its words step in. Touch screens show it plainly. */
+  .fc__role-wrap {
+    display: grid;
+    grid-template-rows: 1fr;
+  }
+  .fc__role-wrap > .fc__role {
+    min-height: 0;
+    overflow: hidden;
+  }
+  @media (hover: hover) {
+    .fc__role-wrap {
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 360ms cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    .fc--founder:is(:hover, :focus-within) .fc__role-wrap {
+      grid-template-rows: 1fr;
+    }
+    .fc__role .fc__w {
+      opacity: 0;
+    }
+    .fc--founder:is(:hover, :focus-within) .fc__role .fc__w {
+      animation: fc-w-in calc(var(--reveal-frame) * 4) step-end forwards;
+      animation-delay: calc(120ms + var(--i) * var(--reveal-stagger));
+    }
+    .fc--founder:is(:hover, :focus-within) .fc__role .fc__w--last {
+      animation:
+        fc-w-show calc(var(--reveal-frame) * 9) step-end forwards,
+        fc-w-rise calc(var(--reveal-frame) * 9) cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+      animation-delay:
+        calc(120ms + var(--i) * var(--reveal-stagger)),
+        calc(120ms + var(--i) * var(--reveal-stagger));
+    }
   }
   .fc--founder.has-photo .fc__who {
     color: var(--white);
