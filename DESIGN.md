@@ -1079,17 +1079,20 @@ a new tab, ↗). Pitch us was a button there too; removed by the owner on
   tried the same day). Fixed to the window, over the page
   and under the logo and the nav; fades in over 300ms; not there at the
   very top, on the black intro.
-- ".ONE" (owner, 2026-11-16): the owner's DOTONE.svg (`src/assets/brand/
-  dot-one.svg`: the full stop, O, N, E, at the wordmark's cap height)
-  follows the D on the same baseline, 18 units after the D's bowl, and
-  moves with it: FWD.ONE at the top, FORWARD.ONE when open. About a second
+- "one" (owner, 2026-11-26; ".ONE" from DOTONE.svg before): the lowercase
+  "one" of the owner's logo file (`src/assets/brand/fwd-one-logo.svg`), at
+  the file's own scale and place next to the D (raised: x-height 0.28 of
+  the cap height, its baseline a little below the D's middle). The file's
+  FWD is exactly the wordmark's closed state, so the file maps onto the
+  frame one to one. It moves with the D: FWD one at the top, FORWARD one
+  when open. About a second
   after the page has loaded it rises in from
   the bottom, masked at its own baseline (owner, 2026-11-16), gently: 1.6s
   with a soft ease out;
   with reduced motion it is there at once, without scripting too.
 - Size (owner, 2026-11-16): 18px high (14px at ≤420px; 6px smaller than
-  the 24px before, in proportion); with ".ONE" 149 × 18 (the storyboard
-  frame cropped to `498 456 1388 168`). Without JavaScript: FORWARD in the header.
+  the 24px before, in proportion); with "one" 118 × 18 (the storyboard
+  frame cropped to `498 456 1098 168`; 1388 wide with ".ONE" before). Without JavaScript: FORWARD in the header.
 - The stand-alone SVG animations of the same motion (FWD → FORWARD, loops,
   without fade, FORWARD → FWD) are built from the same module by
   `node visuals/forward-wordmark/build.mjs` into `public/visuals/`.
