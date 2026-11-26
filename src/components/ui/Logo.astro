@@ -21,9 +21,9 @@
  */
 import { href } from '@lib/href';
 import { site } from '@content/nav';
-import { GLYPHS, layout, D_FROM } from '@lib/wordmark.mjs';
+import { GLYPHS, layout } from '@lib/wordmark.mjs';
 import wordmark from '../../assets/brand/forwardone.svg?raw';
-import logoFile from '../../assets/brand/fwd-one-logo.svg?raw';
+import dotOneSvg from '../../assets/brand/dot-one.svg?raw';
 
 interface Props {
   classic?: boolean;
@@ -36,33 +36,19 @@ const mark = wordmark.replace('<svg ', '<svg class="logo__mark" aria-hidden="tru
 const start = layout(0);
 const at = (k: 'W' | 'D' | 'O' | 'R' | 'A' | 'R2') => `translate(${start[k].toFixed(2)} 0)`;
 const SLOTS = ['O', 'R', 'A', 'R2'] as const;
-// "one" after the D (owner, 2026-11-26; was ".ONE" from DOTONE.svg): the
-// lowercase "one" of the owner's logo file (src/assets/brand/fwd-one-logo.svg,
-// 940 × 267, FWD and "one"). Its FWD is exactly the wordmark's FWD here at
-// the file's scale (cap height 266.873 file units = 158.345 frame units) and
-// offset (file (0, 0) = frame (502, 461)), so "one" keeps the file's size and
-// place next to the D: raised, its baseline a little below the D's middle.
-// It sits in the D's group, which is drawn at the D's FORWARD place, hence
-// the D's own travel (D_FROM) added back. It moves with the D (FWD one,
-// FORWARD one) and rises from below, masked at its baseline, a second after
-// load.
-const ONE_PATHS = [...logoFile.matchAll(/<path d="([^"]+)"/g)]
-  .map((m) => m[1])
-  .filter((d) => parseFloat(d.slice(1)) > 690); // the paths right of the D: e, n, o
-const ONE_SCALE = 158.345 / 266.873;
-const ONE_TX = 502 - D_FROM;
-const ONE_TY = 461;
-// In frame units (the D's FORWARD place): x 1452.0–1593.4, x-height top
-// 517.6, baseline 562.3.
-const ONE_LEFT = ONE_TX + 701.7 * ONE_SCALE;
-const ONE_RIGHT = ONE_TX + 940 * ONE_SCALE;
+// ".ONE" after the D (owner, 2026-11-16): the owner's DOTONE.svg (the
+// full stop, O, N, E; 452 × 159, the wordmark's own cap height), placed in
+// the storyboard frame so the full stop sits 18 units after the D's bowl,
+// on the same baseline. It moves with the D (FORWARD.ONE, FWD.ONE) and
+// rises from the bottom, masked at its baseline, a second after load.
+const ONE_PATHS = [...dotOneSvg.matchAll(/<path d="([^"]+)"/g)].map((m) => m[1]);
+const ONE_X = 1419 + 18 - 6.24; // D's right edge at the full stop's top, a gap, the stop's own inset
+const ONE_Y = 461;
 // The mask it rises out of (owner, 2026-11-16: "from the bottom, masked"):
-// the letters' own height (a little above the x-height, down to the bottom
-// of the o and e).
-const ONE_MASK = `${(ONE_LEFT - 12).toFixed(1)},514 2200,514 2200,564 ${(ONE_LEFT - 12).toFixed(1)},564`;
-// The storyboard's 1920×1080 frame, cropped to the wordmark and "one".
-const VIEW_W = Math.ceil(ONE_RIGHT + 2 - 498);
-const VIEWBOX = `498 456 ${VIEW_W} 168`;
+// the letters' own height, from just before the full stop to the right.
+const ONE_MASK = `${(ONE_X - 12).toFixed(1)},${ONE_Y - 2} 2200,${ONE_Y - 2} 2200,${ONE_Y + 160} ${(ONE_X - 12).toFixed(1)},${ONE_Y + 160}`;
+// The storyboard's 1920×1080 frame, cropped to the wordmark and ".ONE".
+const VIEWBOX = '498 456 1388 168';
 ---
 
 {
@@ -70,7 +56,7 @@ const VIEWBOX = `498 456 ${VIEW_W} 168`;
     <a class="logo" href={href('/')} aria-label={`${site.name} home`} set:html={mark} />
   ) : (
     <>
-      <span class="logo-slot" aria-hidden="true" data-logo-slot style={`aspect-ratio: ${VIEW_W} / 168`} />
+      <span class="logo-slot" aria-hidden="true" data-logo-slot />
       <a class="logo logo--forward" href={href('/')} aria-label={`${site.name} home`} data-logo>
         <svg class="logo__mark" viewBox={VIEWBOX} fill="currentColor" aria-hidden="true" focusable="false">
           <defs>
@@ -97,7 +83,7 @@ const VIEWBOX = `498 456 ${VIEW_W} 168`;
               <polygon points={ONE_MASK} />
             </clipPath>
             <g clip-path="url(#logo-slot-one)">
-              <g class="logo__one" transform={`translate(${ONE_TX.toFixed(3)} ${ONE_TY}) scale(${ONE_SCALE.toFixed(5)})`}>
+              <g class="logo__one" transform={`translate(${ONE_X.toFixed(2)} ${ONE_Y})`}>
                 <g class="logo__one-in">
                   {ONE_PATHS.map((d) => <path d={d} />)}
                 </g>
@@ -120,8 +106,7 @@ const VIEWBOX = `498 456 ${VIEW_W} 168`;
   /* Classic: 199 × 20 artwork, 20px high (15px on narrow phones so the logo
      and the LP login button fit on one row, down to 320px wide). FORWARD:
      18px (14px on narrow phones; owner, 2026-11-16: 6px smaller than the
-     24px before), its cropped frame with "one" (VIEW_W × 168, about
-     1098 × 168, so 118 × 18; with ".ONE" before 2026-11-26 it was 1388 wide). */
+     24px before), its cropped frame with ".ONE" 1388 × 168, so 149 × 18. */
   .logo :global(.logo__mark),
   .logo-slot {
     display: block;
@@ -133,7 +118,7 @@ const VIEWBOX = `498 456 ${VIEW_W} 168`;
     height: 18px;
   }
   .logo-slot {
-    aspect-ratio: 1098 / 168; /* set exactly from VIEW_W on the element */
+    aspect-ratio: 1388 / 168;
   }
   /* ".ONE" waits below its baseline, masked, until the script brings it in
      (a second after load): it rises from the bottom into place, gently
