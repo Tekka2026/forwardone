@@ -388,7 +388,9 @@ Sections 1 and 2 share the black intro, 1–3 the curtain. Titles as of
   company, and a clip after every fourth founder (25 cards).
 - Founder card: the CEO's photo, full bleed (#ECECEA until supplied); name
   (card title) and "CEO, company" (small, muted) at the bottom, white over a
-  soft dark gradient when there is a photo. The "CEO, company" line only
+  soft dark gradient when there is a photo (on the card, its bottom 50%,
+  black 55% → 0, so it stays put on hover; owner, 2026-11-26). The "CEO,
+  company" line only
   shows on hover (owner, 2026-11-26): its row opens over 360ms, pushing the
   name up, and its words step in as the company cards' "Discover more"
   (120ms after the row starts to open); touch screens show it plainly; optionally one line about the

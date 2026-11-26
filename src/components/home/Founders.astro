@@ -441,9 +441,22 @@ const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeUR
     }
   }
   .fc--founder.has-photo .fc__who {
+    z-index: 1; /* over the gradient below */
     color: var(--white);
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
     padding-top: var(--gap-double);
+  }
+  /* The dark gradient behind the text sits on the card, not the text block,
+     so it stays put when the role opens on hover (owner, 2026-11-26): the
+     bottom 50% of the card, high enough to cover the text in both states. */
+  .fc--founder.has-photo::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 50%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
+    pointer-events: none;
   }
   .fc--founder.has-photo :global(.placeholder) {
     color: rgba(255, 255, 255, 0.9);
